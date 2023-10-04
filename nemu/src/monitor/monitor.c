@@ -68,6 +68,7 @@ static long load_img() {
   return size;
 }
 
+// Analysis the information for the terminal input
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"batch"    , no_argument      , NULL, 'b'},
@@ -78,6 +79,8 @@ static int parse_args(int argc, char *argv[]) {
     {0          , 0                , NULL,  0 },
   };
   int o;
+  // This is a Linux function used in the condition that you need
+  // to get the information of the terminal _ dracarcys
   while ( (o = getopt_long(argc, argv, "-bhl:d:p:", table, NULL)) != -1) {
     switch (o) {
       case 'b': sdb_set_batch_mode(); break;
@@ -100,8 +103,9 @@ static int parse_args(int argc, char *argv[]) {
 
 void init_monitor(int argc, char *argv[]) {
   /* Perform some global initialization. */
-
+   
   /* Parse arguments. */
+  // analyze syntactically by assigning a constituent structure to (a sentence)
   parse_args(argc, argv);
 
   /* Set random seed. */
