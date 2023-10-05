@@ -54,6 +54,7 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+// The structure decide the next action in the gdb_loop, including the pointer of function
 static struct {
   const char *name;
   const char *description;
@@ -97,6 +98,8 @@ void sdb_set_batch_mode() {
 }
 
 void sdb_mainloop() {
+
+  // The default value of is_batch_mode is equal to 0
   if (is_batch_mode) {
     cmd_c(NULL);
     return;
@@ -125,6 +128,7 @@ void sdb_mainloop() {
     int i;
     for (i = 0; i < NR_CMD; i ++) {
       if (strcmp(cmd, cmd_table[i].name) == 0) {
+        // Function calling hanppens here, very impressive!
         if (cmd_table[i].handler(args) < 0) { return; }
         break;
       }
