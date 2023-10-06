@@ -42,12 +42,10 @@ static char* rl_gets() {
   return line_read;
 }
 
-// Guess: we will modify here in the later lab. 
 static int cmd_c(char *args) {
-  cpu_exec(-1);
+  cpu_exec(5);
   return 0;
 }
-
 
 static int cmd_q(char *args) {
   // Change the flag of nemu_state
