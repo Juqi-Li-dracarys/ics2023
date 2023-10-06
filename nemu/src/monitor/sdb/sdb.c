@@ -56,6 +56,7 @@ static int cmd_q(char *args) {
 
 // TASK1: The function that can step through the program
 static int cmd_si(char *args) {
+
   uint64_t exe_times = 1;
   if (args == NULL) {
     /* no argument given */
@@ -72,10 +73,19 @@ static int cmd_si(char *args) {
 
 // TASK2: Print the information of reg or watching point
 static int cmd_info(char *args) {
-  cpu_exec(-1);
+  if (args == NULL) {
+    /* no argument given */
+     printf("Error: the info need one args!\n");
+     return 0;
+  }
+  else if(strcmp(args,(const char*)"r") == 0){
+    isa_reg_display();
+  }
+  else {
+
+  }
   return 0;
 }
-
 
 static int cmd_help(char *args);
 
