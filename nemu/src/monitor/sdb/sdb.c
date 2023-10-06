@@ -79,6 +79,7 @@ static int cmd_info(char *args) {
      return 0;
   }
   else if(strcmp(args,(const char*)"r") == 0){
+    printf("The rigister value in nemu:\n");
     isa_reg_display();
   }
   else {
