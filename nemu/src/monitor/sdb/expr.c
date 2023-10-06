@@ -24,12 +24,13 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
+  TK_DEC_NUM
 
 };
 
 static struct rule {
   const char *regex;
-  int token_type;
+  int token_type; // ASCII Code
 } rules[] = {
 
   /* TODO: Add more rules.
@@ -39,8 +40,15 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
+  {"[0-9]+", TK_DEC_NUM}, // decimal number
+  {"\\-", '-'},         // distract
+  {"\\*", '*'},         // multiply
+  {"\\/", '/'},
+  {"\\(", '('}, 
+  {"\\)", ')'}         
 };
 
+// #define ARRLEN(arr) (int)(sizeof(arr) / sizeof(arr[0]))
 #define NR_REGEX ARRLEN(rules)
 
 static regex_t re[NR_REGEX] = {};
@@ -67,8 +75,8 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
-static int nr_token __attribute__((used))  = 0;
+static Token tokens[32] __attribute__((used)) = {}; // Array to store tokens
+static int nr_token __attribute__((used))  = 0; // Num of token
 
 static bool make_token(char *e) {
   int position = 0;
@@ -82,7 +90,7 @@ static bool make_token(char *e) {
     for (i = 0; i < NR_REGEX; i ++) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
         char *substr_start = e + position;
-        int substr_len = pmatch.rm_eo;
+        int substr_len = pmatch.rm_eo; //Strictly, we should define len = eo - so, but here so == 0
 
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
@@ -95,7 +103,106 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          default: TODO();
+
+          case TK_NOTYPE: break;
+
+          case '+': {
+            tokens[nr_token].type = '+';
+            if(nr_token == 31) {
+              printf("Token exceed.");
+              return false;
+            }
+            else
+              nr_token++;
+            break;
+          }
+
+          case '-': {
+            tokens[nr_token].type = '-';
+            if(nr_token == 31) {
+              printf("Token exceed.");
+              return false;
+            }
+            else
+              nr_token++;
+            break;
+          }
+
+          case '*': {
+            tokens[nr_token].type = '*';
+            if(nr_token == 31) {
+              printf("Token exceed.");
+              return false;
+            }
+            else
+              nr_token++;
+            break;
+          }
+
+          case '/': {
+            tokens[nr_token].type = '/';
+            if(nr_token == 31) {
+              printf("Token exceed.");
+              return false;
+            }
+            else
+              nr_token++;
+            break;
+          }
+
+          case '(': {
+            tokens[nr_token].type = '(';
+            if(nr_token == 31) {
+              printf("Token exceed.");
+              return false;
+            }
+            else
+              nr_token++;
+            break;
+          }
+
+          case ')': {
+            tokens[nr_token].type = ')';
+            if(nr_token == 31) {
+              printf("Token exceed.");
+              return false;
+            }
+            else
+              nr_token++;
+            break;
+          }
+
+          case TK_EQ: {
+            tokens[nr_token].type = TK_EQ;
+            if (nr_token == 31)
+            {
+              printf("Token exceed.");
+              return false;
+            }
+            else
+              nr_token++;
+            break;
+          }
+
+          case TK_DEC_NUM: {
+            tokens[nr_token].type = TK_DEC_NUM;
+            if(substr_len < 32)
+              strncpy(tokens[nr_token].str, e + position, substr_len);
+            else {
+              printf("Token str exceed.");
+              return false;
+            }
+
+            if (nr_token == 31)
+            {
+              printf("Token exceed.");
+              return false;
+            }
+            else
+              nr_token++;
+            break;
+          } 
+          default: return false;
         }
 
         break;
@@ -119,7 +226,9 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  for(int i = 0; i <= nr_token; i++){
+    printf("%d ----- %s\n", tokens[i].type, tokens[i].str);
+  }
 
   return 0;
 }
