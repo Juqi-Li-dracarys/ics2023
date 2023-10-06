@@ -53,7 +53,6 @@ static int cmd_q(char *args) {
   return -1;
 }
 
-
 // TASK1: The function that can step through the program
 static int cmd_si(char *args) {
 
@@ -75,7 +74,7 @@ static int cmd_si(char *args) {
 static int cmd_info(char *args) {
   if (args == NULL) {
     /* no argument given */
-     printf("Error: The info needs one args!\n");
+     printf("Error: The info needs 1 args!\n");
      return 0;
   }
   else if(strcmp(args,(const char*)"r") == 0){
@@ -83,7 +82,23 @@ static int cmd_info(char *args) {
     isa_reg_display();
   }
   else {
+    // Print the value of watching point
 
+  }
+  return 0;
+}
+
+// TASK3: Print the information of memory
+static int cmd_x(char *args) {
+  if (args == NULL) {
+    /* no argument given */
+     printf("Error: The x needs 2 args!\n");
+     return 0;
+  }
+  else {
+    char *arg1 = strtok(args, " ");
+    char *arg2 = strtok(NULL, " ");
+    printf("%s %s", arg1, arg2);
   }
   return 0;
 }
@@ -102,8 +117,8 @@ static struct {
 
   /* TODO: Add more commands */
   { "si", "Excute the program in n steps", cmd_si },
-  { "info", "Print the information of reg or watching point", cmd_info }
-
+  { "info", "Print the information of reg or watching point(1 ags must be given)", cmd_info },
+  { "x", "Print the information of memory(2 ags must be given)", cmd_x }
 };
 
 #define NR_CMD ARRLEN(cmd_table)
