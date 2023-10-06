@@ -75,7 +75,7 @@ static int cmd_si(char *args) {
 static int cmd_info(char *args) {
   if (args == NULL) {
     /* no argument given */
-     printf("Error: the info need one args!\n");
+     printf("Error: The info needs one args!\n");
      return 0;
   }
   else if(strcmp(args,(const char*)"r") == 0){
