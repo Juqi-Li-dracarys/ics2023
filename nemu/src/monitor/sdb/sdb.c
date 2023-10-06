@@ -42,6 +42,7 @@ static char* rl_gets() {
   return line_read;
 }
 
+// Guess: we will modify here in the later lab. 
 static int cmd_c(char *args) {
   cpu_exec(-1);
   return 0;
@@ -53,6 +54,20 @@ static int cmd_q(char *args) {
   nemu_state.state = NEMU_QUIT;
   return -1;
 }
+
+
+// TASK1: The function that can step through the program
+static int cmd_si(char *args) {
+  cpu_exec(-1);
+  return 0;
+}
+
+// TASK2: Print the information of reg or watching point
+static int cmd_info(char *args) {
+  cpu_exec(-1);
+  return 0;
+}
+
 
 static int cmd_help(char *args);
 
@@ -67,6 +82,8 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
+  { "si", "Excute the program in n steps", cmd_si },
+  { "info", "Print the information of reg or watching point", cmd_info }
 
 };
 
@@ -107,19 +124,22 @@ void sdb_mainloop() {
     return;
   }
 
+  // Read the whole cammand once
   for (char *str; (str = rl_gets()) != NULL; ) {
     char *str_end = str + strlen(str);
 
     /* extract the first token as the command */
     char *cmd = strtok(str, " ");
+
     if (cmd == NULL) { continue; }
 
     /* treat the remaining string as the arguments,
      * which may need further parsing
+     * We will parsing the remaining arguments in the function
      */
     char *args = cmd + strlen(cmd) + 1;
     if (args >= str_end) {
-      args = NULL;
+      args = NULL; // No args
     }
 
 #ifdef CONFIG_DEVICE
