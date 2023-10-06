@@ -98,7 +98,15 @@ static int cmd_x(char *args) {
   else {
     char *arg1 = strtok(args, " ");
     char *arg2 = strtok(NULL, " ");
-    printf("%s %s", arg1, arg2);
+    if (arg2 == NULL) {
+      printf("Error: The x needs 2 args!\n");
+      return 0;
+    }
+    // Parsing the value
+    uint32_t index, addr;
+    sscanf(arg1, "%u", &index);
+    sscanf(arg2, "%x", &addr);
+    printf("%u 0x%08x", index, addr);
   }
   return 0;
 }
