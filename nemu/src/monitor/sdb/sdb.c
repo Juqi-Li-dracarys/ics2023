@@ -56,7 +56,17 @@ static int cmd_q(char *args) {
 
 // TASK1: The function that can step through the program
 static int cmd_si(char *args) {
-  cpu_exec(-1);
+  uint64_t exe_times = 1;
+  if (args == NULL) {
+    /* no argument given */
+     printf("No args. The monitor step through the program for %lu steps.", exe_times);
+     cpu_exec(exe_times); // Excute once
+  }
+  else {
+    sscanf(args, "%lu", &exe_times);
+    printf("The monitor step through the program for %lu steps.", exe_times);
+    cpu_exec(exe_times);
+  }
   return 0;
 }
 
