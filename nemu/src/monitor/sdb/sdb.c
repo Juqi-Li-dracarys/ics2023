@@ -17,6 +17,7 @@
 #include <cpu/cpu.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <memory/paddr.h>
 #include "sdb.h"
 
 static int is_batch_mode = false;
@@ -106,7 +107,10 @@ static int cmd_x(char *args) {
     uint32_t index, addr;
     sscanf(arg1, "%u", &index);
     sscanf(arg2, "%x", &addr);
-    printf("%u 0x%08x", index, addr);
+    printf("The information of memory is listed below:\n");
+    for(uint16_t i = 0; i < index; i++) {
+      printf("Address: 0x%08x   Value: 0x%02x\n", addr, *(guest_to_host(addr+i)));
+    }
   }
   return 0;
 }
