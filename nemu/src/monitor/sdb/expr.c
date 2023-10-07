@@ -235,13 +235,13 @@ bool check_parentheses(int p, int q) {
         flag++;
       else if(tokens[i].type == ')'){
         flag--;
-        if (flag < 0) {printf("check_parentheses: Illegal expression(1)!\n"); assert(0);}
+        if (flag < 0) {return false;} // Match error
       }
     }
     if (flag == 0)
       return true;
     else 
-      {printf("check_parentheses: Illegal expression(2)!\n"); assert(0);}
+      {printf("check_parentheses: Illegal expression!\n"); assert(0);}
   }
 }
 
