@@ -226,6 +226,7 @@ word_t expr(char *e, bool *success) {
   for(int i = 0; i < nr_token; i++){
     printf("%d ----- %s\n", tokens[i].type, tokens[i].str);
   }
+  printf("%d\n",nr_token);
   *success = true;
   return 0;
 }
