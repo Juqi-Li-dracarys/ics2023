@@ -269,7 +269,7 @@ int find_main_op(int p, int q) {
     switch(tokens[i].type){
       case '(':  {parentheses_flag++; break;}
       case ')':  {if (parentheses_flag > 0) parentheses_flag--; else printf("find_main_op: Illegal expression!\n"); break;}
-      case ('+' || '-' || '*' ||  '/'): {
+      case '+': {
         if (parentheses_flag != 0)
           break;
         else {
