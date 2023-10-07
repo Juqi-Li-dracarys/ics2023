@@ -226,7 +226,7 @@ static bool make_token(char *e) {
 bool check_parentheses(int p, int q) {
   // the whole expression is not surrounded by a matched
   // pair of parentheses
-  if (tokens[p].type != '(' && tokens[q].type != ')')
+  if (tokens[p].type != '(' || tokens[q].type != ')')
     return false;
   else {
     int flag = 0;
