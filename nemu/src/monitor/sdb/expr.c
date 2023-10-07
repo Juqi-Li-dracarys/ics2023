@@ -263,10 +263,10 @@ int findOpPriority(const char *str[], char c) {
 */
 int find_main_op(int p, int q) {
   int index_record = 0; // the record of index
-  int priority_record = p_size - 1;//the record of lowest priorty
-  for(int i = p; i <= q; i++){
-    int parentheses_flag = 0;
-    switch(tokens[i].type){
+  int priority_record = p_size - 1;// the record of lowest priorty
+  int parentheses_flag = 0;// the flag of parentheses
+  for(int i = p; i <= q; i++) {
+    switch(tokens[i].type) {
       case '(':  {parentheses_flag++; break;}
       case ')':  {if (parentheses_flag > 0) parentheses_flag--; else printf("Error: find_main_op Illegal expression!\n"); break;}
       case '+': {
