@@ -48,6 +48,10 @@ static struct rule {
   {"\\)", ')'}         
 };
 
+// define the priority of each op
+#define p_size 2
+const char * priority[p_size] = {"+-", "*/"};
+
 // #define ARRLEN(arr) (int)(sizeof(arr) / sizeof(arr[0]))
 #define NR_REGEX ARRLEN(rules)
 
@@ -215,18 +219,123 @@ static bool make_token(char *e) {
   return true;
 }
 
+/*The function is designed to judge whether the expr is surrounded by a matched pair of parentheses.
+* p is the begin token index of the expr
+* q is the end token index of the expr
+*/
+bool check_parentheses(int p, int q) {
+  // the whole expression is not surrounded by a matched
+  // pair of parentheses
+  if (tokens[p].type != '(' && tokens[q].type != ')')
+    return false;
+  else {
+    int flag = 0;
+    for(int i = p + 1; i <= q - 1; i++) {
+      if (tokens[i].type == '(')
+        flag++;
+      else if(tokens[i].type == ')'){
+        flag--;
+        if (flag < 0) {printf("check_parentheses: Illegal expression!\n"); return false;}
+      }
+    }
+    if (flag == 0)
+      return true;
+    else 
+      {printf("check_parentheses: Illegal expression!\n"); return false;}
+  }
+}
 
+/*The function is designed to find the priority of op
+*/
+
+int findOpPriority(const char *str[], char c) {
+  for (int i = 0; i < p_size; i++) {
+    if (str[i] != NULL && strchr(str[i], c) != NULL) {
+      return i; // return the priority
+    }
+  }
+  return -1; // din't find c， return -1
+}
+
+/*The function is designed to find the main op index of expr
+* p is the begin token index of the expr
+* q is the end token index of the expr
+*/
+int find_main_op(int p, int q) {
+  int index_record = 0; // the record of index
+  int priority_record = p_size - 1;//the record of lowest priorty
+  for(int i = p; i <= q; i++){
+    int parentheses_flag = 0;
+    switch(tokens[i].type){
+      case '(':  {parentheses_flag++; break;}
+      case ')':  {if (parentheses_flag > 0) parentheses_flag--; else printf("find_main_op: Illegal expression!\n"); break;}
+      case '+' || '-' || '*' ||  '/': {
+        if (parentheses_flag != 0)
+          break;
+        else {
+          if (findOpPriority(priority, tokens[i].type) <= priority_record) {
+            index_record = i;
+            priority_record = findOpPriority(priority, tokens[i].type);
+          }
+          break;
+        }
+      }
+      default: ;
+    }
+  }
+  return index_record;
+}
+
+/*The function is designed to claculate the value of expr
+* p is the begin token index of the expr
+* q is the end token index of the expr
+*/
+int eval(int p, int q) {
+  if (p > q) {
+    /* Bad expression */
+    printf("Error: eval occures bad expression.\n");
+    return 0;
+    }
+  else if (p == q) {
+    /* Single token.
+     * For now this token should be a number.
+     * Return the value of the number.
+     */
+    int result;
+    sscanf(tokens[p].str, "%d", &result);
+    return result;
+  }
+  else if (check_parentheses(p, q) == true) {
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    return eval(p + 1, q - 1);
+  }
+  else {
+    int op_index = find_main_op(p, q);
+    switch (tokens[op_index].type) {
+      case '+': return (eval(p, op_index - 1) + eval(op_index + 1, q));
+      case '-': return (eval(p, op_index - 1) - eval(op_index + 1, q));
+      case '*': return (eval(p, op_index - 1) * eval(op_index + 1, q));
+      case '/': return (eval(p, op_index - 1) / eval(op_index + 1, q));
+      default: assert(0);
+    }
+  }
+}
+
+/* The function to evaluate the expression
+*/
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
     return 0;
   }
-
   /* TODO: Insert codes to evaluate the expression. */
-  for(int i = 0; i < nr_token; i++){
-    printf("%d ----- %s\n", tokens[i].type, tokens[i].str);
-  }
-  printf("%d\n",nr_token);
-  *success = true;
+  // for(int i = 0; i < nr_token; i++){
+  //   printf("%d ----- %s\n", tokens[i].type, tokens[i].str);
+  // }
+  // printf("%d\n",nr_token);
+  // *success = true;
+  printf("value: %d\n",eval(0, nr_token - 1));
   return 0;
 }
