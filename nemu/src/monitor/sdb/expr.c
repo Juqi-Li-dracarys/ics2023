@@ -280,6 +280,39 @@ int find_main_op(int p, int q) {
           break;
         }
       }
+      case '-': {
+        if (parentheses_flag != 0)
+          break;
+        else {
+          if (findOpPriority(priority, tokens[i].type) <= priority_record) {
+            index_record = i;
+            priority_record = findOpPriority(priority, tokens[i].type);
+          }
+          break;
+        }
+      }
+      case '*': {
+        if (parentheses_flag != 0)
+          break;
+        else {
+          if (findOpPriority(priority, tokens[i].type) <= priority_record) {
+            index_record = i;
+            priority_record = findOpPriority(priority, tokens[i].type);
+          }
+          break;
+        }
+      }
+      case '/': {
+        if (parentheses_flag != 0)
+          break;
+        else {
+          if (findOpPriority(priority, tokens[i].type) <= priority_record) {
+            index_record = i;
+            priority_record = findOpPriority(priority, tokens[i].type);
+          }
+          break;
+        }
+      }
       default: ;
     }
   }
