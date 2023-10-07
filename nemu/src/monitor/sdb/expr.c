@@ -112,6 +112,7 @@ static bool make_token(char *e) {
               return false;
             }
             tokens[nr_token].type = '+';
+            strcpy(tokens[nr_token].str, "+");
             nr_token++;
             break;
           }
@@ -122,6 +123,7 @@ static bool make_token(char *e) {
               return false;
             }
             tokens[nr_token].type = '-';
+            strcpy(tokens[nr_token].str, "-");
             nr_token++;
             break;
           }
@@ -132,6 +134,7 @@ static bool make_token(char *e) {
               return false;
             }
             tokens[nr_token].type = '*';
+            strcpy(tokens[nr_token].str, "*");
             nr_token++;
             break;
           }
@@ -142,18 +145,19 @@ static bool make_token(char *e) {
               return false;
             }
             tokens[nr_token].type = '/';
+            strcpy(tokens[nr_token].str, "/");
             nr_token++;
             break;
           }
 
           case '(': {
-            tokens[nr_token].type = '(';
-            if(nr_token == 31) {
-              printf("Token exceed.");
+            if(nr_token == 32) {
+              printf("Token exceed.\n");
               return false;
             }
-            else
-              nr_token++;
+            tokens[nr_token].type = '(';
+            strcpy(tokens[nr_token].str, "(");
+            nr_token++;
             break;
           }
 
@@ -163,6 +167,7 @@ static bool make_token(char *e) {
               return false;
             }
             tokens[nr_token].type = ')';
+            strcpy(tokens[nr_token].str, ")");
             nr_token++;
             break;
           }
@@ -173,6 +178,7 @@ static bool make_token(char *e) {
               return false;
             }
             tokens[nr_token].type = TK_EQ;
+            strcpy(tokens[nr_token].str, "==");
             nr_token++;
             break;
           }
