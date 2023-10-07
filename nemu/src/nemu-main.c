@@ -33,8 +33,8 @@ int main(int argc, char *argv[]) {
   engine_start();
 
   bool success;
-  expr("(3+5)*2+4/(1+1)-5*2", &success);
-  printf("%d\n", success);
+  expr("((3+5)*2+4/(1+1)-5)*2-10*2", &success);
+  printf("state: %d\n", success);
 
   return is_exit_status_bad();
 }
