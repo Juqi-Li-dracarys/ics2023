@@ -187,7 +187,7 @@ static bool make_token(char *e) {
           case TK_DEC_NUM: {
             tokens[nr_token].type = TK_DEC_NUM;
             if(substr_len < 32)
-              strncpy(tokens[nr_token].str, e + position, substr_len);
+              strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
             else {
               printf("Token str exceed.");
               return false;
