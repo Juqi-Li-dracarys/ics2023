@@ -184,7 +184,7 @@ static bool make_token(char *e) {
           }
 
           case TK_DEC_NUM: {
-            if (nr_token == 31)
+            if (nr_token == 32)
             {
               printf("Token exceed.");
               return false;
