@@ -235,13 +235,13 @@ bool check_parentheses(int p, int q) {
         flag++;
       else if(tokens[i].type == ')'){
         flag--;
-        if (flag < 0) {printf("check_parentheses: Illegal expression!\n"); return false;}
+        if (flag < 0) {printf("check_parentheses: Illegal expression(1)!\n"); assert(0);}
       }
     }
     if (flag == 0)
       return true;
     else 
-      {printf("check_parentheses: Illegal expression!\n"); return false;}
+      {printf("check_parentheses: Illegal expression(2)!\n"); assert(0);}
   }
 }
 
@@ -268,7 +268,7 @@ int find_main_op(int p, int q) {
     int parentheses_flag = 0;
     switch(tokens[i].type){
       case '(':  {parentheses_flag++; break;}
-      case ')':  {if (parentheses_flag > 0) parentheses_flag--; else printf("find_main_op: Illegal expression!\n"); break;}
+      case ')':  {if (parentheses_flag > 0) parentheses_flag--; else printf("Error: find_main_op Illegal expression!\n"); break;}
       case '+': {
         if (parentheses_flag != 0)
           break;
@@ -326,7 +326,7 @@ int find_main_op(int p, int q) {
 int eval(int p, int q) {
   if (p > q) {
     /* Bad expression */
-    printf("Error: eval occures bad expression.\n");
+    printf("Error: eval() occures bad expression.\n");
     return 0;
     }
   else if (p == q) {
