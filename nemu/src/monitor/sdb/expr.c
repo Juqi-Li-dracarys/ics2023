@@ -107,46 +107,42 @@ static bool make_token(char *e) {
           case TK_NOTYPE: break;
 
           case '+': {
-            tokens[nr_token].type = '+';
-            if(nr_token == 31) {
-              printf("Token exceed.");
+            if(nr_token == 32) {
+              printf("Token exceed.\n");
               return false;
             }
-            else
-              nr_token++;
+            tokens[nr_token].type = '+';
+            nr_token++;
             break;
           }
 
           case '-': {
-            tokens[nr_token].type = '-';
-            if(nr_token == 31) {
-              printf("Token exceed.");
+            if(nr_token == 32) {
+              printf("Token exceed.\n");
               return false;
             }
-            else
-              nr_token++;
+            tokens[nr_token].type = '-';
+            nr_token++;
             break;
           }
 
           case '*': {
-            tokens[nr_token].type = '*';
-            if(nr_token == 31) {
-              printf("Token exceed.");
+            if(nr_token == 32) {
+              printf("Token exceed.\n");
               return false;
             }
-            else
-              nr_token++;
+            tokens[nr_token].type = '*';
+            nr_token++;
             break;
           }
 
           case '/': {
-            tokens[nr_token].type = '/';
-            if(nr_token == 31) {
-              printf("Token exceed.");
+            if(nr_token == 32) {
+              printf("Token exceed.\n");
               return false;
             }
-            else
-              nr_token++;
+            tokens[nr_token].type = '/';
+            nr_token++;
             break;
           }
 
@@ -162,29 +158,31 @@ static bool make_token(char *e) {
           }
 
           case ')': {
-            tokens[nr_token].type = ')';
-            if(nr_token == 31) {
-              printf("Token exceed.");
+           if(nr_token == 32) {
+              printf("Token exceed.\n");
               return false;
             }
-            else
-              nr_token++;
+            tokens[nr_token].type = ')';
+            nr_token++;
             break;
           }
 
           case TK_EQ: {
+           if(nr_token == 32) {
+              printf("Token exceed.\n");
+              return false;
+            }
             tokens[nr_token].type = TK_EQ;
+            nr_token++;
+            break;
+          }
+
+          case TK_DEC_NUM: {
             if (nr_token == 31)
             {
               printf("Token exceed.");
               return false;
             }
-            else
-              nr_token++;
-            break;
-          }
-
-          case TK_DEC_NUM: {
             tokens[nr_token].type = TK_DEC_NUM;
             if(substr_len < 32)
               strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
@@ -192,14 +190,7 @@ static bool make_token(char *e) {
               printf("Token str exceed.");
               return false;
             }
-
-            if (nr_token == 31)
-            {
-              printf("Token exceed.");
-              return false;
-            }
-            else
-              nr_token++;
+            nr_token++;
             break;
           } 
           default: return false;
@@ -226,7 +217,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  for(int i = 0; i <= nr_token; i++){
+  for(int i = 0; i < nr_token; i++){
     printf("%d ----- %s\n", tokens[i].type, tokens[i].str);
   }
   *success = true;
