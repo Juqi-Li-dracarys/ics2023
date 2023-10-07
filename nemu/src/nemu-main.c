@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 
   bool success;
   expr("(985/211 ) * +12==- 1", &success);
-  printf("%d", success);
+  printf("%d\n", success);
 
   return is_exit_status_bad();
 }
