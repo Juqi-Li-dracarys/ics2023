@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   engine_start();
 
   bool success;
-  expr("(985/211 ) * +12==- 1", &success);
+  expr("(0123456789012345678901234567890/211 ) * +12==- 1", &success);
   printf("%d\n", success);
 
   return is_exit_status_bad();
