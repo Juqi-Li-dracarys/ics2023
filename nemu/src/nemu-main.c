@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   engine_start();
 
   bool success;
-  expr("(4 + 3) * (2 - 1)", &success);
+  expr("9    -7     -  (6    +      5  / (  8  *2+1)  -  4  +    5  ) *   7    /(6   *2+1)", &success);
   printf("state: %d\n", success);
 
   return is_exit_status_bad();

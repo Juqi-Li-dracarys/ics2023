@@ -21,18 +21,52 @@
 #include <string.h>
 
 // this should be enough
-static char buf[65536] = {};
+static char buf[65536] = {}; // to store the expr
 static char code_buf[65536 + 128] = {}; // a little larger than `buf`
 static char *code_format =
 "#include <stdio.h>\n"
 "int main() { "
-"  unsigned result = %s; "
+"  int result = %s; "
 "  printf(\"%%u\", result); "
 "  return 0; "
 "}";
 
+static int buf_index = 0; // buf index
+static int n_input = 0;   // size of new input
+#define choose(x) (rand() % x) // generate random num
+#define gen(c,i) n_input = sprintf(buf + i,"%c",c); i = (i >= 65530 ? 65530 : i + n_input); // print one char in the buf
+#define gen_num(i) n_input = sprintf(buf + i,"%d",rand() % 10); i = (i >= 65530 ? 65530 : i + n_input); // print one num in the buf
+
+// generate random op
+void gen_rand_op(void) {
+  switch (choose(3)) {
+    case 0: gen('+',buf_index); break;
+    case 1: gen('-',buf_index); break;
+    default: gen('*',buf_index); break;
+  }
+}
+
+// generate random op
+void gen_space(void) {
+  for(int i = rand() % 4; i > 0; i--) {
+    gen(' ',buf_index)
+  }
+}
+
+// generate expr once
 static void gen_rand_expr() {
-  buf[0] = '\0';
+  // To avoid the segmental fault
+  switch (buf_index < 20 ? choose(6) : 0) {
+    case 0: {gen_space(); gen_num(buf_index); gen_space(); break;}
+    case 1: {gen('(',buf_index); gen_rand_expr(); gen(')',buf_index); break;}
+    case 2: { // To aviod /0
+      gen_rand_expr(); gen_space(); gen('/',buf_index); gen_space(); 
+      gen('(',buf_index); gen_rand_expr();gen('*',buf_index); gen('2',buf_index);
+      gen('+',buf_index); gen('1',buf_index);gen(')',buf_index);break;
+    }
+    default: {gen_rand_expr(); gen_space(); gen_rand_op(); gen_space(); gen_rand_expr(); break;}
+  }
+  return ;
 }
 
 int main(int argc, char *argv[]) {
@@ -43,9 +77,11 @@ int main(int argc, char *argv[]) {
     sscanf(argv[1], "%d", &loop);
   }
   int i;
+  buf_index = 0;
   for (i = 0; i < loop; i ++) {
+    // generate expr once
+    buf_index = 0;
     gen_rand_expr();
-
     sprintf(code_buf, code_format, buf);
 
     FILE *fp = fopen("/tmp/.code.c", "w");
@@ -63,7 +99,7 @@ int main(int argc, char *argv[]) {
     ret = fscanf(fp, "%d", &result);
     pclose(fp);
 
-    printf("%u %s\n", result, buf);
+    printf("%d %s\n", result, buf);
   }
   return 0;
 }
