@@ -487,14 +487,17 @@ word_t eval(int p, int q) {
       */
       if (tokens[p + 1].type != '(') {
         int i;
+        int num = 0;
         // Continuing '-'
         for(i = p + 1; i < nr_token; i++) {
           if(tokens[i].type != '-')
-          break;
+            break;
+          num++;
         }
         // still have '('
         if (tokens[i].type != '(')
-          return (~(eval(i, i)) + 1);
+          if (num%2 != 0) return (~(eval(i, i)) + 1);
+          else return eval(i, i);
         else {
           for(int j = i + 2; j < nr_token; j++) {
           if (check_parentheses(i + 1, j) == true)
