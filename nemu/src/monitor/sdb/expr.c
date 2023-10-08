@@ -493,10 +493,11 @@ word_t eval(int p, int q) {
             return (~(eval(p + 2, i - 1)) + 1);
         }
       }
+      printf("Code has critical bug in the judgement of negtive\n");
       assert(0);
     }
 
-    else assert(0);
+    else {printf("Unkown type of token\n"); assert(0);}
   }
 }
 
