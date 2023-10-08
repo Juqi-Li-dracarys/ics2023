@@ -485,34 +485,27 @@ word_t eval(int p, int q) {
       *  Return the value of the number.
       *  正常情况下，一个负号的后面只可能为数字，括号，负号
       */
-      if (tokens[p + 1].type != '(') {
-        int i;
-        int num = 1;
-        // Continuing '-'
-        for(i = p + 1; i < nr_token; i++) {
-          if(tokens[i].type != TK_NEG)
-            break;
-          num++;
-        }
-        // still have '('
-        if (tokens[i].type != '(') {
-          if (num%2 != 0) return (~(eval(i, i)) + 1);
-          else return eval(i, i);
-        }
-        else {
-          for(int j = i + 1; j < nr_token; j++) {
-          if (check_parentheses(i, j) == true)
-            return (~(eval(i + 1, j - 1)) + 1);
-          }
-        }
-      }
-
-      else {
-        for(int i = p + 2; i < nr_token; i++) {
-          if (check_parentheses(p + 1, i) == true)
-            return (~(eval(p + 2, i - 1)) + 1);
+    int i;
+    int num = 1;
+    // Continuing '-'
+    for(i = p + 1; i < nr_token; i++) {
+      if(tokens[i].type != TK_NEG)
+        break;
+      num++;
+    }
+    // still have '('
+    if (tokens[i].type != '(') {
+      if (num%2 != 0) return (~(eval(i, i)) + 1);
+      else return eval(i, i);
+    }
+    else {
+      for(int j = i + 1; j < nr_token; j++) {
+        if (check_parentheses(i, j) == true) {
+          if (num%2 != 0) return (~(eval(i + 1, j - 1)) + 1);
+          else return eval(i + 1, j - 1);
         }
       }
+    }
       printf("Code has critical bug in the judgement of negtive\n");
       assert(0);
     }
