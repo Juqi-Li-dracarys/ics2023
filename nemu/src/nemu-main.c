@@ -34,39 +34,32 @@ int main(int argc, char *argv[]) {
 
   /** Test the expr **/
   bool success = 0;
-  FILE *file = fopen("/home/dracacys/ics2023/nemu/tools/gen-expr/input", "r");
-  if (file == NULL) {
-        perror("Error opening file");
-        return 1;
-  }
-  int lineCount = 0;
-  char line[1000] = {0}; // Every line char recorder
-  while (fgets(line, sizeof(line), file)) {
-        lineCount++;
-  }
-  rewind(file);
-
-  // int *result = (int *)malloc(lineCount * sizeof(int));
-  // char **expr = (char **)malloc(lineCount * sizeof(char *));
-
-  // if (result == NULL || expr == NULL) {
-  //     perror("Memory allocation error");
-  //     fclose(file);
-  //     return 1;
+  expr("  7    -  ( 5  -     0   *     9    +  9    *2  +     1   /   ( 3 *2+1)   /  (  5*2+1)) *  4    * 5 -     8  -   6   -0  +   7", &success);
+  
+  // FILE *file = fopen("/home/dracacys/ics2023/nemu/tools/gen-expr/input", "r");
+  // if (file == NULL) {
+  //       perror("Error opening file");
+  //       return 1;
   // }
+  // int lineCount = 0;
+  // char line[1000] = {0}; // Every line char recorder
+  // while (fgets(line, sizeof(line), file)) {
+  //       lineCount++;
+  // }
+  // rewind(file);
 
-  // read every line and store them in the result
-  for (int i = 0; i < lineCount; i++) {
-      if (fgets(line, sizeof(line), file)) {
-          int num;
-          char str[1000];
-          if (sscanf(line, "%d %99[^\n]", &num, str) == 2) {
-              expr(strdup(str), &success); 
-              printf("Answer: %d\n", num);
-          }
-      }
-  }
-  fclose(file);
+  // // read every line and store them in the result
+  // for (int i = 0; i < lineCount; i++) {
+  //     if (fgets(line, sizeof(line), file)) {
+  //         int num;
+  //         char str[1000];
+  //         if (sscanf(line, "%d %99[^\n]", &num, str) == 2) {
+  //             expr(strdup(str), &success); 
+  //             printf("Answer: %d\n", num);
+  //         }
+  //     }
+  // }
+  // fclose(file);
   printf("state: %d\n", success);
 
   return is_exit_status_bad();
