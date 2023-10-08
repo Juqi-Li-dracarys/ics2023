@@ -131,7 +131,7 @@ static int cmd_p(char *args) {
       assert(0);
     }
     else {
-      printf("Done. the result of expr in hex is: 0x%08x\nanswer in dec is %u\n", result, result);
+      printf("Done.\nthe result of expr in hex is: 0x%08x\nanswer in dec is %u\n", result, result);
       return 0;
     }
   }
