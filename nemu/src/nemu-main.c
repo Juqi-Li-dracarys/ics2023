@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
           char str[10000];
           if (sscanf(line, "%u %9999[^\n]", &answer, str) == 2) {
               result = expr(str, &success);  
-              printf("Line: %d   Result: %d   Answer: %d\n", i, result, answer);
+              printf("Line: %d   Result: %u   Answer: %u\n", i, result, answer);
               if (result != answer || success == 0) {
                 printf("Error: the answer is not correct.");
                 return 1;
