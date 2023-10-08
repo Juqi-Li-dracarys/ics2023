@@ -21,7 +21,8 @@
 #include <string.h>
 
 // this should be enough
-static char buf[65536] = {}; // to store the expr
+static char buf[65536] = {}; // to store the expr for nemu
+static char buf_c[65536] = {}; // to store the expr for gcc
 static char code_buf[65536 + 128] = {}; // a little larger than `buf`
 static char *code_format =
 "#include <stdio.h>\n"
@@ -31,39 +32,43 @@ static char *code_format =
 "  return 0; "
 "}";
 
-static int buf_index = 0; // buf index
-static int n_input = 0;   // size of new input
-#define choose(x) (rand() % x) // generate random num
-#define gen(c,i) n_input = sprintf(buf + i,"%c",c); i = (i >= 65530 ? 65530 : i + n_input); // print one char in the buf
-#define gen_num(i) n_input = sprintf(buf + i,"%d",rand() % 10); i = (i >= 65530 ? 65530 : i + n_input); // print one num in the buf
+static int buf_index = 0; // buf index for nemu
+static int buf_index_c = 0; // buf index for c
+static int n_input = 0;   // size of new input for nemu
+static int n_input_c = 0;   // size of new input for c
+static int ran = 0; //rand num
 
+#define choose(x) (rand() % x) // generate random num
+#define gen(c)    n_input = sprintf(buf + buf_index,"%c",c); n_input_c = sprintf(buf_c + buf_index_c,"%c",c); buf_index = (buf_index >= 65530 ? 65530 : buf_index + n_input); buf_index_c = (buf_index_c >= 65530 ? 65530 : buf_index_c + n_input_c); // print one char in the buf
+#define gen_num   ran = rand() % 10; n_input = sprintf(buf + buf_index,"%u",ran); n_input_c = sprintf(buf_c + buf_index_c,"%uu",ran); buf_index = (buf_index >= 65530 ? 65530 : buf_index + n_input); buf_index_c = (buf_index_c >= 65530 ? 65530 : buf_index_c + n_input_c); // print one num in the buf
+#define gen_num_c(r)   n_input = sprintf(buf + buf_index,"%u",r); n_input_c = sprintf(buf_c + buf_index_c,"%uu",r); buf_index = (buf_index >= 65530 ? 65530 : buf_index + n_input); buf_index_c = (buf_index_c >= 65530 ? 65530 : buf_index_c + n_input_c);
 // generate random op
 void gen_rand_op(void) {
   switch (choose(3)) {
-    case 0: gen('+',buf_index); break;
-    case 1: gen('-',buf_index); break;
-    default: gen('*',buf_index); break;
+    case 0: gen('+'); break;
+    case 1: gen('-'); break;
+    default: gen('*'); break;
   }
 }
 
 // generate random op
 void gen_space(void) {
   for(int i = rand() % 4; i > 0; i--) {
-    gen(' ',buf_index)
+    gen(' ');
   }
 }
 
-// generate expr once
+// generate expr for nemu and GCC
 static void gen_rand_expr() {
   // To avoid the segmental fault
   switch (buf_index < 20 ? choose(6) : 0) {
     case 0: {gen_space(); gen_num(buf_index); gen_space(); break;}
-    case 1: {gen('(',buf_index); gen_rand_expr(); gen(')',buf_index); break;}
+    case 1: {gen('('); gen_rand_expr(); gen(')'); break;}
     case 2: { // To aviod /0
-      gen_rand_expr(); gen_space(); gen('/',buf_index); gen_space(); 
-      gen('(',buf_index); gen('(',buf_index); gen_rand_expr();gen(')',buf_index);
-      gen('*',buf_index); gen('2',buf_index);gen('+',buf_index); 
-      gen('1',buf_index);gen(')',buf_index);break;
+      gen_rand_expr(); gen_space(); gen('/'); gen_space(); 
+      gen('('); gen('('); gen_rand_expr();gen(')');
+      gen('*'); gen_num_c(2);gen('+'); 
+      gen_num_c(1);gen(')');break;
     }
     default: {gen_rand_expr(); gen_space(); gen_rand_op(); gen_space(); gen_rand_expr(); break;}
   }
@@ -78,12 +83,13 @@ int main(int argc, char *argv[]) {
     sscanf(argv[1], "%d", &loop);
   }
   int i;
-  buf_index = 0;
   for (i = 0; i < loop; i ++) {
     // generate expr once
     buf_index = 0;
+    buf_index_c = 0;
     gen_rand_expr();
-    sprintf(code_buf, code_format, buf);
+    // generate code.c
+    sprintf(code_buf, code_format, buf_c);
 
     FILE *fp = fopen("/tmp/.code.c", "w");
     assert(fp != NULL);
@@ -96,11 +102,11 @@ int main(int argc, char *argv[]) {
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
 
-    int result;
+    uint32_t result;
     ret = fscanf(fp, "%d", &result);
     pclose(fp);
-
-    printf("%d %s\n", result, buf);
+    // generate input
+    printf("%u %s\n", result, buf);
   }
   return 0;
 }

@@ -24,7 +24,10 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-  TK_DEC_NUM
+  //TK_PTR is pointer "*"
+  //TK_NEG is negtive number "-"
+  TK_DEC_NUM, TK_HEX_NUM, TK_REG,
+  TK_NEQ, TK_AND, TK_PTR, TK_NEG
 
 };
 
@@ -43,14 +46,14 @@ static struct rule {
   {"[0-9]+", TK_DEC_NUM}, // decimal number
   {"\\-", '-'},         // distract
   {"\\*", '*'},         // multiply
-  {"\\/", '/'},
+  {"\\/", '/'},         // divide or pointer
   {"\\(", '('}, 
-  {"\\)", ')'}         
+  {"\\)", ')'},
+  {"0[X,x][a-f,A-F,0-9]+", TK_HEX_NUM}, // hex number
+  {"\\$[\\$,a,t,r,g,s][a,p,0-9]{1,2}", TK_REG},  //reg value
+  {"!=", TK_NEQ}, // not equal
+  {"&&", TK_AND}  // logic and
 };
-
-// define the priority of each op
-#define p_size 2
-const char * priority[p_size] = {"+-", "*/"};
 
 // #define ARRLEN(arr) (int)(sizeof(arr) / sizeof(arr[0]))
 #define NR_REGEX ARRLEN(rules)
@@ -76,10 +79,10 @@ void init_regex() {
 
 typedef struct token {
   int type;
-  char str[1024];
+  char str[4096];
 } Token;
 
-static Token tokens[1024] __attribute__((used)) = {}; // Array to store tokens
+static Token tokens[4096] __attribute__((used)) = {}; // Array to store tokens
 static int nr_token __attribute__((used))  = 0; // Num of token
 
 static bool make_token(char *e) {
@@ -111,7 +114,7 @@ static bool make_token(char *e) {
           case TK_NOTYPE: break;
 
           case '+': {
-            if(nr_token == 1024) {
+            if(nr_token == 4096) {
               printf("Token exceed.\n");
               return false;
             }
@@ -122,7 +125,7 @@ static bool make_token(char *e) {
           }
 
           case '-': {
-            if(nr_token == 1024) {
+            if(nr_token == 4096) {
               printf("Token exceed.\n");
               return false;
             }
@@ -133,7 +136,7 @@ static bool make_token(char *e) {
           }
 
           case '*': {
-            if(nr_token == 1024) {
+            if(nr_token == 4096) {
               printf("Token exceed.\n");
               return false;
             }
@@ -144,7 +147,7 @@ static bool make_token(char *e) {
           }
 
           case '/': {
-            if(nr_token == 1024) {
+            if(nr_token == 4096) {
               printf("Token exceed.\n");
               return false;
             }
@@ -155,7 +158,7 @@ static bool make_token(char *e) {
           }
 
           case '(': {
-            if(nr_token == 1024) {
+            if(nr_token == 4096) {
               printf("Token exceed.\n");
               return false;
             }
@@ -166,7 +169,7 @@ static bool make_token(char *e) {
           }
 
           case ')': {
-           if(nr_token == 1024) {
+           if(nr_token == 4096) {
               printf("Token exceed.\n");
               return false;
             }
@@ -177,7 +180,7 @@ static bool make_token(char *e) {
           }
 
           case TK_EQ: {
-           if(nr_token == 1024) {
+           if(nr_token == 4096) {
               printf("Token exceed.\n");
               return false;
             }
@@ -187,14 +190,36 @@ static bool make_token(char *e) {
             break;
           }
 
-          case TK_DEC_NUM: {
-            if (nr_token == 1024)
+          case TK_NEQ: {
+           if(nr_token == 4096) {
+              printf("Token exceed.\n");
+              return false;
+            }
+            tokens[nr_token].type = TK_NEQ;
+            strcpy(tokens[nr_token].str, "!=");
+            nr_token++;
+            break;
+          }
+
+          case TK_AND: {
+           if(nr_token == 4096) {
+              printf("Token exceed.\n");
+              return false;
+            }
+            tokens[nr_token].type = TK_AND;
+            strcpy(tokens[nr_token].str, "&&");
+            nr_token++;
+            break;
+          }
+
+          case TK_HEX_NUM: {
+            if (nr_token == 4096)
             {
               printf("Token exceed.");
               return false;
             }
-            tokens[nr_token].type = TK_DEC_NUM;
-            if(substr_len < 1024)
+            tokens[nr_token].type = TK_HEX_NUM;
+            if(substr_len < 4096)
               strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
             else {
               printf("Token str exceed.");
@@ -203,6 +228,41 @@ static bool make_token(char *e) {
             nr_token++;
             break;
           } 
+
+          case TK_DEC_NUM: {
+            if (nr_token == 4096)
+            {
+              printf("Token exceed.");
+              return false;
+            }
+            tokens[nr_token].type = TK_DEC_NUM;
+            if(substr_len < 4096)
+              strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
+            else {
+              printf("Token str exceed.");
+              return false;
+            }
+            nr_token++;
+            break;
+          } 
+
+          case TK_REG: {
+            if (nr_token == 4096)
+            {
+              printf("Token exceed.");
+              return false;
+            }
+            tokens[nr_token].type = TK_REG;
+            if(substr_len < 4096)
+              strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
+            else {
+              printf("Token str exceed.");
+              return false;
+            }
+            nr_token++;
+            break;
+          }
+
           default: return false;
         }
 
@@ -248,13 +308,14 @@ bool check_parentheses(int p, int q) {
 /*The function is designed to find the priority of op
 */
 
-int findOpPriority(const char *str[], char c) {
-  for (int i = 0; i < p_size; i++) {
-    if (str[i] != NULL && strchr(str[i], c) != NULL) {
-      return i; // return the priority
-    }
-  }
-  return -1; // din't find c， return -1
+int findOpPriority(int type) {
+
+  if (type == TK_AND) return 0;
+  if (type == TK_EQ || type == TK_NEQ) return 1;
+  if (type == '+' || type == '-') return 2;
+  if (type == '*' || type == '/') return 3;
+
+  return -1; // Didn't find TYPE
 }
 
 /*The function is designed to find the main op index of expr
@@ -263,7 +324,7 @@ int findOpPriority(const char *str[], char c) {
 */
 int find_main_op(int p, int q) {
   int index_record = 0; // the record of index
-  int priority_record = p_size - 1;// the record of lowest priorty
+  int priority_record = 3;// the record of lowest priorty
   int parentheses_flag = 0;// the flag of parentheses
   for(int i = p; i <= q; i++) {
     switch(tokens[i].type) {
@@ -273,9 +334,9 @@ int find_main_op(int p, int q) {
         if (parentheses_flag != 0)
           break;
         else {
-          if (findOpPriority(priority, tokens[i].type) <= priority_record) {
+          if (findOpPriority(tokens[i].type) <= priority_record) {
             index_record = i;
-            priority_record = findOpPriority(priority, tokens[i].type);
+            priority_record = findOpPriority(tokens[i].type);
           }
           break;
         }
@@ -284,9 +345,9 @@ int find_main_op(int p, int q) {
         if (parentheses_flag != 0)
           break;
         else {
-          if (findOpPriority(priority, tokens[i].type) <= priority_record) {
+          if (findOpPriority(tokens[i].type) <= priority_record) {
             index_record = i;
-            priority_record = findOpPriority(priority, tokens[i].type);
+            priority_record = findOpPriority(tokens[i].type);
           }
           break;
         }
@@ -295,9 +356,9 @@ int find_main_op(int p, int q) {
         if (parentheses_flag != 0)
           break;
         else {
-          if (findOpPriority(priority, tokens[i].type) <= priority_record) {
+          if (findOpPriority(tokens[i].type) <= priority_record) {
             index_record = i;
-            priority_record = findOpPriority(priority, tokens[i].type);
+            priority_record = findOpPriority(tokens[i].type);
           }
           break;
         }
@@ -306,9 +367,44 @@ int find_main_op(int p, int q) {
         if (parentheses_flag != 0)
           break;
         else {
-          if (findOpPriority(priority, tokens[i].type) <= priority_record) {
+          if (findOpPriority(tokens[i].type) <= priority_record) {
             index_record = i;
-            priority_record = findOpPriority(priority, tokens[i].type);
+            priority_record = findOpPriority(tokens[i].type);
+          }
+          break;
+        }
+      }
+      case TK_EQ: {
+        if (parentheses_flag != 0)
+          break;
+        else {
+          if (findOpPriority(tokens[i].type) <= priority_record) {
+            index_record = i;
+            priority_record = findOpPriority(tokens[i].type);
+          }
+          break;
+        }
+      }
+
+      case TK_NEQ: {
+        if (parentheses_flag != 0)
+          break;
+        else {
+          if (findOpPriority(tokens[i].type) <= priority_record) {
+            index_record = i;
+            priority_record = findOpPriority(tokens[i].type);
+          }
+          break;
+        }
+      }
+
+      case TK_AND: {
+        if (parentheses_flag != 0)
+          break;
+        else {
+          if (findOpPriority(tokens[i].type) <= priority_record) {
+            index_record = i;
+            priority_record = findOpPriority(tokens[i].type);
           }
           break;
         }
@@ -323,7 +419,7 @@ int find_main_op(int p, int q) {
 * p is the begin token index of the expr
 * q is the end token index of the expr
 */
-int eval(int p, int q) {
+word_t eval(int p, int q) {
   if (p > q) {
     /* Bad expression */
     printf("Error: eval() occures bad expression.\n");
@@ -331,11 +427,11 @@ int eval(int p, int q) {
     }
   else if (p == q) {
     /* Single token.
-     * For now this token should be a number.
+     * For now this token should be a decimal/hex/reg number.
      * Return the value of the number.
      */
-    int result;
-    sscanf(tokens[p].str, "%d", &result);
+    word_t result;
+    sscanf(tokens[p].str, "%u", &result);
     return result;
   }
   else if (check_parentheses(p, q) == true) {
@@ -351,6 +447,9 @@ int eval(int p, int q) {
       case '-': return (eval(p, op_index - 1) - eval(op_index + 1, q));
       case '*': return (eval(p, op_index - 1) * eval(op_index + 1, q));
       case '/': return (eval(p, op_index - 1) / eval(op_index + 1, q));
+      case TK_EQ: return (eval(p, op_index - 1) == eval(op_index + 1, q));
+      case TK_NEQ: return (eval(p, op_index - 1) != eval(op_index + 1, q));
+      case TK_AND: return (eval(p, op_index - 1) && eval(op_index + 1, q));
       default: assert(0);
     }
   }
@@ -364,7 +463,7 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
   /* TODO: Insert codes to evaluate the expression. */
-  int result = eval(0, nr_token - 1);
+  word_t result = eval(0, nr_token - 1);
   *success = true;
   return result;
 }
