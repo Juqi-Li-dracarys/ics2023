@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 
   /** Test the expr **/
   bool success = 0;
-  FILE *file = fopen("../tools/gen-expr/input", "r");
+  FILE *file = fopen("~/ics2023/nemu/tools/gen-expr/input", "r");
   if (file == NULL) {
         perror("Error opening file");
         return 1;
