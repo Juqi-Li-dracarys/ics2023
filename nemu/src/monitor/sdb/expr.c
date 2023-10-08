@@ -364,12 +364,7 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
   /* TODO: Insert codes to evaluate the expression. */
-  // for(int i = 0; i < nr_token; i++){
-  //   printf("%d ----- %s\n", tokens[i].type, tokens[i].str);
-  // }
-  // printf("%d\n",nr_token);
-  // *success = true;
-  printf("value: %d  ",eval(0, nr_token - 1));
+  int result = eval(0, nr_token - 1);
   *success = true;
-  return 0;
+  return result;
 }

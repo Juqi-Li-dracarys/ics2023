@@ -21,6 +21,8 @@ void engine_start();
 int is_exit_status_bad();
 word_t expr(char *e, bool *success);
 
+#define TEST_EXPR 1
+
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
@@ -32,9 +34,9 @@ int main(int argc, char *argv[]) {
   /* Start engine. */
   engine_start();
 
-  /** Test the expr **/
+  /** Test code of the expr **/
+#ifdef TEST_EXPR
   bool success = 0;
-  
   FILE *file = fopen("/home/dracacys/ics2023/nemu/tools/gen-expr/input", "r");
   if (file == NULL) {
         perror("Error opening file");
@@ -50,16 +52,21 @@ int main(int argc, char *argv[]) {
   // read every line and store them in the result
   for (int i = 0; i < lineCount; i++) {
       if (fgets(line, sizeof(line), file)) {
-          int num;
+          int answer,result;
           char str[1000];
-          if (sscanf(line, "%d %999[^\n]", &num, str) == 2) {
-              expr(str, &success);  
-              printf("Answer: %d\n", num);
+          if (sscanf(line, "%d %999[^\n]", &answer, str) == 2) {
+              result = expr(str, &success);  
+              printf("Line: %d   Result: %d   Answer: %d\n", i, result, answer);
+              if (result != answer) {
+                printf("Error: the answer is not correct.");
+                break;
+              }
           }
       }
   }
   fclose(file);
   printf("state: %d\n", success);
+#endif
 
   return is_exit_status_bad();
 }
