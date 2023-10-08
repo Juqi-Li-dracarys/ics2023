@@ -52,8 +52,8 @@ int main(int argc, char *argv[]) {
       if (fgets(line, sizeof(line), file)) {
           int num;
           char str[1000];
-          if (sscanf(line, "%d %99[^\n]", &num, str) == 2) {
-              expr(str, &success); 
+          if (sscanf(line, "%d %999[^\n]", &num, str) == 2) {
+              expr(str, &success);  
               printf("Answer: %d\n", num);
           }
       }
