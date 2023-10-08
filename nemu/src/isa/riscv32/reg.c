@@ -25,15 +25,22 @@ const char *regs[] = {
 
 // Print the value of each register
 void isa_reg_display() {
-  for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++){
-    printf("%s:0X%08x ",regs[i],gpr(i));
+  for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
+    printf("%s:0X%08x ",regs[i], gpr(i));
     if((i + 1) % 8 == 0)
     putchar('\n');
   }
   return ;
 }
 
+// Return the value of register
 word_t isa_reg_str2val(const char *s, bool *success) {
-  
+  for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
+    if (strcmp(regs[i], s) == 0) {
+      *success = 1;
+      return gpr(i);
+    }
+  }
+  *success = 0;
   return 0;
 }

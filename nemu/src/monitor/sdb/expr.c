@@ -39,7 +39,6 @@ static struct rule {
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
@@ -48,11 +47,11 @@ static struct rule {
   {"\\/", '/'},         // divide or pointer
   {"\\(", '('}, 
   {"\\)", ')'},
-  {"0[X,x][a-f,A-F,0-9]+", TK_HEX_NUM}, // hex number should be placed behind the dec
-  {"[0-9]+", TK_DEC_NUM}, // decimal number
-  {"\\$[\\$,a,t,r,g,s][a,p,0-9]{1,2}", TK_REG},  //reg value
-  {"!=", TK_NEQ}, // not equal
-  {"&&", TK_AND}  // logic and
+  {"0[X,x][a-f,A-F,0-9]+", TK_HEX_NUM},          // hex number should be placed behind the dec
+  {"[0-9]+", TK_DEC_NUM},                        // decimal number
+  {"\\$[\\$,a,t,r,g,s][a,p,0-9]{1,2}", TK_REG},  // reg value
+  {"!=", TK_NEQ},                                // not equal
+  {"&&", TK_AND}                                 // logic and
 };
 
 // #define ARRLEN(arr) (int)(sizeof(arr) / sizeof(arr[0]))
@@ -431,16 +430,29 @@ word_t eval(int p, int q) {
      * Return the value of the number.
      */
     word_t result;
+
     switch (tokens[p].type) {
-    case TK_DEC_NUM: {
-      sscanf(tokens[p].str, "%u", &result);
-      return result;
-    }
-    case TK_HEX_NUM: {
-      sscanf(tokens[p].str, "%x", &result);
-      return result;
-    }
-    default: assert(0);
+      case TK_DEC_NUM: {
+        sscanf(tokens[p].str, "%u", &result);
+        return result;
+      }
+      case TK_HEX_NUM: {
+        sscanf(tokens[p].str, "%x", &result);
+        return result;
+      }
+      case TK_REG: {
+        bool success;
+        char reg_name [5] = {0}; 
+        sscanf((tokens[p].str + 1), "%s", reg_name);
+        result = isa_reg_str2val(reg_name, &success);
+        if (success == 1)
+          return result;
+        else {
+          printf("Reg value fault");
+          assert(0);
+        } 
+      }
+      default: assert(0);
     }
   }
   else if (check_parentheses(p, q) == true) {
