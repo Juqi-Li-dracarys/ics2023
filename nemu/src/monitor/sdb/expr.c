@@ -293,7 +293,7 @@ bool check_parentheses(int p, int q) {
     for(int i = p + 1; i <= q - 1; i++) {
       if (tokens[i].type == '(')
         flag++;
-      else if(tokens[i].type == ')'){
+      else if(tokens[i].type == ')') {
         flag--;
         if (flag < 0) {return false;} // Match error
       }
@@ -423,16 +423,25 @@ word_t eval(int p, int q) {
   if (p > q) {
     /* Bad expression */
     printf("Error: eval() occures bad expression.\n");
-    return 0;
+    assert(0);
     }
   else if (p == q) {
     /* Single token.
-     * For now this token should be a decimal/hex/reg number.
+     * For now this token might be a decimal/hex/reg/negtive/ptr number
      * Return the value of the number.
      */
     word_t result;
-    sscanf(tokens[p].str, "%u", &result);
-    return result;
+    switch (tokens[p].type) {
+    case TK_DEC_NUM: {
+      sscanf(tokens[p].str, "%u", &result);
+      return result;
+    }
+    case TK_HEX_NUM: {
+      sscanf(tokens[p].str, "%x", &result);
+      return result;
+    }
+    default: assert(0);
+    }
   }
   else if (check_parentheses(p, q) == true) {
     /* The expression is surrounded by a matched pair of parentheses.
