@@ -34,39 +34,5 @@ int main(int argc, char *argv[]) {
   /* Start engine. */
   engine_start();
 
-  /** Test code of the expr **/
-#ifdef TEST_EXPR
-  bool success = 0;
-  FILE *file = fopen("/home/dracacys/ics2023/nemu/tools/gen-expr/input", "r");
-  if (file == NULL) {
-        perror("Error opening file");
-        return 1;
-  }
-  int lineCount = 0;
-  char line[10000] = {0}; // Every line char recorder
-  while (fgets(line, sizeof(line), file)) {
-        lineCount++;
-  }
-  rewind(file);
-
-  // read every line and store them in the result
-  for (int i = 0; i < lineCount; i++) {
-      if (fgets(line, sizeof(line), file)) {
-          uint32_t answer,result;
-          char str[10000];
-          if (sscanf(line, "%u %9999[^\n]", &answer, str) == 2) {
-              result = expr(str, &success);  
-              printf("Line: %d   Result: %u   Answer: %u\n", i, result, answer);
-              if (result != answer || success == 0) {
-                printf("Error: the answer is not correct.");
-                return 1;
-              }
-          }
-      }
-  }
-  fclose(file);
-  printf("Test pass.\n");
-#endif
-
   return is_exit_status_bad();
 }
