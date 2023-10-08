@@ -369,7 +369,7 @@ word_t expr(char *e, bool *success) {
   // }
   // printf("%d\n",nr_token);
   // *success = true;
-  printf("value: %d\n",eval(0, nr_token - 1));
+  printf("value: %d  ",eval(0, nr_token - 1));
   *success = true;
   return 0;
 }
