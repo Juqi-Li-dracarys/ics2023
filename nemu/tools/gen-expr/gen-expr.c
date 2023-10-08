@@ -42,6 +42,7 @@ static int ran = 0; //rand num
 #define gen(c)    n_input = sprintf(buf + buf_index,"%c",c); n_input_c = sprintf(buf_c + buf_index_c,"%c",c); buf_index = (buf_index >= 65530 ? 65530 : buf_index + n_input); buf_index_c = (buf_index_c >= 65530 ? 65530 : buf_index_c + n_input_c); // print one char in the buf
 #define gen_num   ran = rand() % 10; n_input = sprintf(buf + buf_index,"%u",ran); n_input_c = sprintf(buf_c + buf_index_c,"%uu",ran); buf_index = (buf_index >= 65530 ? 65530 : buf_index + n_input); buf_index_c = (buf_index_c >= 65530 ? 65530 : buf_index_c + n_input_c); // print one num in the buf
 #define gen_num_c(r)   n_input = sprintf(buf + buf_index,"%u",r); n_input_c = sprintf(buf_c + buf_index_c,"%uu",r); buf_index = (buf_index >= 65530 ? 65530 : buf_index + n_input); buf_index_c = (buf_index_c >= 65530 ? 65530 : buf_index_c + n_input_c);
+
 // generate random op
 void gen_rand_op(void) {
   switch (choose(3)) {
