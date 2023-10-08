@@ -48,7 +48,7 @@ static struct rule {
   {"\\/", '/'},         // divide or pointer
   {"\\(", '('}, 
   {"\\)", ')'},
-  {"0[X,x][a-f,A-F,0-9]+", TK_HEX_NUM}, // hex number
+  {"0[X,x][a-f,A-F,0-9]+", TK_HEX_NUM}, // hex number should be placed behind the dec
   {"[0-9]+", TK_DEC_NUM}, // decimal number
   {"\\$[\\$,a,t,r,g,s][a,p,0-9]{1,2}", TK_REG},  //reg value
   {"!=", TK_NEQ}, // not equal
