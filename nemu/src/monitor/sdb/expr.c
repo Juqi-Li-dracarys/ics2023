@@ -408,7 +408,7 @@ int find_main_op(int p, int q) {
           break;
         }
       }
-      default: ; // Not find the op
+      default: ; // Not op, do not anything
     }
   }
   return index_record;
