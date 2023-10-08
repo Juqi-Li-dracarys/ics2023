@@ -76,10 +76,10 @@ void init_regex() {
 
 typedef struct token {
   int type;
-  char str[32];
+  char str[1024];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {}; // Array to store tokens
+static Token tokens[1024] __attribute__((used)) = {}; // Array to store tokens
 static int nr_token __attribute__((used))  = 0; // Num of token
 
 static bool make_token(char *e) {
@@ -111,7 +111,7 @@ static bool make_token(char *e) {
           case TK_NOTYPE: break;
 
           case '+': {
-            if(nr_token == 32) {
+            if(nr_token == 1024) {
               printf("Token exceed.\n");
               return false;
             }
@@ -122,7 +122,7 @@ static bool make_token(char *e) {
           }
 
           case '-': {
-            if(nr_token == 32) {
+            if(nr_token == 1024) {
               printf("Token exceed.\n");
               return false;
             }
@@ -133,7 +133,7 @@ static bool make_token(char *e) {
           }
 
           case '*': {
-            if(nr_token == 32) {
+            if(nr_token == 1024) {
               printf("Token exceed.\n");
               return false;
             }
@@ -144,7 +144,7 @@ static bool make_token(char *e) {
           }
 
           case '/': {
-            if(nr_token == 32) {
+            if(nr_token == 1024) {
               printf("Token exceed.\n");
               return false;
             }
@@ -155,7 +155,7 @@ static bool make_token(char *e) {
           }
 
           case '(': {
-            if(nr_token == 32) {
+            if(nr_token == 1024) {
               printf("Token exceed.\n");
               return false;
             }
@@ -166,7 +166,7 @@ static bool make_token(char *e) {
           }
 
           case ')': {
-           if(nr_token == 32) {
+           if(nr_token == 1024) {
               printf("Token exceed.\n");
               return false;
             }
@@ -177,7 +177,7 @@ static bool make_token(char *e) {
           }
 
           case TK_EQ: {
-           if(nr_token == 32) {
+           if(nr_token == 1024) {
               printf("Token exceed.\n");
               return false;
             }
@@ -188,13 +188,13 @@ static bool make_token(char *e) {
           }
 
           case TK_DEC_NUM: {
-            if (nr_token == 32)
+            if (nr_token == 1024)
             {
               printf("Token exceed.");
               return false;
             }
             tokens[nr_token].type = TK_DEC_NUM;
-            if(substr_len < 32)
+            if(substr_len < 1024)
               strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
             else {
               printf("Token str exceed.");

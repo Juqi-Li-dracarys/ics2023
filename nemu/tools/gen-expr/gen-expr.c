@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
     ret = fscanf(fp, "%d", &result);
     pclose(fp);
 
-    printf("%d %s\n", result, buf);
+    printf(" result:%d \n", result);
   }
   return 0;
 }
