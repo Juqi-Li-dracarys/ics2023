@@ -486,11 +486,21 @@ word_t eval(int p, int q) {
       *  正常情况下，一个负号的后面只可能为数字，括号，负号
       */
       if (tokens[p + 1].type != '(') {
-        for(int i = p + 1; i < nr_token; i++) {
+        int i;
+        // Continuing '-'
+        for(i = p + 1; i < nr_token; i++) {
           if(tokens[i].type != '-')
-            return (~(eval(i, i)) + 1);
+          break;
         }
-        assert(0);
+        // still have '('
+        if (tokens[i].type != '(')
+          return (~(eval(i, i)) + 1);
+        else {
+          for(int j = i + 2; j < nr_token; j++) {
+          if (check_parentheses(i + 1, j) == true)
+            return (~(eval(i + 2, j - 1)) + 1);
+          }
+        }
       }
       else {
         for(int i = p + 2; i < nr_token; i++) {
