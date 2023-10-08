@@ -419,6 +419,7 @@ int find_main_op(int p, int q) {
 * q is the end token index of the expr
 */
 word_t eval(int p, int q) {
+  
   if (p > q) {
     /* Bad expression */
     printf("Error: eval() occures bad expression.\n");
@@ -454,22 +455,6 @@ word_t eval(int p, int q) {
         } 
       }
       default: assert(0);
-    }
-  }
-
-  else if(tokens[p].type == TK_NEG) {
-    /*  For now this token is a negtive/ptr number
-     *  Return the value of the number.
-     */
-    if (tokens[p + 1].type != '(') {
-      return (~(eval(p + 1, p + 1)) + 1);
-    }
-    else {
-      for(int i = p + 2; i < nr_token; i++) {
-        if (check_parentheses(p + 1, i) == true)
-          return (~(eval(p + 2, i - 1)) + 1);
-      }
-      return 0;
     }
   }
 
@@ -509,7 +494,7 @@ word_t eval(int p, int q) {
         }
       }
     }
-    
+
     return 0;
   }
 }
