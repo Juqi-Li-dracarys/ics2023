@@ -300,7 +300,7 @@ bool check_parentheses(int p, int q) {
     if (flag == 0)
       return true;
     else 
-      {printf("check_parentheses: Illegal expression!\n"); assert(0);}
+      return false;
   }
 }
 
@@ -461,7 +461,15 @@ word_t eval(int p, int q) {
     /*  For now this token is a negtive/ptr number
      *  Return the value of the number.
      */
-    return (~(eval(p + 1, q)) + 1);
+    if (tokens[p + 1].type != '(')
+    return (~(eval(p + 1, p + 1)) + 1);
+    else {
+      for(int i = p + 2; i < nr_token; i++) {
+        if (check_parentheses(p + 1, i) == true)
+          return (~(eval(p + 2, i - 1)) + 1);
+      }
+      return 0;
+    }
   }
 
   else if(tokens[p].type == TK_PTR) {
