@@ -424,9 +424,10 @@ word_t eval(int p, int q) {
     printf("Error: eval() occures bad expression.\n");
     assert(0);
     }
+
   else if (p == q) {
     /* Single token.
-     * For now this token might be a decimal/hex/reg/negtive/ptr number
+     * For now this token might be a decimal/hex/reg
      * Return the value of the number.
      */
     word_t result;
@@ -455,6 +456,21 @@ word_t eval(int p, int q) {
       default: assert(0);
     }
   }
+
+  else if(tokens[p].type == TK_NEG) {
+    /*  For now this token is a negtive/ptr number
+     *  Return the value of the number.
+     */
+    return (~(eval(p + 1, q)) + 1);
+  }
+
+  else if(tokens[p].type == TK_PTR) {
+    /*  For now this token is a ptr 
+     *  Return the value of the number.
+     */
+    return 0;
+  }
+
   else if (check_parentheses(p, q) == true) {
     /* The expression is surrounded by a matched pair of parentheses.
      * If that is the case, just throw away the parentheses.
@@ -484,7 +500,11 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
   /* TODO: Insert codes to evaluate the expression. */
-  word_t result = eval(0, nr_token - 1);
+  for (int i = 0; i < nr_token; i++) {
+    if (tokens[i].type == '-' && (i == 0 || tokens[i - 1].type == '(')) {
+      tokens[i].type = TK_NEG;
+    }
+  }
   *success = true;
-  return result;
+  return eval(0, nr_token - 1);
 }
