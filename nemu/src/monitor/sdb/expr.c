@@ -510,7 +510,12 @@ word_t expr(char *e, bool *success) {
   }
   /* TODO: Insert codes to evaluate the expression. */
   for (int i = 0; i < nr_token; i++) {
-    if (tokens[i].type == '-' && (i == 0 || tokens[i - 1].type == '(')) {
+    if (tokens[i].type == '-' && 
+    (i == 0 || (tokens[i - 1].type != ')' && 
+    tokens[i - 1].type != TK_DEC_NUM && 
+    tokens[i - 1].type != TK_REG && 
+    tokens[i - 1].type != TK_HEX_NUM &&
+    tokens[i - 1].type != TK_PTR))) {
       tokens[i].type = TK_NEG;
     }
   }
