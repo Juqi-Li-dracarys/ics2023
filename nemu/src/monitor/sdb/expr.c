@@ -419,12 +419,12 @@ int find_main_op(int p, int q) {
 * q is the end token index of the expr
 */
 word_t eval(int p, int q) {
-  
+
   if (p > q) {
     /* Bad expression */
     printf("Error: eval() occures bad expression.\n");
     assert(0);
-    }
+  }
 
   else if (p == q) {
     /* Single token.
@@ -493,9 +493,9 @@ word_t eval(int p, int q) {
             return (~(eval(p + 2, i - 1)) + 1);
         }
       }
+      assert(0);
     }
-
-    return 0;
+    else return 0;
   }
 }
 
