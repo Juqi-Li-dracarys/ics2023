@@ -481,7 +481,7 @@ word_t eval(int p, int q) {
     }
 
     else if(tokens[p].type == TK_NEG) {
-      /*  For now this token is a negtive/ptr number
+      /* For now this token is a negtive/ptr number
       *  Return the value of the number.
       *  正常情况下，一个负号的后面只可能为数字，括号，负号
       */
