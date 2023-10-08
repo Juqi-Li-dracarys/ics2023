@@ -467,7 +467,7 @@ word_t eval(int p, int q) {
 
   else {
     int op_index = find_main_op(p, q);
-    // if (op_index > 0) {
+    if (op_index > 0) {
       switch (tokens[op_index].type) {
         case '+': return (eval(p, op_index - 1) + eval(op_index + 1, q));
         case '-': return (eval(p, op_index - 1) - eval(op_index + 1, q));
@@ -480,23 +480,24 @@ word_t eval(int p, int q) {
       }
     }
 
-    // else if(tokens[p].type == TK_NEG) {
-    //   /*  For now this token is a negtive/ptr number
-    //   *  Return the value of the number.
-    //   */
-    //   if (tokens[p + 1].type != '(') {
-    //     return (~(eval(p + 1, p + 1)) + 1);
-    //   }
-    //   else {
-    //     for(int i = p + 2; i < nr_token; i++) {
-    //       if (check_parentheses(p + 1, i) == true)
-    //         return (~(eval(p + 2, i - 1)) + 1);
-    //     }
-    //   }
-    //   assert(0);
-    // }
-    // else return 0;
-  // }
+    else if(tokens[p].type == TK_NEG) {
+      /*  For now this token is a negtive/ptr number
+      *  Return the value of the number.
+      */
+      if (tokens[p + 1].type != '(') {
+        return (~(eval(p + 1, p + 1)) + 1);
+      }
+      else {
+        for(int i = p + 2; i < nr_token; i++) {
+          if (check_parentheses(p + 1, i) == true)
+            return (~(eval(p + 2, i - 1)) + 1);
+        }
+      }
+      assert(0);
+    }
+
+    else assert(0);
+  }
 }
 
 /* The function to evaluate the expression
