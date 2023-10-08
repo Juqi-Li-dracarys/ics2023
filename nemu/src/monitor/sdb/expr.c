@@ -43,13 +43,13 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
-  {"[0-9]+", TK_DEC_NUM}, // decimal number
   {"\\-", '-'},         // distract
   {"\\*", '*'},         // multiply
   {"\\/", '/'},         // divide or pointer
   {"\\(", '('}, 
   {"\\)", ')'},
   {"0[X,x][a-f,A-F,0-9]+", TK_HEX_NUM}, // hex number
+  {"[0-9]+", TK_DEC_NUM}, // decimal number
   {"\\$[\\$,a,t,r,g,s][a,p,0-9]{1,2}", TK_REG},  //reg value
   {"!=", TK_NEQ}, // not equal
   {"&&", TK_AND}  // logic and
