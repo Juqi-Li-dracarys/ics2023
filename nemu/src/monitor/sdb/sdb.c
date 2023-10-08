@@ -116,6 +116,27 @@ static int cmd_x(char *args) {
   return 0;
 }
 
+// TASK3: Calculate the value of the expr.
+static int cmd_p(char *args) {
+  if (args == NULL) {
+    /* no argument given */
+     printf("Error: The p needs 1 args!\n");
+     return 0;
+  }
+  else {
+    bool success;
+    uint32_t result = expr(args, &success);
+    if (success == false) {
+      printf("calculate fault."); 
+      assert(0);
+    }
+    else {
+      printf("The result of expr: %u\n",result);
+      return 0;
+    }
+  }
+}
+
 static int cmd_help(char *args);
 
 // The structure decide the next action in the gdb_loop, including the pointer of function
@@ -131,7 +152,8 @@ static struct {
   /* TODO: Add more commands */
   { "si", "Excute the program in n steps", cmd_si },
   { "info", "Print the information of reg or watching point(1 ags must be given)", cmd_info },
-  { "x", "Print the information of memory(2 ags must be given)", cmd_x }
+  { "x", "Print the information of memory(2 ags must be given)", cmd_x },
+  { "p", "Calculate the value of the expr", cmd_p }
 };
 
 #define NR_CMD ARRLEN(cmd_table)
