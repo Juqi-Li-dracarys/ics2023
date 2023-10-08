@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
           if (sscanf(line, "%d %999[^\n]", &answer, str) == 2) {
               result = expr(str, &success);  
               printf("Line: %d   Result: %d   Answer: %d\n", i, result, answer);
-              if (result != answer) {
+              if (result != answer || success == 0) {
                 printf("Error: the answer is not correct.");
                 break;
               }
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
       }
   }
   fclose(file);
-  printf("state: %d\n", success);
+  printf("Test pass.");
 #endif
 
   return is_exit_status_bad();
