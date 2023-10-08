@@ -490,7 +490,7 @@ word_t eval(int p, int q) {
         int num = 1;
         // Continuing '-'
         for(i = p + 1; i < nr_token; i++) {
-          if(tokens[i].type != '-')
+          if(tokens[i].type != TK_NEG)
             break;
           num++;
         }
