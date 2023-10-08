@@ -61,8 +61,9 @@ static void gen_rand_expr() {
     case 1: {gen('(',buf_index); gen_rand_expr(); gen(')',buf_index); break;}
     case 2: { // To aviod /0
       gen_rand_expr(); gen_space(); gen('/',buf_index); gen_space(); 
-      gen('(',buf_index); gen_rand_expr();gen('*',buf_index); gen('2',buf_index);
-      gen('+',buf_index); gen('1',buf_index);gen(')',buf_index);break;
+      gen('(',buf_index); gen('(',buf_index); gen_rand_expr();gen(')',buf_index);
+      gen('*',buf_index); gen('2',buf_index);gen('+',buf_index); 
+      gen('1',buf_index);gen(')',buf_index);break;
     }
     default: {gen_rand_expr(); gen_space(); gen_rand_op(); gen_space(); gen_rand_expr(); break;}
   }
@@ -99,7 +100,7 @@ int main(int argc, char *argv[]) {
     ret = fscanf(fp, "%d", &result);
     pclose(fp);
 
-    printf(" result:%d \n", result);
+    printf("%d %s\n", result, buf);
   }
   return 0;
 }

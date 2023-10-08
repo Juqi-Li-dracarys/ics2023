@@ -59,13 +59,13 @@ int main(int argc, char *argv[]) {
               printf("Line: %d   Result: %d   Answer: %d\n", i, result, answer);
               if (result != answer || success == 0) {
                 printf("Error: the answer is not correct.");
-                break;
+                return 1;
               }
           }
       }
   }
   fclose(file);
-  printf("Test pass.");
+  printf("Test pass.\n");
 #endif
 
   return is_exit_status_bad();
