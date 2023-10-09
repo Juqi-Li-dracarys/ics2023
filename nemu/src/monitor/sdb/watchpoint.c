@@ -77,3 +77,13 @@ void free_wp(WP *wp) {
     free_ = wp;
   }
 }
+
+/* print the value of all active watching point
+*/
+void print_wp(void) {
+  WP *temp = head;
+  while(temp != NULL) {
+    printf("Watching point %d: %s/n, latest value: %u\n", temp->NO, temp->expr, temp->result);
+    temp = temp->next;
+  }
+}

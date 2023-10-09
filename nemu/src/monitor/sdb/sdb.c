@@ -36,6 +36,7 @@ void init_wp_pool();
 word_t vaddr_read(vaddr_t addr, int len);
 void init_wp_pool();
 WP* new_wp();
+void print_wp(void);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -90,13 +91,13 @@ static int cmd_info(char *args) {
      printf("Error: The info needs 1 args!\n");
      return 0;
   }
-  else if(strcmp(args,(const char*)"r") == 0){
+  else if (strcmp(args,(const char*)"r") == 0){
     printf("The rigister value in nemu:\n");
     isa_reg_display();
   }
-  else {
+  else if (strcmp(args,(const char*)"w") == 0){
     // Print the value of watching point
-
+    print_wp();
   }
   return 0;
 }
@@ -197,7 +198,10 @@ static int cmd_w(char *args) {
     strcpy(ptr->expr, args);
     bool success;
     ptr->result = expr(args, &success);
-    if(success == true) return 0;
+    if(success == true) {
+      printf("Watching point %d: %s/n, latest value: %u is ready.\n", ptr->NO, ptr->expr, ptr->result);
+      return 0;
+    }
     else assert(0);
   }
 }
