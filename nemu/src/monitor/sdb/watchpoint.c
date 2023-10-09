@@ -101,3 +101,24 @@ void delete_wp(unsigned int index) {
   free_wp(wp_pool + index);
   return ;
 }
+
+/* delete all watching point
+*  if the value one active point change thn return 1
+*  else return 0  
+*/
+bool check_wp(void) {
+  WP *temp = head;
+  uint32_t new_value;
+  bool flag = false;
+  while(temp != NULL) {
+    bool success;
+    new_value = expr(temp->expr, &success);
+    if (temp->result != new_value) {
+      flag = true;
+      printf("Watching point %d value change:  expr:%s  value:%u  ---->  %u\n", temp->NO, temp->expr, temp->result, new_value);
+      temp->result = new_value;
+    }
+    temp = temp->next;
+  }
+  return flag;
+}
