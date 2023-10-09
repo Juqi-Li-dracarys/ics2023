@@ -90,7 +90,7 @@ void free_wp(WP *wp) {
 void print_wp(void) {
   WP *temp = head;
   while(temp != NULL) {
-    printf("Watching point %d: expr: %s, latest value: %u\n", temp->NO, temp->expr, temp->result);
+    printf("Watching point %d: expr: %s, latest value: 0x%08x\n", temp->NO, temp->expr, temp->result);
     temp = temp->next;
   }
 }
@@ -115,7 +115,7 @@ bool check_wp(void) {
     new_value = expr(temp->expr, &success);
     if (temp->result != new_value) {
       flag = true;
-      printf("Watching point %d value change:  expr:%s  value:%u  ---->  %u\n", temp->NO, temp->expr, temp->result, new_value);
+      printf("Watching point %d value change:  expr: %s  value: 0x%08x  ---->  0x%08x\n", temp->NO, temp->expr, temp->result, new_value);
       temp->result = new_value;
     }
     temp = temp->next;
