@@ -22,9 +22,20 @@
 
 static int is_batch_mode = false;
 
+typedef struct watchpoint {
+  int NO;
+  struct watchpoint *next;
+
+  /* TODO: Add more members if necessary */
+  char expr [128]; // To store the expr
+  uint32_t result; // To store the latest result of expr
+} WP;
+
 void init_regex();
 void init_wp_pool();
 word_t vaddr_read(vaddr_t addr, int len);
+void init_wp_pool();
+WP* new_wp();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -174,6 +185,23 @@ static int cmd_e(char *args) {
   return 0;
 }
 
+// TASK6: Set up watching point
+static int cmd_w(char *args) {
+  if (args == NULL) {
+    /* no argument given */
+     printf("Error: The w needs 1 args!\n");
+     return 0;
+  }
+  else {
+    WP* ptr = new_wp();
+    strcpy(ptr->expr, args);
+    bool success;
+    ptr->result = expr(args, &success);
+    if(success == true) return 0;
+    else assert(0);
+  }
+}
+
 static int cmd_help(char *args);
 
 // The structure decide the next action in the gdb_loop, including the pointer of function
@@ -191,7 +219,8 @@ static struct {
   { "info", "Print the information of reg or watching point(1 ags must be given)", cmd_info },
   { "x", "Print the information of memory(2 ags must be given)", cmd_x },
   { "p", "Calculate the value of the expr", cmd_p },
-  { "e", "Excute the examination progranm for calculation", cmd_e }
+  { "e", "Excute the examination progranm for calculation", cmd_e },
+  { "w", "Set up watching point", cmd_w }
 };
 
 #define NR_CMD ARRLEN(cmd_table)
