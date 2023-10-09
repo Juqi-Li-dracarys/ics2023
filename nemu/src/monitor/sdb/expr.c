@@ -119,6 +119,7 @@ static bool make_token(char *e) {
             }
             tokens[nr_token].type = '+';
             strcpy(tokens[nr_token].str, "+");
+            *(tokens[nr_token].str + substr_len) = '\0';
             nr_token++;
             break;
           }
@@ -130,6 +131,7 @@ static bool make_token(char *e) {
             }
             tokens[nr_token].type = '-';
             strcpy(tokens[nr_token].str, "-");
+            *(tokens[nr_token].str + substr_len) = '\0';
             nr_token++;
             break;
           }
@@ -141,6 +143,7 @@ static bool make_token(char *e) {
             }
             tokens[nr_token].type = '*';
             strcpy(tokens[nr_token].str, "*");
+            *(tokens[nr_token].str + substr_len) = '\0';
             nr_token++;
             break;
           }
@@ -152,6 +155,7 @@ static bool make_token(char *e) {
             }
             tokens[nr_token].type = '/';
             strcpy(tokens[nr_token].str, "/");
+            *(tokens[nr_token].str + substr_len) = '\0';
             nr_token++;
             break;
           }
@@ -163,6 +167,7 @@ static bool make_token(char *e) {
             }
             tokens[nr_token].type = '(';
             strcpy(tokens[nr_token].str, "(");
+            *(tokens[nr_token].str + substr_len) = '\0';
             nr_token++;
             break;
           }
@@ -174,6 +179,7 @@ static bool make_token(char *e) {
             }
             tokens[nr_token].type = ')';
             strcpy(tokens[nr_token].str, ")");
+            *(tokens[nr_token].str + substr_len) = '\0';
             nr_token++;
             break;
           }
@@ -185,6 +191,7 @@ static bool make_token(char *e) {
             }
             tokens[nr_token].type = TK_EQ;
             strcpy(tokens[nr_token].str, "==");
+            *(tokens[nr_token].str + substr_len) = '\0';
             nr_token++;
             break;
           }
@@ -196,6 +203,7 @@ static bool make_token(char *e) {
             }
             tokens[nr_token].type = TK_NEQ;
             strcpy(tokens[nr_token].str, "!=");
+            *(tokens[nr_token].str + substr_len) = '\0';
             nr_token++;
             break;
           }
@@ -207,6 +215,7 @@ static bool make_token(char *e) {
             }
             tokens[nr_token].type = TK_AND;
             strcpy(tokens[nr_token].str, "&&");
+            *(tokens[nr_token].str + substr_len) = '\0';
             nr_token++;
             break;
           }
@@ -218,8 +227,10 @@ static bool make_token(char *e) {
               return false;
             }
             tokens[nr_token].type = TK_HEX_NUM;
-            if(substr_len < 4096)
-              strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
+            if(substr_len < 4096) {
+                strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
+                *(tokens[nr_token].str + substr_len) = '\0';
+              }
             else {
               printf("Token str exceed.");
               return false;
@@ -235,8 +246,10 @@ static bool make_token(char *e) {
               return false;
             }
             tokens[nr_token].type = TK_DEC_NUM;
-            if(substr_len < 4096)
+            if(substr_len < 4096) {
               strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
+              *(tokens[nr_token].str + substr_len) = '\0';
+            }
             else {
               printf("Token str exceed.");
               return false;
@@ -252,8 +265,10 @@ static bool make_token(char *e) {
               return false;
             }
             tokens[nr_token].type = TK_REG;
-            if(substr_len < 4096)
+            if(substr_len < 4096) {
               strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
+              *(tokens[nr_token].str + substr_len) = '\0';
+            }
             else {
               printf("Token str exceed.");
               return false;
