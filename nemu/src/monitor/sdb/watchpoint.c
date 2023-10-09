@@ -83,7 +83,7 @@ void free_wp(WP *wp) {
 void print_wp(void) {
   WP *temp = head;
   while(temp != NULL) {
-    printf("Watching point %d: %s/n, latest value: %u\n", temp->NO, temp->expr, temp->result);
+    printf("Watching point %d: %s, latest value: %u\n", temp->NO, temp->expr, temp->result);
     temp = temp->next;
   }
 }
