@@ -62,7 +62,7 @@ WP* new_wp() {
 */
 void free_wp(WP *wp) {
   if(head == NULL) {
-    printf("Not find the watching point.");
+    printf("Not find the watching point.\n");
     return;
   }
   if(wp == head) {
@@ -74,7 +74,7 @@ void free_wp(WP *wp) {
     WP *temp = head;
     while(temp->next != wp) {
       if(temp->next == NULL) {
-        printf("Not find the watching point.");
+        printf("Not find the watching point.\n");
         return;
       }
       temp = temp->next;
@@ -90,7 +90,7 @@ void free_wp(WP *wp) {
 void print_wp(void) {
   WP *temp = head;
   while(temp != NULL) {
-    printf("Watching point %d: %s, latest value: %u\n", temp->NO, temp->expr, temp->result);
+    printf("Watching point %d: expr: %s, latest value: %u\n", temp->NO, temp->expr, temp->result);
     temp = temp->next;
   }
 }

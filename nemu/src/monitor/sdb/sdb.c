@@ -200,7 +200,7 @@ static int cmd_w(char *args) {
     bool success;
     ptr->result = expr(args, &success);
     if(success == true) {
-      printf("Watching point %d: %s, latest value: %u is ready.\n", ptr->NO, ptr->expr, ptr->result);
+      printf("Watching point %d: expr: %s, latest value: %u is created.\n", ptr->NO, ptr->expr, ptr->result);
       return 0;
     }
     else assert(0);
