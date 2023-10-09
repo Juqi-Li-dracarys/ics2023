@@ -69,8 +69,11 @@ void free_wp(WP *wp) {
   else {
     WP *temp = head;
     while(temp->next != wp) {
+      if(temp->next == NULL) {
+        printf("Not find the watching point.");
+        return;
+      }
       temp = temp->next;
-      if(temp->next != NULL) assert(0);
     }
     temp->next = wp->next;
     wp->next = free_;
@@ -86,4 +89,11 @@ void print_wp(void) {
     printf("Watching point %d: %s, latest value: %u\n", temp->NO, temp->expr, temp->result);
     temp = temp->next;
   }
+}
+
+/* delete the certain watching point
+*/
+void delete_wp(unsigned int index) {
+  free_wp(wp_pool + index);
+  return ;
 }

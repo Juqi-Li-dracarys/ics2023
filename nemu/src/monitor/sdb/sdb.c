@@ -37,6 +37,7 @@ word_t vaddr_read(vaddr_t addr, int len);
 void init_wp_pool();
 WP* new_wp();
 void print_wp(void);
+void delete_wp(unsigned int index);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -206,6 +207,21 @@ static int cmd_w(char *args) {
   }
 }
 
+// TASK7: Delete watching point
+static int cmd_d(char *args) {
+  if (args == NULL) {
+    /* no argument given */
+     printf("Error: The d needs 1 args!\n");
+     return 0;
+  }
+  else {
+    unsigned int index;
+    sscanf(args, "%u", &index);
+    delete_wp(index);
+    return 0;
+  }
+}
+
 static int cmd_help(char *args);
 
 // The structure decide the next action in the gdb_loop, including the pointer of function
@@ -224,7 +240,8 @@ static struct {
   { "x", "Print the information of memory(2 ags must be given)", cmd_x },
   { "p", "Calculate the value of the expr", cmd_p },
   { "e", "Excute the examination progranm for calculation", cmd_e },
-  { "w", "Set up watching point", cmd_w }
+  { "w", "Set up watching point", cmd_w },
+  { "d", "Delete watching point", cmd_d }
 };
 
 #define NR_CMD ARRLEN(cmd_table)
