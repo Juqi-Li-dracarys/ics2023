@@ -24,6 +24,7 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+word_t vaddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -111,7 +112,7 @@ static int cmd_x(char *args) {
     if(success == false) assert(0);
     puts("The information of memory is listed below:\n");
     for(uint16_t i = 0; i < index; i++) {
-      printf("Address: 0x%08x   Value: 0x%02x\n", addr + i, *(guest_to_host(addr + i)));
+      printf("Address: 0x%08x   Value: 0x%02x\n", addr + i, vaddr_read(addr + i, 1));
     }
   }
   return 0;
