@@ -20,6 +20,9 @@
  */
 #include <regex.h>
 
+
+word_t vaddr_read(vaddr_t addr, int len);
+
 enum {
   TK_NOTYPE = 256, TK_EQ,
 
@@ -429,6 +432,16 @@ int find_main_op(int p, int q) {
   return index_record;
 }
 
+/*The function is designed to dereference ptr for num times
+*/
+word_t ptr_dereference(word_t ptr, int num) {
+  word_t result = ptr;
+  for(int i = num; i > 0; i--) {
+    result = vaddr_read(result, 4);
+  }
+  return result;
+}
+
 /*The function is designed to claculate the value of expr
 * p is the begin token index of the expr
 * q is the end token index of the expr
@@ -496,36 +509,61 @@ word_t eval(int p, int q) {
     }
 
     else if(tokens[p].type == TK_NEG) {
-      /* For now this token is a negtive/ptr number
-      *  Return the value of the number.
-      *  正常情况下，一个负号的后面只可能为数字，括号，负号
-      */
-    int i;
-    int num = 1;
-    // Continuing '-'
-    for(i = p + 1; i < nr_token; i++) {
-      if(tokens[i].type != TK_NEG)
-        break;
-      num++;
-    }
-    // still have '('
-    if (tokens[i].type != '(') {
-      if (num%2 != 0) return (~(eval(i, i)) + 1);
-      else return eval(i, i);
-    }
-    else {
-      for(int j = i + 1; j < nr_token; j++) {
-        if (check_parentheses(i, j) == true) {
-          if (num%2 != 0) return (~(eval(i + 1, j - 1)) + 1);
-          else return eval(i + 1, j - 1);
+        /* For now this token is a negtive
+        *  Return the value of the number.
+        *  正常情况下，一个负号的后面只可能为数字，括号，负号
+        */
+      int i;
+      int num = 1;
+      // Continuing '-'
+      for(i = p + 1; i < nr_token; i++) {
+        if(tokens[i].type != TK_NEG)
+          break;
+        num++;
+      }
+      if (tokens[i].type != '(') {
+        if (num%2 != 0) return (~(eval(i, i)) + 1);
+        else return eval(i, i);
+      }
+      // still have '('
+      else {
+        for(int j = i + 1; j < nr_token; j++) {
+          if (check_parentheses(i, j) == true) {
+            if (num%2 != 0) return (~(eval(i + 1, j - 1)) + 1);
+            else return eval(i + 1, j - 1);
+          }
         }
+        printf("( is not balance! Error 1!\n"); assert(0);
       }
     }
-      printf("Code has critical bug in the judgement of negtive\n");
-      assert(0);
-    }
 
-    else {printf("Unkown type of token\n"); assert(0);}
+    else if(tokens[p].type == TK_PTR) {
+        /* For now this token is a ptr number
+        *  Return the value of the number.
+        *  正常情况下，一个负号的后面只可能为数字，括号，负号
+        */
+      int i;
+      int num = 1;
+      // Continuing '*'
+      for(i = p + 1; i < nr_token; i++) {
+        if(tokens[i].type != TK_PTR)
+          break;
+        num++;
+      }
+      if (tokens[i].type != '(') {
+        return ptr_dereference(eval(i, i), num);
+      }
+      // still have '('
+      else {
+        for(int j = i + 1; j < nr_token; j++) {
+          if (check_parentheses(i, j) == true) {
+            return ptr_dereference(eval(i + 1, j - 1), num);
+          }
+        }
+        printf("( is not balance! Error 2!\n"); assert(0);
+      }
+    }
+    else {printf("Unkown type of token. Critical error!\n"); assert(0);}
   }
 }
 
@@ -537,16 +575,28 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
   /* TODO: Insert codes to evaluate the expression. */
+  /*
+    负号可能出现在第一个位置，或其前面不是数字和右括号
+    指针解引用可能出现在第一个位置，或其前面不是数字和右括号
+  */
   for (int i = 0; i < nr_token; i++) {
     if (tokens[i].type == '-' && 
     (i == 0 || (tokens[i - 1].type != ')' && 
     tokens[i - 1].type != TK_DEC_NUM && 
     tokens[i - 1].type != TK_REG && 
-    tokens[i - 1].type != TK_HEX_NUM &&
-    tokens[i - 1].type != TK_PTR))) {
+    tokens[i - 1].type != TK_HEX_NUM))) {
       tokens[i].type = TK_NEG;
     }
+    
+    if (tokens[i].type == '*' && 
+    (i == 0 || (tokens[i - 1].type != ')' && 
+    tokens[i - 1].type != TK_DEC_NUM && 
+    tokens[i - 1].type != TK_REG && 
+    tokens[i - 1].type != TK_HEX_NUM))) {
+      tokens[i].type = TK_PTR;
+    }
   }
-  *success = true;
+
+  *success = true; // Maketoken success
   return eval(0, nr_token - 1);
 }
