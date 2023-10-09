@@ -61,6 +61,10 @@ WP* new_wp() {
 /* move WP from head to free_
 */
 void free_wp(WP *wp) {
+  if(head == NULL) {
+    printf("Not find the watching point.");
+    return;
+  }
   if(wp == head) {
     head = head -> next;
     wp->next = free_;
