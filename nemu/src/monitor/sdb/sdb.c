@@ -105,9 +105,9 @@ static int cmd_x(char *args) {
     }
     // Parsing the value
     uint32_t index, addr;
+    bool success;
     sscanf(arg1, "%u", &index);
-    sscanf(arg2, "%x", &addr);
-
+    addr = expr(arg2, &success);
     puts("The information of memory is listed below:\n");
     for(uint16_t i = 0; i < index; i++) {
       printf("Address: 0x%08x   Value: 0x%02x\n", addr + i, *(guest_to_host(addr + i)));
