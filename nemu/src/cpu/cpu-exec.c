@@ -26,9 +26,6 @@
 #define MAX_INST_TO_PRINT 10
 
 // To avoid OJ compile error
-#ifndef CONFIG_ITRACE 
-  #define CONFIG_ITRACE 1
-#endif
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
@@ -45,8 +42,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   if (check_wp() == true) {
-    puts(_this->logbuf);
-    // printf("PC at :0x%08x\n",cpu.pc);
+    // To avoid OJ compile error
+    IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
     nemu_state.state = NEMU_STOP;
   }
 }
