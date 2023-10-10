@@ -195,15 +195,18 @@ static int cmd_w(char *args) {
      return 0;
   }
   else {
-    WP* ptr = new_wp();
-    strcpy(ptr->expr, args);
     bool success;
-    ptr->result = expr(args, &success);
-    if(success == true) {
+    unsigned int value = expr(args, &success);
+    if(success != true) {
+      return 0;
+    }
+    else {
+      WP* ptr = new_wp();
+      strcpy(ptr->expr, args);
+      ptr->result = value;
       printf("Watching point %d: expr: %s, latest value: %u is created.\n", ptr->NO, ptr->expr, ptr->result);
       return 0;
     }
-    else assert(0);
   }
 }
 
