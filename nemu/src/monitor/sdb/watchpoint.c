@@ -22,7 +22,8 @@ typedef struct watchpoint {
   struct watchpoint *next;
 
   /* TODO: Add more members if necessary */
-
+  char expr [128]; // To store the expr
+  uint32_t result; // To store the latest result of expr
 } WP;
 
 static WP wp_pool[NR_WP] = {};
@@ -41,3 +42,83 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
+/* move WP from free_ to head
+*/
+WP* new_wp() {
+  if (free_ == NULL) {
+    printf("No free watchpoint.");
+    assert(0);
+  }
+  else {
+    WP *temp = free_;
+    free_ = free_->next;
+    temp->next = head;
+    head = temp;
+  }
+  return head;
+}
+
+/* move WP from head to free_
+*/
+void free_wp(WP *wp) {
+  if(head == NULL) {
+    printf("Not find the watching point.\n");
+    return;
+  }
+  if(wp == head) {
+    head = head -> next;
+    wp->next = free_;
+    free_ = wp;
+  }
+  else {
+    WP *temp = head;
+    while(temp->next != wp) {
+      if(temp->next == NULL) {
+        printf("Not find the watching point.\n");
+        return;
+      }
+      temp = temp->next;
+    }
+    temp->next = wp->next;
+    wp->next = free_;
+    free_ = wp;
+  }
+}
+
+/* print the value of all active watching point
+*/
+void print_wp(void) {
+  WP *temp = head;
+  while(temp != NULL) {
+    printf("Watching point %d: expr: %s, latest value: 0x%08x\n", temp->NO, temp->expr, temp->result);
+    temp = temp->next;
+  }
+}
+
+/* delete the certain watching point
+*/
+void delete_wp(unsigned int index) {
+  free_wp(wp_pool + index);
+  return ;
+}
+
+/* delete all watching point
+*  if the value one active point change thn return 1
+*  else return 0  
+*/
+bool check_wp(void) {
+  WP *temp = head;
+  uint32_t new_value;
+  bool flag = false;
+  while(temp != NULL) {
+    bool success;
+    new_value = expr(temp->expr, &success);
+    if (temp->result != new_value) {
+      flag = true;
+      printf("Watching point %d value change:  expr: %s  value: 0x%08x  ---->  0x%08x\n", temp->NO, temp->expr, temp->result, new_value);
+      temp->result = new_value;
+    }
+    temp = temp->next;
+  }
+  return flag;
+}
