@@ -32,7 +32,7 @@ $(OBJ_DIR)/%.o: %.c
 	@echo + CC $<
 	@mkdir -p $(dir $@)
 # Complile and generate .i file
-	@$(CC) $(CFLAGS) -E -o $(@:.o=.i) $<
+	@$(CC) $(CFLAGS) -E -P -o $(@:.o=.i) $<
 	@$(CC) $(CFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
