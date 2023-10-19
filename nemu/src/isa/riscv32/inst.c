@@ -22,17 +22,26 @@
 #define Mr vaddr_read
 #define Mw vaddr_write
 
+// J型指令的四个部分
+word_t *U_1;
+word_t *U_2;
+word_t *U_3;
+word_t *U_4;
+
 enum {
-  TYPE_I, TYPE_U, TYPE_S,
-  TYPE_N, // none
+  TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_B, TYPE_R,
+  TYPE_N // none
 };
 
 #define src1R() do { *src1 = R(rs1); } while (0)
 #define src2R() do { *src2 = R(rs2); } while (0)
+// 提取立即数部分
 #define immI() do { *imm = SEXT(BITS(i, 31, 20), 12); } while(0)
 #define immU() do { *imm = SEXT(BITS(i, 31, 12), 20) << 12; } while(0)
 #define immS() do { *imm = (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); } while(0)
+#define immJ() do { *U_1 = SEXT(BITS(i, 31, 31), 1); *U_2 = SEXT(BITS(i, 30, 21), 10); *U_3 = SEXT(BITS(i, 20, 20), 1); *U_4 = SEXT(BITS(i, 19, 12), 8); *imm = ((SEXT(BITS((uint32_t)0, 31, 12), 20)) | (*U_1 << 19) | (*U_2) | (*U_3 << 10) | (*U_4 << 11)) << 1;} while(0)
 
+// 提取指令的各个参数
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
   uint32_t i = s->isa.inst.val;
   int rs1 = BITS(i, 19, 15);
@@ -42,6 +51,7 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
     case TYPE_I: src1R();          immI(); break;
     case TYPE_U:                   immU(); break;
     case TYPE_S: src1R(); src2R(); immS(); break;
+    case TYPE_J:                   immJ(); break;
   }
 }
 
@@ -57,13 +67,14 @@ static int decode_exec(Decode *s) {
 }
 
   INSTPAT_START();
-  INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(rd) = s->pc + imm);
-  INSTPAT("??????? ????? ????? 000 ????? 00100 11", li     , I, R(rd) = src1 + imm);         // x[rd] = x[rs1] + sext(immediate),等同 addi
-  INSTPAT("??????? ????? ????? 100 ????? 00000 11", lbu    , I, R(rd) = Mr(src1 + imm, 1));
-  INSTPAT("??????? ????? ????? 000 ????? 01000 11", sb     , S, Mw(src1 + imm, 1, src2));
-
-  INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10)));     // 以抛出异常的方式提醒调试器 R(10) is $a0
-  INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
+  INSTPAT("??????? ????? ????? ??? ????? 0010111", auipc  , U, R(rd) = s->pc + imm);
+  INSTPAT("??????? ????? ????? 000 ????? 0010011", li     , I, R(rd) = src1 + imm);         // 等同 addi
+  INSTPAT("??????? ????? ????? 000 ????? 0010011", addi   , I, R(rd) = src1 + imm);         // x[rd] = x[rs1] + sext(immediate),
+  INSTPAT("??????? ????? ????? 100 ????? 0000011", lbu    , I, R(rd) = Mr(src1 + imm, 1));
+  INSTPAT("??????? ????? ????? 000 ????? 0100011", sb     , S, Mw(src1 + imm, 1, src2));
+  INSTPAT("??????? ????? ????? ??? ????? 1101111", jal    , J, if(rd){R(rd) = s->pc + 4;}; s->dnpc = s->dnpc + imm);
+  INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak , N, NEMUTRAP(s->pc, R(10)));     // 以抛出异常的方式提醒调试器 R(10) is $a0
+  INSTPAT("??????? ????? ????? ??? ????? ???????", inv    , N, INV(s->pc));
   INSTPAT_END();
 
   R(0) = 0; // reset $zero to 0
