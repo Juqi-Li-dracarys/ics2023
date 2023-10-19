@@ -22,11 +22,11 @@
 #define Mr vaddr_read
 #define Mw vaddr_write
 
-// J型指令的四个部分
-word_t *U_1;
-word_t *U_2;
-word_t *U_3;
-word_t *U_4;
+// J型指令的四个立即数部分
+word_t J_1;
+word_t J_2;
+word_t J_3;
+word_t J_4;
 
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_B, TYPE_R,
@@ -39,7 +39,7 @@ enum {
 #define immI() do { *imm = SEXT(BITS(i, 31, 20), 12); } while(0)
 #define immU() do { *imm = SEXT(BITS(i, 31, 12), 20) << 12; } while(0)
 #define immS() do { *imm = (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); } while(0)
-#define immJ() do { *U_1 = SEXT(BITS(i, 31, 31), 1); *U_2 = SEXT(BITS(i, 30, 21), 10); *U_3 = SEXT(BITS(i, 20, 20), 1); *U_4 = SEXT(BITS(i, 19, 12), 8); *imm = ((SEXT(BITS((uint32_t)0, 31, 12), 20)) | (*U_1 << 19) | (*U_2) | (*U_3 << 10) | (*U_4 << 11)) << 1;} while(0)
+#define immJ() do { J_1 = SEXT(BITS(i, 31, 31), 1); J_2 = SEXT(BITS(i, 30, 21), 10); J_3 = SEXT(BITS(i, 20, 20), 1); J_4 = SEXT(BITS(i, 19, 12), 8); *imm = ((SEXT(BITS((uint32_t)0, 31, 12), 20)) | (J_1 << 19) | (J_1) | (J_3 << 10) | (J_4 << 11)) << 1;} while(0)
 
 // 提取指令的各个参数
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
