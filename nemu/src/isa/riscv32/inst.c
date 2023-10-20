@@ -34,7 +34,7 @@ enum {
 #define immU() do { *imm = SEXT(BITS(i, 31, 12), 20) << 12; } while(0)
 #define immS() do { *imm = (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); } while(0)
 // J_k J型指令的四个立即数部分
-#define immJ() do {word_t J_1 = SEXT(BITS(i, 31, 31), 1); word_t J_2 = SEXT(BITS(i, 30, 21), 10); word_t J_3 = SEXT(BITS(i, 20, 20), 1); word_t J_4 = SEXT(BITS(i, 19, 12), 8); *imm = ((SEXT(BITS((uint32_t)0, 31, 12), 20)) | (J_1 << 19) | (J_2) | (J_3 << 10) | (J_4 << 11)) << 1;} while(0)
+#define immJ() do { word_t J_1 = SEXT(BITS(i, 31, 31), 1); word_t J_2 = SEXT(BITS(i, 30, 21), 10); word_t J_3 = SEXT(BITS(i, 20, 20), 1); word_t J_4 = SEXT(BITS(i, 19, 12), 8); *imm = ((SEXT(BITS((uint32_t)0, 31, 12), 20)) | (J_1 << 19) | (J_2) | (J_3 << 10) | (J_4 << 11)) << 1;} while(0)
 
 // 提取指令的各个参数
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
@@ -67,7 +67,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 000 ????? 0010011", addi   , I, R(rd) = src1 + imm);         // x[rd] = x[rs1] + sext(immediate),
   INSTPAT("??????? ????? ????? 100 ????? 0000011", lbu    , I, R(rd) = Mr(src1 + imm, 1));
   INSTPAT("??????? ????? ????? 000 ????? 0100011", sb     , S, Mw(src1 + imm, 1, src2));
-  INSTPAT("??????? ????? ????? ??? ????? 1101111", jal    , J, R(rd) = s->pc + 4; s->dnpc = s->dnpc + imm);
+  INSTPAT("??????? ????? ????? ??? ????? 1101111", jal    , J, R(rd) = s->pc + 4; s->dnpc = s->pc + imm);
   INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak , N, NEMUTRAP(s->pc, R(10)));     // 以抛出异常的方式提醒调试器 R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ???????", inv    , N, INV(s->pc));
   INSTPAT_END();
