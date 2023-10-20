@@ -236,7 +236,7 @@ static int cmd_b(char *args) {
      return 0;
   }
   else {
-    sscanf(args, "%u", &addr);
+    sscanf(args, "%x", &addr);
     set_bp(addr);
   }
   return 0;
