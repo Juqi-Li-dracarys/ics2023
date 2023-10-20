@@ -131,8 +131,8 @@ bool check_wp(void) {
 */
 void set_bp(uint32_t pc_add) {
   pc_break = true;
-  pc_addr = 0x80000004;
-  printf("Set up/Update the break point @PC = %u\n", pc_addr);
+  pc_addr = pc_add;
+  printf("Set up/Update the break point @PC = %08x\n", pc_addr);
   return;
 }
 
@@ -142,7 +142,7 @@ void set_bp(uint32_t pc_add) {
 */
 bool check_bp(Decode * s) {
   if(pc_break == true && pc_addr == s->pc) {
-    printf("Got the break point @PC = %u, and complish the follow action: \n", s->pc);
+    printf("Got the break point @PC = %08x, and complish the follow action: \n", s->pc);
     return true;
   }
   else {
