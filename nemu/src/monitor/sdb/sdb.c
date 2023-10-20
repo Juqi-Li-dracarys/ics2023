@@ -76,12 +76,12 @@ static int cmd_si(char *args) {
   uint64_t exe_times = 1;
   if (args == NULL) {
     /* no argument given */
-     printf("Step through the program for %lu steps.\n", exe_times);
+     printf("Step through the program for %lu steps and complish the follow action:\n", exe_times);
      cpu_exec(exe_times); // Excute once
   }
   else {
     sscanf(args, "%lu", &exe_times);
-    printf("Step through the program for %lu steps.\n", exe_times);
+    printf("Step through the program for %lu steps and complish the follow action:\n", exe_times);
     cpu_exec(exe_times);
   }
   return 0;

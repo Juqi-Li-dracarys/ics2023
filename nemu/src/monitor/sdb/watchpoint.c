@@ -119,7 +119,7 @@ bool check_wp(void) {
     new_value = expr(temp->expr, &success);
     if (temp->result != new_value) {
       flag = true;
-      printf("Watching point %d value change:  expr: %s  value: 0x%08x  ->  0x%08x\n", temp->NO, temp->expr, temp->result, new_value);
+      printf("After complish the follow action, Watching point %d value change: \nexpr: %s  value: 0x%08x  ->  0x%08x\n", temp->NO, temp->expr, temp->result, new_value);
       temp->result = new_value;
     }
     temp = temp->next;
@@ -154,6 +154,6 @@ bool check_bp(Decode * s) {
 */
 void delete_bp(void) {
   pc_break = false;
-  printf("Delete the break point @PC = 0x%08x, and complish the follow action: \n", pc_addr);
+  printf("Delete the break point @PC = 0x%08x\n", pc_addr);
   return;
 }
