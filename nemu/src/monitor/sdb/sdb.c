@@ -38,6 +38,8 @@ void init_wp_pool();
 WP* new_wp();
 void print_wp(void);
 void delete_wp(unsigned int index);
+void set_bp(uint32_t pc_add);
+void delete_bp(void);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -210,11 +212,11 @@ static int cmd_w(char *args) {
   }
 }
 
-// TASK7: Delete watching point
+// TASK7: Delete watching point or break point
 static int cmd_d(char *args) {
   if (args == NULL) {
     /* no argument given */
-     printf("Error: The d needs 1 args!\n");
+     delete_bp();
      return 0;
   }
   else {
@@ -224,6 +226,22 @@ static int cmd_d(char *args) {
     return 0;
   }
 }
+
+// TASK8: Set PC break point
+static int cmd_b(char *args) {
+  uint32_t addr;
+  if (args == NULL) {
+    /* no argument given */
+     printf("Error: The b needs 1 args!\n");
+     return 0;
+  }
+  else {
+    sscanf(args, "%u", &addr);
+    set_bp(addr);
+  }
+  return 0;
+}
+
 
 static int cmd_help(char *args);
 
@@ -244,7 +262,8 @@ static struct {
   { "p", "Calculate the value of the expr", cmd_p },
   { "e", "Excute the examination progranm for calculation", cmd_e },
   { "w", "Set up watching point", cmd_w },
-  { "d", "Delete watching point", cmd_d }
+  { "d", "Delete watching point or break point", cmd_d },
+  { "b", "Set PC break point", cmd_b }
 };
 
 #define NR_CMD ARRLEN(cmd_table)

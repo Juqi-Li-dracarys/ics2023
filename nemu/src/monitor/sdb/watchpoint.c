@@ -14,7 +14,7 @@
 ***************************************************************************************/
 
 #include "sdb.h"
-
+#include "../include/cpu/decode.h"
 #define NR_WP 32
 
 typedef struct watchpoint {
@@ -28,6 +28,10 @@ typedef struct watchpoint {
 
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
+
+// Break point of PC
+static word_t pc_addr = 0;
+static uint32_t pc_break = 0;
 
 void init_wp_pool() {
   int i;
@@ -115,10 +119,41 @@ bool check_wp(void) {
     new_value = expr(temp->expr, &success);
     if (temp->result != new_value) {
       flag = true;
-      printf("Watching point %d value change:  expr: %s  value: 0x%08x  ---->  0x%08x\n", temp->NO, temp->expr, temp->result, new_value);
+      printf("Watching point %d value change:  expr: %s  value: 0x%08x  ->  0x%08x\n", temp->NO, temp->expr, temp->result, new_value);
       temp->result = new_value;
     }
     temp = temp->next;
   }
   return flag;
+}
+
+/* Set and update the breakpoint of PC
+*/
+void set_bp(uint32_t pc_add) {
+  pc_break = true;
+  pc_addr = pc_add;
+  printf("Set up/Update the break point @PC = %u\n", pc_addr);
+  return;
+}
+
+/* check the breakpoint of PC
+*  if the value one active point change thn return 1
+*  else return 0  
+*/
+bool check_bp(Decode * s) {
+  if(pc_break == true && pc_addr == s->pc) {
+    printf("Got the break point @PC = %u, and complish the follow action: \n", s->pc);
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+/* Delete the breakpoint of PC
+*/
+void delete_bp(void) {
+  pc_break = false;
+  printf("Delete the break point @PC = %u, and complish the follow action: \n", pc_addr);
+  return;
 }
