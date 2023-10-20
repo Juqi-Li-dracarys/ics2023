@@ -131,7 +131,7 @@ bool check_wp(void) {
 */
 void set_bp(uint32_t pc_add) {
   pc_break = true;
-  pc_addr = pc_add;
+  pc_addr = 3;
   printf("Set up/Update the break point @PC = %u\n", pc_addr);
   return;
 }
