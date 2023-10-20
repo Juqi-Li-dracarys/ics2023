@@ -229,15 +229,17 @@ static int cmd_d(char *args) {
 
 // TASK8: Set PC break point
 static int cmd_b(char *args) {
-  uint32_t addr;
+  bool success;
   if (args == NULL) {
     /* no argument given */
      printf("Error: The b needs 1 args!\n");
      return 0;
   }
   else {
-    sscanf(args, "%x", &addr);
-    set_bp(addr);
+    set_bp(expr(args, &success));
+    if(success != true) {
+      printf("Wrong match in cmb_d.\n");
+    }
   }
   return 0;
 }
