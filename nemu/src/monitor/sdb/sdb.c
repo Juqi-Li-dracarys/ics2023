@@ -31,21 +31,21 @@ typedef struct watchpoint {
   uint32_t result; // To store the latest result of expr
 } WP;
 
-  #ifdef CONFIG_ITRACE
-  typedef struct buffer
-  {
-    char log_buf[40];
-    bool use_state;
-    struct buffer *next;
-  } 
-  ring_buffer;
+#ifdef CONFIG_ITRACE
+typedef struct buffer
+{
+  char log_buf[40];
+  bool use_state;
+  struct buffer *next;
+} 
+ring_buffer;
 
-  ring_buffer *ring_head = NULL;
+ring_buffer *ring_head = NULL;
 
-  ring_buffer *init_ring_buffer(void);
-  void print_ring_buffer(ring_buffer *head);
-  void destory_ring_buffer(ring_buffer *head);
-  #endif
+ring_buffer *init_ring_buffer(void);
+void print_ring_buffer(ring_buffer *head);
+void destroy_ring_buffer(ring_buffer *head);
+#endif
 
 void init_regex();
 void init_wp_pool();
@@ -83,7 +83,7 @@ static int cmd_c(char *args) {
 static int cmd_q(char *args) {
   // Change the flag of nemu_state
   nemu_state.state = NEMU_QUIT;
-  destory_ring_buffer(ring_head);
+  destroy_ring_buffer(ring_head);
   return -1;
 }
 
