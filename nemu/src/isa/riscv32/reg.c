@@ -25,6 +25,7 @@ const char *regs[] = {
 
 // Print the value of each register
 void isa_reg_display() {
+  puts("ALL register in riscv32:");
   for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
     printf("%s:0X%08x ",regs[i], gpr(i));
     if((i + 1) % 4 == 0)
