@@ -71,18 +71,36 @@ bool check_bp(Decode * s);
     return head->next;
   }
 
-  // 打印buffer的全部内容, 未填满则不打印
+  // 打印buffer的全部内容
   void print_ring_buffer(ring_buffer *head) {
     ring_buffer *ptr = head;
-    while(1) {
-      puts(ptr->log_buf);
-      if (ptr->next == head || (ptr->next)->use_state == false) {
-        break;
-      }
-      else {
-        ptr = ptr->next;
+    if (ptr->use_state == true) {
+      while(1) {
+        puts(ptr->log_buf);
+        if (ptr->next == head) {
+          break;
+        }
+        else {
+          ptr = ptr->next;
+        }
       }
     }
+    //buf未填满
+    else {
+      while(ptr->use_state != true) {
+        ptr = ptr->next;
+      }
+      while(1) {
+        puts(ptr->log_buf);
+        if (ptr->next == head) {
+          break;
+        }
+        else {
+          ptr = ptr->next;
+        }
+      }
+    }
+    
   }
 
   // 销毁内存空间
@@ -110,7 +128,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   // Value of g_print_step is related to the times of CPU excution
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
-  // Ring buffer
+  // record trace in ring buffer
   IFDEF(CONFIG_ITRACE, ring_head = write_ring_buffer(ring_head, _this->logbuf));
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   // 监视点和断点的 trace 打印
