@@ -28,13 +28,13 @@ uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t pmem_read(paddr_t addr, int len) {
-  log_write("Read %d byte from the pmem in %u\n", len, addr);
+  log_write("Read %d byte from the pmem in 0x%08x\n", len, addr);
   word_t ret = host_read(guest_to_host(addr), len);
   return ret;
 }
 
 static void pmem_write(paddr_t addr, int len, word_t data) {
-  log_write("Write %d byte from the pmem in %u\n", len, addr);
+  log_write("Write %d byte from the pmem in 0x%08x\n", len, addr);
   host_write(guest_to_host(addr), len, data);
 }
 
