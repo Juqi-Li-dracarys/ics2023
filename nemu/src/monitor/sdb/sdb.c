@@ -120,7 +120,7 @@ static int cmd_info(char *args) {
     print_wp();
   }
 
-  else if (strcmp(args,(const char*)"t") == 0){
+  else if (strcmp(args,(const char*)"it") == 0){
     // Print the trace in ring buffer
     print_ring_buffer(ring_head);
   }
