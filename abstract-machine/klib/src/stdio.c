@@ -5,7 +5,7 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-// num 为 int， 将其保存到 str 所指字符串中，返回 str 的偏移量
+// num 为 int，将其保存到 str 所指字符串中，返回 str 的偏移量
 uint16_t int2str(char *str, int num) {
   uint16_t offset = 0;
   char temp[20] = {0}; 
@@ -27,7 +27,7 @@ uint16_t int2str(char *str, int num) {
   return offset;
 }
 
-// num 为 str， 将其保存到 str 所指字符串中，返回 str 的偏移量
+// num 为 str，将其保存到 str 所指字符串中，返回 str 的偏移量
 uint16_t str2str(char *des_str, char *src) {
   uint16_t offset = 0;
   while (*src != '\0') {
