@@ -25,8 +25,6 @@
  */
 #define MAX_INST_TO_PRINT 10
 
-// To avoid OJ compile error
-
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
@@ -36,13 +34,85 @@ void device_update();
 bool check_wp(void);
 bool check_bp(Decode * s);
 
+// 环形缓冲 trace
+#ifdef CONFIG_ITRACE
+  #define buffer_size 10
+  typedef struct buffer
+  {
+    char log_buf[40];
+    bool use_state;
+    struct buffer *next;
+  } 
+  ring_buffer;
+
+  extern ring_buffer* ring_head;
+
+  // 初始化环形链表
+  ring_buffer *init_ring_buffer(void) {
+    ring_buffer *ptr = (ring_buffer *)malloc(sizeof(ring_buffer));
+    ptr->log_buf[0] = '\0';
+    ptr-> use_state = false;
+    ring_buffer *head = ptr;
+    for (int i = 1; i < buffer_size; i++) {
+      ptr->next = (ring_buffer*)malloc(sizeof(ring_buffer));
+      ptr = ptr->next;
+      ptr->log_buf[0] = '\0';
+      ptr-> use_state = false;
+    }
+    ptr->next = head;
+    return head;
+  }
+
+  // 写入buffer
+  ring_buffer *write_ring_buffer(ring_buffer *head, char *log_str) {
+    strcpy(head->log_buf, log_str);
+    head->use_state = true;
+    return head->next;
+  }
+
+  // 打印buffer的全部内容
+  void print_ring_buffer(ring_buffer *head) {
+    ring_buffer *ptr = head;
+    while(1) {
+      puts(ptr->log_buf);
+      if (ptr->next == head || (ptr->next)->use_state == false) {
+        break;
+      }
+      else {
+        ptr = ptr->next;
+      }
+    }
+  }
+
+  // 销毁内存空间
+  void destory_ring_buffer(ring_buffer *head) {
+    ring_buffer *ptr = head;
+    ring_buffer *next_;
+    while(1) {
+      next_ = ptr->next;
+      free(ptr);
+      if(next_ == head) {
+        break;
+      }
+      else {
+        ptr = next_;
+      }
+    }
+  }
+
+#endif
+
+
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
   // Value of g_print_step is related to the times of CPU excution
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
+  // Ring buffer
+  IFDEF(CONFIG_ITRACE, write_ring_buffer(ring_head, _this->logbuf));
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+  // 监视点和断点的 trace 打印
   if (check_wp() == true || check_bp(_this) == true) {
     // To avoid OJ compile error
     IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
@@ -136,3 +206,4 @@ void cpu_exec(uint64_t n) {
     case NEMU_QUIT: statistic();
   }
 }
+

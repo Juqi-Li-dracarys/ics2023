@@ -31,6 +31,22 @@ typedef struct watchpoint {
   uint32_t result; // To store the latest result of expr
 } WP;
 
+  #ifdef CONFIG_ITRACE
+  typedef struct buffer
+  {
+    char log_buf[40];
+    bool use_state;
+    struct buffer *next;
+  } 
+  ring_buffer;
+
+  ring_buffer *ring_head = NULL;
+
+  ring_buffer *init_ring_buffer(void);
+  void print_ring_buffer(ring_buffer *head);
+  void destory_ring_buffer(ring_buffer *head);
+  #endif
+
 void init_regex();
 void init_wp_pool();
 word_t vaddr_read(vaddr_t addr, int len);
@@ -67,6 +83,7 @@ static int cmd_c(char *args) {
 static int cmd_q(char *args) {
   // Change the flag of nemu_state
   nemu_state.state = NEMU_QUIT;
+  destory_ring_buffer(ring_head);
   return -1;
 }
 
@@ -101,6 +118,11 @@ static int cmd_info(char *args) {
   else if (strcmp(args,(const char*)"w") == 0){
     // Print the value of watching point
     print_wp();
+  }
+
+  else if (strcmp(args,(const char*)"t") == 0){
+    // Print the trace in ring buffer
+    print_ring_buffer(ring_head);
   }
   return 0;
 }
@@ -347,4 +369,9 @@ void init_sdb() {
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
+
+   /* Initialize the ring buffer. */
+#ifdef CONFIG_ITRACE
+  ring_head = init_ring_buffer();
+#endif
 }
