@@ -110,7 +110,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   // Value of g_print_step is related to the times of CPU excution
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   // Ring buffer
-  IFDEF(CONFIG_ITRACE, write_ring_buffer(ring_head, _this->logbuf));
+  IFDEF(CONFIG_ITRACE, ring_head = write_ring_buffer(ring_head, _this->logbuf));
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   // 监视点和断点的 trace 打印
   if (check_wp() == true || check_bp(_this) == true) {
