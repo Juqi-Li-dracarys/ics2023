@@ -27,7 +27,7 @@ const char *regs[] = {
 void isa_reg_display() {
   for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
     printf("%s:0X%08x ",regs[i], gpr(i));
-    if((i + 1) % 8 == 0)
+    if((i + 1) % 4 == 0)
     putchar('\n');
   }
   return ;
