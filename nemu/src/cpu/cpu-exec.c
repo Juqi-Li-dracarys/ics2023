@@ -40,7 +40,7 @@ bool check_bp(Decode * s);
   #define buffer_size 10
   typedef struct buffer
   {
-    char log_buf[40];
+    char log_buf[80];
     bool use_state;
     struct buffer *next;
   } 
