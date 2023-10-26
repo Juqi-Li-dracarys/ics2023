@@ -71,7 +71,7 @@ bool check_bp(Decode * s);
     return head->next;
   }
 
-  // 打印buffer的全部内容
+  // 打印buffer的全部内容, 未填满则不打印
   void print_ring_buffer(ring_buffer *head) {
     ring_buffer *ptr = head;
     while(1) {
