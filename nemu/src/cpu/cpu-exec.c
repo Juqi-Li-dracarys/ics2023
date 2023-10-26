@@ -36,6 +36,7 @@ bool check_bp(Decode * s);
 
 // 环形缓冲 trace
 #ifdef CONFIG_ITRACE
+
   #define buffer_size 10
   typedef struct buffer
   {
