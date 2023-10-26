@@ -27,19 +27,6 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
-#ifdef CONFIG_ITRACE
-typedef struct buffer
-{
-  char log_buf[80];
-  bool use_state;
-  struct buffer *next;
-} 
-ring_buffer;
-
-extern ring_buffer* ring_head;
-void print_ring_buffer(ring_buffer *head);
-#endif
-
 static word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
   return ret;
@@ -50,7 +37,6 @@ static void pmem_write(paddr_t addr, int len, word_t data) {
 }
 
 static void out_of_bound(paddr_t addr) {
-  IFDEF(CONFIG_ITRACE, print_ring_buffer(ring_head));
   panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
 }
