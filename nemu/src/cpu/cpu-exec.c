@@ -89,10 +89,10 @@ void print_ring_buffer(ring_buffer *head) {
   //buf未填满
   else {
     while(ptr->use_state != true) {
-      ptr = ptr->next;
       if(ptr->next == head) {
         return;
       }
+      ptr = ptr->next;
     }
     while(1) {
       puts(ptr->log_buf);
