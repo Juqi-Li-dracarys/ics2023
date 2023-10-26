@@ -83,7 +83,9 @@ static int cmd_c(char *args) {
 static int cmd_q(char *args) {
   // Change the flag of nemu_state
   nemu_state.state = NEMU_QUIT;
+#ifdef CONFIG_ITRACE
   destroy_ring_buffer(ring_head);
+#endif
   return -1;
 }
 
@@ -119,11 +121,12 @@ static int cmd_info(char *args) {
     // Print the value of watching point
     print_wp();
   }
-
+#ifdef CONFIG_ITRACE
   else if (strcmp(args,(const char*)"it") == 0){
     // Print the trace in ring buffer
     print_ring_buffer(ring_head);
   }
+#endif
   return 0;
 }
 
