@@ -34,8 +34,9 @@ void device_update();
 bool check_wp(void);
 bool check_bp(Decode * s);
 
+// Ftrace
 #ifdef CONFIG_FTRACE_COND
-void write_ftrace(Decode *ptr);
+void ftrace_process(Decode *ptr);
 #endif
 
 // Itrace ring buffer
@@ -54,7 +55,7 @@ void print_ring_buffer(ring_buffer *head);
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_FTRACE_COND
-  write_ftrace(_this);
+  ftrace_process(_this);
 #endif
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n\n", _this->logbuf); }

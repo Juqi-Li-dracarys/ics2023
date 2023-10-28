@@ -1,8 +1,6 @@
 
 #include <common.h>
 
-#ifdef CONFIG_ITRACE
-
 #define buffer_size 10
 typedef struct buffer
 {
@@ -88,5 +86,3 @@ void destroy_ring_buffer(ring_buffer *head) {
     }
   }
 }
-
-#endif

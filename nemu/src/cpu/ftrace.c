@@ -3,17 +3,27 @@
 #include <common.h>
 #include <../include/cpu/decode.h>
 
-#ifdef CONFIG_FTRACE
-
 typedef struct ftrace_f {
     uint32_t addr;    // function address
     char name [30];   // function name
-    uint16_t size;    // function size
+    uint32_t size;    // function size
 } ftrace_fun; 
 
+typedef struct ftrace_s {
+    uint32_t fun_table_index;
+    uint32_t fun_stack_index;
+} ftrace_stack; 
+
 FILE *elf_fp = NULL;
-ftrace_fun ftrace_table [500] = {0};
+ftrace_fun ftrace_table [500] = {0};   // record fun
 uint32_t ftrace_table_size = 0;
+ftrace_stack fun_stack [500] = {0};    // fun stack
+int32_t stack_top = -1;                // 栈顶指针
+uint32_t stack_cum = 0;                // 累计入栈函数个数
+
+enum {
+    NOT_JUNM, CALL, RET
+} fun_status;
 
 // Success return 1, else return 0
 uint8_t init_ftrace(char *elf_addr) {
@@ -91,8 +101,84 @@ void disp_ftrace(void) {
     return;
 }
 
-void write_ftrace(Decode *ptr) {
-    log_write("fuck: 0x%08x\n", ptr->pc);
+// 利用函数在table的序号，将调用的函数压栈
+void stack_push(uint32_t fun_index) {
+    if(fun_index >= ftrace_table_size || stack_top >= 499) {
+        return ;
+    }
+    stack_top++;
+    fun_stack[stack_top].fun_table_index = fun_index;
+    fun_stack[stack_top].fun_stack_index = stack_cum;
+    stack_cum++;
+    return;
 }
 
-#endif
+
+// 获取函数栈顶
+void stack_get(ftrace_stack* temp) {
+    if(stack_top <= -1) {
+        return;
+    }
+    temp->fun_stack_index = fun_stack[stack_top].fun_stack_index;
+    temp->fun_table_index = fun_stack[stack_top].fun_table_index;
+    return;
+}
+
+// 调用函数出栈，对应ret
+void stack_pull(ftrace_stack* temp) {
+    stack_get(temp);
+    stack_top--;
+    return;
+}
+
+// 根据PC指针获取当前函数在ftrace_table中的编号
+int32_t get_fun_index(vaddr_t pc) {
+    for(int i = 0; i < ftrace_table_size; i++) {
+        if(pc >= ftrace_table[i].addr && pc < ftrace_table[i].addr + ftrace_table[i].size) {
+            return i;
+        }
+    }
+    //未找到相关函数
+    return -1;
+}
+
+// 处理函数
+void ftrace_process(Decode *ptr) {
+    // 下一条指令的所在函数序号
+    int32_t ftab_index = get_fun_index(ptr->dnpc);
+    // 不在函数中
+    if(ftab_index == -1) {
+        return;
+    }
+    else {
+        ftrace_stack temp;
+        // 非空栈
+        if(stack_top > -1) {
+            stack_get(&temp);
+            // 与栈顶函数一致，非跳转
+            if(temp.fun_table_index == ftab_index) {
+                return;
+            }
+            else {
+                // RET
+                if(ptr->isa.inst.val == 0x00008067) {
+                    stack_pull(&temp);
+                    printf("FTRACE: 0x%08x ret (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                }
+                // CALL
+                else {
+                    stack_push(ftab_index);
+                    stack_get(&temp);
+                    printf("FTRACE: 0x%08x call (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                }
+            }
+        }
+        else {
+            stack_push(ftab_index);
+            stack_get(&temp);
+            printf("FTRACE: 0x%08x call (stack_idx = %u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+        }
+
+    }
+}
+
