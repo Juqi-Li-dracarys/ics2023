@@ -92,7 +92,7 @@ void disp_ftrace(void) {
 }
 
 void write_ftrace(Decode *ptr) {
-    log_write("fuck: 0x%08x\n", ptr->pc);
+    log_write("fuck: 0x%08x\n", ptr->snpc);
 }
 
 #endif
