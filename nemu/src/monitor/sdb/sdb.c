@@ -107,7 +107,7 @@ static int cmd_si(char *args) {
   return 0;
 }
 
-// TASK2: Print the information of reg or watching point
+// TASK2: Print the information of reg or watching point or trace
 static int cmd_info(char *args) {
   if (args == NULL) {
     /* no argument given */
@@ -289,7 +289,7 @@ static struct {
 
   /* TODO: Add more commands */
   { "si", "Excute the program in n steps", cmd_si },
-  { "info", "Print the information of reg or watching point(1 ags must be given)", cmd_info },
+  { "info", "Print the information of reg or watching point or trace(1 ags must be given)", cmd_info },
   { "x", "Print the information of memory(2 ags must be given)", cmd_x },
   { "p", "Calculate the value of the expr", cmd_p },
   { "e", "Excute the examination progranm for calculation", cmd_e },
