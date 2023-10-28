@@ -2,6 +2,7 @@
 #include <elf.h>
 #include <common.h>
 #include <../include/cpu/decode.h>
+#include <../include/utils.h>
 
 typedef struct ftrace_f {
     uint32_t addr;    // function address
@@ -160,23 +161,21 @@ void ftrace_process(Decode *ptr) {
                 return;
             }
             else {
-                // RET
                 if(ptr->isa.inst.val == 0x00008067) {
                     stack_pull(&temp);
-                    printf("FTRACE: 0x%08x ret  (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                    log_write("FTRACE: 0x%08x ret  (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                 }
-                // CALL
                 else {
                     stack_push(ftab_index);
                     stack_get(&temp);
-                    printf("FTRACE: 0x%08x call (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                    log_write("FTRACE: 0x%08x call (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                 }
             }
         }
         else {
             stack_push(ftab_index);
             stack_get(&temp);
-            printf("FTRACE: 0x%08x call (stack_idx = %u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+            log_write("FTRACE: 0x%08x call (stack_idx = %u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
         }
 
     }
