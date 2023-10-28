@@ -94,15 +94,6 @@ uint8_t init_ftrace(char *elf_addr) {
     else return 1;
 }
 
-void disp_ftrace(void) {
-    puts("ftrace table:");
-    for(int i = 0; i < ftrace_table_size; i++) {
-        printf("name:%-30s\taddr:0x%08x\t\t\tsize:%-5d\n", ftrace_table[i].name, ftrace_table[i].addr, ftrace_table[i].size);
-    }
-    return;
-}
-
-// 利用函数在table的序号，将调用的函数压栈
 void stack_push(uint32_t fun_index) {
     if(fun_index >= ftrace_table_size || stack_top >= 499) {
         return ;
@@ -114,8 +105,6 @@ void stack_push(uint32_t fun_index) {
     return;
 }
 
-
-// 获取函数栈顶
 void stack_get(ftrace_stack* temp) {
     if(stack_top <= -1) {
         return;
@@ -125,14 +114,13 @@ void stack_get(ftrace_stack* temp) {
     return;
 }
 
-// 调用函数出栈，对应ret
 void stack_pull(ftrace_stack* temp) {
     stack_get(temp);
     stack_top--;
     return;
 }
 
-// 根据PC指针获取当前函数在ftrace_table中的编号
+// 获取当前函数在ftrace_table中的编号
 int32_t get_fun_index(vaddr_t pc) {
     for(int i = 0; i < ftrace_table_size; i++) {
         if(pc >= ftrace_table[i].addr && pc < ftrace_table[i].addr + ftrace_table[i].size) {
@@ -143,7 +131,14 @@ int32_t get_fun_index(vaddr_t pc) {
     return -1;
 }
 
-// 处理函数
+void ftrace_table_d(void) {
+    puts("Ftrace table:");
+    for(int i = 0; i < ftrace_table_size; i++) {
+        printf("name:%-30s\taddr:0x%08x\t\t\tsize:%-5d\n", ftrace_table[i].name, ftrace_table[i].addr, ftrace_table[i].size);
+    }
+    return;
+}
+
 void ftrace_process(Decode *ptr) {
     // 下一条指令的所在函数序号
     int32_t ftab_index = get_fun_index(ptr->dnpc);

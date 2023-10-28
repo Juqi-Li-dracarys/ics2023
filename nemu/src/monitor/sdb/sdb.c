@@ -58,7 +58,7 @@ void set_bp(uint32_t pc_add);
 void delete_bp(void);
 
 #ifdef CONFIG_FTRACE
-void disp_ftrace(void);
+void ftrace_table_d(void);
 #endif
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -134,7 +134,7 @@ static int cmd_info(char *args) {
   else if (strcmp(args,(const char*)"f-table") == 0){
 #ifdef CONFIG_FTRACE
     // Print the ftrace table
-    disp_ftrace();
+    ftrace_table_d();
 #endif
   }
   return 0;
