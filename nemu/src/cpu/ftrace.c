@@ -158,25 +158,37 @@ void ftrace_process(Decode *ptr) {
             stack_get(&temp);
             // 与栈顶函数一致，非跳转
             if(temp.fun_table_index == ftab_index) {
+            #ifdef CONFIG_FTRACE_COND
                 log_write("FTRACE: 0x%08x\t in   (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+            #endif
                 return;
             }
             else {
                 if(ptr->isa.inst.val == 0x00008067) {
                     stack_pull(&temp);
+                #ifdef CONFIG_FTRACE_COND
                     log_write("FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                #endif
+                    return;
                 }
                 else {
                     stack_push(ftab_index);
                     stack_get(&temp);
+                #ifdef CONFIG_FTRACE_COND
                     log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                #endif
+                    return;
                 }
             }
         }
+        // 空栈
         else {
             stack_push(ftab_index);
             stack_get(&temp);
+        #ifdef CONFIG_FTRACE_COND
             log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+        #endif
+            return;
         }
 
     }

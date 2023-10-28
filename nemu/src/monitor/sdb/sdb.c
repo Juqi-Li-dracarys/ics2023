@@ -40,7 +40,7 @@ typedef struct buffer
 } 
 ring_buffer;
 
-ring_buffer *ring_head = NULL;
+extern ring_buffer *ring_head;
 
 ring_buffer *init_ring_buffer(void);
 void print_ring_buffer(ring_buffer *head);
@@ -126,12 +126,12 @@ static int cmd_info(char *args) {
     print_wp();
   }
 #ifdef CONFIG_ITRACE
-  else if (strcmp(args,(const char*)"it") == 0){
+  else if (strcmp(args,(const char*)"i-ring") == 0){
     // Print the trace in ring buffer
     print_ring_buffer(ring_head);
   }
 #endif
-  else if (strcmp(args,(const char*)"ft") == 0){
+  else if (strcmp(args,(const char*)"f-table") == 0){
 #ifdef CONFIG_FTRACE
     // Print the ftrace table
     disp_ftrace();

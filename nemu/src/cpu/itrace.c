@@ -10,7 +10,7 @@ typedef struct buffer
 } 
 ring_buffer;
 
-extern ring_buffer* ring_head;
+ring_buffer* ring_head = NULL;
 
 // 初始化环形链表
 ring_buffer *init_ring_buffer(void) {

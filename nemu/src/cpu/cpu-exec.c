@@ -54,9 +54,7 @@ void print_ring_buffer(ring_buffer *head);
 #endif
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
-#ifdef CONFIG_FTRACE_COND
-  ftrace_process(_this);
-#endif
+  IFDEF(CONFIG_ITRACE, ftrace_process(_this));
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n\n", _this->logbuf); }
 #endif
