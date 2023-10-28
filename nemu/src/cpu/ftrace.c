@@ -163,19 +163,19 @@ void ftrace_process(Decode *ptr) {
             else {
                 if(ptr->isa.inst.val == 0x00008067) {
                     stack_pull(&temp);
-                    log_write("FTRACE: 0x%08x\tret  (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                    log_write("FTRACE: 0x%08x\t ret  (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                 }
                 else {
                     stack_push(ftab_index);
                     stack_get(&temp);
-                    log_write("FTRACE: 0x%08x\tcall (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                    log_write("FTRACE: 0x%08x\t call (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                 }
             }
         }
         else {
             stack_push(ftab_index);
             stack_get(&temp);
-            log_write("FTRACE: 0x%08x\tcall (stack_idx = %u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+            log_write("FTRACE: 0x%08x\t call (stack_idx = %u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
         }
 
     }
