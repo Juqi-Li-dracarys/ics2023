@@ -38,7 +38,7 @@ ring_buffer *write_ring_buffer(ring_buffer *head, char *log_str) {
 // 打印buffer的全部内容
 void print_ring_buffer(ring_buffer *head) {
   ring_buffer *ptr = head;
-  puts("The latest 10 trace in iring buffer:");
+  puts("The latest 10 ITRACE in ring buffer:");
   if (ptr->use_state == true) {
     while(1) {
       puts(ptr->log_buf);
