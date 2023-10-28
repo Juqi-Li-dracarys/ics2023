@@ -21,10 +21,8 @@ uint32_t ftrace_table_size = 0;
 ftrace_stack fun_stack [500] = {0};    // fun stack
 int32_t stack_top = -1;                // 栈顶指针
 uint32_t stack_cum = 0;                // 累计入栈函数个数
-
-enum {
-    NOT_JUNM, CALL, RET
-} fun_status;
+char flog [1000][100] = {0};            // 调用返回记录
+uint32_t flog_indx = 0;
 
 // Success return 1, else return 0
 uint8_t init_ftrace(char *elf_addr) {
@@ -131,14 +129,6 @@ int32_t get_fun_index(vaddr_t pc) {
     return -1;
 }
 
-void ftrace_table_d(void) {
-    puts("Ftrace table:");
-    for(int i = 0; i < ftrace_table_size; i++) {
-        printf("name:%-30s\taddr:0x%08x\t\t\tsize:%-5d\n", ftrace_table[i].name, ftrace_table[i].addr, ftrace_table[i].size);
-    }
-    return;
-}
-
 void ftrace_process(Decode *ptr) {
     // 下一条指令的所在函数序号
     int32_t ftab_index = get_fun_index(ptr->dnpc);
@@ -164,6 +154,7 @@ void ftrace_process(Decode *ptr) {
                 #ifdef CONFIG_FTRACE_COND
                     log_write("FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                 #endif
+                    sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                     return;
                 }
                 else {
@@ -172,6 +163,7 @@ void ftrace_process(Decode *ptr) {
                 #ifdef CONFIG_FTRACE_COND
                     log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                 #endif
+                    sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                     return;
                 }
             }
@@ -183,9 +175,25 @@ void ftrace_process(Decode *ptr) {
         #ifdef CONFIG_FTRACE_COND
             log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
         #endif
+            sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
             return;
         }
 
     }
 }
 
+void ftrace_table_d(void) {
+    puts("FTRACE table:");
+    for(int i = 0; i < ftrace_table_size; i++) {
+        printf("name:%-30s\taddr:0x%08x\t\t\tsize:%-5d\n", ftrace_table[i].name, ftrace_table[i].addr, ftrace_table[i].size);
+    }
+    return;
+}
+
+void ftrace_log_d(void) {
+    puts("FTRACE log:");
+    for(int i = 0; i < flog_indx; i++) {
+        printf("%s", flog[i]);
+    }
+    return;
+}
