@@ -23,7 +23,9 @@ void init_difftest(char *ref_so_file, long img_size, int port);
 void init_device();
 void init_sdb();
 void init_disasm(const char *triple);
+#ifdef CONFIG_FTRACE
 uint8_t init_ftrace(char *elf_addr);
+#endif
 
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
@@ -117,7 +119,8 @@ void init_monitor(int argc, char *argv[]) {
   init_log(log_file);
 
   /* Open the elf file. */
-  init_ftrace(elf_file);
+  IFDEF(CONFIG_FTRACE, init_ftrace(elf_file));
+  IFNDEF(CONFIG_FTRACE, printf("Ftrace is not active, elf file: %s\n", elf_file));
 
   /* Initialize memory. */
   init_mem();

@@ -1,6 +1,9 @@
 
 #include <elf.h>
 #include <common.h>
+#include <../include/cpu/decode.h>
+
+#ifdef CONFIG_FTRACE
 
 typedef struct ftrace_f {
     uint32_t addr;    // function address
@@ -87,3 +90,9 @@ void disp_ftrace(void) {
     }
     return;
 }
+
+void write_trace(Decode *ptr) {
+
+}
+
+#endif

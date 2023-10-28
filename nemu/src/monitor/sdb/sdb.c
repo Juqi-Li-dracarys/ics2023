@@ -56,7 +56,10 @@ void print_wp(void);
 void delete_wp(unsigned int index);
 void set_bp(uint32_t pc_add);
 void delete_bp(void);
+
+#ifdef CONFIG_FTRACE
 void disp_ftrace(void);
+#endif
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -129,8 +132,10 @@ static int cmd_info(char *args) {
   }
 #endif
   else if (strcmp(args,(const char*)"ft") == 0){
+#ifdef CONFIG_FTRACE
     // Print the ftrace table
     disp_ftrace();
+#endif
   }
   return 0;
 }
@@ -381,5 +386,7 @@ void init_sdb() {
    /* Initialize the ring buffer. */
 #ifdef CONFIG_ITRACE
   ring_head = init_ring_buffer();
+#else
+  puts("Ring buffer is not active")
 #endif
 }
