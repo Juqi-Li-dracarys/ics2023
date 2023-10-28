@@ -56,6 +56,7 @@ void print_wp(void);
 void delete_wp(unsigned int index);
 void set_bp(uint32_t pc_add);
 void delete_bp(void);
+void disp_ftrace(void);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -127,6 +128,10 @@ static int cmd_info(char *args) {
     print_ring_buffer(ring_head);
   }
 #endif
+  else if (strcmp(args,(const char*)"ft") == 0){
+    // Print the ftrace table
+    disp_ftrace();
+  }
   return 0;
 }
 
