@@ -1,3 +1,4 @@
+
 #include <common.h>
 
 #ifdef CONFIG_ITRACE

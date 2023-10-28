@@ -35,10 +35,10 @@ bool check_wp(void);
 bool check_bp(Decode * s);
 
 #ifdef CONFIG_FTRACE_COND
-void write_trace(Decode *ptr);
+void write_ftrace(Decode *ptr);
 #endif
 
-
+// Itrace ring buffer
 #ifdef CONFIG_ITRACE
 typedef struct buffer
 {
@@ -53,7 +53,9 @@ void print_ring_buffer(ring_buffer *head);
 #endif
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+
   // IFDEF(CONFIG_FTRACE_COND, write_ftrace(_this));
+  write_ftrace(_this);
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n\n", _this->logbuf); }
 #endif
