@@ -163,7 +163,7 @@ void ftrace_process(Decode *ptr) {
                 // RET
                 if(ptr->isa.inst.val == 0x00008067) {
                     stack_pull(&temp);
-                    printf("FTRACE: 0x%08x ret (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                    printf("FTRACE: 0x%08x ret  (stack_idx = %-3u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                 }
                 // CALL
                 else {
