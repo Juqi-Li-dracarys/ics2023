@@ -71,7 +71,6 @@ void print_ring_buffer(ring_buffer *head) {
       }
     }
   }
-
 }
 
 // 销毁buffer空间
@@ -89,4 +88,5 @@ void destroy_ring_buffer(ring_buffer *head) {
     }
   }
 }
+
 #endif
