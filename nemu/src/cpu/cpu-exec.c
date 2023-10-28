@@ -35,8 +35,9 @@ bool check_wp(void);
 bool check_bp(Decode * s);
 
 // Ftrace
-#ifdef CONFIG_FTRACE_COND
+#ifdef CONFIG_FTRACE
 void ftrace_process(Decode *ptr);
+void ftrace_log_d(void);
 #endif
 
 // Itrace ring buffer
@@ -125,6 +126,7 @@ static void statistic() {
 void assert_fail_msg() {
   isa_reg_display();
   IFDEF(CONFIG_ITRACE, print_ring_buffer(ring_head));
+  IFDEF(CONFIG_FTRACE, ftrace_log_d());
   statistic();
 }
 
