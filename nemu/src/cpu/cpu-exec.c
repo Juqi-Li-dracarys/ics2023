@@ -53,6 +53,7 @@ void print_ring_buffer(ring_buffer *head);
 #endif
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+  
 #ifdef CONFIG_FTRACE_COND
   write_ftrace(_this);
 #endif
