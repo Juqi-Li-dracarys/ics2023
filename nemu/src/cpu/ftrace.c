@@ -21,7 +21,7 @@ uint32_t ftrace_table_size = 0;
 ftrace_stack fun_stack [500] = {0};    // fun stack
 int32_t stack_top = -1;                // 栈顶指针
 uint32_t stack_cum = 0;                // 累计入栈函数个数
-char flog [1000][100] = {0};            // 调用返回记录
+char flog [1000][150] = {0};           // 调用返回记录
 uint32_t flog_indx = 0;
 
 // Success return 1, else return 0
