@@ -27,6 +27,8 @@ void init_disasm(const char *triple);
 uint8_t init_ftrace(char *elf_addr);
 #endif
 
+void fuck(void);
+
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
   IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
