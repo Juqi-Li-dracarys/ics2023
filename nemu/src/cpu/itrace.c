@@ -19,7 +19,7 @@ ring_buffer *init_ring_buffer(void) {
   ptr-> use_state = false;
   ring_buffer *head = ptr;
   for (int i = 1; i < buffer_size; i++) {
-    ptr->next = (ring_buffer*)malloc(sizeof(ring_buffer));
+    ptr->next = (ring_buffer *)malloc(sizeof(ring_buffer));
     ptr = ptr->next;
     ptr->log_buf[0] = '\0';
     ptr-> use_state = false;
