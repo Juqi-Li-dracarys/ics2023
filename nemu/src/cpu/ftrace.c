@@ -146,7 +146,7 @@ void ftrace_process(Decode *ptr) {
             // 与栈顶函数一致，非跳转
             if(temp.fun_table_index == ftab_index) {
             #ifdef CONFIG_FTRACE_COND
-                log_write("FTRACE: 0x%08x\t in   (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                if(FTRACE_COND){log_write("FTRACE: 0x%08x\t in   (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
             #endif
                 return;
             }
