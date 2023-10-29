@@ -50,7 +50,6 @@ void print_ring_buffer(ring_buffer *head) {
       }
     }
   }
-
   //buf未填满
   else {
     while(ptr->use_state != true) {
