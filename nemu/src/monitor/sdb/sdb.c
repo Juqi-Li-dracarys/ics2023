@@ -394,6 +394,6 @@ void init_sdb() {
 #ifdef CONFIG_ITRACE
   ring_head = init_ring_buffer();
 #else
-  puts("ring buffer is not active")
+  puts("ring buffer is not active");
 #endif
 }
