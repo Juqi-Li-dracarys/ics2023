@@ -24,6 +24,8 @@ uint32_t stack_cum = 0;                // 累计入栈函数个数
 char flog [1000][150] = {0};           // 调用返回记录
 uint32_t flog_indx = 0;
 
+#define FTRACE_COND (strcmp(CONFIG_FTRACE_COND, "true") == 0)
+
 // Success return 1, else return 0
 uint8_t init_ftrace(char *elf_addr) {
 
@@ -152,7 +154,7 @@ void ftrace_process(Decode *ptr) {
                 if(ptr->isa.inst.val == 0x00008067) {
                     stack_pull(&temp);
                 #ifdef CONFIG_FTRACE_COND
-                    log_write("FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                    if(FTRACE_COND){log_write("FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
                 #endif
                     sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                     return;
@@ -161,7 +163,7 @@ void ftrace_process(Decode *ptr) {
                     stack_push(ftab_index);
                     stack_get(&temp);
                 #ifdef CONFIG_FTRACE_COND
-                    log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                    if(FTRACE_COND){log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
                 #endif
                     sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
                     return;
@@ -173,7 +175,7 @@ void ftrace_process(Decode *ptr) {
             stack_push(ftab_index);
             stack_get(&temp);
         #ifdef CONFIG_FTRACE_COND
-            log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+            if(FTRACE_COND){log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
         #endif
             sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
             return;
