@@ -30,7 +30,7 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 static word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
 #ifdef CONFIG_MTRACE_COND
-  log_write("MTRACE: 0x%08x\t read  %d byte 0x%08x from mem: 0x%08x\n", cpu.pc, len, ret, addr);
+  if (strcmp(CONFIG_MTRACE_COND, "true") == 0) {log_write("MTRACE: 0x%08x\t read  %d byte 0x%08x from mem: 0x%08x\n", cpu.pc, len, ret, addr);}
 #endif
   return ret;
 }
