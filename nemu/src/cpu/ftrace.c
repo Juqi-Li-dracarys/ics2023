@@ -187,7 +187,7 @@ void ftrace_process(Decode *ptr) {
 void ftrace_table_d(void) {
     puts("FTRACE table:");
     for(int i = 0; i < ftrace_table_size; i++) {
-        printf("name:%-10s\taddr:0x%08x\t\t\tsize:%-5d\n", ftrace_table[i].name, ftrace_table[i].addr, ftrace_table[i].size);
+        printf("name:%-20s\taddr:0x%08x\t\t\tsize:%-5d\n", ftrace_table[i].name, ftrace_table[i].addr, ftrace_table[i].size);
     }
     return;
 }
