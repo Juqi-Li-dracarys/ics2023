@@ -23,6 +23,12 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
     if(ref_r->gpr[i] != gpr(i)) {
       printf("difftest fail @PC = 0x%08x, congratulation!\n", pc);
+      puts("register map in NEMU:");
+      for(int j = 0; j < 32; j++) {
+        printf("%s:0X%08x ",regs[j], ref_r->gpr[j]);
+        if((j + 1) % 4 == 0)
+        putchar('\n');
+      }
       return false;
     }
   }
