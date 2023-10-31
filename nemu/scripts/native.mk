@@ -35,7 +35,7 @@ run-env: $(BINARY) $(DIFF_REF_SO)
 
 test: run-env
 	$(call git_commit, "run NEMU")
-	echo "c\nq" | $(NEMU_EXEC)
+	@echo "c\nq" | $(NEMU_EXEC)
 
 run: run-env
 	$(call git_commit, "run NEMU")
