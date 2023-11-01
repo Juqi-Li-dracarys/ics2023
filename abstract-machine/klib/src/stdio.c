@@ -38,7 +38,14 @@ uint16_t str2str(char *des_str, char *src) {
 }
 
 int printf(const char *fmt, ...) {
-  panic("Not implemented");
+  char temp [1000] = {0};
+  va_list ap;
+  va_start(ap, fmt);
+  int size = vsprintf(temp, fmt, ap);
+  for(int i = 0; i < size; i++) {
+    putch(temp[i]);
+  }
+  return size;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
