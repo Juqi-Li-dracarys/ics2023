@@ -41,17 +41,20 @@ uint16_t str2str(char *des_str, char *src) {
 
 int printf(const char *fmt, ...) {
   // char temp [100] = {0};
-  va_list ap;
-  va_start(ap, fmt);
-  if(va_arg(ap, int) != -2147483648) {
-    halt(1);
-  }
+  // va_list ap;
+  // va_start(ap, fmt);
   // int size = vsprintf(temp, fmt, ap);
   // va_end(ap);
   // for(int i = 0; i < size; i++) {
   //   putch(temp[i]);
   // }
   // return size;
+
+  va_list ap;
+  va_start(ap, fmt);
+  if(va_arg(ap, int) != -2147483648) {
+    halt(1);
+  }
   return 0;
 }
 
