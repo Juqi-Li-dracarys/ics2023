@@ -91,6 +91,9 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   panic("Not implemented");
 }
 
+
+
+// Hit good trap
 void panic_test_1(char *out, const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
@@ -99,6 +102,7 @@ void panic_test_1(char *out, const char *fmt, ...) {
   }
 }
 
+// Hit bad trap
 void panic_test_2(const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
