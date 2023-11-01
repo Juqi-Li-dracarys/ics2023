@@ -44,6 +44,7 @@ int printf(const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
   int size = vsprintf(temp, fmt, ap);
+  va_end(ap);
   for(int i = 0; i < size; i++) {
     putch(temp[i]);
   }
