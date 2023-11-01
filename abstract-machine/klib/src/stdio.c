@@ -65,7 +65,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     else {
   // 匹配到 %, 则读取后一个字符
       switch(*(fmt + 1)) {
-        case 'd': arg_i = (int32_t)va_arg(ap, int);if (arg_i != -2147483648){ halt(1); } size_in = int2str(out, arg_i); fmt += 2; out += size_in; size_str += size_in; break;
+        case 'd': arg_i = va_arg(ap, int);if (arg_i != -2147483648){ halt(1); } size_in = int2str(out, arg_i); fmt += 2; out += size_in; size_str += size_in; break;
         case 's': size_in = str2str(out, va_arg(ap, char *)); fmt += 2; out += size_in; size_str += size_in; break;
         default: *out = *fmt; out++; fmt++; size_str++; break;
       }
