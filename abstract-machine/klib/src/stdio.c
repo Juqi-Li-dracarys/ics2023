@@ -10,17 +10,19 @@ uint16_t int2str(char *str, int num) {
   uint16_t offset = 0;
   char temp[20] = {0}; 
   int tempOffset = 0;
+
   // 正负判断
   if (num < 0) {
     str[offset++] = '-';
-    num = -num;
   }
+  uint32_t abs_num = abs(num);
   // 低位提取
   do {
-    temp[tempOffset++] = '0' + (num % 10);
-    num /= 10;
+    temp[tempOffset++] = '0' + (abs_num % 10);
+    abs_num /= 10;
   } 
-  while (num > 0 && tempOffset <= 20);
+  while (abs_num > 0 && tempOffset <= 20);
+  
   while (tempOffset > 0) {
     str[offset++] = temp[--tempOffset];
   }
