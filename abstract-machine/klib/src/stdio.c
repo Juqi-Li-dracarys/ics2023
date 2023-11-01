@@ -15,14 +15,14 @@ uint16_t int2str(char *str, int num) {
   if (num < 0) {
     str[offset++] = '-';
   }
-  uint32_t abs_num = abs(num);
+  uint32_t abs_num = (uint32_t)abs(num);
   // 低位提取
   do {
     temp[tempOffset++] = '0' + (abs_num % 10);
     abs_num /= 10;
   } 
   while (abs_num > 0 && tempOffset <= 20);
-  
+
   while (tempOffset > 0) {
     str[offset++] = temp[--tempOffset];
   }
