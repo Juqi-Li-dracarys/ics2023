@@ -40,28 +40,20 @@ uint16_t str2str(char *des_str, char *src) {
 }
 
 int printf(const char *fmt, ...) {
-  // char temp [100] = {0};
-  // va_list ap;
-  // va_start(ap, fmt);
-  // int size = vsprintf(temp, fmt, ap);
-  // va_end(ap);
-  // for(int i = 0; i < size; i++) {
-  //   putch(temp[i]);
-  // }
-  // return size;
-
+  char temp [100] = {0};
   va_list ap;
   va_start(ap, fmt);
-  if(va_arg(ap, int) != -2147483648) {
-    halt(1);
+  int size = vsprintf(temp, fmt, ap);
+  va_end(ap);
+  for(int i = 0; i < size; i++) {
+    putch(temp[i]);
   }
-  return 0;
+  return size;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
   int size_str = 0;
   int size_in = 0;
-  int arg_i = 0;
   while(*fmt != '\0') {
     // 未成功匹配到%，则直接复制粘贴
     if(*fmt != '%') {
@@ -72,7 +64,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     else {
   // 匹配到 %, 则读取后一个字符
       switch(*(fmt + 1)) {
-        case 'd': arg_i = va_arg(ap, int); if (arg_i != -2147483648){ halt(1); } size_in = int2str(out, arg_i); fmt += 2; out += size_in; size_str += size_in; break;
+        case 'd': size_in = int2str(out, va_arg(ap, int)); fmt += 2; out += size_in; size_str += size_in; break;
         case 's': size_in = str2str(out, va_arg(ap, char *)); fmt += 2; out += size_in; size_str += size_in; break;
         default: *out = *fmt; out++; fmt++; size_str++; break;
       }
@@ -83,19 +75,12 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 }
 
 int sprintf(char *out, const char *fmt, ...) {
-  // int out_size = 0;
-  // va_list ap;
-  // va_start(ap, fmt);
-  // out_size = vsprintf(out, fmt, ap);
-  // va_end(ap);
-  // return out_size;
-
+  int out_size = 0;
   va_list ap;
   va_start(ap, fmt);
-  if(va_arg(ap, int) != -2147483648) {
-    halt(1);
-  }
-  return 0;
+  out_size = vsprintf(out, fmt, ap);
+  va_end(ap);
+  return out_size;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
@@ -104,6 +89,22 @@ int snprintf(char *out, size_t n, const char *fmt, ...) {
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   panic("Not implemented");
+}
+
+void panic_test_1(char *out, const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  if(va_arg(ap, int) != -2147483648) {
+    halt(1);
+  }
+}
+
+void panic_test_2(const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  if(va_arg(ap, int) != -2147483648) {
+    halt(1);
+  }
 }
 
 #endif
