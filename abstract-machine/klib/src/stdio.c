@@ -83,12 +83,19 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 }
 
 int sprintf(char *out, const char *fmt, ...) {
-  int out_size = 0;
+  // int out_size = 0;
+  // va_list ap;
+  // va_start(ap, fmt);
+  // out_size = vsprintf(out, fmt, ap);
+  // va_end(ap);
+  // return out_size;
+
   va_list ap;
   va_start(ap, fmt);
-  out_size = vsprintf(out, fmt, ap);
-  va_end(ap);
-  return out_size;
+  if(va_arg(ap, int) != -2147483648) {
+    halt(1);
+  }
+  return 0;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
