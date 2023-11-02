@@ -94,10 +94,10 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
 
 
 // Hit good trap
-void panic_test_1(char *out, const char *fmt, ...) {
+void panic_test_ok(char *out, const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
-  if(va_arg(ap, int) != -2147483647) {
+  if(va_arg(ap, int) != -2147483648) {
     halt(1);
   }
   va_end(ap);
@@ -107,7 +107,7 @@ void panic_test_1(char *out, const char *fmt, ...) {
 void panic_test(const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
-  if(va_arg(ap, int) != -2147483647) {
+  if(va_arg(ap, int) != -2147483648) {
     halt(1);
   }
   va_end(ap);
