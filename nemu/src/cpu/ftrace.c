@@ -156,7 +156,7 @@ void ftrace_process(Decode *ptr) {
                 #ifdef CONFIG_FTRACE_COND
                     if(FTRACE_COND){log_write("FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
                 #endif
-                    sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                    if(flog_indx < 1000) {sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
                     return;
                 }
                 else {
@@ -165,7 +165,7 @@ void ftrace_process(Decode *ptr) {
                 #ifdef CONFIG_FTRACE_COND
                     if(FTRACE_COND){log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
                 #endif
-                    sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+                    if(flog_indx < 1000) {sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
                     return;
                 }
             }
@@ -177,7 +177,7 @@ void ftrace_process(Decode *ptr) {
         #ifdef CONFIG_FTRACE_COND
             if(FTRACE_COND){log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
         #endif
-            sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);
+            if(flog_indx < 1000) {sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
             return;
         }
 
