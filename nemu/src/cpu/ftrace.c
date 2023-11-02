@@ -4,9 +4,13 @@
 #include <../include/cpu/decode.h>
 #include <../include/utils.h>
 
+#define FTRACE_TABLE_SIZE 1000
+#define FUN_STACK_SIZE 1000
+#define FUN_LOG_SIZE 2000
+
 typedef struct ftrace_f {
     uint32_t addr;    // function address
-    char name [30];   // function name
+    char name [50];   // function name
     uint32_t size;    // function size
 } ftrace_fun; 
 
@@ -16,12 +20,12 @@ typedef struct ftrace_s {
 } ftrace_stack; 
 
 FILE *elf_fp = NULL;
-ftrace_fun ftrace_table [500] = {0};   // record fun
+ftrace_fun ftrace_table [FTRACE_TABLE_SIZE] = {0};  // record fun
 uint32_t ftrace_table_size = 0;
-ftrace_stack fun_stack [500] = {0};    // fun stack
-int32_t stack_top = -1;                // 栈顶指针
-uint32_t stack_cum = 0;                // 累计入栈函数个数
-char flog [1000][150] = {0};           // 调用返回记录
+ftrace_stack fun_stack [FUN_STACK_SIZE] = {0};      // fun stack
+int32_t stack_top = -1;                             // 栈顶指针
+uint32_t stack_cum = 0;                             // 累计入栈函数个数
+char flog [FUN_LOG_SIZE][150] = {0};                // 调用返回记录
 uint32_t flog_indx = 0;
 
 #define FTRACE_COND (strcmp(CONFIG_FTRACE_COND, "true") == 0)
@@ -29,9 +33,9 @@ uint32_t flog_indx = 0;
 // Success return 1, else return 0
 uint8_t init_ftrace(char *elf_addr) {
 
-    Elf32_Ehdr ehdr = {0};          // ELF头
-    Elf32_Shdr shdr [500] = {0};    // 节头表
-    Elf32_Sym sym_table [500]= {0}; // 符号表
+    Elf32_Ehdr ehdr = {0};           // ELF头
+    Elf32_Shdr shdr [1000] = {0};    // 节头表
+    Elf32_Sym sym_table [1000]= {0}; // 符号表
     size_t read_size;
     if ((elf_fp = fopen(elf_addr, "rb")) == NULL) {
         puts("读取ELF文件失败, ftrace 未启动.");
@@ -57,7 +61,7 @@ uint8_t init_ftrace(char *elf_addr) {
     fseek(elf_fp, ehdr.e_shoff, SEEK_SET);
     read_size = fread(&shdr, ehdr.e_shentsize, ehdr.e_shnum, elf_fp);
     // 跳转到shstrtab, 并全部读取
-    char shstr_table [5000] = {0};
+    char shstr_table [10000] = {0};
     fseek(elf_fp, shdr[ehdr.e_shstrndx].sh_offset, SEEK_SET);
     read_size = fread(&shstr_table, 1, shdr[ehdr.e_shstrndx].sh_size, elf_fp);
     // 查找 strtab, 并跳转读取
@@ -67,7 +71,7 @@ uint8_t init_ftrace(char *elf_addr) {
             break;
         }
     }
-    char str_table [5000] = {0};
+    char str_table [10000] = {0};
     fseek(elf_fp, shdr[index].sh_offset, SEEK_SET);
     read_size = fread(&str_table, 1, shdr[index].sh_size, elf_fp);
     // 查找 symtab, 并跳转读取
@@ -156,7 +160,7 @@ void ftrace_process(Decode *ptr) {
                 #ifdef CONFIG_FTRACE_COND
                     if(FTRACE_COND){log_write("FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
                 #endif
-                    if(flog_indx < 1000) {sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
+                    if(flog_indx < FUN_LOG_SIZE) {sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t ret  (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
                     return;
                 }
                 else {
@@ -165,7 +169,7 @@ void ftrace_process(Decode *ptr) {
                 #ifdef CONFIG_FTRACE_COND
                     if(FTRACE_COND){log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
                 #endif
-                    if(flog_indx < 1000) {sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
+                    if(flog_indx < FUN_LOG_SIZE) {sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
                     return;
                 }
             }
@@ -177,7 +181,7 @@ void ftrace_process(Decode *ptr) {
         #ifdef CONFIG_FTRACE_COND
             if(FTRACE_COND){log_write("FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
         #endif
-            if(flog_indx < 1000) {sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
+            if(flog_indx < FUN_LOG_SIZE) {sprintf(flog[flog_indx++], "FTRACE: 0x%08x\t call (stack_idx = %03u)[%s@0x%08x]\n", ptr->pc, temp.fun_stack_index, ftrace_table[temp.fun_table_index].name, ftrace_table[temp.fun_table_index].addr);}
             return;
         }
 
