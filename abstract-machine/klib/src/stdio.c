@@ -104,7 +104,7 @@ void panic_test_1(char *out, const char *fmt, ...) {
 }
 
 // Hit bad trap
-void panic_test_2(const char *fmt, ...) {
+void panic_test(const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
   if(va_arg(ap, int) != -2147483647) {
