@@ -43,7 +43,6 @@ void *malloc(size_t size) {
   if(size < (uint8_t *)heap.end - (uint8_t *)old_addr) {
     old_addr += size;
   }
-  old_addr += size;
   return (void *)temp;
 #endif
   return NULL;

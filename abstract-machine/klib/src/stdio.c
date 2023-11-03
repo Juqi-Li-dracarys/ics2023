@@ -29,7 +29,6 @@ uint16_t int2str(char *str, int num) {
   return offset;
 }
 
-// num 为 str，将其保存到 str 所指字符串中，返回 str 的偏移量
 uint16_t str2str(char *des_str, char *src) {
   uint16_t offset = 0;
   while (*src != '\0') {
@@ -37,6 +36,11 @@ uint16_t str2str(char *des_str, char *src) {
     src++;
   }
   return offset;
+}
+
+uint16_t ch2str(char *des_str, char c) {
+  *des_str = c;
+  return 1;
 }
 
 int printf(const char *fmt, ...) {
@@ -66,6 +70,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       switch(*(fmt + 1)) {
         case 'd': size_in = int2str(out, va_arg(ap, int)); fmt += 2; out += size_in; size_str += size_in; break;
         case 's': size_in = str2str(out, va_arg(ap, char *)); fmt += 2; out += size_in; size_str += size_in; break;
+        case 'c': size_in = ch2str(out, (char)va_arg(ap, int)); fmt += 2; out += size_in; size_str += size_in; break;
         default: *out = *fmt; out++; fmt++; size_str++; break;
       }
     }
