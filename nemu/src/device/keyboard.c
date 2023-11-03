@@ -49,6 +49,7 @@ static void init_keymap() {
 static int key_queue[KEY_QUEUE_LEN] = {};
 static int key_f = 0, key_r = 0;
 
+// 以循环队列的形式将所有按下/松开的按键存入队列中，读按键数据则出队
 static void key_enqueue(uint32_t am_scancode) {
   key_queue[key_r] = am_scancode;
   key_r = (key_r + 1) % KEY_QUEUE_LEN;
@@ -66,6 +67,7 @@ static uint32_t key_dequeue() {
 
 void send_key(uint8_t scancode, bool is_keydown) {
   if (nemu_state.state == NEMU_RUNNING && keymap[scancode] != NEMU_KEY_NONE) {
+    // 如果按下，则第15位为1，松开则为0
     uint32_t am_scancode = keymap[scancode] | (is_keydown ? KEYDOWN_MASK : 0);
     key_enqueue(am_scancode);
   }
