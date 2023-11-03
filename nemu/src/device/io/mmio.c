@@ -15,8 +15,10 @@
 
 #include <device/map.h>
 #include <memory/paddr.h>
+#include <isa.h>
 
 #define NR_MAP 16
+#define DTRACE_COND (strcmp(CONFIG_DTRACE_COND, "true") == 0)
 
 static IOMap maps[NR_MAP] = {};
 static int nr_map = 0;
@@ -55,9 +57,18 @@ void add_mmio_map(const char *name, paddr_t addr, void *space, uint32_t len, io_
 
 /* bus interface */
 word_t mmio_read(paddr_t addr, int len) {
-  return map_read(addr, len, fetch_mmio_map(addr));
+  IOMap* temp = fetch_mmio_map(addr);
+  word_t data = map_read(addr, len, temp);
+#ifdef CONFIG_DTRACE_COND
+  if (DTRACE_COND) {log_write("DTRACE: 0x%08x\t read 0x%08x from device: %s\n", cpu.pc, data, temp->name);}
+#endif
+  return data;
 }
 
 void mmio_write(paddr_t addr, int len, word_t data) {
-  map_write(addr, len, data, fetch_mmio_map(addr));
+  IOMap* temp = fetch_mmio_map(addr);
+#ifdef CONFIG_DTRACE_COND
+  if (DTRACE_COND) {log_write("DTRACE: 0x%08x\t write 0x%08x in device: %s\n", cpu.pc, data, temp->name);}
+#endif
+  map_write(addr, len, data, temp);
 }
