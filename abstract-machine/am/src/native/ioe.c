@@ -29,7 +29,6 @@ static void __am_net_config (AM_NET_CONFIG_T *cfg)    { cfg->present = false; }
 
 typedef void (*handler_t)(void *buf);
 
-// 记录各个函数的指针
 static void *lut[128] = {
   [AM_TIMER_CONFIG] = __am_timer_config,
   [AM_TIMER_RTC   ] = __am_timer_rtc,
@@ -79,11 +78,3 @@ static void do_io(int reg, void *buf) {
 
 void ioe_read (int reg, void *buf) { do_io(reg, buf); }
 void ioe_write(int reg, void *buf) { do_io(reg, buf); }
-
-
-/*
- 整个ioe的流程大概如下：
- 1. 客户程序调用封装好的 io_read(reg) 或者 io_write(reg, ...)，里面包含临时变量，注意串口比较特殊，API直接是putch(), 无ioe
- 2. 调用ioe_write 或者 read, 进一步调用do_io,利用 reg 在 lut 中找到对应的ioe函数并执行
- 3. 执行函数会将值存入临时变量，结束后io_read可以将临时变量return
-*/
