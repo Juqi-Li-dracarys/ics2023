@@ -16,17 +16,18 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
+  int i, j, k = 0;
   uint16_t x_max = inw(VGACTL_ADDR + 2);
   uint16_t y_max = inw(VGACTL_ADDR);
-  uint32_t color = *((uint32_t *)(ctl->pixels));
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
   }
-  for(int i = ctl->x; i < ctl->x + ctl->w; i++) {
-    for(int j = ctl->y; j < ctl->y + ctl->h; j++) {
+  for(j = ctl->y; j < ctl->y + ctl->h; j++) {
+    for(i = ctl->x; i < ctl->x + ctl->w; i++) {
       if(i >= 0 && i < x_max && j >= 0 && j < y_max) {
-        outl(FB_ADDR + i + j * x_max, color);
+        outl(FB_ADDR + i + j * x_max, *((uint32_t *)(ctl->pixels) + k));
       }
+      k++;
     }
   }
 }
