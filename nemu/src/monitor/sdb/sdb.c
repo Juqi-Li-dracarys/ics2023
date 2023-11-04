@@ -128,7 +128,9 @@ static int cmd_info(char *args) {
   }
   else if (strcmp(args,(const char*)"w") == 0){
     // Print the value of watching point
+  #ifdef CONFIG_WBCHECK
     print_wp();
+  #endif
   }
 #ifdef CONFIG_ITRACE
   else if (strcmp(args,(const char*)"i-ring") == 0){
@@ -243,25 +245,27 @@ static int cmd_w(char *args) {
      return 0;
   }
   else {
+#ifdef CONFIG_WBCHECK
     bool success;
     unsigned int value = expr(args, &success);
     if(success != true) {
       return 0;
     }
     else {
-#ifdef CONFIG_WBCHECK
       WP* ptr = new_wp();
       strcpy(ptr->expr, args);
       ptr->result = value;
       printf("Watching point %d: expr: %s, latest value: %u is created.\n", ptr->NO, ptr->expr, ptr->result);
-#endif
       return 0;
     }
+#endif
   }
+  return 0;
 }
 
 // TASK7: Delete watching point or break point
 static int cmd_d(char *args) {
+#ifdef CONFIG_WBCHECK
   if (args == NULL) {
     /* no argument given */
      delete_bp();
@@ -270,15 +274,16 @@ static int cmd_d(char *args) {
   else {
     unsigned int index;
     sscanf(args, "%u", &index);
-#ifdef CONFIG_WBCHECK
     delete_wp(index);
-#endif
     return 0;
   }
+#endif
+  return 0;
 }
 
 // TASK8: Set PC break point
 static int cmd_b(char *args) {
+#ifdef CONFIG_WBCHECK
   bool success;
   if (args == NULL) {
     /* no argument given */
@@ -291,6 +296,7 @@ static int cmd_b(char *args) {
       printf("Wrong match in cmb_d.\n");
     }
   }
+#endif
   return 0;
 }
 
