@@ -22,6 +22,11 @@
 
 static int is_batch_mode = false;
 
+
+void init_regex();
+word_t vaddr_read(vaddr_t addr, int len);
+
+#ifdef CONFIG_WBCHECK
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
@@ -30,6 +35,15 @@ typedef struct watchpoint {
   char expr [128]; // To store the expr
   uint32_t result; // To store the latest result of expr
 } WP;
+
+void init_wp_pool();
+void init_wp_pool();
+WP* new_wp();
+void print_wp(void);
+void delete_wp(unsigned int index);
+void set_bp(uint32_t pc_add);
+void delete_bp(void);
+#endif
 
 #ifdef CONFIG_ITRACE
 typedef struct buffer
@@ -46,16 +60,6 @@ ring_buffer *init_ring_buffer(void);
 void print_ring_buffer(ring_buffer *head);
 void destroy_ring_buffer(ring_buffer *head);
 #endif
-
-void init_regex();
-void init_wp_pool();
-word_t vaddr_read(vaddr_t addr, int len);
-void init_wp_pool();
-WP* new_wp();
-void print_wp(void);
-void delete_wp(unsigned int index);
-void set_bp(uint32_t pc_add);
-void delete_bp(void);
 
 #ifdef CONFIG_FTRACE
 void ftrace_table_d(void);
@@ -245,10 +249,12 @@ static int cmd_w(char *args) {
       return 0;
     }
     else {
+#ifdef CONFIG_WBCHECK
       WP* ptr = new_wp();
       strcpy(ptr->expr, args);
       ptr->result = value;
       printf("Watching point %d: expr: %s, latest value: %u is created.\n", ptr->NO, ptr->expr, ptr->result);
+#endif
       return 0;
     }
   }
@@ -264,7 +270,9 @@ static int cmd_d(char *args) {
   else {
     unsigned int index;
     sscanf(args, "%u", &index);
+#ifdef CONFIG_WBCHECK
     delete_wp(index);
+#endif
     return 0;
   }
 }
@@ -388,12 +396,11 @@ void init_sdb() {
   init_regex();
 
   /* Initialize the watchpoint pool. */
+#ifdef CONFIG_WBCHECK
   init_wp_pool();
-
+#endif
    /* Initialize the ring buffer. */
 #ifdef CONFIG_ITRACE
   ring_head = init_ring_buffer();
-#else
-  puts("ring buffer is not active");
 #endif
 }

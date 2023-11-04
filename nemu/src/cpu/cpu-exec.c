@@ -31,8 +31,11 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
+
+#ifdef CONFIG_WBCHECK
 bool check_wp(void);
 bool check_bp(Decode * s);
+#endif
 
 // Ftrace
 #ifdef CONFIG_FTRACE
@@ -127,7 +130,6 @@ static void statistic() {
 void assert_fail_msg() {
   isa_reg_display();
   IFDEF(CONFIG_ITRACE, print_ring_buffer(ring_head));
-  IFDEF(CONFIG_FTRACE, ftrace_log_d());
   statistic();
 }
 
