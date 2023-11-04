@@ -64,12 +64,13 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   // record trace in ring buffer
   IFDEF(CONFIG_ITRACE, ring_head = write_ring_buffer(ring_head, _this->logbuf));
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
-  // 监视点和断点的 trace 打印
+#ifdef CONFIG_WBCHECK
   if (check_wp() == true || check_bp(_this) == true) {
     // To avoid OJ compile error
     IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
     nemu_state.state = NEMU_STOP;
   }
+#endif 
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
