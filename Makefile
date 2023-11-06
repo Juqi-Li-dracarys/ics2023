@@ -20,7 +20,7 @@ submit:
 	git gc
 	STUID=$(STUID) STUNAME=$(STUNAME) bash -c "$$(curl -s http://why.ink:8080/static/submit.sh)"
 	cd ~/PA
-	zip -q -r ics2023.zip $(NEMU_HOME)/..
+	zip -q -r ~/PA/ics2023.zip $(NEMU_HOME)/..
 	git add .
 	git commit -m update_ics2023
 	git push origin
