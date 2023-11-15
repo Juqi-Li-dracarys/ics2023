@@ -24,8 +24,8 @@ enum {
   reg_sbuf_size,
   reg_init,
   reg_count,
-  reg_head,     // head of quene
-  reg_tail,     // tail of quene(index of the next element)
+  reg_head,     // head of the quene
+  reg_tail,     // tail of the quene(index of the next element)
   reg_overflow, // 1 is buf_overflow
   reg_state,    // 0 is playing, 1 is writing
   nr_reg
@@ -36,29 +36,26 @@ static uint32_t *audio_base = NULL;
 
 // Audio callback fucntion
 void audio_callback(void *userdata, Uint8 *stream, int len) {
-  if(audio_base[9] == 1)
-    return;
-  else {
-    uint32_t count = audio_base[5];
-    uint32_t head = audio_base[6];
-    uint32_t tail = audio_base[7];
-    while(len > 0) {
-      if(head != tail) {
-        *stream = sbuf[head];
-        head = (head + 1) % CONFIG_SB_SIZE;
-        count--;
-      }
-      else {
-        *stream = 0;
-      }
-      stream++;
-      len--;
+  while (audio_base[reg_state] == true);
+  uint32_t count = audio_base[reg_count];
+  uint32_t head = audio_base[reg_head];
+  uint32_t tail = audio_base[reg_tail];
+  while (len > 0) {
+    if (head != tail) {
+      *stream = sbuf[head];
+      head = (head + 1) % CONFIG_SB_SIZE;
+      count--;
     }
-    audio_base[5] = count;
-    audio_base[6] = head;
-    audio_base[7] = tail;
-    audio_base[8] = 0;
+    else {
+      *stream = 0;
+    }
+    stream++;
+    len--;
   }
+  audio_base[reg_count] = count;
+  audio_base[reg_head] = head;
+  audio_base[reg_tail] = tail;
+  audio_base[reg_overflow] = false;
   return;
 }
 
@@ -70,9 +67,9 @@ static void audio_io_handler(uint32_t offset, int len, bool is_write) {
     SDL_AudioSpec s = {};
     s.format = AUDIO_S16SYS;
     s.userdata = NULL;      
-    s.freq = audio_base[0];
-    s.channels = audio_base[1];
-    s.samples = audio_base[2];
+    s.freq = audio_base[reg_freq];
+    s.channels = audio_base[reg_channels];
+    s.samples = audio_base[reg_samples];
     s.callback = audio_callback;
     int ret = SDL_InitSubSystem(SDL_INIT_AUDIO);
     if (ret == 0) {

@@ -8,10 +8,10 @@
 #define AUDIO_SBUF_SIZE_ADDR (AUDIO_ADDR + 0x0c)
 #define AUDIO_INIT_ADDR      (AUDIO_ADDR + 0x10)
 #define AUDIO_COUNT_ADDR     (AUDIO_ADDR + 0x14)
-#define AUDIO_HEAD_ADDR      (AUDIO_ADDR + 0x18)
-#define AUDIO_TAIL_ADDR      (AUDIO_ADDR + 0x1C)
-#define AUDIO_OF_ADDR        (AUDIO_ADDR + 0x20)
-#define AUDIO_STATE_ADDR     (AUDIO_ADDR + 0x24)
+#define AUDIO_HEAD_ADDR      (AUDIO_ADDR + 0x18) // head of the quene
+#define AUDIO_TAIL_ADDR      (AUDIO_ADDR + 0x1C) // tail of the quene
+#define AUDIO_OF_ADDR        (AUDIO_ADDR + 0x20) // 1 is buf_overflow
+#define AUDIO_STATE_ADDR     (AUDIO_ADDR + 0x24) // 0 is playing, 1 is writing
 #define SB_SIZE 0x10000
 
 static bool present = false;
@@ -25,7 +25,7 @@ void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
   cfg->bufsize = inl(AUDIO_SBUF_SIZE_ADDR);
 }
 
-// 控制声音参数, 同时初始化
+// 声音参数设置, 同时初始化物理寄存器
 void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
   outl(AUDIO_FREQ_ADDR, (uint32_t)ctrl->freq);
   outl(AUDIO_CHANNELS_ADDR, (uint32_t)ctrl->channels);
@@ -37,8 +37,8 @@ void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
     outl(AUDIO_COUNT_ADDR, 0);
     outl(AUDIO_HEAD_ADDR, 0);
     outl(AUDIO_TAIL_ADDR, 0);
-    outl(AUDIO_OF_ADDR, 0);
-    outl(AUDIO_STATE_ADDR, 0);
+    outl(AUDIO_OF_ADDR, false);
+    outl(AUDIO_STATE_ADDR, false);
   }
 }
 
@@ -53,7 +53,7 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
   uint8_t *start = (uint8_t *)((ctl->buf).start);
   uint8_t *end = (uint8_t *)((ctl->buf).end);
   while(1) {
-    outl(AUDIO_STATE_ADDR, 1);
+    outl(AUDIO_STATE_ADDR, true);
     head = inl(AUDIO_HEAD_ADDR);
     tail = inl(AUDIO_TAIL_ADDR);
     count = inl(AUDIO_COUNT_ADDR);
@@ -65,20 +65,19 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
         count++;
       }
       else {
-        outl(AUDIO_OF_ADDR, 1);
+        outl(AUDIO_OF_ADDR, true);
         break;
       }
     }
     outl(AUDIO_HEAD_ADDR, head);
     outl(AUDIO_TAIL_ADDR, tail);
     outl(AUDIO_COUNT_ADDR, count);
-    outl(AUDIO_STATE_ADDR, 0);
-
+    outl(AUDIO_STATE_ADDR, false);
     if(inl(AUDIO_OF_ADDR) == 0) 
       break;
     else {
       // 等待回调函数将一些数据出队列
-      while(inl(AUDIO_OF_ADDR) == 1);
+      while(inl(AUDIO_OF_ADDR) == true);
     }
   }
   return;
