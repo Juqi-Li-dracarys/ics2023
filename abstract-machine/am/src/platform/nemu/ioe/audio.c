@@ -1,6 +1,7 @@
 #include <am.h>
 #include <nemu.h>
 
+// 这里手动设置 audio 是否使用
 #define CONFIG_HAS_AUDIO 1
 
 // Register in memory
