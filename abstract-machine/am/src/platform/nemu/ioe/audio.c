@@ -32,6 +32,7 @@ void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
 
 // 声音参数设置, 同时初始化物理寄存器
 void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
+#ifdef CONFIG_HAS_AUDIO
   outl(AUDIO_FREQ_ADDR, (uint32_t)ctrl->freq);
   outl(AUDIO_CHANNELS_ADDR, (uint32_t)ctrl->channels);
   outl(AUDIO_SAMPLES_ADDR, (uint32_t)ctrl->samples);
@@ -45,13 +46,17 @@ void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
     outl(AUDIO_OF_ADDR, false);
     outl(AUDIO_STATE_ADDR, false);
   }
+#endif
 }
 
 void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
+#ifdef CONFIG_HAS_AUDIO
   stat->count = inl(AUDIO_COUNT_ADDR);
+#endif
 }
 
 void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
+#ifdef CONFIG_HAS_AUDIO
   uint32_t head = 0;
   uint32_t tail = 0;
   uint32_t count = 0;
@@ -86,4 +91,5 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
     }
   }
   return;
+#endif
 }
