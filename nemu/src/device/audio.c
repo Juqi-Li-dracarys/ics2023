@@ -59,6 +59,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
     audio_base[7] = tail;
     audio_base[8] = 0;
   }
+  printf("%s\n", (char *)userdata);
   return;
 }
 
@@ -74,6 +75,7 @@ static void audio_io_handler(uint32_t offset, int len, bool is_write) {
     s.channels = audio_base[1];
     s.samples = audio_base[2];
     s.callback = audio_callback;
+    s.userdata = (char *)"fuck";
     int ret = SDL_InitSubSystem(SDL_INIT_AUDIO);
     if (ret == 0) {
       SDL_OpenAudio(&s, NULL);
