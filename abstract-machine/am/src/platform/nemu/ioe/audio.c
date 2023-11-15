@@ -17,13 +17,7 @@
 static bool present = false;
 
 void __am_audio_init() {
-  present = true;
-  // outl(AUDIO_SBUF_SIZE_ADDR, SB_SIZE);
-  outl(AUDIO_COUNT_ADDR, 0);
-  outl(AUDIO_HEAD_ADDR, 0);
-  outl(AUDIO_TAIL_ADDR, 0);
-  outl(AUDIO_OF_ADDR, 0);
-  outl(AUDIO_STATE_ADDR, 0);
+
 }
 
 void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
@@ -37,6 +31,15 @@ void __am_audio_ctrl(AM_AUDIO_CTRL_T *ctrl) {
   outl(AUDIO_CHANNELS_ADDR, (uint32_t)ctrl->channels);
   outl(AUDIO_SAMPLES_ADDR, (uint32_t)ctrl->samples);
   outl(AUDIO_INIT_ADDR, (uint32_t)true);
+  if(present == false) {
+    present = true;
+    outl(AUDIO_SBUF_SIZE_ADDR, SB_SIZE);
+    outl(AUDIO_COUNT_ADDR, 0);
+    outl(AUDIO_HEAD_ADDR, 0);
+    outl(AUDIO_TAIL_ADDR, 0);
+    outl(AUDIO_OF_ADDR, 0);
+    outl(AUDIO_STATE_ADDR, 0);
+  }
 }
 
 void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
