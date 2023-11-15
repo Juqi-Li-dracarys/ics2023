@@ -2,7 +2,7 @@
 #include <nemu.h>
 
 // 这里手动设置 audio 是否使用
-#define CONFIG_HAS_AUDIO 1
+// #define CONFIG_HAS_AUDIO 1
 
 // Register in memory
 #define AUDIO_FREQ_ADDR      (AUDIO_ADDR + 0x00)
@@ -17,7 +17,9 @@
 #define AUDIO_STATE_ADDR     (AUDIO_ADDR + 0x24) // 0 is playing, 1 is writing
 #define SB_SIZE 0x10000
 
+#ifdef CONFIG_HAS_AUDIO
 static bool present = false;
+#endif
 
 void __am_audio_init() {
 
