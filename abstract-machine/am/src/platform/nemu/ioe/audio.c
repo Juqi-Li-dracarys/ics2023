@@ -73,6 +73,7 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
     outl(AUDIO_TAIL_ADDR, tail);
     outl(AUDIO_COUNT_ADDR, count);
     outl(AUDIO_STATE_ADDR, 0);
+    
     if(inl(AUDIO_OF_ADDR) == 0) 
       break;
     else {
