@@ -47,7 +47,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
         // *stream = sbuf[head];
         *stream = 100;
         head = (head + 1) % CONFIG_SB_SIZE;
-        count--;
+        // count--;
       }
       else {
         *stream = 0;
