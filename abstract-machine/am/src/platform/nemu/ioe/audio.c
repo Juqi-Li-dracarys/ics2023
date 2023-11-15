@@ -51,7 +51,7 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
   uint32_t tail = 0;
   uint32_t count = 0;
   uint8_t *start = (uint8_t *)((ctl->buf).start);
-  uint8_t *end = (uint8_t *)((ctl->buf).start);
+  uint8_t *end = (uint8_t *)((ctl->buf).end);
   while(1) {
     outl(AUDIO_STATE_ADDR, 1);
     head = inl(AUDIO_HEAD_ADDR);
@@ -73,7 +73,7 @@ void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
     outl(AUDIO_TAIL_ADDR, tail);
     outl(AUDIO_COUNT_ADDR, count);
     outl(AUDIO_STATE_ADDR, 0);
-    
+
     if(inl(AUDIO_OF_ADDR) == 0) 
       break;
     else {
