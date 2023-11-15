@@ -1,6 +1,7 @@
 #include <am.h>
 #include <nemu.h>
-#include "../../../nemu/include/generated/autoconf.h"
+
+#define CONFIG_HAS_AUDIO 1
 
 // Register in memory
 #define AUDIO_FREQ_ADDR      (AUDIO_ADDR + 0x00)
