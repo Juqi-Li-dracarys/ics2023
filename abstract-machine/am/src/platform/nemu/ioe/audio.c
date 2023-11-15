@@ -21,7 +21,7 @@ void __am_audio_init() {
 }
 
 void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
-  cfg->present = present;
+  cfg->present = 1;
   cfg->bufsize = inl(AUDIO_SBUF_SIZE_ADDR);
 }
 
