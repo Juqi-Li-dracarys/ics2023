@@ -1,5 +1,6 @@
 #include <am.h>
 #include <nemu.h>
+#include "../../../nemu/include/generated/autoconf.h"
 
 // Register in memory
 #define AUDIO_FREQ_ADDR      (AUDIO_ADDR + 0x00)
@@ -21,8 +22,12 @@ void __am_audio_init() {
 }
 
 void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
+#ifdef CONFIG_HAS_AUDIO
   cfg->present = 1;
   cfg->bufsize = 0x10000;
+#else
+  cfg->present = 0;
+#endif
 }
 
 // 声音参数设置, 同时初始化物理寄存器
