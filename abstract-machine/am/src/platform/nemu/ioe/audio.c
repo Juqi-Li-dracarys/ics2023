@@ -22,7 +22,7 @@ void __am_audio_init() {
 
 void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
   cfg->present = 1;
-  cfg->bufsize = inl(AUDIO_SBUF_SIZE_ADDR);
+  cfg->bufsize = 0x10000;
 }
 
 // 声音参数设置, 同时初始化物理寄存器
