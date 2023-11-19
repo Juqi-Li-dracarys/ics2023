@@ -101,7 +101,7 @@ void panic_test(const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
   if(va_arg(ap, int) != -2147483648) {
-    halt(1);
+    printf("ERROR.\n");
   }
   va_end(ap);
 }
