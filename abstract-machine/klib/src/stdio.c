@@ -100,7 +100,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
 void panic_test(const char *fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
-  if(va_arg(ap, int) != -2147483648) {
+  if(va_arg(ap, int) == -2147483648) {
     printf("ERROR.\n");
   }
   va_end(ap);
