@@ -86,7 +86,7 @@ uint8_t init_ftrace(char *elf_addr) {
     index = 0;
     // Parse symbol table
     for(int i = 0; i < sym_num; i++) {
-        if(ELF32_ST_TYPE(sym_table[i].st_info) == STT_FUNC) {
+        if(ELF32_ST_TYPE(sym_table[i].st_info) == STT_FUNC && i < FTRACE_TABLE_SIZE) {
             ftrace_table[index].addr = sym_table[i].st_value;
             ftrace_table[index].size = sym_table[i].st_size;
             strcpy(ftrace_table[index].name, &str_table[sym_table[i].st_name]);
