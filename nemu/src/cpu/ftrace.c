@@ -5,7 +5,7 @@
 #include <../include/utils.h>
 
 #define FTRACE_TABLE_SIZE 1000
-#define FUN_STACK_SIZE 1000
+#define FUN_STACK_SIZE 2000
 #define FUN_LOG_SIZE 2000
 
 typedef struct ftrace_f {
@@ -34,8 +34,8 @@ uint32_t flog_indx = 0;
 uint8_t init_ftrace(char *elf_addr) {
 
     Elf32_Ehdr ehdr = {0};           // ELF头
-    Elf32_Shdr shdr [1000] = {0};    // 节头表
-    Elf32_Sym sym_table [1000]= {0}; // 符号表
+    Elf32_Shdr shdr [2000] = {0};    // 节头表
+    Elf32_Sym sym_table [2000]= {0}; // 符号表
     size_t read_size;
     if ((elf_fp = fopen(elf_addr, "rb")) == NULL) {
         puts("读取ELF文件失败, ftrace 未启动.");
@@ -61,7 +61,7 @@ uint8_t init_ftrace(char *elf_addr) {
     fseek(elf_fp, ehdr.e_shoff, SEEK_SET);
     read_size = fread(&shdr, ehdr.e_shentsize, ehdr.e_shnum, elf_fp);
     // 跳转到shstrtab, 并全部读取
-    char shstr_table [10000] = {0};
+    char shstr_table [20000] = {0};
     fseek(elf_fp, shdr[ehdr.e_shstrndx].sh_offset, SEEK_SET);
     read_size = fread(&shstr_table, 1, shdr[ehdr.e_shstrndx].sh_size, elf_fp);
     // 查找 strtab, 并跳转读取
@@ -71,7 +71,7 @@ uint8_t init_ftrace(char *elf_addr) {
             break;
         }
     }
-    char str_table [10000] = {0};
+    char str_table [20000] = {0};
     fseek(elf_fp, shdr[index].sh_offset, SEEK_SET);
     read_size = fread(&str_table, 1, shdr[index].sh_size, elf_fp);
     // 查找 symtab, 并跳转读取
@@ -99,7 +99,7 @@ uint8_t init_ftrace(char *elf_addr) {
 }
 
 void stack_push(uint32_t fun_index) {
-    if(fun_index >= ftrace_table_size || stack_top >= 499) {
+    if(fun_index >= ftrace_table_size || stack_top >= FUN_STACK_SIZE) {
         return ;
     }
     stack_top++;
