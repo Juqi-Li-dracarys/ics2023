@@ -1,8 +1,14 @@
 #include <am.h>
 #include <nemu.h>
 
+/*
+   目前版本还有很严重的 bug，
+   单独播放可以，启动音频播放后
+   超级玛丽会黑屏
+*/
+
 // 这里手动设置 audio 是否使用
-#define CONFIG_HAS_AUDIO 1
+// #define CONFIG_HAS_AUDIO 1
 
 // Register in memory
 #define AUDIO_FREQ_ADDR      (AUDIO_ADDR + 0x00)
