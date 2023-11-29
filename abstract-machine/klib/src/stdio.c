@@ -11,6 +11,8 @@ uint16_t int2str(char *str, int num) {
   char temp[20] = {0}; 
   int tempOffset = 0;
 
+
+
   // 正负判断
   if (num < 0) {
     str[offset++] = '-';
