@@ -3,7 +3,7 @@
 # usage: addenv env_name path
 function addenv() {
   sed -i -e "/^export $1=.*/d" ~/.bashrc
-  echo "export $1=`readlink -e $2`" >> ~/.bashrc
+  echo "export $1=`readlink -f $2`" >> ~/.bashrc
   echo "By default this script will add environment variables into ~/.bashrc."
   echo "After that, please run 'source ~/.bashrc' to let these variables take effect."
   echo "If you use shell other than bash, please add these environment variables manually."
@@ -40,7 +40,7 @@ function init() {
 
 case $1 in
   nemu)
-    init NJU-ProjectN/nemu ics2023 nemu true NEMU_HOME
+    init NJU-ProjectN/nemu ics2023 nemu true _NEMU_HOME_
     ;;
   abstract-machine)
     init NJU-ProjectN/abstract-machine ics2023 abstract-machine true AM_HOME
@@ -54,6 +54,20 @@ case $1 in
     ;;
   navy-apps)
     init NJU-ProjectN/navy-apps ics2023 navy-apps true NAVY_HOME
+    ;;
+  nvboard)
+    init NJU-ProjectN/nvboard master nvboard false NVBOARD_HOME
+    ;;
+  npc-chisel)
+    if [ -d npc/playground ]; then
+      echo "chisel repo is already initialized, skipping..."
+    else
+      rm -rf npc
+      init OpenXiangShan/chisel-playground master npc true NPC_HOME
+    fi
+    ;;
+  npc)
+    addenv NPC_HOME npc
     ;;
   *)
     echo "Invalid input..."
