@@ -53,7 +53,7 @@ LDFLAGS += $(CFLAGS_BUILD)
 include $(_NEMU_HOME_)/scripts/config.mk
 
 ifdef CONFIG_TARGET_AM
-include $(AM_HOME)/Makefile
+include $(_AM_HOME_)/Makefile
 LINKAGE += $(ARCHIVES)
 else
 # Include rules to build NEMU

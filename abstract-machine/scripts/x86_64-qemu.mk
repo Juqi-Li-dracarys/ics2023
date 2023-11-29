@@ -1,5 +1,5 @@
-include $(AM_HOME)/scripts/isa/x86_64.mk
-include $(AM_HOME)/scripts/platform/qemu.mk
+include $(_AM_HOME_)/scripts/isa/x86_64.mk
+include $(_AM_HOME_)/scripts/platform/qemu.mk
 
 AM_SRCS := x86/qemu/start64.S \
            x86/qemu/trap64.S \
