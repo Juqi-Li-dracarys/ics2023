@@ -8,14 +8,16 @@ AM_SRCS := platform/nemu/trm.c \
            platform/nemu/mpe.c
 
 CFLAGS    += -fdata-sections -ffunction-sections
-LDFLAGS   += -T $(AM_HOME)/scripts/linker.ld \
+LDFLAGS   += -T $(_AM_HOME_)/scripts/linker.ld \
              --defsym=_pmem_start=0x80000000 --defsym=_entry_offset=0x0
 LDFLAGS   += --gc-sections -e _start
 NEMUFLAGS += -l $(shell dirname $(IMAGE).elf)/nemu-log.txt
+# send the elf dir to the main
+NEMUFLAGS += -f $(IMAGE).elf
 
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
-CFLAGS += -I$(AM_HOME)/am/src/platform/nemu/include
-.PHONY: $(AM_HOME)/am/src/platform/nemu/trm.c
+CFLAGS += -I$(_AM_HOME_)/am/src/platform/nemu/include
+.PHONY: $(_AM_HOME_)/am/src/platform/nemu/trm.c
 
 image: $(IMAGE).elf
 	@$(OBJDUMP) -d $(IMAGE).elf > $(IMAGE).txt
@@ -24,6 +26,9 @@ image: $(IMAGE).elf
 
 run: image
 	$(MAKE) -C $(_NEMU_HOME_) ISA=$(ISA) run ARGS="$(NEMUFLAGS)" IMG=$(IMAGE).bin
+
+test: image
+	$(MAKE) -C $(_NEMU_HOME_) ISA=$(ISA) test ARGS="$(NEMUFLAGS)" IMG=$(IMAGE).bin
 
 gdb: image
 	$(MAKE) -C $(_NEMU_HOME_) ISA=$(ISA) gdb ARGS="$(NEMUFLAGS)" IMG=$(IMAGE).bin

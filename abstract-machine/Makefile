@@ -19,13 +19,13 @@ ifeq ($(findstring $(MAKECMDGOALS),clean|clean-all|html),)
 ### Print build info message
 $(info # Building $(NAME)-$(MAKECMDGOALS) [$(ARCH)])
 
-### Check: environment variable `$AM_HOME` looks sane
-ifeq ($(wildcard $(AM_HOME)/am/include/am.h),)
-  $(error $$AM_HOME must be an AbstractMachine repo)
+### Check: environment variable `$_AM_HOME_` looks sane
+ifeq ($(wildcard $(_AM_HOME_)/am/include/am.h),)
+  $(error $$_AM_HOME_ must be an AbstractMachine repo)
 endif
 
 ### Check: environment variable `$ARCH` must be in the supported list
-ARCHS = $(basename $(notdir $(shell ls $(AM_HOME)/scripts/*.mk)))
+ARCHS = $(basename $(notdir $(shell ls $(_AM_HOME_)/scripts/*.mk)))
 ifeq ($(filter $(ARCHS), $(ARCH)), )
   $(error Expected $$ARCH in {$(ARCHS)}, Got "$(ARCH)")
 endif
@@ -60,7 +60,7 @@ OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
 LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recursions
 LINKAGE   = $(OBJS) \
   $(addsuffix -$(ARCH).a, $(join \
-    $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
+    $(addsuffix /build/, $(addprefix $(_AM_HOME_)/, $(LIBS))), \
     $(LIBS) ))
 
 ## 3. General Compilation Flags
@@ -76,11 +76,11 @@ OBJCOPY   = $(CROSS_COMPILE)objcopy
 READELF   = $(CROSS_COMPILE)readelf
 
 ### Compilation flags
-INC_PATH += $(WORK_DIR)/include $(addsuffix /include/, $(addprefix $(AM_HOME)/, $(LIBS)))
+INC_PATH += $(WORK_DIR)/include $(addsuffix /include/, $(addprefix $(_AM_HOME_)/, $(LIBS)))
 INCFLAGS += $(addprefix -I, $(INC_PATH))
 
 ARCH_H := arch/$(ARCH).h
-CFLAGS   += -O2 -MMD -Wall -Werror $(INCFLAGS) \
+CFLAGS   += -O2 -g -MMD -Wall -Werror $(INCFLAGS) \
             -D__ISA__=\"$(ISA)\" -D__ISA_$(shell echo $(ISA) | tr a-z A-Z)__ \
             -D__ARCH__=$(ARCH) -D__ARCH_$(shell echo $(ARCH) | tr a-z A-Z | tr - _) \
             -D__PLATFORM__=$(PLATFORM) -D__PLATFORM_$(shell echo $(PLATFORM) | tr a-z A-Z | tr - _) \
@@ -94,7 +94,7 @@ LDFLAGS  += -z noexecstack
 ## 4. Arch-Specific Configurations
 
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
--include $(AM_HOME)/scripts/$(ARCH).mk
+-include $(_AM_HOME_)/scripts/$(ARCH).mk
 
 ### Fall back to native gcc/binutils if there is no cross compiler
 ifeq ($(wildcard $(shell which $(CC))),)
@@ -126,7 +126,7 @@ $(DST_DIR)/%.o: %.S
 
 ### Rule (recursive make): build a dependent library (am, klib, ...)
 $(LIBS): %:
-	@$(MAKE) -s -C $(AM_HOME)/$* archive
+	@$(MAKE) -s -C $(_AM_HOME_)/$* archive
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `IMAGE.elf`, the final ELF binary to be packed into image (ld)
 $(IMAGE).elf: $(OBJS) am $(LIBS)
