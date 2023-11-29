@@ -13,6 +13,8 @@ uint16_t int2str(char *str, int num) {
 
 
 
+
+
   // 正负判断
   if (num < 0) {
     str[offset++] = '-';
