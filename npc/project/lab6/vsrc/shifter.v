@@ -8,7 +8,7 @@ module shifter (
         if(rst == 1'b1) begin
             dout <= 8'b1;
         end
-        else if(dout == 0) begin
+        else if(dout == 8'b0) begin
             dout <= 8'b1;
         end
         else begin
