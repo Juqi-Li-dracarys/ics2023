@@ -1,32 +1,51 @@
 
-ifneq ($(words $(CURDIR)),1)
- $(error Unsupported: GNU Make cannot build in directories containing spaces, build elsewhere: '$(CURDIR)')
-endif
-
-ifeq ($(VERILATOR_ROOT),)
-VERILATOR = verilator
-else
-export VERILATOR_ROOT
-VERILATOR = $(VERILATOR_ROOT)/bin/verilator
-endif
-
-all:
-	@echo "Write this Makefile by your self."
-
-sim:
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "-- Verilator hello-world simple example"
-	@echo "-- VERILATE & BUILD --------"
-	$(VERILATOR) -Wall top.v test.cpp --cc --trace --exe --build
-	@echo "-- RUN ---------------------"
-	obj_dir/Vtop
-	@echo "-- FINISH ---------------------""
+# Makefile for NPC
+# Author: LJQ
 
 include ../Makefile
 
-wave:
-	gtkwave wave.vcd
+# define some flags
+VERILATOR = verilator
+TOPNAME = top
+VERILATOR_CFLAGS += --cc --trace --build
+BUILD_DIR = $(NPC_HOME)/build
+OBJ_DIR = $(BUILD_DIR)/obj_dir
+BIN = $(BUILD_DIR)/$(TOPNAME)
+INC_PATH ?=
 
-clean::
-	-rm -rf obj_dir
-	-rm -rf wave.vcd
+# project source
+VSRCS = $(shell find $(abspath $(NPC_HOME)/vsrc) -name "*.v")
+CSRCS = $(shell find $(abspath $(NPC_HOME)/csrc) -name "*.c" -or -name "*.cpp")
+
+# import nvboard
+INCFLAGS = $(addprefix -I, $(INC_PATH))
+CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
+
+$(shell mkdir -p $(BUILD_DIR))
+
+# compile rulers
+$(BIN): $(VSRCS) $(CSRCS)
+	@rm -rf $(OBJ_DIR)
+	@echo "------- COMPILING THE SOURCE CODE--------"
+	$(VERILATOR) $(VERILATOR_CFLAGS) \
+		--top-module $(TOPNAME) $^ \
+		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
+
+sim: $(BIN)
+	$(call git_commit, "sim RTL")
+	@echo "------- RUNNING THE SIMULATION--------"
+	@$^
+	@echo "-------- FINISH SIMULATION--------"
+
+wave: sim
+	@echo "------- DISPLAY THE WAVE--------"
+	@gtkwave $(NPC_HOME)/*.vcd
+	@echo "-------- FINISH --------"
+
+clean:
+	rm -rf $(BUILD_DIR)
+
+default: $(BIN)
+	@echo "default: compile and run the bin."
+
+all: default
