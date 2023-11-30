@@ -6,7 +6,7 @@
 #  @ NJU_EE
 # **********************************************
 
-include ../Makefile
+include $(NPC_HOME)/../Makefile
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 # define some path and flags
