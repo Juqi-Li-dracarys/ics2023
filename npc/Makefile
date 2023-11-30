@@ -16,8 +16,8 @@ TOPNAME = top
 VERILATOR_CFLAGS += -MMD --cc --trace --build -O3 \
 				--x-assign fast --x-initial fast --noassert
 BUILD_DIR = $(NPC_HOME)/build
-SIM_DIR = $(BUILD_DIR)/sim_dir
-IMP_DIR = $(BUILD_DIR)/imp_dir
+SIM_DIR = $(BUILD_DIR)/sim
+IMP_DIR = $(BUILD_DIR)/imp
 BIN_S = $(SIM_DIR)/$(TOPNAME)
 BIN_I = $(IMP_DIR)/$(TOPNAME)
 INC_PATH ?=
