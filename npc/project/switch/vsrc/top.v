@@ -1,3 +1,4 @@
+
 module top(
   input a,
   input b,
@@ -6,5 +7,4 @@ module top(
   assign f = a ^ b;
   
 endmodule
-
 

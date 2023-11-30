@@ -5,6 +5,7 @@ STUNAME = 李居奇
 
 TRACER = tracer-ysyx
 GITFLAGS = -q --author='$(TRACER) <tracer@ysyx.org>' --no-verify --allow-empty
+NJU_FLGAS = -q --author='tracer-ics2023 <tracer@njuics.org>' --no-verify --allow-empty
 
 YSYX_HOME = $(_NEMU_HOME_)/..
 WORK_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
@@ -25,6 +26,12 @@ define git_commit
 endef
 
 .git_commit:
+# NJU commit
+	-@git add $(_NEMU_HOME_)/.. -A --ignore-errors
+	-@while (test -e .git/index.lock); do sleep 0.1; done
+	-@(echo "> $(1)" && echo $(STUID) $(STUNAME) && uname -a && uptime) | git commit -F - $(NJU_FLGAS)
+	-@sync
+# YSYX commit
 	-@while (test -e .git/index.lock); do sleep 0.1; done;               `# wait for other git instances`
 	-@git branch $(TRACER_BRANCH) -q 2>/dev/null || true                 `# create tracer branch if not existent`
 	-@cp -a .git/index $(WORK_INDEX)                                     `# backup git index`
