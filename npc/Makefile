@@ -44,6 +44,7 @@ wave: sim
 
 clean:
 	rm -rf $(BUILD_DIR)
+	rm -f $(NPC_HOME)/*.vcd
 
 default: $(BIN)
 	@echo "default: compile and run the bin."
