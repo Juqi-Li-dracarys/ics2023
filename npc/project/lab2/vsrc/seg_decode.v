@@ -8,7 +8,7 @@ module seg_decode(in, en, out);
     if (en) begin
       case (in)
           3'b000 : out = 8'b1111_1111;
-          3'b001 : out = 8'b1111_1001;
+          3'b001 : out = 8'b1001_1111;
           3'b010 : out = 8'b0010_0100;
 
           3'b011 : out = 8'b0000_1000;
