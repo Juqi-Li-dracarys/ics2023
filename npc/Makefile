@@ -28,7 +28,7 @@ $(shell mkdir -p $(IMP_DIR))
 VSRCS = $(shell find $(abspath $(NPC_HOME)/vsrc) -name "*.v")
 CSRCS_S = $(shell find $(abspath $(NPC_HOME)/csrc/sim) -name "*.c" -or -name "*.cpp")
 CSRCS_I = $(shell find $(abspath $(NPC_HOME)/csrc/imp) -name "*.c" -or -name "*.cpp")
-NXDC_FILES =  $(shell find $(abspath $(NPC_HOME)/constrain) -name "*.nxdc")
+NXDC_FILES =  $(shell find $(abspath $(NPC_HOME)/vsrc) -name "*.nxdc")
 CSRCS_I += $(SRC_AUTO_BIND)
 
 # generate constraint file for implementation
