@@ -3,6 +3,7 @@
 # Author: LJQ
 
 include ../Makefile
+include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 # define some flags
 VERILATOR = verilator
@@ -10,46 +11,77 @@ TOPNAME = top
 VERILATOR_CFLAGS += -MMD --cc --trace --build -O3 \
 				--x-assign fast --x-initial fast --noassert
 BUILD_DIR = $(NPC_HOME)/build
-OBJ_DIR = $(BUILD_DIR)/obj_dir
-BIN = $(BUILD_DIR)/$(TOPNAME)
+SIM_DIR = $(BUILD_DIR)/sim_dir
+IMP_DIR = $(BUILD_DIR)/imp_dir
+BIN_S = $(SIM_DIR)/$(TOPNAME)
+BIN_I = $(IMP_DIR)/$(TOPNAME)
 INC_PATH ?=
 
-# project source
+# project source code
 VSRCS = $(shell find $(abspath $(NPC_HOME)/vsrc) -name "*.v")
-CSRCS = $(shell find $(abspath $(NPC_HOME)/csrc) -name "*.c" -or -name "*.cpp")
+CSRCS_S = $(shell find $(abspath $(NPC_HOME)/csrc/simulation) -name "*.c" -or -name "*.cpp")
+CSRCS_I = $(shell find $(abspath $(NPC_HOME)/csrc/implementation) -name "*.c" -or -name "*.cpp")
+NXDC_FILES =  $(shell find $(abspath $(NPC_HOME)/constrain) -name "*.nxdc")
+CSRCS_I += $(SRC_AUTO_BIND)
 
-# import nvboard
+# generate constraint file for implementation
+SRC_AUTO_BIND = $(abspath $(IMP_DIR)/auto_bind.cpp)
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
+
+# import args from nvboard
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 
-$(shell mkdir -p $(BUILD_DIR))
+$(shell mkdir -p $(SIM_DIR))
+$(shell mkdir -p $(IMP_DIR))
 
-# compile rulers
-$(BIN): $(VSRCS) $(CSRCS)
-	@rm -rf $(OBJ_DIR)
-	@echo "------- COMPILING THE SOURCE CODE--------"
-	$(VERILATOR) $(VERILATOR_CFLAGS) \
+
+# compile rulers for simulation
+$(BIN_S): $(VSRCS) $(CSRCS_S)
+	@rm -rf $(SIM_DIR)
+	@echo "------- SIMULATION ON THE SOURCE CODE--------"
+	@$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
-		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
+		--Mdir $(SIM_DIR) --exe -o $(abspath $(BIN_S))
 
-sim: $(BIN)
+sim: $(BIN_S)
 	$(call git_commit, "sim RTL")
 	@echo "------- RUNNING THE SIMULATION--------"
 	@$^
-	@echo "-------- FINISH SIMULATION--------"
-
-wave: sim
 	@echo "------- DISPLAY THE WAVE--------"
 	@gtkwave $(NPC_HOME)/*.vcd
-	@echo "-------- FINISH --------"
+	@echo "-------- SIMULATION FINISH --------"
+
+
+
+
+
+
+
+
+# compile rulers for implementation
+$(BIN_I): $(VSRCS) $(CSRCS_I) $(NVBOARD_ARCHIVE)
+	@rm -rf $(IMP_DIR)
+	@echo "------- IMPLEMENTATION ON THE SOURCE CODE--------"
+	@$(VERILATOR) $(VERILATOR_CFLAGS) \
+		--top-module $(TOPNAME) $^ \
+		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		--Mdir $(IMP_DIR)/obj_dir --exe -o $(abspath $(BIN_I))
+
+imp: $(BIN_I)
+	$(call git_commit, "imp RTL")
+	@echo "------- RUNNING THE IMPLEMENTATION--------"
+	@$^
+	@echo "-------- IMPLEMENTATION FINISH --------"
 
 clean:
 	rm -rf $(BUILD_DIR)
 	rm -f $(NPC_HOME)/*.vcd
 
-default: $(BIN)
-	@echo "default: compile and run the bin."
+default: $(BIN_S)
+	@echo "default: compile and run the simulation."
 
 all: default
 
-.PHONY: default all clean sim wave
+.PHONY: default all clean sim imp
