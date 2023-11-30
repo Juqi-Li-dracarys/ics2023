@@ -1,11 +1,16 @@
 
+# ###############################
 # Makefile for NPC
+#
 # Author: LJQ
+#
+# Date: 2023.11
+# ################################
 
 include ../Makefile
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
-# define some flags
+# define some path and flags
 VERILATOR = verilator
 TOPNAME = top
 VERILATOR_CFLAGS += -MMD --cc --trace --build -O3 \
@@ -16,6 +21,10 @@ IMP_DIR = $(BUILD_DIR)/imp_dir
 BIN_S = $(SIM_DIR)/$(TOPNAME)
 BIN_I = $(IMP_DIR)/$(TOPNAME)
 INC_PATH ?=
+
+# creat build dir
+$(shell mkdir -p $(SIM_DIR))
+$(shell mkdir -p $(IMP_DIR))
 
 # project source code
 VSRCS = $(shell find $(abspath $(NPC_HOME)/vsrc) -name "*.v")
@@ -33,10 +42,6 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 
-$(shell mkdir -p $(SIM_DIR))
-$(shell mkdir -p $(IMP_DIR))
-
-
 # compile rulers for simulation
 $(BIN_S): $(VSRCS) $(CSRCS_S)
 	@rm -rf $(SIM_DIR)
@@ -52,12 +57,6 @@ sim: $(BIN_S)
 	@echo "------- DISPLAY THE WAVE--------"
 	@gtkwave $(NPC_HOME)/*.vcd
 	@echo "-------- SIMULATION FINISH --------"
-
-
-
-
-
-
 
 
 # compile rulers for implementation
