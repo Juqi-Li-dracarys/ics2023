@@ -24,15 +24,9 @@ BIN_I = $(IMP_DIR)/$(TOPNAME)
 $(shell mkdir -p $(SIM_DIR))
 $(shell mkdir -p $(IMP_DIR))
 
-# project source code
-VSRCS = $(shell find $(abspath $(NPC_HOME)/vsrc) -name "*.v")
-CSRCS_S = $(shell find $(abspath $(NPC_HOME)/csrc/sim) -name "*.c" -or -name "*.cpp")
-CSRCS_I = $(shell find $(abspath $(NPC_HOME)/csrc/imp) -name "*.c" -or -name "*.cpp")
-NXDC_FILES =  $(shell find $(abspath $(NPC_HOME)/vsrc) -name "*.nxdc")
-CSRCS_I += $(SRC_AUTO_BIND)
-
 # generate constraint file for implementation
 SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+CSRCS_I += $(SRC_AUTO_BIND)
 $(SRC_AUTO_BIND): $(NXDC_FILES)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
@@ -55,7 +49,6 @@ sim: $(BIN_S)
 	@echo "------- DISPLAY THE WAVE--------"
 	@gtkwave $(NPC_HOME)/*.vcd
 	@echo "-------- SIMULATION FINISH --------"
-
 
 # compile rulers for implementation
 $(BIN_I): $(VSRCS) $(CSRCS_I) $(NVBOARD_ARCHIVE)
