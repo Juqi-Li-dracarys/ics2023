@@ -34,7 +34,7 @@ NXDC_FILES =  $(shell find $(abspath $(NPC_HOME)/constrain) -name "*.nxdc")
 CSRCS_I += $(SRC_AUTO_BIND)
 
 # generate constraint file for implementation
-SRC_AUTO_BIND = $(abspath $(IMP_DIR)/auto_bind.cpp)
+SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
 $(SRC_AUTO_BIND): $(NXDC_FILES)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
@@ -66,7 +66,7 @@ $(BIN_I): $(VSRCS) $(CSRCS_I) $(NVBOARD_ARCHIVE)
 	@$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
-		--Mdir $(IMP_DIR)/obj_dir --exe -o $(abspath $(BIN_I))
+		--Mdir $(IMP_DIR) --exe -o $(abspath $(BIN_I))
 
 imp: $(BIN_I)
 	$(call git_commit, "imp RTL")
