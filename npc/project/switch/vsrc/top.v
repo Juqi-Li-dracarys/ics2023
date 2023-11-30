@@ -5,5 +5,6 @@ module top(
   output f
 );
   assign f = a ^ b;
+  
 endmodule
 
