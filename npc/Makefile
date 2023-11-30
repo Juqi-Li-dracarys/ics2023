@@ -1,10 +1,9 @@
 
 # **********************************************
 #  Makefile for NPC
-#
 #  Author: LJQ
-#
-#  Date: 2023.11
+#  Date: 2023.11.30 
+#  @ NJU_EE
 # **********************************************
 
 include ../Makefile
@@ -27,8 +26,8 @@ $(shell mkdir -p $(IMP_DIR))
 
 # project source code
 VSRCS = $(shell find $(abspath $(NPC_HOME)/vsrc) -name "*.v")
-CSRCS_S = $(shell find $(abspath $(NPC_HOME)/csrc/simulation) -name "*.c" -or -name "*.cpp")
-CSRCS_I = $(shell find $(abspath $(NPC_HOME)/csrc/implementation) -name "*.c" -or -name "*.cpp")
+CSRCS_S = $(shell find $(abspath $(NPC_HOME)/csrc/sim) -name "*.c" -or -name "*.cpp")
+CSRCS_I = $(shell find $(abspath $(NPC_HOME)/csrc/imp) -name "*.c" -or -name "*.cpp")
 NXDC_FILES =  $(shell find $(abspath $(NPC_HOME)/constrain) -name "*.nxdc")
 CSRCS_I += $(SRC_AUTO_BIND)
 
