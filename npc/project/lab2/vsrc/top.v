@@ -17,7 +17,7 @@ module top (
 
     seg_decode my_decode(
         .in(code),
-        .en(en),
+        .en(led[3]),
         .out(seg0)
     );
 
