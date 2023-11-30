@@ -46,7 +46,7 @@ sim: $(BIN_S)
 	@echo "------- RUNNING THE SIMULATION--------"
 	@$^
 	@echo "------- DISPLAY THE WAVE--------"
-	@gtkwave $(NPC_HOME)/*.vcd
+	@gtkwave *.vcd
 	@echo "-------- SIMULATION FINISH --------"
 
 # compile rulers for implementation
@@ -66,7 +66,7 @@ imp: $(BIN_I)
 
 clean:
 	rm -rf $(BUILD_DIR)
-	rm -f $(NPC_HOME)/*.vcd
+	rm -f *.vcd
 
 default: $(BIN_S)
 	@echo "default: compile and run the simulation."
