@@ -20,7 +20,6 @@ SIM_DIR = $(BUILD_DIR)/sim
 IMP_DIR = $(BUILD_DIR)/imp
 BIN_S = $(SIM_DIR)/$(TOPNAME)
 BIN_I = $(IMP_DIR)/$(TOPNAME)
-INC_PATH ?=
 
 # creat build dir
 $(shell mkdir -p $(SIM_DIR))
@@ -65,6 +64,7 @@ $(BIN_I): $(VSRCS) $(CSRCS_I) $(NVBOARD_ARCHIVE)
 	@echo "------- IMPLEMENTATION ON THE SOURCE CODE--------"
 	@$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
+		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(IMP_DIR) --exe -o $(abspath $(BIN_I))
 
 imp: $(BIN_I)
