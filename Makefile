@@ -32,7 +32,7 @@ endef
 # NJU commit
 	-@git add $(_NEMU_HOME_)/.. -A --ignore-errors
 	-@while (test -e .git/index.lock); do sleep 0.1; done
-	-@(echo "> $(1)" && echo $(STUID_NJU) $(STUNAME) && uname -a && uptime) | git commit -F - $(NJU_FLGAS)
+	-@(echo "> $(MSG)" && echo $(STUID_NJU) $(STUNAME) && uname -a && uptime) | git commit -F - $(NJU_FLGAS)
 	-@sync
 # YSYX commit
 	-@while (test -e .git/index.lock); do sleep 0.1; done;               `# wait for other git instances`
