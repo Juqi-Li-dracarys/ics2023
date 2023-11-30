@@ -25,6 +25,11 @@ define git_commit
 endef
 
 .git_commit:
+	-@git add $(NEMU_HOME)/.. -A --ignore-errors
+	-@while (test -e .git/index.lock); do sleep 0.1; done
+	-@(echo "> $(1)" && echo $(STUID) $(STUNAME) && uname -a && uptime) | git commit -F - $(GITFLAGS)
+	-@sync
+
 	-@while (test -e .git/index.lock); do sleep 0.1; done;               `# wait for other git instances`
 	-@git branch $(TRACER_BRANCH) -q 2>/dev/null || true                 `# create tracer branch if not existent`
 	-@cp -a .git/index $(WORK_INDEX)                                     `# backup git index`
