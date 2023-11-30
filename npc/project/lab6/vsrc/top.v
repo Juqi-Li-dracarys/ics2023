@@ -2,25 +2,28 @@
 module top (
     input clk,
     input rst,
-    input [3:0] sw1,   // da
-    input [3:0] sw2,   // db
-    input [2:0] sw3,   // cntrol
-    output [3:0] led1, // ALU_out
-    output [1:0] led2  // cout, overflow
+    output [7:0] seg_1,
+    output [7:0] seg_2
 );
-    wire less;
-    wire zero;
+    wire [3:0] seg_1_t;
+    wire [3:0] seg_2_t;
 
-    ALU alu_4 (
-        .da(sw1),
-        .db(sw2),
-        .ALU_ctr(sw3),
-        .ALUout(led1),
-        .cout(led2[1]),
-        .overflow(led2[0]),
-        .less(less),
-        .zero(zero)
+    shifter shifter_8 (
+        .clk(clk),
+        .rst(rst),
+        .dout({seg_2_t, seg_1_t})
+    );
+    seg_decode_hex hex_1 (
+        .en(~rst),
+        .in(seg_1_t),
+        .out(seg_1) 
+    );
+    seg_decode_hex hex_2 (
+        .en(~rst),
+        .in(seg_2_t),
+        .out(seg_2) 
     );
 
 endmodule
+
 
