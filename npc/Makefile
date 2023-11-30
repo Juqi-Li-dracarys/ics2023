@@ -50,3 +50,5 @@ default: $(BIN)
 	@echo "default: compile and run the bin."
 
 all: default
+
+.PHONY: default all clean sim wave
