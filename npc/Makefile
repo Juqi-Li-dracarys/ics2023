@@ -7,7 +7,8 @@ include ../Makefile
 # define some flags
 VERILATOR = verilator
 TOPNAME = top
-VERILATOR_CFLAGS += --cc --trace --build
+VERILATOR_CFLAGS += -MMD --cc --trace --build -O3 \
+				--x-assign fast --x-initial fast --noassert
 BUILD_DIR = $(NPC_HOME)/build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
 BIN = $(BUILD_DIR)/$(TOPNAME)
