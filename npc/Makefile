@@ -1,11 +1,11 @@
 
-# ###############################
-# Makefile for NPC
+# **********************************************
+#  Makefile for NPC
 #
-# Author: LJQ
+#  Author: LJQ
 #
-# Date: 2023.11
-# ################################
+#  Date: 2023.11
+# **********************************************
 
 include ../Makefile
 include $(NVBOARD_HOME)/scripts/nvboard.mk
