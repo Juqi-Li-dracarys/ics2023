@@ -1,9 +1,8 @@
 
 # **********************************************
-#  Makefile for NPC
-#  Author: LJQ
+#  Main Makefile for NPC
+#  Author: LJQ @ NJU_EE
 #  Date: 2023.11.30 
-#  @ NJU_EE
 # **********************************************
 
 include $(NPC_HOME)/../Makefile
