@@ -65,7 +65,6 @@ $(BIN_I): $(VSRCS) $(CSRCS_I) $(NVBOARD_ARCHIVE)
 	@echo "------- IMPLEMENTATION ON THE SOURCE CODE--------"
 	@$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
-		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(IMP_DIR) --exe -o $(abspath $(BIN_I))
 
 imp: $(BIN_I)
