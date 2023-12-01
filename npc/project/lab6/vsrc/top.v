@@ -24,7 +24,7 @@ module top (
         .in(seg_2_t),
         .out(seg_2) 
     );
-
+    
 endmodule
 
 
