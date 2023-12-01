@@ -12,7 +12,9 @@ module top (
     wire [3:0] seg_2_t;
     wire ready;
     wire overflow;
+    wire [7:0] data;
     reg read_n;
+    reg [7:0] scan_code;
 
     ps2_keyboard key_board(
         .clk(clk),
@@ -20,7 +22,7 @@ module top (
         .ps2_clk(ps2_clk),
         .ps2_data(ps2_data),
         .read_n(read_n),
-        .data({seg_2_t, seg_1_t}),
+        .data(data),
         .ready(ready),
         .overflow(overflow)
     );
@@ -40,9 +42,16 @@ module top (
     always @(negedge clk, posedge rst) begin
         if(rst == 1'b1) begin
             read_n <= 1'b1;
+            scan_code <= 8'b0;
         end
         else begin
-            read_n <= ~ready;
+            if(ready == 1) begin
+                scan_code <= data;
+                read_n <= 1'b0;
+            end
+            else begin
+                read_n <= 1'b0;
+            end
         end
     end
 
