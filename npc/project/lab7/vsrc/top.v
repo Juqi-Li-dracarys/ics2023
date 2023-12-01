@@ -48,7 +48,7 @@ module top (
                 read_n <= 1'b0;
             end
             else begin
-                read_n <= 1'b0;
+                read_n <= 1'b1;
             end
         end
     end
