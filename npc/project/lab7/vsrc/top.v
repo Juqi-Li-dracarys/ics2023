@@ -8,8 +8,6 @@ module top (
     output [7:0] seg_2
 );
 
-    wire [3:0] seg_1_t;
-    wire [3:0] seg_2_t;
     wire ready;
     wire overflow;
     wire [7:0] data;
@@ -28,13 +26,13 @@ module top (
     );
 
     seg_decode_hex seg1(
-        .in(seg_1_t),
+        .in(scan_code[3:0]),
         .en(~rst),
         .out(seg_1)
     );
 
     seg_decode_hex seg2(
-        .in(seg_2_t),
+        .in(scan_code[7:4]),
         .en(~rst),
         .out(seg_2)
     );
