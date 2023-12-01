@@ -10,6 +10,7 @@ include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 # define some path and flags
 VERILATOR = verilator
+WAVE = gtkwave
 TOPNAME = top
 VERILATOR_CFLAGS += -MMD --cc --trace --build -O3 \
 				--x-assign fast --x-initial fast --noassert
@@ -46,7 +47,7 @@ sim: $(BIN_S)
 	@echo "------- RUNNING THE SIMULATION--------"
 	@$^
 	@echo "------- DISPLAY THE WAVE--------"
-	@gtkwave *.vcd
+	@$(WAVE) *.vcd
 	@echo "-------- SIMULATION FINISH --------"
 
 # compile rulers for implementation
