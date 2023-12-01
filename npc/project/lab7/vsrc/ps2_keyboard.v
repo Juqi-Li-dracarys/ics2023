@@ -41,7 +41,7 @@ module ps2_keyboard (
               if (count == 4'd10) begin
                 if ((buffer[0] == 0) && (^buffer[8:1] == !buffer[9]) && (ps2_data)) begin
                     w_ptr <= w_ptr + 3'b1;   
-                    fifo[w_ptr+1] <= buffer[8:1];
+                    fifo[w_ptr] <= buffer[8:1];
                     ready <= 1'b1;
                     overflow <= overflow | (r_ptr == (w_ptr + 3'b1));
                 end
