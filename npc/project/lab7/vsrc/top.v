@@ -13,7 +13,7 @@ module top (
     wire [7:0] data;
     reg read_n;
     reg [7:0] scan_code;
-    reg [1:0] seg_on; // control seg
+    reg [1:0] seg_on;
 
     ps2_keyboard key_board(
         .clk(clk),
@@ -48,6 +48,7 @@ module top (
             if(ready == 1'b1) begin
                 scan_code <= data;
                 read_n <= 1'b0;
+                // control seg
                 if(data == 8'hf0) begin
                     seg_on <= 2'b01;
                 end
@@ -56,7 +57,8 @@ module top (
                 end
                 else begin
                     seg_on <= 2'b00;
-                end    
+                end
+                // record times    
                 $display("receive %x", data);
             end
             else begin
