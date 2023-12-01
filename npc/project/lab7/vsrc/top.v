@@ -44,6 +44,7 @@ module top (
         end
         else begin
             if(ready == 1'b1) begin
+                $display("receive %x", data);
                 scan_code <= data;
                 read_n <= 1'b0;
             end
