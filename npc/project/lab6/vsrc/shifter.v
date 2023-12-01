@@ -6,10 +6,10 @@ module shifter (
     wire t_data;
     always @(posedge clk, posedge rst) begin
         if(rst == 1'b1) begin
-            dout <= 8'b1;
+            dout <= 8'b100;
         end
         else if(dout == 8'b0) begin
-            dout <= 8'b1;
+            dout <= 8'b100;
         end
         else begin
             dout <= {t_data ,dout[6:0]};
