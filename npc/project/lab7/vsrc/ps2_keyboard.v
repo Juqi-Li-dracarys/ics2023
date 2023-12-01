@@ -11,7 +11,7 @@ module ps2_keyboard (
 );
     parameter fifo_size = 8;
 
-    reg [9:0] buffer;                  // ps2_data bits
+    reg [9:0] buffer;                   // ps2_data bits
     reg [7:0] fifo[fifo_size-1:0];      // data fifo
     reg [2:0] w_ptr, r_ptr;             // fifo write and read pointers
     reg [3:0] count;                    // count ps2_data bits
