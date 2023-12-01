@@ -10,7 +10,7 @@ module top (
     wire [3:0] seg_2_t;
 
     shifter shifter_8 (
-        .clk(clk),
+        .clk(my_clk),
         .rst(rst),
         .dout({seg_2_t, seg_1_t})
     );
