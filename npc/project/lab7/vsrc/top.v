@@ -43,7 +43,7 @@ module top (
             scan_code <= 8'b0;
         end
         else begin
-            if(ready == 1) begin
+            if(ready == 1'b1) begin
                 scan_code <= data;
                 read_n <= 1'b0;
             end
