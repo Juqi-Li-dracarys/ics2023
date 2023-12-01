@@ -27,13 +27,13 @@ module top (
 
     seg_decode_hex seg1(
         .in(seg_1_t),
-        .en(~rst),
+        .en(ready),
         .out(seg_1)
     );
 
     seg_decode_hex seg2(
         .in(seg_2_t),
-        .en(~rst),
+        .en(ready),
         .out(seg_2)
     );
 
