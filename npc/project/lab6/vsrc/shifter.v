@@ -12,7 +12,7 @@ module shifter (
             dout <= 8'b100;
         end
         else begin
-            dout <= {t_data ,dout[6:0]};
+            dout <= {1'b1 ,dout[6:0]};
         end
     end
     assign t_data = dout[0] ^ dout[2] ^ dout[3] ^ dout[4];
