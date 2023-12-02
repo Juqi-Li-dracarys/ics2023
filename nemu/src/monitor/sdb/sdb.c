@@ -205,7 +205,7 @@ static int cmd_p(char *args) {
 // TASK5: Excute the examination progranm for calculation
 static int cmd_e(char *args) {
   bool success = 0;
-  FILE *file = fopen("/home/dracacys/ics2023/nemu/tools/gen-expr/input", "r");
+  FILE *file = fopen("/home/dracacys/ysyx-workbench/nemu/tools/gen-expr/input", "r");
   if (file == NULL) {
         perror("Error opening file");
         return 1;
