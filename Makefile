@@ -1,5 +1,7 @@
+# Information for ICS and ysyx
+
 STUID_NJU = 211870293
-STUID_YSYX = ysyx1314
+STUID_YSYX = ysyx23060136
 STUNAME = 李居奇
 
 # DO NOT modify the following code!!!
@@ -29,7 +31,7 @@ endef
 
 # commit in the 2 branchs at the same time
 .git_commit:
-# NJU commit
+# ICS commit
 	-@git add $(NEMU_HOME)/.. -A --ignore-errors
 	-@while (test -e .git/index.lock); do sleep 0.1; done
 	-@(echo "> $(MSG)" && echo $(STUID_NJU) $(STUNAME) && uname -a && uptime) | git commit -F - $(NJU_FLGAS)
@@ -48,7 +50,7 @@ endef
 .clean_index:
 	rm -f $(WORK_INDEX)
 
-# NJU_OJ_submmit
+# ICS_OJ_submmit
 submit:
 	git gc
 	STUID=$(STUID) STUNAME=$(STUNAME) bash -c "$$(curl -s http://why.ink:8080/static/submit.sh)"
