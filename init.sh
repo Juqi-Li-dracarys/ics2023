@@ -40,10 +40,10 @@ function init() {
 
 case $1 in
   nemu)
-    init NJU-ProjectN/nemu ics2023 nemu true _NEMU_HOME_
+    init NJU-ProjectN/nemu ics2023 nemu true NEMU_HOME
     ;;
   abstract-machine)
-    init NJU-ProjectN/abstract-machine ics2023 abstract-machine true _AM_HOME_
+    init NJU-ProjectN/abstract-machine ics2023 abstract-machine true AM_HOME
     init NJU-ProjectN/fceux-am ics2021 fceux-am false
     ;;
   am-kernels)
