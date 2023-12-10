@@ -9,7 +9,7 @@ TRACER = tracer-ysyx
 GITFLAGS = -q --author='$(TRACER) <tracer@ysyx.org>' --no-verify --allow-empty
 NJU_FLGAS = -q --author='tracer-ics2023 <tracer@njuics.org>' --no-verify --allow-empty
 
-YSYX_HOME = $(_NEMU_HOME_)/..
+YSYX_HOME = $(NEMU_HOME)/..
 WORK_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 WORK_INDEX = $(YSYX_HOME)/.git/index.$(WORK_BRANCH)
 TRACER_BRANCH = $(TRACER)
@@ -30,7 +30,7 @@ endef
 # commit in the 2 branchs at the same time
 .git_commit:
 # NJU commit
-	-@git add $(_NEMU_HOME_)/.. -A --ignore-errors
+	-@git add $(NEMU_HOME)/.. -A --ignore-errors
 	-@while (test -e .git/index.lock); do sleep 0.1; done
 	-@(echo "> $(MSG)" && echo $(STUID_NJU) $(STUNAME) && uname -a && uptime) | git commit -F - $(NJU_FLGAS)
 	-@sync

@@ -15,4 +15,4 @@
 
 NAME = gen-expr
 SRCS = gen-expr.c
-include $(_NEMU_HOME_)/scripts/build.mk
+include $(NEMU_HOME)/scripts/build.mk
