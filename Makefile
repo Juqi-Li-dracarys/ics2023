@@ -3,6 +3,7 @@
 STUID_NJU = 211870293
 STUID_YSYX = ysyx23060136
 STUNAME = 李居奇
+GIT_NAME = mygit
 
 # DO NOT modify the following code!!!
 # Fuck you, I gonna modify it.
@@ -50,10 +51,10 @@ endef
 .clean_index:
 	rm -f $(WORK_INDEX)
 
-# ICS_OJ_submmit
+# push to my own github and excute ICS_OJ submmit
 submit:
 	git gc
-	git push mygit --all
+	git push $(GIT_NAME) --all
 	STUID=$(STUID) STUNAME=$(STUNAME) bash -c "$$(curl -s http://why.ink:8080/static/submit.sh)"
 
 _default:
