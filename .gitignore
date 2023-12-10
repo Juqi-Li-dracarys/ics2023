@@ -10,7 +10,7 @@
 !README.md
 !.gitignore
 !init.sh
-!/report
+!/report/
 /fceux-am
 /am-kernels
 /nvboard
