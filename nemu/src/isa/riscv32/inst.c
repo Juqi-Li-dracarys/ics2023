@@ -138,7 +138,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? ??? ????? 0110111", lui    , U, R(rd) = imm;);
 
   INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak , N, NEMUTRAP(s->pc, R(10)));             // 抛出异常，终止 nemu 运行，根据 a0 决定 good or bad
-  INSTPAT("0000000 00000 00000 000 00000 1110011", ecall  , N, s->dnpc = EXCEPTION(R(17), s->pc));  // 抛出异常，从 a7 记录事件号，随后跳转
+  INSTPAT("0000000 00000 00000 000 00000 1110011", ecall  , N, s->dnpc = EXCEPTION(0xb, s->pc));    // 抛出 environmental call，随后跳转
   INSTPAT("??????? ????? ????? ??? ????? ???????", inv    , N, INV(s->pc));
   INSTPAT_END();
 
