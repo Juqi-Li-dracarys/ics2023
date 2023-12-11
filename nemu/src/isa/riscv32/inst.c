@@ -54,18 +54,17 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
   }
 }
 
-
 // pointer to csr registers
 static inline word_t* csr_reg(uint32_t idx) {
   switch (idx) {
     case 0x341: return &(cpu.mepc);    break;
     case 0x300: return &(cpu.mstatus); break;
     case 0x342: return &(cpu.mcause);  break;
+    case 0x305: return &(cpu.mtvec);   break;
     default: assert(0); break;
   }
   return NULL;
 }
-
 
 static int decode_exec(Decode *s) {
   int rd = 0;

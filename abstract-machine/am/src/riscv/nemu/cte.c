@@ -20,6 +20,7 @@ Context* __am_irq_handle(Context *c) {
 
 extern void __am_asm_trap(void);
 
+
 bool cte_init(Context*(*handler)(Event, Context*)) {
   // initialize exception entry
   // we load the exception entry into mtvec
