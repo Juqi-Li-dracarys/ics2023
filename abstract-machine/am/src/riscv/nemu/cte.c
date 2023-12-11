@@ -25,7 +25,7 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
   // initialize exception entry
   // we load the exception entry into mtvec
   asm volatile("csrw mtvec, %0" : : "r"(__am_asm_trap));
-
+  
   // register event handler
   user_handler = handler;
 
