@@ -27,6 +27,11 @@ enum {
   TYPE_N // none
 };
 
+enum {
+  MEPC=0x341, MSTATUS=0x300, MCAUSE=0x342, 
+  MTVEC=0x305
+};
+
 // rs转寄存器的数
 #define src1R() do { *src1 = R(rs1); } while (0)
 #define src2R() do { *src2 = R(rs2); } while (0)
@@ -57,10 +62,10 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
 // pointer to csr registers
 static inline word_t* csr_reg(uint32_t idx) {
   switch (idx) {
-    case 0x341: return &(cpu.mepc);    break;
-    case 0x300: return &(cpu.mstatus); break;
-    case 0x342: return &(cpu.mcause);  break;
-    case 0x305: return &(cpu.mtvec);   break;
+    case MEPC:    return &(cpu.mepc);    break;
+    case MSTATUS: return &(cpu.mstatus); break;
+    case MCAUSE:  return &(cpu.mcause);  break;
+    case MTVEC:   return &(cpu.mtvec);   break;
     default: assert(0); break;
   }
   return NULL;
