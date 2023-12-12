@@ -10,7 +10,7 @@
 // 这个很危险的 bug 尚未有效解决
 #define str_buffer_size 10000
 
-const char hex_chars[] = "0123456789ABCDEF";
+const char hex_chars[] = "0123456789abcdef";
 
 // num 为 int，将其保存到 str 所指字符串中，返回 str 的偏移量
 uint16_t int2str(char *str, int num) {
