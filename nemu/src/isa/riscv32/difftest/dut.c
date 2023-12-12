@@ -32,7 +32,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
       return false;
     }
   }
-  if(ref_r->pc != cpu.pc) {
+  if(ref_r->pc != cpu.pc || ref_r->pc != pc) {
     printf("difftest fail @PC = 0x%08x, due to wrong PC.\n", pc);
     printf("REF PC = 0x%08x\n", ref_r->pc);
     return false;
