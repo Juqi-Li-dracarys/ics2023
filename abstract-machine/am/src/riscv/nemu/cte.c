@@ -9,7 +9,7 @@ Context* __am_irq_handle(Context *c) {
   if (user_handler) {
 
     for(void* ptr = (void *)c; ptr <= (void *)c + 136; ptr = ptr + 4) {
-      printf("%d", *((uint32_t *)ptr));
+      printf("%08x", *((uint32_t *)ptr));
     }
 
     Event ev = {0};
