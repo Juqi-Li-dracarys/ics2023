@@ -50,13 +50,12 @@ uint16_t ch2str(char *des_str, char c) {
 }
 
 uint16_t ptr2str(char *des_str, uint32_t num) {    
-    for (int i = 7; i >= 0; --i) {
-        int shift = i * 4;
-        uint8_t hex_digit = (num >> shift) & 0xF;
-        des_str[7 - i] = hex_chars[hex_digit];
-    }
     des_str[0] = '0';
     des_str[1] = 'x';
+    for (int i = 7; i >= 0; --i) {
+        int hexValue = (num >> (i * 4)) & 0xF;
+        des_str[2 + (7 - i)] = hex_chars[hexValue];
+    }
     return 10;
 }
 
