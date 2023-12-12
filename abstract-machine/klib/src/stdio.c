@@ -10,10 +10,12 @@
 // 这个很危险的 bug 尚未有效解决
 #define str_buffer_size 10000
 
+const char hex_chars[] = "0123456789ABCDEF";
+
 // num 为 int，将其保存到 str 所指字符串中，返回 str 的偏移量
 uint16_t int2str(char *str, int num) {
   uint16_t offset = 0;
-  char temp[500] = {0}; 
+  char temp[100] = {0}; 
   int tempOffset = 0;
   // 正负判断
   if (num < 0) {
@@ -47,6 +49,17 @@ uint16_t ch2str(char *des_str, char c) {
   return 1;
 }
 
+uint16_t ptr2str(char *des_str, uint32_t num) {    
+    for (int i = 7; i >= 0; --i) {
+        int shift = i * 4;
+        uint8_t hex_digit = (num >> shift) & 0xF;
+        des_str[7 - i] = hex_chars[hex_digit];
+    }
+    des_str[0] = '0';
+    des_str[1] = 'x';
+    return 10;
+}
+
 int printf(const char *fmt, ...) {
   char temp [str_buffer_size] = {0};
   va_list ap;
@@ -75,6 +88,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         case 'd': size_in = int2str(out, va_arg(ap, int)); fmt += 2; out += size_in; size_str += size_in; break;
         case 's': size_in = str2str(out, va_arg(ap, char *)); fmt += 2; out += size_in; size_str += size_in; break;
         case 'c': size_in = ch2str(out, (char)va_arg(ap, int)); fmt += 2; out += size_in; size_str += size_in; break;
+        case 'p': size_in = ptr2str(out, (uint32_t)va_arg(ap, void *)); fmt += 2; out += size_in; size_str += size_in; break;
         default: *out = *fmt; out++; fmt++; size_str++; break;
       }
     }
