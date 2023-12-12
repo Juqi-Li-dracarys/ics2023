@@ -20,26 +20,28 @@ const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
   "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
   "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
-  "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
+  "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6",
+  "mepc", "mstatus", "mcause", "mtvec"
 };
 
-// Print the value of each register
+// print the value of each register
 void isa_reg_display() {
-  puts("ALL register in riscv32:");
-  for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
-    printf("%s:0X%08x ",regs[i], gpr(i));
+  puts("ALL register in nemu:");
+  for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32) + 4; i++) {
+    if(i < MUXDEF(CONFIG_RVE, 16, 32)) printf("%s:0X%08x ",regs[i], gpr(i));
+    else printf("%s:0X%08x ",regs[i], csr(i - MUXDEF(CONFIG_RVE, 16, 32)));
     if((i + 1) % 4 == 0)
     putchar('\n');
   }
   return ;
 }
 
-// Return the value of register
+// return the value of register
 word_t isa_reg_str2val(const char *s, bool *success) {
-  for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
+  for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32) + 4; i++) {
     if (strcmp(regs[i], s) == 0) {
       *success = 1;
-      return gpr(i);
+      return i < MUXDEF(CONFIG_RVE, 16, 32) ? gpr(i) : csr(i - MUXDEF(CONFIG_RVE, 16, 32));
     }
   }
   *success = 0;

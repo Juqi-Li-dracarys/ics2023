@@ -122,29 +122,29 @@ static int cmd_info(char *args) {
      printf("Error: The info needs 1 args!\n");
      return 0;
   }
-  else if (strcmp(args,(const char*)"r") == 0){
+  else if (strcmp(args,(const char*)"r") == 0) {
     printf("The rigister value in nemu:\n");
     isa_reg_display();
   }
-  else if (strcmp(args,(const char*)"w") == 0){
+  else if (strcmp(args,(const char*)"w") == 0) {
     // Print the value of watching point
   #ifdef CONFIG_WBCHECK
     print_wp();
   #endif
   }
 #ifdef CONFIG_ITRACE
-  else if (strcmp(args,(const char*)"i-ring") == 0){
+  else if (strcmp(args,(const char*)"i-ring") == 0) {
     // Print the trace in ring buffer
     print_ring_buffer(ring_head);
   }
 #endif
-  else if (strcmp(args,(const char*)"f-table") == 0){
+  else if (strcmp(args,(const char*)"f-table") == 0) {
 #ifdef CONFIG_FTRACE
     // Print the ftrace table
     ftrace_table_d();
 #endif
   }
-  else if (strcmp(args,(const char*)"f-log") == 0){
+  else if (strcmp(args,(const char*)"f-log") == 0) {
 #ifdef CONFIG_FTRACE
     // Print the ftrace log
     ftrace_log_d();

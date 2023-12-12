@@ -142,7 +142,7 @@ void cpu_exec(uint64_t n) {
       return;
     default: nemu_state.state = NEMU_RUNNING;
   }
-  cpu.mstatus = 0x1800;
+  
   uint64_t timer_start = get_time();
   execute(n);
   uint64_t timer_end = get_time();
