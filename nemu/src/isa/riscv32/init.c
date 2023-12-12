@@ -31,7 +31,9 @@ static void restart() {
   cpu.pc = RESET_VECTOR; // the CP in 0x80000000
 
   /* The zero register is always 0. */
+  /* mstaus register is 0x1800. */
   cpu.gpr[0] = 0;
+  cpu.csr[_mstatus] = 0x00001800;
 }
 
 void init_isa() {
