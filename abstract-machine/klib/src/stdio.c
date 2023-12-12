@@ -5,12 +5,16 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
+// printf 的最大输入不能超过该容量
+// 否则会发生缓冲区溢出
+// 这个很危险的 bug 尚未有效解决
+#define str_buffer_size 10000
+
 // num 为 int，将其保存到 str 所指字符串中，返回 str 的偏移量
 uint16_t int2str(char *str, int num) {
   uint16_t offset = 0;
-  char temp[200] = {0}; 
+  char temp[500] = {0}; 
   int tempOffset = 0;
-
   // 正负判断
   if (num < 0) {
     str[offset++] = '-';
@@ -44,7 +48,7 @@ uint16_t ch2str(char *des_str, char c) {
 }
 
 int printf(const char *fmt, ...) {
-  char temp [10000] = {0};
+  char temp [str_buffer_size] = {0};
   va_list ap;
   va_start(ap, fmt);
   int size = vsprintf(temp, fmt, ap);
@@ -74,6 +78,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         default: *out = *fmt; out++; fmt++; size_str++; break;
       }
     }
+    // 缓冲区溢出
+    if(size_str >= str_buffer_size) assert(0);
   }
   *out = '\0';
   return size_str;
