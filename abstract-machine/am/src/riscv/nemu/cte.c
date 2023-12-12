@@ -8,8 +8,8 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
 
-    for(void* ptr = (void *)c; ptr <= (void *)c + 136; ptr = ptr + 4) {
-      printf("%08x", *((uint32_t *)ptr));
+    for(int i = 0; i < 32; i++) {
+       printf("%s:0X%08x ", c->gpr[i]);
     }
 
     Event ev = {0};
