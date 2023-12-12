@@ -19,6 +19,7 @@
 #include <cpu/decode.h>
 
 #define R(i) gpr(i)
+#define CSR(i) csr(i)
 #define Mr vaddr_read
 #define Mw vaddr_write
 
@@ -28,8 +29,8 @@ enum {
 };
 
 enum {
-  MEPC=0x341, MSTATUS=0x300, MCAUSE=0x342, 
-  MTVEC=0x305
+  MEPC = 0x341, MSTATUS=0x300, 
+  MCAUSE = 0x342, MTVEC=0x305
 };
 
 // rs转寄存器的数
@@ -59,16 +60,15 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
   }
 }
 
-// pointer to csr registers
-static inline word_t* csr_reg(uint32_t idx) {
-  switch (idx) {
-    case MEPC:    return &(cpu.mepc);    break;
-    case MSTATUS: return &(cpu.mstatus); break;
-    case MCAUSE:  return &(cpu.mcause);  break;
-    case MTVEC:   return &(cpu.mtvec);   break;
+// decode csr code
+static inline word_t decode_csr(uint32_t code) {
+  switch (code) {
+    case MEPC:    return _mepc;    break;
+    case MSTATUS: return _mstatus; break;
+    case MCAUSE:  return _mcause;  break;
+    case MTVEC:   return _mtvec;   break;
     default: assert(0); break;
   }
-  return NULL;
 }
 
 static int decode_exec(Decode *s) {
@@ -76,7 +76,6 @@ static int decode_exec(Decode *s) {
   word_t src1 = 0, src2 = 0, imm = 0;
   s->dnpc = s->snpc;
   word_t temp;
-  word_t *t_ptr;
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 #define INSTPAT_MATCH(s, name, type, ... /* execute body */ ) { \
   decode_operand(s, &rd, &src1, &src2, &imm, concat(TYPE_, type)); \
@@ -100,8 +99,8 @@ static int decode_exec(Decode *s) {
   INSTPAT("000000? ????? ????? 101 ????? 0010011", srli   , I, R(rd) = BITS(imm, 5, 5)==0 ? (src1 >> BITS(imm, 5, 0)) : R(rd));
   INSTPAT("000000? ????? ????? 001 ????? 0010011", slli   , I, R(rd) = BITS(imm, 5, 5)==0 ? (src1 << BITS(imm, 5, 0)) : R(rd));
   INSTPAT("??????? ????? ????? 010 ????? 0010011", slti   , I, R(rd) = ((int32_t)src1 < (int32_t)imm));
-  INSTPAT("??????? ????? ????? 001 ????? 1110011", csrrw  , I, t_ptr = csr_reg(imm); temp = *t_ptr; *t_ptr = src1; R(rd) = temp);
-  INSTPAT("??????? ????? ????? 010 ????? 1110011", csrrs  , I, t_ptr = csr_reg(imm); temp = *t_ptr; *t_ptr = temp | src1; R(rd) = temp);
+  INSTPAT("??????? ????? ????? 001 ????? 1110011", csrrw  , I, temp = CSR(decode_csr(imm)); CSR(decode_csr(imm)) = src1; R(rd) = temp);
+  INSTPAT("??????? ????? ????? 010 ????? 1110011", csrrs  , I, temp = CSR(decode_csr(imm)); CSR(decode_csr(imm)) = temp | src1; R(rd) = temp);
 
   INSTPAT("??????? ????? ????? 000 ????? 0100011", sb     , S, Mw(src1 + imm, 1, src2));
   INSTPAT("??????? ????? ????? 010 ????? 0100011", sw     , S, Mw(src1 + imm, 4, src2));

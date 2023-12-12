@@ -16,9 +16,9 @@
 #include <isa.h>
 
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
-  cpu.mepc = epc;
-  cpu.mcause = NO;
-  return cpu.mtvec;
+  cpu.csr[_mepc] = epc;
+  cpu.csr[_mcause] = NO;
+  return cpu.csr[_mtvec];
 }
 
 word_t isa_query_intr() {
