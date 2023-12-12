@@ -8,9 +8,9 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
 
-    for(int i = 0; i < 32; i++) {
-       printf("%s:0X%08x ", c->mcause);
-    }
+    // for(int i = 0; i < 32; i++) {
+    //    printf("%s:0X%08x ", c->mcause);
+    // }
 
     Event ev = {0};
     switch (c->mcause) {
