@@ -8,7 +8,7 @@
 // num 为 int，将其保存到 str 所指字符串中，返回 str 的偏移量
 uint16_t int2str(char *str, int num) {
   uint16_t offset = 0;
-  char temp[20] = {0}; 
+  char temp[200] = {0}; 
   int tempOffset = 0;
 
   // 正负判断
@@ -44,7 +44,7 @@ uint16_t ch2str(char *des_str, char c) {
 }
 
 int printf(const char *fmt, ...) {
-  char temp [100] = {0};
+  char temp [10000] = {0};
   va_list ap;
   va_start(ap, fmt);
   int size = vsprintf(temp, fmt, ap);
