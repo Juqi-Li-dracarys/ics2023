@@ -7,6 +7,7 @@
 #define NR_REGS 32
 #endif
 
+// modify the following code through trap.s
 struct Context {
   uintptr_t gpr[NR_REGS], mcause, mstatus, mepc;
   void *pdir;
