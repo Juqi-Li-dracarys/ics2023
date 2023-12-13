@@ -12,7 +12,7 @@
 extern uint8_t ramdisk_start;
 extern uint8_t ramdisk_end;
 
-// 解读 elf 文件内容，将程序指令拷贝到正确位置的
+// 解读 elf 文件内容，将程序指令和数据拷贝到正确位置的
 // 好奇的鼠鼠会想：这和 NEMU 加载 AM 的程序的过程有啥区别？
 // 区别在于 AM 对 elf 文件进行 objcopy 转化为 bin
 // 之后 copy 到 memory, 接下来取指执行, 而这里我们要直接对 ELF 解析
