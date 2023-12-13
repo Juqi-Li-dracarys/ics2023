@@ -38,13 +38,13 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       Log("this file was not complied for a 32bits system.");
       assert(0);
   }
-  Log("----PASS MAGIC NUMBER CHECK----\n");
+  Log("PASS MAGIC NUMBER CHECK");
   // 获取ELF头表
   Elf32_Ehdr ehdr = {0};
   uint32_t entry = 0x0;
   ramdisk_read(&ehdr, 0, sizeof(Elf32_Ehdr));
   entry = ehdr.e_entry;
-  Log("Entry point address: %p\n", entry); 
+  Log("Entry point address: %p", entry); 
   assert(0);
   return 0;     
 }
