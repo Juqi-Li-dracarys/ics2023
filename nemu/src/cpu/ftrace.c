@@ -33,7 +33,7 @@ uint32_t flog_indx = 0;
 // Success return 1, else return 0
 uint8_t init_ftrace(char *elf_addr) {
 
-    Elf32_Ehdr ehdr = {0};           // ELF头
+    Elf32_Ehdr ehdr = {0};            // ELF头
     Elf32_Shdr shdr [10000] = {0};    // 节头表
     Elf32_Sym sym_table [10000]= {0}; // 符号表
     size_t read_size;
@@ -60,7 +60,7 @@ uint8_t init_ftrace(char *elf_addr) {
     // 跳转到节头表, 并全部读取
     fseek(elf_fp, ehdr.e_shoff, SEEK_SET);
     read_size = fread(&shdr, ehdr.e_shentsize, ehdr.e_shnum, elf_fp);
-    // 跳转到shstrtab, 并全部读取
+    // 跳转到 shstrtab, 并全部读取
     char shstr_table [60000] = {0};
     fseek(elf_fp, shdr[ehdr.e_shstrndx].sh_offset, SEEK_SET);
     read_size = fread(&shstr_table, 1, shdr[ehdr.e_shstrndx].sh_size, elf_fp);
