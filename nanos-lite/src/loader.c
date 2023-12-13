@@ -31,14 +31,20 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   char magic_buf[6] = {0};
   ramdisk_read(magic_buf, 0, 6);
   if (magic_buf[0] != 0x7f || magic_buf[1] != 'E' || magic_buf[2] != 'L' || magic_buf[3] != 'F') {
-      Log("文件类型错误, ftrace 未启动.");
-      return 0;
+      Log("error file type.");
+      assert(0);
   }
   if (magic_buf[4] != 0x01) {
-      Log("警告: ELF文件非32位系统生成.");
-      return 0;
+      Log("this file was not complied for a 32bits system.");
+      assert(0);
   }
-  Log("PASS MAGIC CHECK.\n");
+  Log("----PASS MAGIC NUMBER CHECK----\n");
+  // 获取ELF头表
+  Elf32_Ehdr ehdr = {0};
+  uint32_t entry = 0x0;
+  ramdisk_read(&ehdr, 0, sizeof(Elf32_Ehdr));
+  entry = ehdr.e_entry;
+  Log("Entry point address: %p\n", entry); 
   assert(0);
   return 0;     
 }
