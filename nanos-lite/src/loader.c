@@ -9,10 +9,11 @@
 # define Elf_Phdr Elf32_Phdr
 #endif
 
-extern uint8_t ramdisk_start;
-extern uint8_t ramdisk_end;
+size_t ramdisk_read(void *buf, size_t offset, size_t len);
+size_t ramdisk_write(const void *buf, size_t offset, size_t len);
+size_t get_ramdisk_size();
 
-// 解读 elf 文件内容，将程序指令和数据拷贝到正确位置的
+
 // 好奇的鼠鼠会想：这和 NEMU 加载 AM 的程序的过程有啥区别？
 // 区别在于 AM 对 elf 文件进行 objcopy 转化为 bin
 // 之后 copy 到 memory, 接下来取指执行, 而这里我们要直接对 ELF 解析
@@ -24,9 +25,22 @@ extern uint8_t ramdisk_end;
 // 那是因为 elf 用的 ld 链接器，其链接后的格式被精心处理过了，
 // 也因为它加载到了 0x80000000, 内存的开端，细品....
 
+// 解读 elf 文件内容，将程序指令和数据拷贝到正确位置的
 static uintptr_t loader(PCB *pcb, const char *filename) {
-  TODO();
-  return 0;
+  // 魔数检查
+  char magic_buf[6] = {0};
+  ramdisk_read(magic_buf, 0, 6);
+  if (magic_buf[0] != 0x7f || magic_buf[1] != 'E' || magic_buf[2] != 'L' || magic_buf[3] != 'F') {
+      Log("文件类型错误, ftrace 未启动.");
+      return 0;
+  }
+  if (magic_buf[4] != 0x01) {
+      Log("警告: ELF文件非32位系统生成.");
+      return 0;
+  }
+  Log("PASS MAGIC CHECK.\n");
+  assert(0);
+  return 0;     
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
