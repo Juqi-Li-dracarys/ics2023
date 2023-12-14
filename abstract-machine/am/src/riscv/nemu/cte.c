@@ -10,6 +10,7 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 // 3. 在 __am_asm_trap 完成上下文切换后，跳转至 __am_irq_handle
 // 4. 解析本次 event 类型，后跳转到 handler 函数
 // 5. 在 handler 函数中根据类型，执行对应操作
+// 6. 回到 __am_asm_trap，再次切换上下文
 
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
@@ -18,7 +19,7 @@ Context* __am_irq_handle(Context *c) {
     switch (c->GPR1) {
       case 0xffffffff: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
       default: {
-        if(c->gpr[17] >= 0 && c->gpr[17] <= 20) {
+        if(c->GPR1 >= 0 && c->GPR1 <= 20) {
           ev.event = EVENT_SYSCALL;
           c->mepc = c->mepc + 4;
         }
