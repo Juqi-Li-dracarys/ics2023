@@ -1,12 +1,11 @@
 #include "syscall.h"
 
 void do_syscall(Context *c) {
-  uintptr_t a[4];
-  a[0] = c->GPR1;
   // 系统调用号
-  switch (a[0]) {
-    case SYS_yield: a[3] = sys_yield(); break;
-    default: panic("Unhandled syscall ID = %d", a[0]);
+  switch (c->GPR1) {
+    case SYS_yield: c->GPRx = sys_yield(); break;
+    case SYS_exit: sys_exit(c->GPR2); break;
+    default: panic("Unhandled syscall ID = %d", c->GPR1);
   }
 
 }
