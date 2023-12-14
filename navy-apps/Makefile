@@ -165,7 +165,8 @@ install: app
 run_nanos: app
 	@echo + C "->" copy the target to nanos.
 	$(MAKE) -C $(NANOS_HOME) clean
-	@$(shell mkdir -p $(NANOS_DIR) && cp -f $(APP) $(NANOS_DIR)/ramdisk.img)
+	@mkdir -p $(NANOS_DIR)
+	@$(shell cp -f $(APP) $(NANOS_DIR)/ramdisk.img)
 	@echo + L "->" load the target to nanos to run.
 	$(MAKE) -C $(NANOS_HOME) ARCH=$(NANOS_ARCH) run
 .PHONY: run_nanos
