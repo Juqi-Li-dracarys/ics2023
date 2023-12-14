@@ -44,15 +44,11 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       Log("error file type.");
       assert(0);
   }
-  if (ehdr.e_ident[4] != 0x01) {
-      Log("this file was not complied for a 32bits system.");
-      assert(0);
-  }
   if(ehdr.e_machine != EXPECT_TYPE) {
       Log("error ISA: %d. desired type: %d", ehdr.e_machine, EXPECT_TYPE);
       assert(0);
   }
-  Log("PASS BASIC CHECK");
+  Log("PASS BASIC CHECK, ISA = %s", EXPECT_TYPE == EM_RISCV ? "RISCV" : "X86_64");
   entry_ = ehdr.e_entry;
   Log("get the entry point address: %p", entry_);
   // 获取段头表
