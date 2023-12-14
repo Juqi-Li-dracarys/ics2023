@@ -4,24 +4,35 @@
 
 static Context* (*user_handler)(Event, Context*) = NULL;
 
+// 整个跳转流程如下：
+// 1. init 时将跳转地址插入 mtvec，并设置好 handler 函数
+// 2. 执行到 ecall 时跳转到 mtvec，即 __am_asm_trap
+// 3. 在 __am_asm_trap 完成上下文切换后，跳转至 __am_irq_handle
+// 4. 解析本次 event 类型，后跳转到 handler 函数
+// 5. 在 handler 函数中根据类型，执行对应操作
 
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
-    switch (c->mcause) {
-      case 0X0000000b: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
-      default: ev.event = EVENT_ERROR; break;
+    switch (c->gpr[17]) {
+      case 0xffffffff: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
+      default: {
+        if(c->gpr[17] >= 0 && c->gpr[17] <= 20) {
+          ev.event = EVENT_SYSCALL;
+        }
+        else {
+          ev.event = EVENT_ERROR;
+        }
+        break;
+      }
     }
-
     c = user_handler(ev, c);
     assert(c != NULL);
   }
-
   return c;
 }
 
 extern void __am_asm_trap(void);
-
 
 bool cte_init(Context*(*handler)(Event, Context*)) {
   // initialize exception entry
