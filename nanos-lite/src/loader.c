@@ -48,10 +48,10 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       Log("this file was not complied for a 32bits system.");
       assert(0);
   }
-  // if(ehdr.e_machine != EXPECT_TYPE) {
-  //     Log("error ISA.");
-  //     assert(0);
-  // }
+  if(ehdr.e_machine != EXPECT_TYPE) {
+      Log("error ISA.");
+      assert(0);
+  }
   Log("PASS BASIC CHECK");
   entry = ehdr.e_entry;
   Log("get the entry point address: %p", entry);
