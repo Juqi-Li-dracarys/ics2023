@@ -7,7 +7,7 @@ void do_syscall(Context *c) {
     case SYS_exit: sys_exit(c->GPR2); break;
     default: panic("Unhandled syscall ID = %d", c->GPR1);
   }
-
 }
+
 
 
