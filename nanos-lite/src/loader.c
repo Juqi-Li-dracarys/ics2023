@@ -67,7 +67,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
   Log("Jump to entry = %p", entry);
-  // 过调用这个函数指针，实际上执行了加载文件的代码
+  // 通过调用这个函数指针，实际上执行了加载文件的代码
   ((void(*)())entry) ();
 }
 

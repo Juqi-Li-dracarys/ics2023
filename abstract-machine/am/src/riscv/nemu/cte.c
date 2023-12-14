@@ -20,6 +20,7 @@ Context* __am_irq_handle(Context *c) {
       default: {
         if(c->gpr[17] >= 0 && c->gpr[17] <= 20) {
           ev.event = EVENT_SYSCALL;
+          c->mepc = c->mepc + 4;
         }
         else {
           ev.event = EVENT_ERROR;
