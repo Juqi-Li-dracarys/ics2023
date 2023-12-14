@@ -38,7 +38,7 @@ size_t get_ramdisk_size();
 static uintptr_t loader(PCB *pcb, const char *filename) {
   // 获取ELF头表
   Elf_Ehdr ehdr = {0};
-  uintptr_t entry = 0x0;
+  uintptr_t entry_ = 0x0;
   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
   if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F') {
       Log("error file type.");
@@ -53,8 +53,8 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       assert(0);
   }
   Log("PASS BASIC CHECK");
-  entry = ehdr.e_entry;
-  Log("get the entry point address: %p", entry);
+  entry_ = ehdr.e_entry;
+  Log("get the entry point address: %p", entry_);
   // 获取段头表
   Elf_Phdr phdr = {0};
   for(int i = 0; i < ehdr.e_phnum; i++) {
@@ -65,7 +65,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
     }
   }
-  return entry;     
+  return entry_;     
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
