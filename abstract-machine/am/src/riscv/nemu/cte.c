@@ -15,7 +15,7 @@ Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
     // judge the event type accroding to $a7
-    switch (c->gpr[17]) {
+    switch (c->GPR1) {
       case 0xffffffff: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
       default: {
         if(c->gpr[17] >= 0 && c->gpr[17] <= 20) {
