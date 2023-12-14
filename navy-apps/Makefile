@@ -43,7 +43,7 @@ $(shell mkdir -p $(DST_DIR))
 ### Compilation targets (application or archive)
 APP     ?= $(WORK_DIR)/build/$(NAME)-$(ISA)
 ARCHIVE  = $(WORK_DIR)/build/$(NAME)-$(ISA).a
-
+NANOS_DIR = $(NANOS_HOME)/build
 
 ### Add default libraries for ISA != native
 ifneq ($(ISA), native)
@@ -51,6 +51,15 @@ LIBS += libc libos
 CFLAGS += -U_FORTIFY_SOURCE  # fix compile error in Newlib on ubuntu
 else
 WL = -Wl,
+endif
+
+### Set the arch in nanos(native or riscv32)
+ifeq ($(ISA), am_native)
+NANOS_ARCH = native
+else ifeq ($(ISA), native)
+NANOS_ARCH = native
+else
+NANOS_ARCH = $(ISA)-nemu
 endif
 
 ### 32-bit ISA may need compiler-rt to support 64-bit mul/div
@@ -151,6 +160,15 @@ install: app
 	@cp $(APP) $(NAVY_HOME)/fsimg/bin/$(NAME)
 
 .PHONY: install
+
+### run the app on the nanos-lite
+run_nanos: app
+	@echo + C "->" copy the target to nanos.
+	$(MAKE) -C $(NANOS_HOME) clean
+	@$(shell mkdir -p $(NANOS_DIR) && cp -f $(APP) $(NANOS_DIR)/ramdisk.img)
+	@echo + L "->" load the target to nanos to run.
+	$(MAKE) -C $(NANOS_HOME) ARCH=$(NANOS_ARCH) run
+.PHONY: run_nanos
 
 ### Clean a single project (remove `build/`)
 clean:
