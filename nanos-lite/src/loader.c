@@ -54,7 +54,15 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   }
   Log("PASS BASIC CHECK");
   entry = ehdr.e_entry;
-  Log("get the entry point address: %p", entry); 
+  Log("get the entry point address: %p", entry);
+  // 获取段头表
+  Elf_Phdr phdr = {0};
+  for(int i = 0; i < ehdr.e_phnum; i++) {
+    ramdisk_read(&phdr, ehdr.e_phoff + ehdr.e_phentsize * i, sizeof(Elf_Phdr));
+    if(phdr.p_type == PT_LOAD) {
+      printf("offset:%p  virtaddr:%p  filesize:%p\n", phdr.p_offset, phdr.p_vaddr, phdr.p_filesz);
+    }
+  }
   assert(0);
   return entry;     
 }
