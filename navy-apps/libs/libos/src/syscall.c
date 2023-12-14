@@ -70,7 +70,7 @@ int _write(int fd, void *buf, size_t count) {
   if(count == size_in)
     return 0;
   else
-    return 1;
+    return 0;
 }
 
 void *_sbrk(intptr_t increment) {
