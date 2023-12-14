@@ -9,6 +9,14 @@
 # define Elf_Phdr Elf32_Phdr
 #endif
 
+#if defined(__ISA_AM_NATIVE__)
+# define EXPECT_TYPE EM_X86_64
+#elif defined(__riscv)
+#define EXPECT_TYPE EM_RISCV
+#else
+# error Unsupported ISA
+#endif
+
 size_t ramdisk_read(void *buf, size_t offset, size_t len);
 size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 size_t get_ramdisk_size();
@@ -25,12 +33,13 @@ size_t get_ramdisk_size();
 // 那是因为 elf 用的 ld 链接器，其链接后的格式被精心处理过了，
 // 也因为它加载到了 0x80000000, 内存的开端，细品....
 
-// 解读 elf 文件内容，将程序指令和数据拷贝到正确位置的
+
+// 解读 elf 文件内容，将程序指令和数据拷贝到正确位置
 static uintptr_t loader(PCB *pcb, const char *filename) {
   // 获取ELF头表
-  Elf32_Ehdr ehdr = {0};
-  uint32_t entry = 0x0;
-  ramdisk_read(&ehdr, 0, sizeof(Elf32_Ehdr));
+  Elf_Ehdr ehdr = {0};
+  uintptr_t entry = 0x0;
+  ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
   if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F') {
       Log("error file type.");
       assert(0);
@@ -47,7 +56,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   entry = ehdr.e_entry;
   Log("get the entry point address: %p", entry); 
   assert(0);
-  return 0;     
+  return entry;     
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
