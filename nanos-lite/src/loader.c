@@ -49,7 +49,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       assert(0);
   }
   if(ehdr.e_machine != EXPECT_TYPE) {
-      Log("error ISA.");
+      Log("error ISA: %d. desired type: %d", ehdr.e_machine, EXPECT_TYPE);
       assert(0);
   }
   Log("PASS BASIC CHECK");
