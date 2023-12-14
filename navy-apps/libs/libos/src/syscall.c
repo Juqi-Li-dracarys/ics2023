@@ -66,7 +66,11 @@ int _open(const char *path, int flags, mode_t mode) {
 }
 
 int _write(int fd, void *buf, size_t count) {
-  return _syscall_(SYS_write, fd, buf, count);
+  int size_in = _syscall_(SYS_write, (intptr_t)fd, (intptr_t)buf, count);
+  if(count == size_in)
+    return 0;
+  else
+    return 1;
 }
 
 void *_sbrk(intptr_t increment) {
