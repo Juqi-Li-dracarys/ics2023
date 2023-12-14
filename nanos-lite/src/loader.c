@@ -56,7 +56,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   for(int i = 0; i < ehdr.e_phnum; i++) {
     ramdisk_read(&phdr, ehdr.e_phoff + ehdr.e_phentsize * i, sizeof(Elf_Phdr));
     if(phdr.p_type == PT_LOAD) {
-      printf("LOAD: offset:%p  virtaddr:%p  filesize:%p\n", phdr.p_offset, phdr.p_vaddr, phdr.p_filesz);
+      Log("LOADING...offset:%p  virtaddr:%p  filesize:%p\n", phdr.p_offset, phdr.p_vaddr, phdr.p_filesz);
       ramdisk_read((void *)phdr.p_vaddr, phdr.p_offset, phdr.p_filesz);
       memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
     }
