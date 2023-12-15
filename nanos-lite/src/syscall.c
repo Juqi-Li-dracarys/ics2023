@@ -1,8 +1,10 @@
 #include "syscall.h"
 #include <common.h>
 
-#define MAX_NUM 100
+// enable strace here
 #define STRACE 1
+
+#define MAX_NUM 100
 
 typedef struct node {
   uintptr_t type;
@@ -13,7 +15,7 @@ typedef struct node {
 static s_node *head = NULL;
 static uintptr_t size = 0;
 
-void add_strace(uintptr_t type, uintptr_t arg0, uintptr_t arg1, uintptr_t arg2, uintptr_t ret) {
+static void add_strace(uintptr_t type, uintptr_t arg0, uintptr_t arg1, uintptr_t arg2, uintptr_t ret) {
 #ifdef STRACE
   if(size < MAX_NUM) {
     s_node *new = (s_node *)malloc(sizeof(s_node));
@@ -31,7 +33,7 @@ void add_strace(uintptr_t type, uintptr_t arg0, uintptr_t arg1, uintptr_t arg2, 
 }
 
 // 分配在 NEMU 中的内存没必要 free, 打印即可
-void disp_strace(void) {
+static void disp_strace(void) {
 #ifdef STRACE
   s_node *temp = head;
   uintptr_t i = 0;
@@ -45,18 +47,19 @@ void disp_strace(void) {
   return;
 }
 
-uintptr_t sys_yield() {
+static uintptr_t sys_yield() {
+  // call yield from AM_CTE
   yield();
   return 0;
 }
 
-void sys_exit(uintptr_t status) {
+static void sys_exit(uintptr_t status) {
   // nemu halt here
   Log("\nsystem halt in EXIT CODE: %p", status);
   halt(status);
 }
 
-uintptr_t sys_write(uintptr_t fd, char *buf, uintptr_t count) {
+static uintptr_t sys_write(uintptr_t fd, char *buf, uintptr_t count) {
   if(fd == 1 || fd == 2) {
     for(int i = 0; i < count; i++) {
       putch(buf[i]);
@@ -68,7 +71,7 @@ uintptr_t sys_write(uintptr_t fd, char *buf, uintptr_t count) {
   }
 }
 
-uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
+static uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
   *ptr = *ptr + increment;
   return 0;
 }
