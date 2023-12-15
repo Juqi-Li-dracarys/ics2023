@@ -15,4 +15,5 @@ int main() {
     }
   }
   _exit(0);
+  return 0;
 }
