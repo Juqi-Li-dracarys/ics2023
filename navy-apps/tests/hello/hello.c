@@ -14,5 +14,5 @@ int main() {
       j = 0;
     }
   }
-  return 0;
+  _exit(0);
 }
