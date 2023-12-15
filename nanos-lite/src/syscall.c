@@ -1,6 +1,14 @@
 #include "syscall.h"
+#include <common.h>
 
 #define MAX_NUM 100
+#define STRACE 1
+
+typedef struct node {
+  uintptr_t type;
+  uintptr_t arg_ret[4];
+  struct node *next;
+} s_node;
 
 static s_node *head = NULL;
 static uintptr_t size = 0;
@@ -22,6 +30,7 @@ void add_strace(uintptr_t type, uintptr_t arg0, uintptr_t arg1, uintptr_t arg2, 
   return;
 }
 
+// 分配在 NEMU 中的内存没必要 free, 打印即可
 void disp_strace(void) {
 #ifdef STRACE
   s_node *temp = head;
@@ -34,6 +43,34 @@ void disp_strace(void) {
   }
 #endif
   return;
+}
+
+uintptr_t sys_yield() {
+  yield();
+  return 0;
+}
+
+void sys_exit(uintptr_t status) {
+  // nemu halt here
+  printf("EXIT CODE: %p", status);
+  halt(status);
+}
+
+uintptr_t sys_write(uintptr_t fd, char *buf, uintptr_t count) {
+  if(fd == 1 || fd == 2) {
+    for(int i = 0; i < count; i++) {
+      putch(buf[i]);
+    }
+    return count;
+  }
+  else {
+    return -1;
+  }
+}
+
+uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
+  *ptr = *ptr + increment;
+  return 0;
 }
 
 // 处理各种系统调用号
