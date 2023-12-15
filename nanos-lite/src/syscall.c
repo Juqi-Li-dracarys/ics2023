@@ -52,7 +52,7 @@ uintptr_t sys_yield() {
 
 void sys_exit(uintptr_t status) {
   // nemu halt here
-  Log("system halt @EXIT CODE: %p\n", status);
+  Log("\nsystem halt @EXIT CODE: %p", status);
   halt(status);
 }
 
