@@ -3,9 +3,9 @@
 
 int main() {
   write(1, "Hello World!\n", 13);
-  int i = 2;
-  volatile int j = 0;
-  printf("Hello World from Navy-apps for the 0 time!\n");
+  // int i = 2;
+  // volatile int j = 0;
+  // printf("Hello World from Navy-apps for the 0 time!\n");
 
   // while (i<20) {
   //   j ++;
