@@ -6,11 +6,10 @@ int main() {
   int i = 0;
   volatile int j = 0;
 
-  while (i < 10) {
+  while (i < 100) {
     j ++;
     if (j == 10000) {
       printf("Hello World from Navy-apps for the %dth time!\n", i ++);
-      printf("-------------------------------------------------------------------------------------------------------------------------------\n");
       j = 0;
     }
   }
