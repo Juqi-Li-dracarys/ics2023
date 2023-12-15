@@ -1,5 +1,6 @@
 #include <proc.h>
 #include <elf.h>
+#include <fs.h>
 
 #ifdef __LP64__
 # define Elf_Ehdr Elf64_Ehdr
@@ -17,11 +18,6 @@
 # error Unsupported ISA
 #endif
 
-size_t ramdisk_read(void *buf, size_t offset, size_t len);
-size_t ramdisk_write(const void *buf, size_t offset, size_t len);
-size_t get_ramdisk_size();
-
-
 // 好奇的鼠鼠会想：这和 NEMU 加载 AM 的程序的过程有啥区别？
 // 区别在于 AM 对 elf 文件进行 objcopy 转化为 bin
 // 之后 copy 到 memory, 接下来取指执行, 而这里我们要直接对 ELF 解析
@@ -36,29 +32,63 @@ size_t get_ramdisk_size();
 
 // 解读 elf 文件内容，将程序指令和数据拷贝到正确位置
 static uintptr_t loader(PCB *pcb, const char *filename) {
-  // 获取ELF头表
-  Elf_Ehdr ehdr = {0};
+  uintptr_t fd = 0;
   uintptr_t entry_ = 0x0;
-  ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
-  if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F') {
-      Log("error file type.");
-      assert(0);
-  }
-  if(ehdr.e_machine != EXPECT_TYPE) {
-      Log("error ISA: %d. desired type: %d", ehdr.e_machine, EXPECT_TYPE);
-      assert(0);
-  }
-  Log("PASS BASIC CHECK, ISA = %s", EXPECT_TYPE == EM_RISCV ? "RISCV" : "X86_64");
-  entry_ = ehdr.e_entry;
-  Log("get the entry point address: %p", entry_);
-  // 获取段头表
+  Elf_Ehdr ehdr = {0};
   Elf_Phdr phdr = {0};
-  for(int i = 0; i < ehdr.e_phnum; i++) {
-    ramdisk_read(&phdr, ehdr.e_phoff + ehdr.e_phentsize * i, sizeof(Elf_Phdr));
-    if(phdr.p_type == PT_LOAD) {
-      Log("\nLOADING...offset:%p  virtaddr:%p  filesize:%p", phdr.p_offset, phdr.p_vaddr, phdr.p_filesz);
-      ramdisk_read((void *)phdr.p_vaddr, phdr.p_offset, phdr.p_filesz);
-      memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
+  if((fd = fs_open(filename, 0, 0)) == -1) {
+    // 获取ELF头表
+    ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
+    if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F') {
+        Log("error file type.");
+        assert(0);
+    }
+    if(ehdr.e_machine != EXPECT_TYPE) {
+        Log("error ISA: %d. desired type: %d", ehdr.e_machine, EXPECT_TYPE);
+        assert(0);
+    }
+    Log("PASS BASIC CHECK, ISA = %s", EXPECT_TYPE == EM_RISCV ? "RISCV" : "X86_64");
+    entry_ = ehdr.e_entry;
+    Log("get the entry point address: %p", entry_);
+    // 获取段头表
+    for(int i = 0; i < ehdr.e_phnum; i++) {
+      ramdisk_read(&phdr, ehdr.e_phoff + ehdr.e_phentsize * i, sizeof(Elf_Phdr));
+      if(phdr.p_type == PT_LOAD) {
+        Log("\nLOADING...offset:%p  virtaddr:%p  filesize:%p", phdr.p_offset, phdr.p_vaddr, phdr.p_filesz);
+        ramdisk_read((void *)phdr.p_vaddr, phdr.p_offset, phdr.p_filesz);
+        memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
+      }
+    }
+  }
+  // filename exist
+  else {
+    // 获取ELF头表
+    lseek(fd, 0, SEEK_SET);
+    fs_read(fd, &ehdr, sizeof(Elf_Ehdr));
+    // ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
+    if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F') {
+        Log("error file type.");
+        assert(0);
+    }
+    if(ehdr.e_machine != EXPECT_TYPE) {
+        Log("error ISA: %d. desired type: %d", ehdr.e_machine, EXPECT_TYPE);
+        assert(0);
+    }
+    Log("PASS BASIC CHECK, ISA = %s", EXPECT_TYPE == EM_RISCV ? "RISCV" : "X86_64");
+    entry_ = ehdr.e_entry;
+    Log("get the entry point address: %p", entry_);
+    // 获取段头表
+    for(int i = 0; i < ehdr.e_phnum; i++) {
+      lseek(fd, ehdr.e_phoff + ehdr.e_phentsize * i, SEEK_SET);
+      fs_read(fd, &phdr, sizeof(Elf_Phdr));
+      // ramdisk_read(&phdr, ehdr.e_phoff + ehdr.e_phentsize * i, sizeof(Elf_Phdr));
+      if(phdr.p_type == PT_LOAD) {
+        Log("\nLOADING...offset:%p  virtaddr:%p  filesize:%p", phdr.p_offset, phdr.p_vaddr, phdr.p_filesz);
+        // ramdisk_read((void *)phdr.p_vaddr, phdr.p_offset, phdr.p_filesz);
+        lseek(fd, phdr.p_offset, SEEK_SET);
+        fs_read(fd, (void *)phdr.p_vaddr, phdr.p_filesz);
+        memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
+      }
     }
   }
   return entry_;
