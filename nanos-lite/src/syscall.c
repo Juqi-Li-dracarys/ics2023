@@ -1,6 +1,12 @@
 #include "syscall.h"
 #include <common.h>
 
+/* 
+  注意目录下 syscall.h 和 files.h 是两个
+  软链接文件，不要往这两个文件写任何代码！
+  F**K ME！！
+*/
+
 // enable strace here
 #define STRACE 1
 

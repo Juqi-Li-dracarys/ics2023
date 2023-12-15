@@ -9,6 +9,7 @@ typedef struct {
   size_t disk_offset;
   ReadFn read;
   WriteFn write;
+  size_t open_offset;
 } Finfo;
 
 enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB};
@@ -33,4 +34,61 @@ static Finfo file_table[] __attribute__((used)) = {
 
 void init_fs() {
   // TODO: initialize the size of /dev/fb
+}
+
+int fs_open(const char *pathname, int flags, int mode) {
+  if(pathname == NULL) return -1;
+  for(uintptr_t i = 0; i < sizeof(file_table) / sizeof(Finfo); i++) {
+    if(strcmp(pathname, file_table[i].name) == 0) {
+      file_table[i].open_offset = 0;
+      file_table[i].read = invalid_read;
+      file_table[i].write = invalid_write;
+      return i;
+    }
+  }
+  Log("error: file open fail.");
+  return -1;
+}
+
+size_t lseek(int fd, size_t offset, int whence) {
+  if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR || fd >= sizeof(file_table) / sizeof(Finfo)) {
+    panic("error: can't set offset of error file");
+    return -1;
+  }
+  switch (whence)
+  {
+    case SEEK_SET: {
+      file_table[fd].open_offset = offset;
+      break;
+    }
+    case SEEK_CUR: {
+      file_table[fd].open_offset += offset;
+      break;
+    }
+    case SEEK_END: {
+      file_table[fd].open_offset = file_table[fd].size + offset;
+      break;
+    }
+    default: {
+      panic("error: unknown type of whence");
+      return -1;
+    }
+  }
+  return file_table[fd].open_offset;
+}
+
+size_t fs_read(int fd, void *buf, size_t len) {
+  if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR || fd >= sizeof(file_table) / sizeof(Finfo)) {
+    panic("error: can't set offset of error file");
+    return -1;
+  }
+  return ramdisk_read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+}
+
+int fs_close(int fd) {
+  if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR || fd >= sizeof(file_table) / sizeof(Finfo)) {
+    panic("error: can't set offset of error file");
+    return -1;
+  }
+  return 0;
 }
