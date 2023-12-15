@@ -161,7 +161,7 @@ install: app
 
 .PHONY: install
 
-### run the apps on the nanos-lite
+### Run the app on the nanos-lite
 run: app
 	@echo + CP "->" copy the target to nanos.
 	$(MAKE) -C $(NANOS_HOME) clean
