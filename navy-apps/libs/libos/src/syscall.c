@@ -55,9 +55,9 @@ intptr_t _syscall_(intptr_t type, intptr_t a0, intptr_t a1, intptr_t a2) {
   return ret;
 }
 
+// exit the system
 void _exit(int status) {
   _syscall_(SYS_exit, status, 0, 0);
-  while (1);
 }
 
 int _open(const char *path, int flags, mode_t mode) {
@@ -65,10 +65,12 @@ int _open(const char *path, int flags, mode_t mode) {
   return 0;
 }
 
+// put the buf to stdin or stderr
 int _write(int fd, void *buf, size_t count) {
   return _syscall_(SYS_write, (intptr_t)fd, (intptr_t)buf, count);
 }
 
+// manage the heap area
 void *_sbrk(intptr_t increment) {
   return (void *)-1;
 }
