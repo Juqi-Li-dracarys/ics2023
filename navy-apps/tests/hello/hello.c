@@ -14,5 +14,5 @@ int main() {
   //     j = 0;
   //   }
   // }
-  return (write(1, "Hello World!\n", 13)==13) ;
+  return (write(1, "Hello World!\n", 13)==0) ;
 }
