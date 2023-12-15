@@ -3,11 +3,10 @@
 
 int main() {
   write(1, "Hello World!\n", 13);
-  int i = 1;
+  int i = 0;
   volatile int j = 0;
-  printf("Hello World from Navy-apps for the 0 time!\n");
 
-  while (i<20) {
+  while (i < 10) {
     j ++;
     if (j == 10000) {
       printf("Hello World from Navy-apps for the %dth time!\n", i ++);
