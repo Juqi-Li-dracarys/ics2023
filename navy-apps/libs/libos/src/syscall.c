@@ -45,6 +45,10 @@
 #error _syscall_ is not implemented
 #endif
 
+// the end of bbs (initial)
+extern char end;
+uintptr_t prog_break = &end;
+
 intptr_t _syscall_(intptr_t type, intptr_t a0, intptr_t a1, intptr_t a2) {
   register intptr_t _gpr1 asm (GPR1) = type;
   register intptr_t _gpr2 asm (GPR2) = a0;
@@ -67,12 +71,16 @@ int _open(const char *path, int flags, mode_t mode) {
 
 // put the buf to stdin or stderr
 int _write(int fd, void *buf, size_t count) {
-  return _syscall_(SYS_write, (intptr_t)fd, (intptr_t)buf, count);
+  return _syscall_(SYS_write, (uintptr_t)fd, (uintptr_t)buf, count);
 }
 
 // manage the heap area
 void *_sbrk(intptr_t increment) {
-  return (void *)-1;
+  uintptr_t old_break = prog_break;
+  if(!_syscall_(SYS_brk, (uintptr_t)(&prog_break), increment, 0))
+    return old_break;
+  else
+    return -1;
 }
 
 int _read(int fd, void *buf, size_t count) {
