@@ -26,8 +26,9 @@ void disp_strace(void) {
 #ifdef STRACE
   s_node *temp = head;
   uintptr_t i = 0;
+  printf("STRACE:\n");
   while(temp != NULL) {
-    printf("[%d]: type: %d, arg0:%p, arg1:%p, arg2:%p, ret:%p\n", i, temp->type, temp->arg_ret[0], temp->arg_ret[1], temp->arg_ret[2], temp->arg_ret[3]);
+    printf("[%d]: type: %d, arg0:%p, arg1:%p, arg2:%p, ret:%p\n", size - i, temp->type, temp->arg_ret[0], temp->arg_ret[1], temp->arg_ret[2], temp->arg_ret[3]);
     i++;
     temp = temp->next;
   }
