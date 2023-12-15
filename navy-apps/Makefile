@@ -162,14 +162,14 @@ install: app
 .PHONY: install
 
 ### run the apps on the nanos-lite
-run_nanos: app
+run: app
 	@echo + CP "->" copy the target to nanos.
 	$(MAKE) -C $(NANOS_HOME) clean
 	@mkdir -p $(NANOS_DIR)
 	@cp -f $(APP) $(NANOS_DIR)/ramdisk.img
 	@echo + LD "->" load the target to nanos to run.
-	$(MAKE) -C $(NANOS_HOME) ARCH=$(NANOS_ARCH) run
-.PHONY: run_nanos
+	$(MAKE) -C $(NANOS_HOME) ARCH=$(NANOS_ARCH) $@
+.PHONY: run
 
 ### Clean a single project (remove `build/`)
 clean:
