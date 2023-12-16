@@ -68,7 +68,7 @@ int _open(const char *path, int flags, mode_t mode) {
   return _syscall_(SYS_open, path, 0, 0);
 }
 
-// put the buf to stdin or stderr
+// send the buf to stdin or stderr or file
 int _write(int fd, void *buf, size_t count) {
   return _syscall_(SYS_write, (uintptr_t)fd, (uintptr_t)buf, count);
 }
