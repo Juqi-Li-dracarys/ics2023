@@ -9,7 +9,7 @@ typedef struct {
   size_t disk_offset;
   ReadFn read;
   WriteFn write;
-  size_t open_offset;
+  size_t open_offset; // 文件指针
 } Finfo;
 
 enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB};
@@ -86,7 +86,9 @@ size_t fs_read(int fd, void *buf, size_t len) {
   }
   // 文件越界检查
   if(file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
-    return ramdisk_read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+    size_t f_size = ramdisk_read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+    file_table[fd].open_offset += f_size;
+    return f_size;
   }
   else {
     panic("error: offset overflow");
@@ -101,7 +103,9 @@ size_t fs_write(int fd, const void *buf, size_t len) {
   }
   // 文件越界检查
   if(file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
-    return ramdisk_write(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+    size_t f_size = ramdisk_write(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+    file_table[fd].open_offset += f_size;
+    return f_size;
   }
   else {
     panic("error: offset overflow");
