@@ -84,10 +84,19 @@ static uintptr_t sys_write(uintptr_t fd, char *buf, uintptr_t count) {
   }
   // file system
   else if(fd > 2) {
-    return fs_write(fd, buf, count);
+    return fs_write(fd, (void *)buf, count);
   }
   else {
-    return -1;
+    panic("Not support stdin in sys_write");
+  }
+}
+
+static uintptr_t sys_read(uintptr_t fd, char *buf, uintptr_t count) {
+  if(fd < 3) {
+     panic("Not support stdin/stdout or stderr in sys_read");
+    }
+  else {
+    return fs_read(fd, (void *)buf, count);
   }
 }
 
@@ -103,6 +112,7 @@ void do_syscall(Context *c) {
     case SYS_yield: c->GPRx = sys_yield(); add_strace(SYS_yield, 0, 0, 0, c->GPRx); break;
     case SYS_exit: disp_strace(); sys_exit(c->GPR2); break;
     case SYS_write: c->GPRx = sys_write(c->GPR2, (char *)(c->GPR3), c->GPR4); add_strace(SYS_write, c->GPR2, c->GPR3, c->GPR4, c->GPRx); break;
+    case SYS_read: c->GPRx = sys_read(c->GPR2, (char *)(c->GPR3), c->GPR4); add_strace(SYS_read, c->GPR2, c->GPR3, c->GPR4, c->GPRx); break;
     case SYS_open: c->GPRx = sys_open((const char *)c->GPR2, 0, 0); add_strace(SYS_open, c->GPR2, 0, 0, c->GPRx); break;
     case SYS_lseek: c->GPRx = sys_lseek(c->GPR2, c->GPR3, c->GPR4); add_strace(SYS_lseek, c->GPR2, c->GPR3, c->GPR4, c->GPRx); break;
     case SYS_brk: c->GPRx = sys_brk((uintptr_t *)(c->GPR2), c->GPR3); add_strace(SYS_brk, c->GPR2, c->GPR3, 0, c->GPRx); break;
