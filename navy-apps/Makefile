@@ -153,6 +153,9 @@ app: $(APP)
 archive: $(ARCHIVE)
 .PHONY: app archive libs
 
+RAMDISK = build/ramdisk.img
+RAMDISK_H = build/ramdisk.h
+
 ### Install an application to fsimg
 ### just copy the elf to the bin
 install: app
@@ -180,6 +183,7 @@ clean:
 CLEAN_ALL = $(dir $(shell find . -mindepth 2 -maxdepth 3 -name Makefile))
 clean-all: $(CLEAN_ALL) clean
 	-@rm -f $(NAVY_HOME)/fsimg/bin/*
+	-@rm -f $(RAMDISK) $(RAMDISK_H)
 $(CLEAN_ALL):
 	-@$(MAKE) -s -C $@ clean
 .PHONY: clean-all $(CLEAN_ALL)
@@ -192,8 +196,6 @@ TESTS = dummy hello
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 	-for t in $^; do $(MAKE) -s -C $(NAVY_HOME)/$$t install; done
 
-RAMDISK = build/ramdisk.img
-RAMDISK_H = build/ramdisk.h
 $(RAMDISK): fsimg
 	$(eval FSIMG_FILES := $(shell find -L ./fsimg -type f))
 	@mkdir -p $(@D)
