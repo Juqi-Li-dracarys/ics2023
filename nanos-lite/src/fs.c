@@ -36,7 +36,6 @@ void init_fs() {
   // TODO: initialize the size of /dev/fb
 }
 
-
 int fs_open(const char *pathname, int flags, int mode) {
   if(pathname == NULL) {
     Log("warning: can't open file pathname = %s.", pathname); 
