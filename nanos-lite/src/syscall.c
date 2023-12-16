@@ -100,6 +100,10 @@ static uintptr_t sys_read(uintptr_t fd, char *buf, uintptr_t count) {
   }
 }
 
+static uintptr_t sys_close(uintptr_t fd) {
+  return fs_close(fd);
+}
+
 // 堆区处理
 static uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
   *ptr = *ptr + increment;
@@ -115,6 +119,7 @@ void do_syscall(Context *c) {
     case SYS_read: c->GPRx = sys_read(c->GPR2, (char *)(c->GPR3), c->GPR4); add_strace(SYS_read, c->GPR2, c->GPR3, c->GPR4, c->GPRx); break;
     case SYS_open: c->GPRx = sys_open((const char *)c->GPR2, 0, 0); add_strace(SYS_open, c->GPR2, 0, 0, c->GPRx); break;
     case SYS_lseek: c->GPRx = sys_lseek(c->GPR2, c->GPR3, c->GPR4); add_strace(SYS_lseek, c->GPR2, c->GPR3, c->GPR4, c->GPRx); break;
+    case SYS_close: c->GPRx = sys_close(c->GPR2); add_strace(SYS_close, c->GPR2, 0, 0, c->GPRx); break;
     case SYS_brk: c->GPRx = sys_brk((uintptr_t *)(c->GPR2), c->GPR3); add_strace(SYS_brk, c->GPR2, c->GPR3, 0, c->GPRx); break;
     default: panic("Unhandled syscall ID = %d", c->GPR1);
   }
