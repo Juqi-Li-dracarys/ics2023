@@ -167,6 +167,7 @@ install: app
 ### Run one app on the nanos-lite
 run: app
 	@echo + CP "->" copy the target to nanos.
+	@rm -f $(RAMDISK)
 	$(MAKE) -C $(NANOS_HOME) clean
 	@mkdir -p $(NANOS_DIR)
 	@cp -f $(APP) $(NANOS_DIR)/ramdisk.img
@@ -183,7 +184,6 @@ clean:
 CLEAN_ALL = $(dir $(shell find . -mindepth 2 -maxdepth 3 -name Makefile))
 clean-all: $(CLEAN_ALL) clean
 	-@rm -f $(NAVY_HOME)/fsimg/bin/*
-	-@rm -f $(RAMDISK) $(RAMDISK_H)
 $(CLEAN_ALL):
 	-@$(MAKE) -s -C $@ clean
 .PHONY: clean-all $(CLEAN_ALL)
