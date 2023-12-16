@@ -70,6 +70,10 @@ static uintptr_t sys_open(const char *path, int flags, uintptr_t mode) {
   return fs_open(path, flags, mode);
 }
 
+static uintptr_t sys_lseek(uintptr_t fd, uintptr_t offset, uintptr_t whence) {
+  return lseek(fd, offset, whence);
+}
+
 static uintptr_t sys_write(uintptr_t fd, char *buf, uintptr_t count) {
   // stdout and stderr
   if(fd == 1 || fd == 2) {
@@ -87,6 +91,7 @@ static uintptr_t sys_write(uintptr_t fd, char *buf, uintptr_t count) {
   }
 }
 
+// 堆区处理
 static uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
   *ptr = *ptr + increment;
   return 0;
@@ -99,6 +104,7 @@ void do_syscall(Context *c) {
     case SYS_exit: disp_strace(); sys_exit(c->GPR2); break;
     case SYS_write: c->GPRx = sys_write(c->GPR2, (char *)(c->GPR3), c->GPR4); add_strace(SYS_write, c->GPR2, c->GPR3, c->GPR4, c->GPRx); break;
     case SYS_open: c->GPRx = sys_open((const char *)c->GPR2, 0, 0); add_strace(SYS_open, c->GPR2, 0, 0, c->GPRx); break;
+    case SYS_lseek: c->GPRx = sys_lseek(c->GPR2, c->GPR3, c->GPR4); add_strace(SYS_lseek, c->GPR2, c->GPR3, c->GPR4, c->GPRx); break;
     case SYS_brk: c->GPRx = sys_brk((uintptr_t *)(c->GPR2), c->GPR3); add_strace(SYS_brk, c->GPR2, c->GPR3, 0, c->GPRx); break;
     default: panic("Unhandled syscall ID = %d", c->GPR1);
   }
