@@ -190,7 +190,7 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 APPS =
-TESTS = dummy hello
+TESTS = dummy hello file-test
 
 ### Compile and all elfs from APPS and TESTS to bin
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
