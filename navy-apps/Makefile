@@ -167,7 +167,7 @@ install: app
 ### Run one app on the nanos-lite
 run: app
 	@echo + CP "->" copy the target to nanos.
-	@rm -f $(RAMDISK)
+	@rm -f $(NAVY_HOME)/$(RAMDISK)
 	$(MAKE) -C $(NANOS_HOME) clean
 	@mkdir -p $(NANOS_DIR)
 	@cp -f $(APP) $(NANOS_DIR)/ramdisk.img
