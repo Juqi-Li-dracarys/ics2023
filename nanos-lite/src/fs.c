@@ -76,14 +76,7 @@ size_t lseek(int fd, size_t offset, int whence) {
       return -1;
     }
   }
-  // 文件越界检查，为了避免求文件大小报错，故file size容忍
-  if(file_table[fd].open_offset + file_table[fd].disk_offset <= file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
-    return file_table[fd].open_offset;
-  }
-  else {
-    panic("error: offset overflow");
-    return -1;
-  }
+  return file_table[fd].open_offset;
 }
 
 size_t fs_read(int fd, void *buf, size_t len) {
@@ -91,7 +84,14 @@ size_t fs_read(int fd, void *buf, size_t len) {
     panic("error: can't read error file");
     return -1;
   }
-  return ramdisk_read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+  // 文件越界检查
+  if(file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
+    return ramdisk_read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+  }
+  else {
+    panic("error: offset overflow");
+    return -1;
+  }
 }
 
 size_t fs_write(int fd, const void *buf, size_t len) {
@@ -99,7 +99,14 @@ size_t fs_write(int fd, const void *buf, size_t len) {
     panic("error: can't write error file");
     return -1;
   }
-  return ramdisk_write(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+  // 文件越界检查
+  if(file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
+    return ramdisk_write(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+  }
+  else {
+    panic("error: offset overflow");
+    return -1;
+  }
 }
 
 int fs_close(int fd) {
