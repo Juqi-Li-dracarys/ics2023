@@ -37,7 +37,7 @@ uint16_t int2str(char *str, int num) {
 
 uint16_t str2str(char *des_str, char *src) {
   uint16_t offset = 0;
-  while (*src != '\0') {
+  while (src != NULL && *src != '\0') {
     des_str[offset++] = *src;
     src++;
   }
@@ -74,7 +74,7 @@ int printf(const char *fmt, ...) {
 int vsprintf(char *out, const char *fmt, va_list ap) {
   int size_str = 0;
   int size_in = 0;
-  while(*fmt != '\0') {
+  while(fmt != NULL && *fmt != '\0') {
     // 未成功匹配到%，则直接复制粘贴
     if(*fmt != '%') {
       *out = *fmt;

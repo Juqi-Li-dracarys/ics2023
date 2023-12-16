@@ -154,14 +154,14 @@ archive: $(ARCHIVE)
 .PHONY: app archive libs
 
 ### Install an application to fsimg
+### just copy the elf to the bin
 install: app
 	@echo + INSTALL "->" $(NAME)
 	@mkdir -p $(NAVY_HOME)/fsimg/bin
 	@cp $(APP) $(NAVY_HOME)/fsimg/bin/$(NAME)
-
 .PHONY: install
 
-### Run the app on the nanos-lite
+### Run one app on the nanos-lite
 run: app
 	@echo + CP "->" copy the target to nanos.
 	$(MAKE) -C $(NANOS_HOME) clean
@@ -188,6 +188,7 @@ $(CLEAN_ALL):
 APPS =
 TESTS = dummy hello
 
+### Compile and all elfs from APPS and TESTS to bin
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 	-for t in $^; do $(MAKE) -s -C $(NAVY_HOME)/$$t install; done
 

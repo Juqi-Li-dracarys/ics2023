@@ -30,12 +30,13 @@
 // 也因为它加载到了 0x80000000, 内存的开端，细品....
 
 
-// 解读 elf 文件内容，将程序指令和数据拷贝到正确位置
+// 解读 elf 文件内容，将单个程序的指令和数据拷贝到正确位置
 static uintptr_t loader(PCB *pcb, const char *filename) {
   uintptr_t fd = 0;
   uintptr_t entry_ = 0x0;
   Elf_Ehdr ehdr = {0};
   Elf_Phdr phdr = {0};
+  // can't open file
   if((fd = fs_open(filename, 0, 0)) == -1) {
     // 获取ELF头表
     ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
