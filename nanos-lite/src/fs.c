@@ -87,8 +87,8 @@ size_t fs_read(int fd, void *buf, size_t len) {
     panic("error: fd out of range");
     return -1;
   }
-  // 文件越界检查
-  if(file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
+  // 文件越界检查, std 跳过
+  if(fd > 2 && file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
     size_t f_size = file_table[fd].read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
     file_table[fd].open_offset += f_size;
     return f_size;
@@ -105,8 +105,8 @@ size_t fs_write(int fd, const void *buf, size_t len) {
     panic("error: fd out of range");
     return -1;
   }
-  // 文件越界检查
-  if(file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
+  // 文件越界检查, std 跳过
+  if(fd > 2 && file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
     size_t f_size = file_table[fd].write(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
     file_table[fd].open_offset += f_size;
     return f_size;
