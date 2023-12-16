@@ -115,7 +115,7 @@ size_t fs_write(int fd, const void *buf, size_t len) {
 
 int fs_close(int fd) {
   if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR || fd >= sizeof(file_table) / sizeof(Finfo)) {
-    panic("error: can't close error file");
+    panic("error: can't close error file, fp = %p", fd);
     return -1;
   }
   file_table[fd].open_offset = 0;
