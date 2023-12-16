@@ -27,8 +27,8 @@ size_t invalid_write(const void *buf, size_t offset, size_t len) {
 /* This is the information about all files in disk. */
 static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin", 0, 0, invalid_read, invalid_write},
-  [FD_STDOUT] = {"stdout", 0, 0, invalid_read, invalid_write},
-  [FD_STDERR] = {"stderr", 0, 0, invalid_read, invalid_write},
+  [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
+  [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
 #include "files.h"
 };
 
@@ -36,26 +36,28 @@ void init_fs() {
   // TODO: initialize the size of /dev/fb
 }
 
+
 int fs_open(const char *pathname, int flags, int mode) {
   if(pathname == NULL) {
     Log("warning: can't open file pathname = %s.", pathname); 
     return -1;
   }
+  // just for real file open
   for(uintptr_t i = 0; i < sizeof(file_table) / sizeof(Finfo); i++) {
     if(strcmp(pathname, file_table[i].name) == 0) {
       file_table[i].open_offset = 0;
-      file_table[i].read = invalid_read;
-      file_table[i].write = invalid_write;
+      file_table[i].read = ramdisk_read;
+      file_table[i].write = ramdisk_write;
       return i;
     }
   }
-  Log("warning: can't open file, pathname = %s.", pathname);
+  Log("warning: can't find file, pathname = %s.", pathname);
   return -1;
 }
 
 size_t lseek(int fd, size_t offset, int whence) {
   if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR || fd >= sizeof(file_table) / sizeof(Finfo)) {
-    panic("error: can't set offset of error file");
+    panic("error: can't set offset of std file");
     return -1;
   }
   switch (whence) {
@@ -79,14 +81,15 @@ size_t lseek(int fd, size_t offset, int whence) {
   return file_table[fd].open_offset;
 }
 
+// all files read
 size_t fs_read(int fd, void *buf, size_t len) {
-  if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR || fd >= sizeof(file_table) / sizeof(Finfo)) {
-    panic("error: can't read error file");
+  if(fd >= sizeof(file_table) / sizeof(Finfo)) {
+    panic("error: fd out of range");
     return -1;
   }
   // 文件越界检查
   if(file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
-    size_t f_size = ramdisk_read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+    size_t f_size = file_table[fd].read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
     file_table[fd].open_offset += f_size;
     return f_size;
   }
@@ -96,14 +99,15 @@ size_t fs_read(int fd, void *buf, size_t len) {
   }
 }
 
+// all files write
 size_t fs_write(int fd, const void *buf, size_t len) {
-  if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR || fd >= sizeof(file_table) / sizeof(Finfo)) {
-    panic("error: can't write error file");
+  if(fd >= sizeof(file_table) / sizeof(Finfo)) {
+    panic("error: fd out of range");
     return -1;
   }
   // 文件越界检查
   if(file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
-    size_t f_size = ramdisk_write(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
+    size_t f_size = file_table[fd].write(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
     file_table[fd].open_offset += f_size;
     return f_size;
   }
@@ -117,3 +121,5 @@ int fs_close(int fd) {
   file_table[fd].open_offset = 0;
   return 0;
 }
+
+
