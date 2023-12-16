@@ -65,8 +65,7 @@ void _exit(int status) {
 }
 
 int _open(const char *path, int flags, mode_t mode) {
-  _exit(SYS_open);
-  return 0;
+  return _syscall_(SYS_open, path, 0, 0);
 }
 
 // put the buf to stdin or stderr

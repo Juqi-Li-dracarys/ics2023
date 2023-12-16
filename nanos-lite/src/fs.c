@@ -49,7 +49,7 @@ int fs_open(const char *pathname, int flags, int mode) {
       return i;
     }
   }
-  Log("warning: can't open file pathname = %s.", pathname);
+  Log("warning: can't open file, pathname = %s.", pathname);
   return -1;
 }
 
