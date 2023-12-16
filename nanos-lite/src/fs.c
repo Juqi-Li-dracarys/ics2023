@@ -76,6 +76,7 @@ size_t lseek(int fd, size_t offset, int whence) {
       return -1;
     }
   }
+  // 文件越界检查
   if(file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset)  {
     return file_table[fd].open_offset;
   }
