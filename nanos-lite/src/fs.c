@@ -118,5 +118,6 @@ int fs_close(int fd) {
     panic("error: can't close error file");
     return -1;
   }
+  file_table[fd].open_offset = 0;
   return 0;
 }
