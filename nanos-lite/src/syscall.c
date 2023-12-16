@@ -1,5 +1,6 @@
 #include "syscall.h"
 #include <common.h>
+#include <fs.h>
 
 /* 
   注意目录下 syscall.h 和 files.h 是两个
@@ -65,12 +66,21 @@ static void sys_exit(uintptr_t status) {
   halt(status);
 }
 
+static uintptr_t sys_open(const char *path, int flags, uintptr_t mode) {
+  return fs_open(path, flags, mode);
+}
+
 static uintptr_t sys_write(uintptr_t fd, char *buf, uintptr_t count) {
+  // stdout and stderr
   if(fd == 1 || fd == 2) {
     for(int i = 0; i < count; i++) {
       putch(buf[i]);
     }
     return count;
+  }
+  // file system
+  else if(fd > 2) {
+    return fs_write(fd, buf, count);
   }
   else {
     return -1;
@@ -88,6 +98,7 @@ void do_syscall(Context *c) {
     case SYS_yield: c->GPRx = sys_yield(); add_strace(SYS_yield, 0, 0, 0, c->GPRx); break;
     case SYS_exit: disp_strace(); sys_exit(c->GPR2); break;
     case SYS_write: c->GPRx = sys_write(c->GPR2, (char *)(c->GPR3), c->GPR4); add_strace(SYS_write, c->GPR2, c->GPR3, c->GPR4, c->GPRx); break;
+    case SYS_open: c->GPRx = sys_open((const char *)c->GPR2, 0, 0); add_strace(SYS_open, c->GPR2, 0, 0, c->GPRx); break;
     case SYS_brk: c->GPRx = sys_brk((uintptr_t *)(c->GPR2), c->GPR3); add_strace(SYS_brk, c->GPR2, c->GPR3, 0, c->GPRx); break;
     default: panic("Unhandled syscall ID = %d", c->GPR1);
   }
