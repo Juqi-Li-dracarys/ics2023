@@ -46,7 +46,7 @@ int fs_open(const char *pathname, int flags, int mode) {
       return i;
     }
   }
-  Log("error: file open fail.");
+  Log("warning: can't open file pathname = %s.", pathname);
   return -1;
 }
 
@@ -55,8 +55,7 @@ size_t lseek(int fd, size_t offset, int whence) {
     panic("error: can't set offset of error file");
     return -1;
   }
-  switch (whence)
-  {
+  switch (whence) {
     case SEEK_SET: {
       file_table[fd].open_offset = offset;
       break;
@@ -79,7 +78,7 @@ size_t lseek(int fd, size_t offset, int whence) {
 
 size_t fs_read(int fd, void *buf, size_t len) {
   if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR || fd >= sizeof(file_table) / sizeof(Finfo)) {
-    panic("error: can't set offset of error file");
+    panic("error: can't read error file");
     return -1;
   }
   return ramdisk_read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
@@ -87,7 +86,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
 
 int fs_close(int fd) {
   if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR || fd >= sizeof(file_table) / sizeof(Finfo)) {
-    panic("error: can't set offset of error file");
+    panic("error: can't close error file");
     return -1;
   }
   return 0;
