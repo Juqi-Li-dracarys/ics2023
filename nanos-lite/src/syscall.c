@@ -10,7 +10,7 @@
 */
 
 // enable strace here
-#define STRACE 1
+// #define STRACE 1
 
 #define MAX_NUM 100
 
@@ -20,8 +20,10 @@ typedef struct node {
   struct node *next;
 } s_node;
 
+#ifdef STRACE
 static s_node *head = NULL;
 static uintptr_t size = 0;
+#endif
 
 static void add_strace(uintptr_t type, uintptr_t arg0, uintptr_t arg1, uintptr_t arg2, uintptr_t ret) {
 #ifdef STRACE
