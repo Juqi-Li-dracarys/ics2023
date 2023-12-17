@@ -9,6 +9,7 @@
 
 #include <am.h>
 #include <klib.h>
+#include <amdev.h>
 #include <klib-macros.h>
 #include <debug.h>
 
