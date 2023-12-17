@@ -4,7 +4,7 @@
 #include <common.h>
 
 #ifndef __kernel_long_t
-typedef uint64_t 	__kernel_long_t;
+typedef long	__kernel_long_t;
 #endif
 
 #ifndef __kernel_suseconds_t
