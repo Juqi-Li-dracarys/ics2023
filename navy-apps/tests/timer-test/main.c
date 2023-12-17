@@ -3,10 +3,10 @@
 #include <sys/time.h>
 
 struct timeval tv = {0};
-struct timezone tz = {0};
 
 int main() {
 
-  gettimeofday(&tv, &tz);
+  gettimeofday(&tv, NULL);
+  printf("%d\n", tv.tv_sec);
   return 0;
 }

@@ -93,8 +93,10 @@ static uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
   return 0;
 }
 
+// 系统时间获取
 static uintptr_t sys_gettimeofday(timeval *tv, timezone *tz) {
   tv->tv_usec = io_read(AM_TIMER_UPTIME).us;
+  tv->tv_sec = tv->tv_usec/1000000;
   return 0;
 }
 
