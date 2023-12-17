@@ -22,7 +22,7 @@ int NDL_PollEvent(char *buf, int len) {
   if(event_fp == NULL) {
     event_fp = fopen("/dev/events", "w+");
   }
-  return fread(buf, 1, len, event_fp);
+  return fscanf(event_fp, "%s", buf);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
