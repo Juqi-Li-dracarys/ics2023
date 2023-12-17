@@ -95,9 +95,13 @@ static uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
 
 // 系统时间获取
 static uintptr_t sys_gettimeofday(timeval *tv, timezone *tz) {
-  tv->tv_usec = io_read(AM_TIMER_UPTIME).us;
-  tv->tv_sec = tv->tv_usec/1000000;
-  return 0;
+  if(io_read(AM_TIMER_CONFIG).present == true && tv != NULL) {
+    uint64_t us = io_read(AM_TIMER_UPTIME).us;
+    tv->tv_usec = us % 1000000;
+    tv->tv_sec = us / 1000000;
+    return 0;
+  }
+  else return -1;
 }
 
 // 处理各种系统调用号
