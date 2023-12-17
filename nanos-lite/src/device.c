@@ -37,7 +37,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
       }
     }
   }
-  else return -1;
+  else return 0;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
