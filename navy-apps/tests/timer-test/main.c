@@ -8,14 +8,12 @@ int main() {
   gettimeofday(&tv, NULL);
   int last_time = tv.tv_usec;
   printf("%d\n", last_time);
-  gettimeofday(&tv, NULL);
-  printf("%d\n", tv.tv_usec);
-  // while(1) {
-  //   gettimeofday(&tv, NULL);
-  //   if(tv.tv_sec - last_time >= 1) {
-  //     printf("fuck me");
-  //     last_time = tv.tv_sec;
-  //   }
-  // }
+  while(1) {
+    gettimeofday(&tv, NULL);
+    if(tv.tv_usec - last_time >= 100000) {
+      printf("fuck me\n");
+      last_time = tv.tv_usec;
+    }
+  }
   return 0;
 }
