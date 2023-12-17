@@ -14,5 +14,8 @@ int main() {
       j = 0;
     }
   }
+  char buf[10] = {0};
+  sprintf(buf, "hello");
+  printf("%s", buf);
   return 0;
 }
