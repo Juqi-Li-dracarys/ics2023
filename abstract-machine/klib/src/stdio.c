@@ -5,20 +5,17 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-// printf 的最大输入不能超过该容量
-// 否则会发生缓冲区溢出
-// 这个很危险的 bug 尚未有效解决
+// printf sprintf 的最大输入不能超过该容量
 #define str_buffer_size 10000
 
 const char hex_chars[] = "0123456789abcdef";
 
-// num 为 int，将其保存到 str 所指字符串中，返回 str 的偏移量
-uint16_t int2str(char *str, int num) {
+uint16_t int2str(char *str, int num, int max_size) {
   uint16_t offset = 0;
   char temp[100] = {0}; 
   int tempOffset = 0;
   // 正负判断
-  if (num < 0) {
+  if (num < 0 && offset < max_size) {
     str[offset++] = '-';
   }
   uint32_t abs_num = (uint32_t)abs(num);
@@ -27,36 +24,45 @@ uint16_t int2str(char *str, int num) {
     temp[tempOffset++] = '0' + (abs_num % 10);
     abs_num /= 10;
   } 
-  while (abs_num > 0 && tempOffset <= 20);
+  while (abs_num > 0 && tempOffset < 100);
 
-  while (tempOffset > 0) {
+  while (tempOffset > 0 && offset < max_size) {
     str[offset++] = temp[--tempOffset];
   }
   return offset;
 }
 
-uint16_t str2str(char *des_str, char *src) {
+uint16_t str2str(char *des_str, char *src, int max_size) {
   uint16_t offset = 0;
-  while (src != NULL && *src != '\0') {
+  while (src != NULL && *src != '\0' && offset < max_size) {
     des_str[offset++] = *src;
     src++;
   }
   return offset;
 }
 
-uint16_t ch2str(char *des_str, char c) {
-  *des_str = c;
-  return 1;
+uint16_t ch2str(char *des_str, char c, int max_size) {
+  if(max_size > 0) {
+    *des_str = c;
+    return 1;
+  }
+  else return 0;
 }
 
-uint16_t ptr2str(char *des_str, uint32_t num) {    
-    des_str[0] = '0';
-    des_str[1] = 'x';
-    for (int i = 7; i >= 0; --i) {
-        int hexValue = (num >> (i * 4)) & 0xF;
-        des_str[2 + (7 - i)] = hex_chars[hexValue];
-    }
-    return 10;
+uint16_t ptr2str(char *des_str, uint32_t num, int max_size) { 
+  char temp [10] = {0};
+  uint16_t offset = 0;
+  temp[0] = '0';
+  temp[1] = 'x';
+  for (int i = 7; i >= 0; --i) {
+      int hexValue = (num >> (i * 4)) & 0xF;
+      temp[2 + (7 - i)] = hex_chars[hexValue];
+  }
+  while(offset < 10 && offset < max_size) {
+    des_str[offset] = temp[offset];
+    offset++;
+  }
+  return offset;
 }
 
 int printf(const char *fmt, ...) {
@@ -71,33 +77,6 @@ int printf(const char *fmt, ...) {
   return size;
 }
 
-int vsprintf(char *out, const char *fmt, va_list ap) {
-  int size_str = 0;
-  int size_in = 0;
-  while(fmt != NULL && *fmt != '\0') {
-    // 未成功匹配到%，则直接复制粘贴
-    if(*fmt != '%') {
-      *out = *fmt;
-      out++, fmt++;
-      size_str++;
-    }
-    else {
-  // 匹配到 %, 则读取后一个字符
-      switch(*(fmt + 1)) {
-        case 'd': size_in = int2str(out, va_arg(ap, int)); fmt += 2; out += size_in; size_str += size_in; break;
-        case 's': size_in = str2str(out, va_arg(ap, char *)); fmt += 2; out += size_in; size_str += size_in; break;
-        case 'c': size_in = ch2str(out, (char)va_arg(ap, int)); fmt += 2; out += size_in; size_str += size_in; break;
-        case 'p': size_in = ptr2str(out, (uint32_t)va_arg(ap, void *)); fmt += 2; out += size_in; size_str += size_in; break;
-        default: *out = *fmt; out++; fmt++; size_str++; break;
-      }
-    }
-    // 缓冲区溢出
-    if(size_str >= str_buffer_size) assert(0);
-  }
-  *out = '\0';
-  return size_str;
-}
-
 int sprintf(char *out, const char *fmt, ...) {
   int out_size = 0;
   va_list ap;
@@ -107,12 +86,43 @@ int sprintf(char *out, const char *fmt, ...) {
   return out_size;
 }
 
+int vsprintf(char *out, const char *fmt, va_list ap) {
+  return vsnprintf(out, str_buffer_size, fmt, ap);
+}
+
 int snprintf(char *out, size_t n, const char *fmt, ...) {
-  panic("Not implemented");
+  int out_size = 0;
+  va_list ap;
+  va_start(ap, fmt);
+  out_size = vsnprintf(out, n, fmt, ap);
+  va_end(ap);
+  return out_size;
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
-  panic("Not implemented");
+  int size_str = 0;
+  int size_in = 0;
+  while(fmt != NULL && *fmt != '\0' && size_str < n - 1) {
+    // 未成功匹配到%，则直接复制粘贴
+    if(*fmt != '%') {
+      *out = *fmt;
+      out++, fmt++;
+      size_str++;
+    }
+    else {
+  // 匹配到 %, 则读取后一个字符
+      switch(*(fmt + 1)) {
+        case 'd': size_in = int2str(out, va_arg(ap, int), n - size_str - 1); fmt += 2; out += size_in; size_str += size_in; break;
+        case 's': size_in = str2str(out, va_arg(ap, char *), n - size_str - 1); fmt += 2; out += size_in; size_str += size_in; break;
+        case 'c': size_in = ch2str(out, (char)va_arg(ap, int), n - size_str - 1); fmt += 2; out += size_in; size_str += size_in; break;
+        case 'p': size_in = ptr2str(out, (uint32_t)va_arg(ap, void *), n - size_str - 1); fmt += 2; out += size_in; size_str += size_in; break;
+        default: *out = *fmt; out++; fmt++; size_str++; break;
+      }
+    }
+  }
+  // 自动追加
+  *out = '\0';
+  return size_str;
 }
 
 // Hit bad trap

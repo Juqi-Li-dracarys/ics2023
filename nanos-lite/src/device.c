@@ -14,6 +14,8 @@ static const char *keyname[256] __attribute__((used)) = {
   AM_KEYS(NAME)
 };
 
+// virtual file system
+
 size_t serial_write(const void *buf, size_t offset, size_t len) {
   char *ptr = (char *)buf;
   for(int i = 0; i < len; i++) {
@@ -23,7 +25,19 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  return 0;
+  if(io_read(AM_INPUT_CONFIG).present == true) {
+    AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
+    if(ev.keycode == AM_KEY_NONE) return 0;
+    else {
+      if(ev.keydown) {
+        return snprintf((char *)buf, len, "kd: %s\n", keyname[ev.keycode]);
+      }
+      else {
+        return snprintf((char *)buf, len, "ku: %s\n", keyname[ev.keycode]);
+      }
+    }
+  }
+  else return -1;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
