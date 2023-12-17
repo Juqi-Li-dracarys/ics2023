@@ -9,7 +9,7 @@ static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 
-FILE *event_fp = NULL;
+static FILE *event_fp = NULL;
 
 // return system time in ms
 uint32_t NDL_GetTicks() {
@@ -19,9 +19,9 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-
-  event_fp = fopen("/dev/events", "w+");
-
+  if(event_fp == NULL) {
+    event_fp = fopen("/dev/events", "w+");
+  }
   return fread(buf, 1, len, event_fp);
 }
 
