@@ -12,7 +12,7 @@ static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 
-static int event_fp = 0;
+static int event_fp = -1;
 
 // return system time in ms
 uint32_t NDL_GetTicks() {
@@ -21,9 +21,10 @@ uint32_t NDL_GetTicks() {
   return (uint32_t)((uint32_t)tv.tv_sec * 1000 + (uint32_t)tv.tv_usec / 1000);
 }
 
+// open and read keyboard
 int NDL_PollEvent(char *buf, int len) {
-  if(event_fp == 0) {
-    event_fp = open("/dev/events",0 ,0);
+  if(event_fp == -1) {
+    event_fp = open("/dev/events", 0, 0);
   }
   return read(event_fp, buf, len);
 }
