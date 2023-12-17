@@ -1,15 +1,19 @@
 #ifndef _TIME_H_
 #define _TIME_H_
 
+#include <common.h>
+
 #ifndef __kernel_long_t
-typedef long		__kernel_long_t;
+typedef uint64_t 	__kernel_long_t;
 #endif
 
 #ifndef __kernel_suseconds_t
 typedef __kernel_long_t		__kernel_suseconds_t;
 #endif
 
-typedef __kernel_long_t	__kernel_old_time_t;
+#ifndef __kernel_old_time_t
+typedef __kernel_long_t	 	__kernel_old_time_t;
+#endif
 
 #ifndef timeval
 typedef struct eval {
