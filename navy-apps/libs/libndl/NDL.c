@@ -9,6 +9,8 @@ static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 
+FILE *event_fp = NULL;
+
 // return system time in ms
 uint32_t NDL_GetTicks() {
   struct timeval tv = {0};
@@ -17,8 +19,10 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-  FILE *fp = fopen("/dev/events", "r+");
-  return fread(buf, 1, len, fp);
+  if(event_fp == NULL) {
+    event_fp = fopen("/dev/events", "w+");
+  }
+  return fread(buf, 1, len, event_fp);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
