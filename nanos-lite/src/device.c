@@ -41,6 +41,9 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
+  if(io_read(AM_GPU_CONFIG).present == true) {
+    return snprintf((char *)buf, len, "WIDTH:%d HEIGHT:%d", io_read(AM_GPU_CONFIG).height, io_read(AM_GPU_CONFIG).width);
+  }
   return 0;
 }
 

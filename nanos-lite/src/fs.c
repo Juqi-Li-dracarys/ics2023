@@ -12,17 +12,17 @@ typedef struct {
   size_t open_offset; // 文件指针
 } Finfo;
 
-# define DEVICE_NUM 4
+# define DEVICE_NUM 5
 
-enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_EVENTS, FD_FB};
+enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_EVENTS, FD_INFO, FD_FB};
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
-  panic("should not reach here");
+  panic("should read here");
   return 0;
 }
 
 size_t invalid_write(const void *buf, size_t offset, size_t len) {
-  panic("should not reach here");
+  panic("should write here");
   return 0;
 }
 
@@ -32,6 +32,7 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
   [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
   [FD_EVENTS] = {"/dev/events", 0, 0, events_read, invalid_write},
+  [FD_INFO]   = {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
 #include "files.h"
 };
 
