@@ -37,11 +37,11 @@ void NDL_OpenCanvas(int *w, int *h) {
   if(info_fp == -1) {
     info_fp = open("/proc/dispinfo", 0, 0);
   }
-  char buf[20] = {0};
+  char buf[30] = {0};
   if(read(info_fp, buf, 20)) {
-    sscanf(buf, "WIDTH:%d HEIGHT:%d", &max_width, &max_height);
+    sscanf(buf, "WIDTH:%d\nHEIGHT:%d\n", &max_width, &max_height);
   }
-  printf("%s\n", buf);
+  printf("%s", buf);
   printf("%d  %d\n", max_width, max_height);
 
   // ignore it
