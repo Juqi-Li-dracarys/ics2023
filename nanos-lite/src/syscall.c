@@ -99,8 +99,7 @@ static uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
 static uintptr_t sys_gettimeofday(timeval *tv, timezone *tz) {
   if(io_read(AM_TIMER_CONFIG).present == true && tv != NULL) {
     uint64_t us = io_read(AM_TIMER_UPTIME).us;
-    printf("%d\n", (uint32_t)us);
-    tv->tv_usec = (long)us;
+    tv->tv_usec = (long)(us % 1000000);
     tv->tv_sec = (long)(us / 1000000);
     return 0;
   }
