@@ -85,8 +85,8 @@ size_t lseek(int fd, size_t offset, int whence) {
 
 // all files read
 size_t fs_read(int fd, void *buf, size_t len) {
-  if(fd >= sizeof(file_table) / sizeof(Finfo)) {
-    panic("error: fd out of range");
+  if(fd >= sizeof(file_table) / sizeof(Finfo) || buf == NULL) {
+    panic("error: fd/buf out of range");
     return -1;
   }
   // 文件越界检查, std 跳过
@@ -103,8 +103,8 @@ size_t fs_read(int fd, void *buf, size_t len) {
 
 // all files write
 size_t fs_write(int fd, const void *buf, size_t len) {
-  if(fd >= sizeof(file_table) / sizeof(Finfo)) {
-    panic("error: fd out of range");
+  if(fd >= sizeof(file_table) / sizeof(Finfo) || buf == NULL) {
+    panic("error: fd/buf out of range");
     return -1;
   }
   // 文件越界检查, std 跳过
