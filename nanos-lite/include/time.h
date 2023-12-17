@@ -1,0 +1,28 @@
+#ifndef _TIME_H_
+#define _TIME_H_
+
+#ifndef __kernel_long_t
+typedef long		__kernel_long_t;
+#endif
+
+#ifndef __kernel_suseconds_t
+typedef __kernel_long_t		__kernel_suseconds_t;
+#endif
+
+typedef __kernel_long_t	__kernel_old_time_t;
+
+#ifndef timeval
+typedef struct eval {
+	__kernel_old_time_t	    tv_sec;		/* seconds */
+	__kernel_suseconds_t	tv_usec;	/* microseconds */
+} timeval;
+#endif
+
+#ifndef timezone
+typedef struct zone {
+	int	tz_minuteswest; /* minutes west of Greenwich */
+	int	tz_dsttime;	    /* type of dst correction */
+} timezone;
+#endif
+
+#endif

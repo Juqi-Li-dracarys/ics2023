@@ -1,6 +1,7 @@
+#include <fs.h>
 #include "syscall.h"
 #include <common.h>
-#include <fs.h>
+#include <time.h>
 
 /* 
   注意目录下 syscall.h 和 files.h 是两个
@@ -92,19 +93,25 @@ static uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
   return 0;
 }
 
+static uintptr_t sys_gettimeofday(timeval *tv, timezone *tz) {
+  tv->tv_usec = io_read(AM_TIMER_UPTIME).us;
+  return 0;
+}
+
 // 处理各种系统调用号
 void do_syscall(Context *c) {
   uintptr_t gpr2_temp = c->GPR2;
   switch (c->GPR1) {
-    case SYS_yield: c->GPRx = sys_yield(); add_strace(SYS_yield, 0, 0, 0, c->GPRx); break;
-    case SYS_exit:            disp_strace(); sys_exit(c->GPR2); break;
-    case SYS_write: c->GPRx = sys_write(c->GPR2, (char *)(c->GPR3), c->GPR4); add_strace(SYS_write, gpr2_temp, c->GPR3, c->GPR4, c->GPRx); break;
-    case SYS_read:  c->GPRx = sys_read(c->GPR2, (char *)(c->GPR3), c->GPR4);  add_strace(SYS_read, gpr2_temp, c->GPR3, c->GPR4, c->GPRx); break;
-    case SYS_open:  c->GPRx = sys_open((const char *)c->GPR2, 0, 0);          add_strace(SYS_open, gpr2_temp, 0, 0, c->GPRx); break;
-    case SYS_lseek: c->GPRx = sys_lseek(c->GPR2, c->GPR3, c->GPR4);           add_strace(SYS_lseek, gpr2_temp, c->GPR3, c->GPR4, c->GPRx); break;
-    case SYS_close: c->GPRx = sys_close(c->GPR2);                             add_strace(SYS_close, gpr2_temp, 0, 0, c->GPRx); break;
-    case SYS_brk:   c->GPRx = sys_brk((uintptr_t *)(c->GPR2), c->GPR3);       add_strace(SYS_brk, gpr2_temp,c->GPR3, 0, c->GPRx); break;
-    default: panic("Unhandled syscall ID = %d", c->GPR1);
+    case SYS_yield:        c->GPRx = sys_yield(); add_strace(SYS_yield, 0, 0, 0, c->GPRx); break;
+    case SYS_exit:         disp_strace(); sys_exit(c->GPR2); break;
+    case SYS_write:        c->GPRx = sys_write(c->GPR2, (char *)(c->GPR3), c->GPR4);             add_strace(SYS_write, gpr2_temp, c->GPR3, c->GPR4, c->GPRx); break;
+    case SYS_read:         c->GPRx = sys_read(c->GPR2, (char *)(c->GPR3), c->GPR4);              add_strace(SYS_read, gpr2_temp, c->GPR3, c->GPR4, c->GPRx); break;
+    case SYS_open:         c->GPRx = sys_open((const char *)c->GPR2, 0, 0);                      add_strace(SYS_open, gpr2_temp, 0, 0, c->GPRx); break;
+    case SYS_lseek:        c->GPRx = sys_lseek(c->GPR2, c->GPR3, c->GPR4);                       add_strace(SYS_lseek, gpr2_temp, c->GPR3, c->GPR4, c->GPRx); break;
+    case SYS_close:        c->GPRx = sys_close(c->GPR2);                                         add_strace(SYS_close, gpr2_temp, 0, 0, c->GPRx); break;
+    case SYS_brk:          c->GPRx = sys_brk((uintptr_t *)(c->GPR2), c->GPR3);                   add_strace(SYS_brk, gpr2_temp,c->GPR3, 0, c->GPRx); break;
+    case SYS_gettimeofday: c->GPRx = sys_gettimeofday((timeval *)c->GPR2, (timezone *)c->GPR3);  add_strace(SYS_gettimeofday, gpr2_temp, c->GPR3, 0, c->GPRx); break;
+    default:               panic("Unhandled syscall ID = %d", c->GPR1);
   }
 }
 
