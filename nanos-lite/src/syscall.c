@@ -93,7 +93,7 @@ static uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
   return 0;
 }
 
-// 系统时间获取
+// 系统时间获取(非 RTC 时间)
 static uintptr_t sys_gettimeofday(timeval *tv, timezone *tz) {
   if(io_read(AM_TIMER_CONFIG).present == true && tv != NULL) {
     uint64_t us = io_read(AM_TIMER_UPTIME).us;
