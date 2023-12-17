@@ -15,7 +15,10 @@ int main() {
     }
   }
   char buf[15] = {0};
-  snprintf(buf, 15, "%d\n", 0x80000000);
+  sprintf(buf, 15, "%d\n", 0x80000000);
   printf("%s", buf);
+  snprintf(buf, 15, "%d\n", -2147483648);
+  printf("%s", buf);
+  printf("%d\n", -2147483648);
   return 0;
 }
