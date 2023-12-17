@@ -10,8 +10,8 @@ int main() {
 
   struct timeval tv = {0};
   gettimeofday(&tv, NULL);
-  printf("hello word @ %d us.\n", (uint32_t)(tv.tv_usec << 32));
-
+  printf("hello word @ %d us.\n", (uint32_t)(tv.tv_usec));
+  printf("hello word @ %d s.\n", (uint32_t)(tv.tv_sec));
   // while(now_time < 10000) {
   //   now_time = NDL_GetTicks();
   //   if(now_time - last_time >= 500) {
