@@ -14,8 +14,8 @@ int main() {
       j = 0;
     }
   }
-  char buf[10] = {0};
-  snprintf(buf, 10, "%d+++++++++\n", 0x80000000);
+  char buf[15] = {0};
+  snprintf(buf, 15, "%d\n", 0x80000000);
   printf("%s", buf);
   return 0;
 }
