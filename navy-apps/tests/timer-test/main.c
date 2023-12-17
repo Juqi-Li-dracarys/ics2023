@@ -7,10 +7,10 @@ int main() {
   struct timeval tv = {0};
   gettimeofday(&tv, NULL);
   uint64_t last_time = tv.tv_sec;
-  printf("%d\n", (uint32_t)(last_time / 1000000));
+  printf("%d\n", (uint32_t)(last_time));
   while(1) {
     gettimeofday(&tv, NULL);
-    if(tv.tv_sec - last_time >= 2) {
+    if(tv.tv_sec - last_time >= 5) {
       printf("fuck me\n");
       last_time = tv.tv_sec;
     }
