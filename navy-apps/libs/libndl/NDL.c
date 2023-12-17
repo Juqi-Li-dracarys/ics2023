@@ -26,7 +26,7 @@ int NDL_PollEvent(char *buf, int len) {
   if(event_fp == -1) {
     event_fp = open("/dev/events", 0, 0);
   }
-  return read(event_fp, buf, len);
+  return (read(event_fp, buf, len)) ? 1 : 0;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
