@@ -6,13 +6,12 @@
 int main() {
   struct timeval tv = {0};
   gettimeofday(&tv, NULL);
-  uint64_t last_time = tv.tv_sec;
-  printf("%d\n", (uint32_t)(last_time));
+  uint64_t last_time = tv.tv_usec;
   while(1) {
     gettimeofday(&tv, NULL);
-    if(tv.tv_sec - last_time >= 5) {
-      printf("fuck me\n");
-      last_time = tv.tv_sec;
+    if(tv.tv_sec - last_time >= 500000) {
+      printf("hello word.\n");
+      last_time = tv.tv_usec;
     }
   }
   return 0;
