@@ -6,13 +6,16 @@
 int main() {
   struct timeval tv = {0};
   gettimeofday(&tv, NULL);
-  int last_time = tv.tv_sec;
-  while(1) {
-    gettimeofday(&tv, NULL);
-    if(tv.tv_sec - last_time >= 1) {
-      printf("fuck me");
-      last_time = tv.tv_sec;
-    }
-  }
+  int last_time = tv.tv_usec;
+  printf("%d\n", last_time);
+  gettimeofday(&tv, NULL);
+  printf("%d\n", tv.tv_usec);
+  // while(1) {
+  //   gettimeofday(&tv, NULL);
+  //   if(tv.tv_sec - last_time >= 1) {
+  //     printf("fuck me");
+  //     last_time = tv.tv_sec;
+  //   }
+  // }
   return 0;
 }
