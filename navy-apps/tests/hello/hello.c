@@ -15,7 +15,7 @@ int main() {
     }
   }
   char buf[10] = {0};
-  sprintf(buf, "hello");
+  sprintf(buf, "hello %d, %d\n", 1, 2);
   printf("%s", buf);
   return 0;
 }
