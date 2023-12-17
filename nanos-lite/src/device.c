@@ -28,7 +28,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   if(io_read(AM_INPUT_CONFIG).present == true) {
     AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
     if(ev.keycode == AM_KEY_NONE) {
-      *((char* )buf) = '\0';
+      // *((char* )buf) = '\0';
       return 0;
     }
     else {
