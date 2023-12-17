@@ -15,7 +15,7 @@ int main() {
     }
   }
   char buf[10] = {0};
-  snprintf(buf, 10, "helloxx%d%d+++++++++\n", 1, 2);
+  snprintf(buf, 10, "%d+++++++++\n", 0x80000000);
   printf("%s", buf);
   return 0;
 }
