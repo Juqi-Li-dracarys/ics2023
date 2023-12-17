@@ -7,6 +7,7 @@ struct timeval tv = {0};
 int main() {
 
   gettimeofday(&tv, NULL);
+  printf("%d\n", tv.tv_usec);
   printf("%d\n", tv.tv_sec);
   return 0;
 }
