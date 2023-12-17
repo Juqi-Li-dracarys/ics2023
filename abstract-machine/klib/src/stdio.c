@@ -135,4 +135,9 @@ void panic_test(const char *fmt, ...) {
   va_end(ap);
 }
 
+// unknown bug
+// snprintf(buf, 15, "%d\n", -2147483648);
+// printf("%s", buf);
+// printf("%d\n", -2147483648);
+
 #endif
