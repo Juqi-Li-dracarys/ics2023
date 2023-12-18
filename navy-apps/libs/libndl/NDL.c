@@ -63,8 +63,8 @@ void NDL_OpenCanvas(int *w, int *h) {
   screen_h = *h;
 #ifdef CENTRAL
   // reset the central
-  canvas_x = (max_width / 2) - screen_w;
-  canvas_y = (max_height / 2) - screen_h;
+  canvas_x = (max_width / 2) - (screen_w / 2);
+  canvas_y = (max_height / 2) - (screen_h / 2);
 #endif
   printf("get max screen width:%d and height:%d\n", max_width, max_height);
   printf("get max canvas width:%d and height:%d\n", screen_w, screen_h);
