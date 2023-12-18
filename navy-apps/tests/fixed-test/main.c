@@ -14,22 +14,22 @@ int main() {
     assert(fixedpt_toint(D) == -10);
     assert(fixedpt_toint(fixedpt_floor(D)) == -10);
     assert(fixedpt_toint(fixedpt_ceil(D)) == -9);
+    assert(fixedpt_toint(fixedpt_abs(fixedpt_floor(D))) == 10);
     D = fixedpt_mul(A, B);
     assert(fixedpt_toint(D) == -10);
     assert(fixedpt_toint(fixedpt_floor(D)) == -10);
     assert(fixedpt_toint(fixedpt_ceil(D)) == -9);
+    assert(fixedpt_toint(fixedpt_abs(fixedpt_ceil(D))) == 9);
     D = fixedpt_divi(A, fixedpt_toint(B));
     assert(fixedpt_toint(D) == -2);
     assert(fixedpt_toint(fixedpt_floor(D)) == -2);
     assert(fixedpt_toint(fixedpt_ceil(D)) == -1);
-
+    assert(fixedpt_toint(fixedpt_abs(fixedpt_floor(D))) == 2);
     D = fixedpt_div(A, B);
-    printf("A: %x\n", (A));
-    printf("B: %x\n", (B));
-    printf("D: %x\n", (D));
     assert(fixedpt_toint(D) == -2);
     assert(fixedpt_toint(fixedpt_floor(D)) == -2);
     assert(fixedpt_toint(fixedpt_ceil(D)) == -1);
+    assert(fixedpt_toint(fixedpt_abs(fixedpt_ceil(D))) == 1);
 
     printf("PASS\n");
     return 0;
