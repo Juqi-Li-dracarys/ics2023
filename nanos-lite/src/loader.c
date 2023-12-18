@@ -10,8 +10,10 @@
 # define Elf_Phdr Elf32_Phdr
 #endif
 
-#if defined(__riscv)
+#if defined(__ISA_AM_NATIVE__)
 # define EXPECT_TYPE EM_X86_64
+#elif defined(__riscv)
+#define EXPECT_TYPE EM_RISCV
 #else
 # define EXPECT_TYPE EM_X86_64
 #endif
