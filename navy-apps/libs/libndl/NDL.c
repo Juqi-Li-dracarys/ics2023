@@ -53,11 +53,12 @@ void NDL_OpenCanvas(int *w, int *h) {
   if(read(info_fp, buf, 50)) {
     sscanf(buf, "WIDTH:%d\nHEIGHT:%d\n", &max_width, &max_height);
   }
-  printf("get max width:%d and height:%d\n", max_width, max_height);
   *w = (*w <= max_width && w > 0) ? *w : max_width;
   *h = (*h <= max_height && h > 0) ? *h : max_height;
   screen_w = *w; 
   screen_h = *h;
+  printf("get max screen width:%d and height:%d\n", max_width, max_height);
+  printf("get max canva width:%d and height:%d\n", screen_w, screen_h);
   // ignore it for now
   if (getenv("NWM_APP")) {
     int fbctl = 4;
