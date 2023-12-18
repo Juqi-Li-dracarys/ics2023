@@ -8,6 +8,9 @@
 #include <sys/stat.h>    
 #include <fcntl.h>
 
+// control the canvas
+#define CENTRAL 1
+
 // FILE pointer
 static int event_fp = -1;
 static int info_fp = -1;
@@ -16,12 +19,12 @@ static int fb_fp = -1;
 static int evtdev = -1;
 static int fbdev = -1;
 
-// cava_width
+// cava max width
 static int screen_w = 0;
 static int screen_h = 0;
 // cava origin point
-static int cava_x = 0;
-static int cava_y = 0;
+static int canvas_x = 0;
+static int canvas_y = 0;
 // screen max width
 static int max_width = 0;
 static int max_height = 0;
@@ -42,6 +45,7 @@ int NDL_PollEvent(char *buf, int len) {
   return (read(event_fp, buf, len)) ? 1 : 0;
 }
 
+// open canvas
 void NDL_OpenCanvas(int *w, int *h) {
   if(info_fp == -1) {
     info_fp = open("/proc/dispinfo", 0, 0);
@@ -57,8 +61,13 @@ void NDL_OpenCanvas(int *w, int *h) {
   *h = (*h <= max_height && h > 0) ? *h : max_height;
   screen_w = *w; 
   screen_h = *h;
+#ifdef CENTRAL
+  // reset the central
+  canvas_x = (max_width / 2) - screen_w;
+  canvas_y = (max_height / 2) - screen_h;
+#endif
   printf("get max screen width:%d and height:%d\n", max_width, max_height);
-  printf("get max canva width:%d and height:%d\n", screen_w, screen_h);
+  printf("get max canvas width:%d and height:%d\n", screen_w, screen_h);
   
   // ignore it for now
   if (getenv("NWM_APP")) {
@@ -84,10 +93,10 @@ void NDL_OpenCanvas(int *w, int *h) {
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   // 注意是以像素为单位
   // 不要整成 byte 了
-  int x_r = x + cava_x;
-  int y_r = y + cava_y;
-  int x_max = screen_w + cava_x >= max_width ? max_width : screen_w + cava_x;
-  int y_max = screen_h + cava_y >= max_height ? max_height : screen_h + cava_y;
+  int x_r = x + canvas_x;
+  int y_r = y + canvas_y;
+  int x_max = screen_w + canvas_x >= max_width ? max_width : screen_w + canvas_x;
+  int y_max = screen_h + canvas_y >= max_height ? max_height : screen_h + canvas_y;
   int len = w + x_r < x_max ? w : x_max - x_r;
   for(int j = 0; j < h && y_r + j < y_max; j++) {
     // 按行写入
