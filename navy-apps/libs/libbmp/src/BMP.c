@@ -30,6 +30,7 @@ void* BMP_Load(const char *filename, int *width, int *height) {
   int w = hdr.width;
   int h = hdr.height;
 
+  // native 跑到这里会寄
   assert(w * h * sizeof(uint32_t));
   uint32_t *pixels = (uint32_t *)malloc(w * h * sizeof(uint32_t));
   assert(pixels != NULL);
