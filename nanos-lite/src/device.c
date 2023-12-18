@@ -56,22 +56,25 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 // offset len 必须时 4 的倍数
 // 该函数面向屏幕，而不是画布
 size_t fb_write(const void* buf, size_t offset, size_t len) {
+  size_t pix_len = 0;
+  size_t pix_offset = 0;
+  size_t pix_in = 0;
   if (buf == NULL || offset % 4 != 0 || len % 4 != 0) {
     assert(0);
     return 0;
   }
   else {
     // 换算成像素
-    len = len / 4;
-    offset = offset / 4;
+    pix_len = len / 4;
+    pix_offset = offset / 4;
   }
-  uint32_t pix_in = 0;
-  uint32_t i = offset % max_width;
-  uint32_t j = offset / max_width;
-  printf("offset:%d x:%d y:%d\n",offset, i, j);
-  while (pix_in < len && (i < max_width || j < max_height)) {
+  uint32_t i = pix_offset % max_width;
+  uint32_t j = pix_offset / max_width;
+  printf("offset:%d x:%d y:%d\n",pix_offset, i, j);
+
+  while (pix_in < pix_len && (i < max_width || j < max_height)) {
     // 需要换行
-    if (i + len - pix_in > max_width) {
+    if (i + pix_len - pix_in > max_width) {
       io_write(AM_GPU_FBDRAW, i, j, (uint32_t *)buf + pix_in, max_width - i, 1, false);
       pix_in = pix_in + max_width - i;
       i = 0; j++;
@@ -79,7 +82,7 @@ size_t fb_write(const void* buf, size_t offset, size_t len) {
     // 本行能装下, 结束
     else {
       io_write(AM_GPU_FBDRAW, i, j, (uint32_t *)buf + pix_in, len - pix_in, 1, false);
-      pix_in = len;
+      pix_in = pix_len;
     }
   }
   io_write(AM_GPU_FBDRAW, 0, 0, NULL, 0, 0, true);
