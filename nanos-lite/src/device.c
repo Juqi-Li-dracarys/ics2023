@@ -56,7 +56,10 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 // offset len 必须时 4 的倍数
 // 该函数面向屏幕，而不是画布
 size_t fb_write(const void* buf, size_t offset, size_t len) {
-  if (buf == NULL || offset % 4 != 0 || len % 4 != 0) return 0;
+  if (buf == NULL || offset % 4 != 0 || len % 4 != 0) {
+    assert(0);
+    return 0;
+  }
   else {
     // 换算成像素
     len = len / 4;
