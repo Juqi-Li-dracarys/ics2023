@@ -47,8 +47,9 @@ NANOS_DIR = $(NANOS_HOME)/build
 
 ### Add default libraries for ISA != native
 ifneq ($(ISA), native)
+
 ### Add lib here
-LIBS += libc libos libndl
+LIBS += libc libos libndl libfixedptc
 CFLAGS += -U_FORTIFY_SOURCE  # fix compile error in Newlib on ubuntu
 else
 WL = -Wl,
@@ -191,7 +192,7 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 APPS =
-TESTS = dummy hello file-test timer-test event-test bmp-test
+TESTS = dummy hello file-test timer-test event-test bmp-test fixed-test
 
 ### Compile and all elfs from APPS and TESTS to bin
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
