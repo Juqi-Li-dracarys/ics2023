@@ -16,9 +16,9 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  int i, j, k = 0;
-  uint16_t x_max = inw(VGACTL_ADDR + 2);
-  uint16_t y_max = inw(VGACTL_ADDR);
+  register int i, j, k = 0;
+  register uint16_t x_max = inw(VGACTL_ADDR + 2);
+  register uint16_t y_max = inw(VGACTL_ADDR);
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
   }

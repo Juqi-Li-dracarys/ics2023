@@ -8,13 +8,24 @@
 #include <sys/stat.h>    
 #include <fcntl.h>
 
-static int evtdev = -1;
-static int fbdev = -1;
-static int screen_w = 0, screen_h = 0;
-
 // FILE pointer
 static int event_fp = -1;
 static int info_fp = -1;
+static int fb_fp = -1;
+
+static int evtdev = -1;
+static int fbdev = -1;
+
+// cava_width
+static int screen_w = 0;
+static int screen_h = 0;
+// cava origin point
+static int cava_x = 0;
+static int cava_y = 0;
+// screen max width
+static int max_width = 0;
+static int max_height = 0;
+
 
 // return system time in ms
 uint32_t NDL_GetTicks() {
@@ -32,23 +43,25 @@ int NDL_PollEvent(char *buf, int len) {
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
-  int max_width = 0;
-  int max_height = 0;
   if(info_fp == -1) {
     info_fp = open("/proc/dispinfo", 0, 0);
   }
-  char buf[30] = {0};
-  if(read(info_fp, buf, 30)) {
+  if(fb_fp == -1) {
+    fb_fp = open("/dev/fb", 0, 0);
+  }
+  char buf[50] = {0};
+  if(read(info_fp, buf, 50)) {
     sscanf(buf, "WIDTH:%d\nHEIGHT:%d\n", &max_width, &max_height);
   }
-  printf("%s", buf);
-  printf("%d  %d\n", max_width, max_height);
-
-  // ignore it
+  printf("get max width:%d and height:%d\n", max_width, max_height);
+  *w = (*w <= max_width && w > 0) ? *w : max_width;
+  *h = (*h <= max_height && h > 0) ? *h : max_height;
+  screen_w = *w; 
+  screen_h = *h;
+  // ignore it for now
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;
-    screen_w = *w; screen_h = *h;
     char buf[64];
     int len = sprintf(buf, "%d %d", screen_w, screen_h);
     // let NWM resize the window and create the frame buffer
@@ -62,10 +75,21 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     close(fbctl);
   }
-  
+  return;
 }
 
+// 面向画布，输出图形
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  int x_r = x + cava_x;
+  int y_r = y + cava_y;
+  int x_max = screen_w + cava_x >= max_width ? max_width : screen_w + cava_x;
+  int y_max = screen_h + cava_y >= max_height ? max_height : screen_h + cava_y;
+  int len = w < x_max ? w : x_max - len;
+  for(int j = 0; j < h && y_r + j < y_max; j++) {
+    // 按行写入
+    lseek(fb_fp, ((y_r + j) * max_width + x_r) * 4 ,SEEK_SET);
+    write(fb_fp, (void *)pixels, len);
+  }
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
