@@ -7,9 +7,18 @@ int main() {
     fixedpt A = fixedpt_rconst(-411.98);
     fixedpt B = fixedpt_rconst(30.07);
     int C = -7;
-    fixedpt D = 0;
+    fixedpt D = fixedpt_rconst(-1);
+
     assert(fixedpt_toint(A) == -412);
     assert(fixedpt_toint(B) == 30);
+    assert(fixedpt_toint(fixedpt_floor(A)) == -412);
+    assert(fixedpt_toint(fixedpt_ceil(A)) == -411);
+    assert(fixedpt_toint(fixedpt_abs(A)) == 411);
+    assert(fixedpt_toint(D) == -1);
+    assert(fixedpt_toint(fixedpt_floor(D)) == -1);
+    assert(fixedpt_toint(fixedpt_ceil(D)) == -1);
+    assert(fixedpt_toint(fixedpt_ceil(fixedpt_abs(D))) == 1);
+    assert(fixedpt_toint(fixedpt_floor(fixedpt_abs(D))) == 1);
 
     D = fixedpt_muli(A, C);
     assert(fixedpt_toint(D) == 2883);
