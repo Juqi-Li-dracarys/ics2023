@@ -92,6 +92,7 @@ typedef	__uint128_t fixedptud;
 #error "FIXEDPT_BITS must be equal to 32 or 64"
 #endif
 
+// 整数部分
 #ifndef FIXEDPT_WBITS
 #define FIXEDPT_WBITS	24
 #endif
@@ -102,6 +103,7 @@ typedef	__uint128_t fixedptud;
 
 #define FIXEDPT_VCSID "$Id$"
 
+// 小数部分
 #define FIXEDPT_FBITS	(FIXEDPT_BITS - FIXEDPT_WBITS)
 #define FIXEDPT_FMASK	(((fixedpt)1 << FIXEDPT_FBITS) - 1)
 
@@ -127,35 +129,60 @@ typedef	__uint128_t fixedptud;
 
 /* Multiplies a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_muli(fixedpt A, int B) {
-	return 0;
+	return A * (fixedpt)B;
 }
 
 /* Divides a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_divi(fixedpt A, int B) {
-	return 0;
+	return (fixedpt)((int)A / (int)B);
 }
 
 /* Multiplies two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
-	return 0;
+	uint64_t temp = A * B;
+	temp = temp >> 8;
+	return (fixedpt)temp;
 }
 
 
 /* Divides two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
-	return 0;
+	return ((fixedpt)((int)A / (int)B) << 8);
 }
 
 static inline fixedpt fixedpt_abs(fixedpt A) {
-	return 0;
+	int a = (int)A;
+	if(a >= 0)
+		return (fixedpt)(a);
+	else 
+		return (fixedpt)(-a);
 }
 
+// These functions return the largest integral value that is not greater
+// than A.
 static inline fixedpt fixedpt_floor(fixedpt A) {
-	return 0;
+	if((int)(A) >= 0) {
+		return fixedpt_rconst(fixedpt_toint(A));
+	}
+	else {
+		if(fixedpt_fracpart(A) == 0) 
+			return fixedpt_rconst(fixedpt_toint(A));
+		else 
+			return fixedpt_rconst(fixedpt_toint(A) - 1);
+	}
 }
-
+// These functions return the smallest integral value  that  is  not  less
+// than A.
 static inline fixedpt fixedpt_ceil(fixedpt A) {
-	return 0;
+	if((int)(A) >= 0) {
+		if(fixedpt_fracpart(A) == 0) 
+			return fixedpt_rconst(fixedpt_toint(A));
+		else
+			return fixedpt_rconst(fixedpt_toint(A) + 1);
+	}
+	else {
+		return fixedpt_rconst(fixedpt_toint(A));
+	}
 }
 
 /*
