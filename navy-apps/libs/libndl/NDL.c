@@ -82,15 +82,18 @@ void NDL_OpenCanvas(int *w, int *h) {
 
 // 面向画布，输出图形
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  // 注意是以像素为单位
+  // 不要整成 byte 了
   int x_r = x + cava_x;
   int y_r = y + cava_y;
   int x_max = screen_w + cava_x >= max_width ? max_width : screen_w + cava_x;
   int y_max = screen_h + cava_y >= max_height ? max_height : screen_h + cava_y;
-  int len = w < x_max ? w : x_max - len;
+  int len = w + x_r < x_max ? w : x_max - x_r;
   for(int j = 0; j < h && y_r + j < y_max; j++) {
     // 按行写入
     lseek(fb_fp, ((y_r + j) * max_width + x_r) * 4 ,SEEK_SET);
-    write(fb_fp, (void *)pixels, len);
+    write(fb_fp, (void *)pixels, len * 4);
+    pixels = pixels + len;
   }
 }
 
