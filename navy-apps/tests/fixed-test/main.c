@@ -4,7 +4,7 @@
 #include <assert.h>
 
 int main() {
-    fixedpt A = fixedpt_rconst(3.3);
+    fixedpt A = fixedpt_rconst(3.2);
     fixedpt B = fixedpt_rconst(3);
     int C = -3;
     fixedpt D = 0;
