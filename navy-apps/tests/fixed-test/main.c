@@ -23,6 +23,7 @@ int main() {
     assert(fixedpt_toint(fixedpt_floor(D)) == -2);
     assert(fixedpt_toint(fixedpt_ceil(D)) == -1);
     D = fixedpt_div(A, B);
+    printf("%d\n", fixedpt_toint(D));
     assert(fixedpt_toint(D) == -2);
     assert(fixedpt_toint(fixedpt_floor(D)) == -2);
     assert(fixedpt_toint(fixedpt_ceil(D)) == -1);
