@@ -139,14 +139,12 @@ static inline fixedpt fixedpt_divi(fixedpt A, int B) {
 
 /* Multiplies two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
-	uint64_t temp = A * B;
-	temp = temp >> 8;
-	return (fixedpt)temp;
+	return (A * B) >> 8;
 }
 
 /* Divides two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
-	return (((fixedpt)((int)A / (int)B)) << 8);
+	return ((fixedpt)(((int)A << 8) / (int)B));
 }
 
 static inline fixedpt fixedpt_abs(fixedpt A) {
