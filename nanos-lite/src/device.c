@@ -56,6 +56,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 // offset len 必须时 4 的倍数
 // 该函数面向屏幕，而不是画布
 size_t fb_write(const void* buf, size_t offset, size_t len) {
+  // 换算成像素
   size_t pix_len = 0;
   size_t pix_offset = 0;
   size_t pix_in = 0;
@@ -63,13 +64,13 @@ size_t fb_write(const void* buf, size_t offset, size_t len) {
     return 0;
   }
   else {
-    // 换算成像素
     pix_len = len / 4;
     pix_offset = offset / 4;
   }
   uint32_t i = pix_offset % max_width;
   uint32_t j = pix_offset / max_width;
-  printf("pix_len:%d  offset:%d  x:%d  y:%d\n",pix_len, pix_offset, i, j);
+
+  // printf("pix_len:%d  offset:%d  x:%d  y:%d\n",pix_len, pix_offset, i, j);
 
   while (pix_in < pix_len && (i < max_width || j < max_height)) {
     // 需要换行
