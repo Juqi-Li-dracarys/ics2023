@@ -10,12 +10,10 @@
 # define Elf_Phdr Elf32_Phdr
 #endif
 
-#if defined(__ISA_AM_NATIVE__)
+#if defined(__riscv)
 # define EXPECT_TYPE EM_X86_64
-#elif defined(__riscv)
-#define EXPECT_TYPE EM_RISCV
 #else
-# error Unsupported ISA
+# define EXPECT_TYPE EM_X86_64
 #endif
 
 // 好奇的鼠鼠会想：这和 NEMU 加载 AM 的程序的过程有啥区别？
