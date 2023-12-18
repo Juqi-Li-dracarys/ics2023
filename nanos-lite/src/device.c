@@ -68,7 +68,7 @@ size_t fb_write(const void* buf, size_t offset, size_t len) {
   uint32_t pix_in = 0;
   uint32_t i = offset % max_width;
   uint32_t j = offset / max_width;
-
+  printf("%d  %d\n", i, j);
   while (pix_in < len && (i < max_width || j < max_height)) {
     // 需要换行
     if (i + len - pix_in > max_width) {
