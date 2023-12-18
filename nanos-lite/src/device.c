@@ -47,7 +47,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
     // 注意是像素单位
     max_height = io_read(AM_GPU_CONFIG).height;
     max_width = io_read(AM_GPU_CONFIG).width;
-    return snprintf((char *)buf, len, "WIDTH:%d\nHEIGHT:%d\n", max_height, max_width);
+    return snprintf((char *)buf, len, "WIDTH:%d\nHEIGHT:%d\n", max_width, max_height);
   }
   return 0;
 }
