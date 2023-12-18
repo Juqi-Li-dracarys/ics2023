@@ -91,10 +91,11 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   int len = w + x_r < x_max ? w : x_max - x_r;
   for(int j = 0; j < h && y_r + j < y_max; j++) {
     // 按行写入
-    lseek(fb_fp, ((y_r + j) * max_width + x_r) * 4 ,SEEK_SET);
+    lseek(fb_fp, ((y_r + j) * max_width + x_r) * 4, SEEK_SET);
     write(fb_fp, (void *)pixels, len * 4);
     pixels = pixels + len;
   }
+  return;
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
