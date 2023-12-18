@@ -70,7 +70,7 @@ size_t fb_write(const void* buf, size_t offset, size_t len) {
   uint32_t i = pix_offset % max_width;
   uint32_t j = pix_offset / max_width;
   printf("pix_len:%d  offset:%d  x:%d  y:%d\n",pix_len, pix_offset, i, j);
-  
+
   while (pix_in < pix_len && (i < max_width || j < max_height)) {
     // 需要换行
     if (i + pix_len - pix_in > max_width) {
@@ -80,7 +80,7 @@ size_t fb_write(const void* buf, size_t offset, size_t len) {
     }
     // 本行能装下
     else {
-      io_write(AM_GPU_FBDRAW, i, j, (uint32_t *)buf + pix_in, len - pix_in, 1, false);
+      io_write(AM_GPU_FBDRAW, i, j, (uint32_t *)buf + pix_in, pix_len - pix_in, 1, false);
       pix_in = pix_len;
     }
   }
