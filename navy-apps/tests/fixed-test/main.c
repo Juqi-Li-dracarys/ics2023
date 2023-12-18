@@ -10,7 +10,7 @@ int main() {
     fixedpt D = 0;
 
     D = fixedpt_muli(A, C);
-    printf("%d\n", fixedpt_toint(D));
+    printf("%d\n", fixedpt_toint(A));
     assert(fixedpt_toint(D) == -9);
     assert(fixedpt_toint(fixedpt_floor(D)) == -10);
     assert(fixedpt_toint(fixedpt_ceil(D)) == -9);
