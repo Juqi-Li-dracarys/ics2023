@@ -161,28 +161,36 @@ static inline fixedpt fixedpt_abs(fixedpt A) {
 // These functions return the largest integral value that is not greater
 // than A.
 static inline fixedpt fixedpt_floor(fixedpt A) {
-	if((int)(A) >= 0) {
-		return fixedpt_rconst(fixedpt_toint(A));
-	}
-	else {
-		if(fixedpt_fracpart(A) == 0) 
-			return fixedpt_rconst(fixedpt_toint(A));
-		else 
-			return fixedpt_rconst(fixedpt_toint(A) - 1);
-	}
+	// if((int)(A) >= 0) {
+	// 	return fixedpt_rconst(fixedpt_toint(A));
+	// }
+	// else {
+	// 	if(fixedpt_fracpart(A) == 0) 
+	// 		return fixedpt_rconst(fixedpt_toint(A));
+	// 	else 
+	// 		return fixedpt_rconst(fixedpt_toint(A) - 1);
+	// }
+	return fixedpt_rconst(fixedpt_toint(A));
 }
 // These functions return the smallest integral value  that  is  not  less
 // than A.
 static inline fixedpt fixedpt_ceil(fixedpt A) {
-	if((int)(A) >= 0) {
-		if(fixedpt_fracpart(A) == 0) 
-			return fixedpt_rconst(fixedpt_toint(A));
-		else
-			return fixedpt_rconst(fixedpt_toint(A) + 1);
-	}
-	else {
+	// if((int)(A) >= 0) {
+	// 	if(fixedpt_fracpart(A) == 0) 
+	// 		return fixedpt_rconst(fixedpt_toint(A));
+	// 	else
+	// 		return fixedpt_rconst(fixedpt_toint(A) + 1);
+	// }
+	// else {
+	// 	if(fixedpt_fracpart(A) == 0)
+	// 	return fixedpt_rconst(fixedpt_toint(A));
+	// 	else
+	// 	return fixedpt_rconst(fixedpt_toint(A) + 1);
+	// }
+	if(fixedpt_fracpart(A) == 0) 
 		return fixedpt_rconst(fixedpt_toint(A));
-	}
+	else
+		return fixedpt_rconst(fixedpt_toint(A) + 1);
 }
 
 /*
