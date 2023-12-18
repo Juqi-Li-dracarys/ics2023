@@ -33,11 +33,13 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
   [FD_EVENTS] = {"/dev/events", 0, 0, events_read, invalid_write},
   [FD_INFO]   = {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
+  [FD_FB]     = {"/dev/fb", 0, 0, invalid_read, fb_write},
 #include "files.h"
 };
 
 void init_fs() {
-  // TODO: initialize the size of /dev/fb
+  file_table[FD_FB].size = io_read(AM_GPU_CONFIG).vmemsz;
+  return;
 }
 
 int fs_open(const char *pathname, int flags, int mode) {
