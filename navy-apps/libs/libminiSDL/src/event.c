@@ -21,12 +21,11 @@ int SDL_PollEvent(SDL_Event *ev) {
   if (NDL_PollEvent(buf, sizeof(buf))) {
     // parsing the event
     sscanf(buf, "%c %s\n", &type, name);
-    printf("%c\n%s\n", type, name);
     if (type == 'd')
       ev->type = SDL_KEYDOWN;
     else
       ev->type = SDL_KEYUP;
-    for (int i = 0; i < sizeof(keyname) / sizeof(char*); i++) {
+    for (int i = 0; i < sizeof(keyname) / sizeof(char *); i++) {
       if (strcmp(name, keyname[i]) == 0) {
         ev->key.keysym.sym = i;
         return 1;
