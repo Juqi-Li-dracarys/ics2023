@@ -63,7 +63,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 
 // 将 SDL surface 内容输出到画布上
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
-  if((x == 0 && y == 0 & w == 0 & h == 0) || s->flags == SDL_FULLSCREEN) {
+  if((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) {
     NDL_DrawRect((uint32_t *)s->pixels, x, y, s->w,  s->h);
   }
   else 
