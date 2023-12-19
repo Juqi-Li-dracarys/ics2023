@@ -14,7 +14,7 @@ static const char *keyname[256] __attribute__((used)) = {
   AM_KEYS(NAME)
 };
 
-// virtual file system
+// screen height and width
 static uint32_t max_height = 0;
 static uint32_t max_width = 0;
 
