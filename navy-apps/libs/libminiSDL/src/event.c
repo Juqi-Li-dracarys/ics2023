@@ -17,12 +17,13 @@ int SDL_PollEvent(SDL_Event *ev) {
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
+  char type = 0;
   char buf [15] = {0};
-  char type [5] = {0};
   char name [10] = {0};
   if(NDL_PollEvent(buf, sizeof(buf))) {
-    sscanf(buf, "%s %s\n", type, name);
-    printf("%s\n%s\n", type, name);
+    // parsing the event
+    sscanf(buf, "%c %s\n", &type, name);
+    printf("%c\n%s\n", type, name);
   }
   return 1;
 }
