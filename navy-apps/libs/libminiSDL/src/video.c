@@ -14,14 +14,23 @@
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
-  // check the surface size
-  // assert(src->h == dst->h && dst->w == src->w);
   uint32_t *ptr_s = (uint32_t *)src->pixels;
   uint32_t *ptr_d = (uint32_t *)dst->pixels;
+  // 全部复制
   if(srcrect == NULL || dstrect == NULL) {
+    if(src->h != dst->h || dst->w != src->w) {
+      if(dst->pixels != NULL) {
+        free(dst->pixels);
+      }
+      dst->pixels = malloc(sizeof(uint32_t) * src->w * src->h);
+      dst->h = src->h;
+      dst->w = src->w;
+    }
     memcpy(dst->pixels, src->pixels, src->h * src->w * sizeof(uint32_t));
   }
+  // 部分复制
   else {
+    assert(src->h == dst->h && dst->w == src->w);
     // 矩形内偏移量
     for(int j = 0; (j < srcrect->h) && (j + srcrect->y < src->h); j++) {
       for(int i = 0; (i < srcrect->x) && (i + srcrect->x < src->w); i++) {
