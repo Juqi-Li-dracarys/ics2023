@@ -17,9 +17,9 @@ int SDL_PollEvent(SDL_Event *ev) {
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
-  char buf [30] = {0};
+  char buf [15] = {0};
   char type [5] = {0};
-  char name [20] = {0};
+  char name [10] = {0};
   if(NDL_PollEvent(buf, sizeof(buf))) {
     sscanf(buf, "%s %s\n", type, name);
     printf("%s\n%s\n", type, name);
