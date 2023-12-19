@@ -192,7 +192,7 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 APPS = nslider menu nterm bird
-TESTS = dummy hello file-test timer-test event-test bmp-test fixed-test
+TESTS = dummy hello file-test timer-test event-test bmp-test fixed-test eof-test
 
 ### Compile and all elfs from APPS and TESTS to bin
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
