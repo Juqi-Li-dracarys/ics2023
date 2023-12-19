@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /*
   The width and height in srcrect determine 
@@ -10,10 +11,12 @@
   Only the position is used in the dstrect 
   (the width and height are ignored). 
 */
-
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
+  // robust check
   assert(dst && src);
+  assert(src->pixels && src->pixels);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+  if(src->h > dst->h || src->w > dst->w) printf("WARNING: copy surface may lead to segmentation fault.");
   uint32_t *ptr_s = (uint32_t *)src->pixels;
   uint32_t *ptr_d = (uint32_t *)dst->pixels;
   // 第一个复制矩形的起始点和宽高
@@ -45,6 +48,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 // 对 SDL surface 填充颜色
 // 不输出到屏幕上
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
+  assert(dst);
+  assert(dst->pixels);
   uint32_t *ptr = (uint32_t *)dst->pixels;
   if(dstrect == NULL) {
     for(int i = 0; i < (dst->w) * (dst->h); i++) {
@@ -64,6 +69,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 
 // 将 SDL surface 内容输出到画布上
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
+  assert(s);
   if((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) {
     NDL_DrawRect((uint32_t *)s->pixels, x, y, s->w,  s->h);
   }
