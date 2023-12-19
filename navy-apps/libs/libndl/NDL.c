@@ -19,13 +19,13 @@ static int fb_fp = -1;
 static int evtdev = -1;
 static int fbdev = -1;
 
-// cava max width
+// 画布尺寸
 static int screen_w = 0;
 static int screen_h = 0;
-// cava origin point
+// 画布起始坐标
 static int canvas_x = 0;
 static int canvas_y = 0;
-// screen max width
+// 屏幕尺寸
 static int max_width = 0;
 static int max_height = 0;
 
@@ -45,7 +45,7 @@ int NDL_PollEvent(char *buf, int len) {
   return (read(event_fp, buf, len)) ? 1 : 0;
 }
 
-// open canvas
+// 打开一张 w*h 大小的画布
 void NDL_OpenCanvas(int *w, int *h) {
   if(info_fp == -1) {
     info_fp = open("/proc/dispinfo", 0, 0);
@@ -57,17 +57,19 @@ void NDL_OpenCanvas(int *w, int *h) {
   if(read(info_fp, buf, 50)) {
     sscanf(buf, "WIDTH:%d\nHEIGHT:%d\n", &max_width, &max_height);
   }
-  *w = (*w <= max_width && w > 0) ? *w : max_width;
-  *h = (*h <= max_height && h > 0) ? *h : max_height;
+  *w = (*w <= max_width && *w > 0) ? *w : max_width;
+  *h = (*h <= max_height && *h > 0) ? *h : max_height;
+  // 画布大小
   screen_w = *w; 
   screen_h = *h;
+  // 画布居中
 #ifdef CENTRAL
   // reset the central
   canvas_x = (max_width / 2) - (screen_w / 2);
   canvas_y = (max_height / 2) - (screen_h / 2);
 #endif
-  printf("get max screen width:%d and height:%d\n", max_width, max_height);
-  printf("get max canvas width:%d and height:%d\n", screen_w, screen_h);
+  printf("screen width:%d  height:%d\n", max_width, max_height);
+  printf("canvas width:%d  height:%d\n", screen_w, screen_h);
   
   // ignore it for now
   if (getenv("NWM_APP")) {
