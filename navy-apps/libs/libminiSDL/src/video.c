@@ -4,14 +4,55 @@
 #include <string.h>
 #include <stdlib.h>
 
+/*
+  The width and height in srcrect determine 
+  the size of the copied rectangle. 
+  Only the position is used in the dstrect 
+  (the width and height are ignored). 
+*/
+
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+  // check the surface size
+  assert(src->h == dst->h && dst->w == src->w);
+  uint32_t *ptr_s = (uint32_t *)src->pixels;
+  uint32_t *ptr_d = (uint32_t *)dst->pixels;
+  if(srcrect == NULL || dstrect == NULL) {
+    memcpy(dst->pixels, src->pixels, src->h * src->w * sizeof(uint32_t));
+  }
+  else {
+    // 矩形内偏移量
+    for(int j = 0; (j < srcrect->h) && (j + srcrect->y < src->h); j++) {
+      for(int i = 0; (i < srcrect->x) && (i + srcrect->x < src->w); i++) {
+        *(ptr_d + (j + dstrect->y) * (dst->w) + i + dstrect->x) = *(ptr_s + (j + srcrect->y)*(src->w) + i + srcrect->x);
+      }
+    }
+  }
+  return;
 }
 
+// 对 SDL surface 填充颜色
+// 不输出到屏幕上
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
+  uint32_t *ptr = (uint32_t *)dst->pixels;
+  if(dstrect == NULL) {
+    for(int i = 0; i < (dst->w) * (dst->h); i++) {
+      *ptr = color;
+      ptr ++;
+    }
+  }
+  else {
+    for(int j = dstrect->y; (j < dstrect->y + dstrect->h) && (j < dst->h); j++) {
+      for(int i = dstrect->x; (i < dstrect->x + dstrect->w) && (i < dst->w); i++) {
+        *(ptr + j * (dst->w) + i) = color;
+      }
+    }
+  }
+  return;
 }
 
+// 将 SDL surface 内容输出到画布上
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   if((x == 0 && y == 0 & w == 0 & h == 0) || s->flags == SDL_FULLSCREEN) {
     NDL_DrawRect((uint32_t *)s->pixels, x, y, s->w,  s->h);
