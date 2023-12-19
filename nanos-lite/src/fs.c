@@ -93,19 +93,15 @@ size_t fs_read(int fd, void *buf, size_t len) {
     return -1;
   }
   // 文件越界检查, std 跳过
-  // if((fd <= DEVICE_NUM) || (file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset))  {
-  //   size_t f_size = file_table[fd].read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
-  //   file_table[fd].open_offset += f_size;
-  //   return f_size;
-  // }
-  // else {
-  //   panic("error: offset overflow: fd = %d", fd);
-  //   return -1;
-  // }
-
+  if((fd <= DEVICE_NUM) || (file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset))  {
     size_t f_size = file_table[fd].read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
     file_table[fd].open_offset += f_size;
     return f_size;
+  }
+  else {
+    panic("error: offset overflow: fd = %d", fd);
+    return -1;
+  }
 }
 
 // all files write
