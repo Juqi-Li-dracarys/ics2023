@@ -99,7 +99,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
     return f_size;
   }
   else {
-    panic("error: offset overflow");
+    panic("error: offset overflow: fd = %d", fd);
     return -1;
   }
 }
@@ -117,7 +117,7 @@ size_t fs_write(int fd, const void *buf, size_t len) {
     return f_size;
   }
   else {
-    panic("error: offset overflow");
+    panic("error: offset overflow: fd = %d", fd);
     return -1;
   }
 }
