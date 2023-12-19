@@ -74,6 +74,13 @@ int main(int argc, char *argv[], char *envp[]) {
   font = new BDF_Font(font_fname);
   logo_sf = SDL_LoadBMP("/share/pictures/projectn.bmp");
   assert(logo_sf);
+
+  SDL_UpdateRect(logo_sf, 0, 0, 0, 0);
+  while (1)
+  {
+    SDL_UpdateRect(logo_sf, 0, 0, 0, 0);
+  }
+  
   set_i_max();
 
   while (1) {
@@ -173,10 +180,6 @@ static void display_menu(int n) {
   sprintf(buf, "  0-9 Choose");
   draw_text_row(buf, i);
   i ++;
-  while (1)
-  {
-    SDL_UpdateRect(logo_sf, 0, 0, 0, 0);
-  }
   
   SDL_UpdateRect(screen, 0, 0, 0, 0);
 
