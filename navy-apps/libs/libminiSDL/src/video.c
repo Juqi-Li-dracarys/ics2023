@@ -16,7 +16,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   assert(dst && src);
   assert(src->pixels && src->pixels);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
-  if(src->h > dst->h || src->w > dst->w) printf("WARNING: copy surface may lead to segmentation fault.");
+  if(src->h > dst->h || src->w > dst->w) 
+    printf("WARNING: copy surface may lead to segmentation fault.");
   uint32_t *ptr_s = (uint32_t *)src->pixels;
   uint32_t *ptr_d = (uint32_t *)dst->pixels;
   // 第一个复制矩形的起始点和宽高
