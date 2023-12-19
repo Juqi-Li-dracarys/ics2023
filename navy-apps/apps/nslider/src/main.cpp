@@ -58,9 +58,8 @@ int main() {
       printf("OK\n");
     }
     else {
-      printf("fuck\n");
+      printf("FAIL\n");
     }
-
     if (e.type == SDL_KEYDOWN) {
       switch(e.key.keysym.sym) {
         case SDLK_0: rep = rep * 10 + 0; break;
