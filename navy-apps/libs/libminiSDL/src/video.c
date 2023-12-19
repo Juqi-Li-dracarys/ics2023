@@ -16,26 +16,27 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
   uint32_t *ptr_s = (uint32_t *)src->pixels;
   uint32_t *ptr_d = (uint32_t *)dst->pixels;
-  // 全部复制
-  if(srcrect == NULL || dstrect == NULL) {
-    if(src->h != dst->h || dst->w != src->w) {
-      if(dst->pixels != NULL) {
-        free(dst->pixels);
-      }
-      dst->pixels = malloc(sizeof(uint32_t) * src->w * src->h);
-      dst->h = src->h;
-      dst->w = src->w;
-    }
-    memcpy(dst->pixels, src->pixels, src->h * src->w * sizeof(uint32_t));
+  // 第一个复制矩形的起始点和宽高
+  int starpoint_s_x = 0; 
+  int starpoint_s_y = 0;
+  int rect_w = 0; int rect_h = 0;
+  // 在（x，y）或 （0，0）粘贴
+  int starpoint_d_x = (dstrect != NULL) ? dstrect->x : 0;
+  int starpoint_d_y = (dstrect != NULL) ? dstrect->y : 0;
+  // 复制全图
+  if(srcrect == NULL) {
+    starpoint_s_x = 0; starpoint_s_y = 0;
+    rect_w = src->w; rect_h = src->h;
   }
-  // 部分复制
+  // 复制部分
   else {
-    assert(src->h == dst->h && dst->w == src->w);
-    // 矩形内偏移量
-    for(int j = 0; (j < srcrect->h) && (j + srcrect->y < src->h); j++) {
-      for(int i = 0; (i < srcrect->x) && (i + srcrect->x < src->w); i++) {
-        *(ptr_d + (j + dstrect->y) * (dst->w) + i + dstrect->x) = *(ptr_s + (j + srcrect->y)*(src->w) + i + srcrect->x);
-      }
+    starpoint_s_x = srcrect->x; starpoint_s_y = srcrect->y;
+    rect_w = srcrect->w; rect_h = srcrect->h;
+  }
+  // 矩形内偏移量算出实际 offset
+  for(int j = 0; (j < rect_h) && (j + starpoint_s_y < src->h); j++) {
+    for(int i = 0; (i < rect_w) && (i + starpoint_s_x < src->w); i++) {
+      *(ptr_d + (j + starpoint_d_y) * (dst->w) + i + starpoint_d_x) = *(ptr_s + (j + starpoint_s_y) * (src->w) + i + starpoint_s_x);
     }
   }
   return;
