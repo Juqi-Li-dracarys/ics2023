@@ -15,7 +15,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
   // check the surface size
-  assert(src->h == dst->h && dst->w == src->w);
+  // assert(src->h == dst->h && dst->w == src->w);
   uint32_t *ptr_s = (uint32_t *)src->pixels;
   uint32_t *ptr_d = (uint32_t *)dst->pixels;
   if(srcrect == NULL || dstrect == NULL) {
