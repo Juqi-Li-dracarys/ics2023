@@ -18,31 +18,64 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
   // if(src->h > dst->h || src->w > dst->w) 
   //   printf("WARNING: copy surface may lead to segmentation fault.\n");
-  uint32_t *ptr_s = (uint32_t *)src->pixels;
-  uint32_t *ptr_d = (uint32_t *)dst->pixels;
-  // 第一个复制矩形的起始点和宽高
-  int starpoint_s_x = 0; 
-  int starpoint_s_y = 0;
-  int rect_w = 0; int rect_h = 0;
-  // 在（x，y）或 （0，0）粘贴
-  int starpoint_d_x = (dstrect != NULL) ? dstrect->x : 0;
-  int starpoint_d_y = (dstrect != NULL) ? dstrect->y : 0;
-  // 复制全图
-  if(srcrect == NULL) {
-    starpoint_s_x = 0; starpoint_s_y = 0;
-    rect_w = src->w; rect_h = src->h;
-  }
-  // 复制部分
-  else {
-    starpoint_s_x = srcrect->x; starpoint_s_y = srcrect->y;
-    rect_w = srcrect->w; rect_h = srcrect->h;
-  }
-  // 矩形内偏移量算出实际 offset
-  for(int j = 0; (j < rect_h) && (j + starpoint_s_y < src->h); j++) {
-    for(int i = 0; (i < rect_w) && (i + starpoint_s_x < src->w); i++) {
-      *(ptr_d + (j + starpoint_d_y) * (dst->w) + i + starpoint_d_x) = *(ptr_s + (j + starpoint_s_y) * (src->w) + i + starpoint_s_x);
+  if(dst->format->palette == NULL && dst->format->BitsPerPixel == 32) {
+    uint32_t *ptr_s = (uint32_t *)src->pixels;
+    uint32_t *ptr_d = (uint32_t *)dst->pixels;
+    // 第一个复制矩形的起始点和宽高
+    int starpoint_s_x = 0;
+    int starpoint_s_y = 0;
+    int rect_w = 0; int rect_h = 0;
+    // 在（x，y）或 （0，0）粘贴
+    int starpoint_d_x = (dstrect != NULL) ? dstrect->x : 0;
+    int starpoint_d_y = (dstrect != NULL) ? dstrect->y : 0;
+    // 复制全图
+    if(srcrect == NULL) {
+      starpoint_s_x = 0; starpoint_s_y = 0;
+      rect_w = src->w; rect_h = src->h;
+    }
+    // 复制部分
+    else {
+      starpoint_s_x = srcrect->x; starpoint_s_y = srcrect->y;
+      rect_w = srcrect->w; rect_h = srcrect->h;
+    }
+    // 矩形内偏移量算出实际 offset
+    for(int j = 0; (j < rect_h) && (j + starpoint_s_y < src->h); j++) {
+      for(int i = 0; (i < rect_w) && (i + starpoint_s_x < src->w); i++) {
+        *(ptr_d + (j + starpoint_d_y) * (dst->w) + i + starpoint_d_x) = *(ptr_s + (j + starpoint_s_y) * (src->w) + i + starpoint_s_x);
+      }
     }
   }
+  else if(dst->format->palette != NULL && dst->format->BitsPerPixel == 8){
+    uint8_t *ptr_s = (uint8_t *)src->pixels;
+    uint8_t *ptr_d = (uint8_t *)dst->pixels;
+    // 第一个复制矩形的起始点和宽高
+    int starpoint_s_x = 0;
+    int starpoint_s_y = 0;
+    int rect_w = 0; int rect_h = 0;
+    // 在（x，y）或 （0，0）粘贴
+    int starpoint_d_x = (dstrect != NULL) ? dstrect->x : 0;
+    int starpoint_d_y = (dstrect != NULL) ? dstrect->y : 0;
+    // 复制全图
+    if(srcrect == NULL) {
+      starpoint_s_x = 0; starpoint_s_y = 0;
+      rect_w = src->w; rect_h = src->h;
+    }
+    // 复制部分
+    else {
+      starpoint_s_x = srcrect->x; starpoint_s_y = srcrect->y;
+      rect_w = srcrect->w; rect_h = srcrect->h;
+    }
+    // 矩形内偏移量算出实际 offset
+    for(int j = 0; (j < rect_h) && (j + starpoint_s_y < src->h); j++) {
+      for(int i = 0; (i < rect_w) && (i + starpoint_s_x < src->w); i++) {
+        *(ptr_d + (j + starpoint_d_y) * (dst->w) + i + starpoint_d_x) = *(ptr_s + (j + starpoint_s_y) * (src->w) + i + starpoint_s_x);
+      }
+    }
+  }
+  else {
+   assert(0);
+  }
+  
   return;
 }
 
@@ -51,31 +84,73 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
   assert(dst);
   assert(dst->pixels);
-  uint32_t *ptr = (uint32_t *)dst->pixels;
-  if(dstrect == NULL) {
-    for(int i = 0; i < (dst->w) * (dst->h); i++) {
-      *ptr = color;
-      ptr ++;
+  if(dst->format->palette == NULL && dst->format->BitsPerPixel == 32) {
+    uint32_t *ptr = (uint32_t *)dst->pixels;
+    if(dstrect == NULL) {
+      for(int i = 0; i < (dst->w) * (dst->h); i++) {
+        *ptr = color;
+        ptr ++;
+      }
     }
-  }
-  else {
-    for(int j = dstrect->y; (j < dstrect->y + dstrect->h) && (j < dst->h); j++) {
-      for(int i = dstrect->x; (i < dstrect->x + dstrect->w) && (i < dst->w); i++) {
-        *(ptr + j * (dst->w) + i) = color;
+    else {
+      for(int j = dstrect->y; (j < dstrect->y + dstrect->h) && (j < dst->h); j++) {
+        for(int i = dstrect->x; (i < dstrect->x + dstrect->w) && (i < dst->w); i++) {
+          *(ptr + j * (dst->w) + i) = color;
+        }
       }
     }
   }
+  else if(dst->format->palette != NULL && dst->format->BitsPerPixel == 8) {
+    uint8_t *ptr = (uint8_t *)dst->pixels;
+    if(dstrect == NULL) {
+      for(int i = 0; i < (dst->w) * (dst->h); i++) {
+        *ptr = (uint8_t)color;
+        ptr ++;
+      }
+    }
+    else {
+      for(int j = dstrect->y; (j < dstrect->y + dstrect->h) && (j < dst->h); j++) {
+        for(int i = dstrect->x; (i < dstrect->x + dstrect->w) && (i < dst->w); i++) {
+          *(ptr + j * (dst->w) + i) = (uint8_t)color;
+        }
+      }
+    }
+  }
+  else {
+    assert(0);
+  }
+
   return;
 }
 
-// 将 SDL surface 内容输出到画布上
+// 将 SDL surface 内容输出到画布上的(x,y)处
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   assert(s);
-  if((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) {
-    NDL_DrawRect((uint32_t *)s->pixels, x, y, s->w,  s->h);
+  if(s->format->palette == NULL && s->format->BitsPerPixel == 32) {
+    if((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) {
+      NDL_DrawRect((uint32_t *)s->pixels, x, y, s->w, s->h);
+    }
+    else
+      NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
   }
-  else 
-    NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
+  else if(s->format->palette != NULL && s->format->BitsPerPixel == 8) {
+    uint32_t *new_ptr = (uint32_t *)malloc(s->w * s->h * sizeof(uint32_t));
+    SDL_Color rgb_color = {0};
+    // 转化成 32 位像素值
+    for(int i = 0; i < s->w * s->h; i++) {
+      rgb_color = s->format->palette->colors[s->pixels[i]];
+      new_ptr[i] = rgb_color.a << 24 | rgb_color.r << 16 | rgb_color.g << 8 | rgb_color.b;
+    }
+    if((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) {
+      NDL_DrawRect((uint32_t *)new_ptr, x, y, s->w, s->h);
+    }
+    else
+      NDL_DrawRect((uint32_t *)new_ptr, x, y, w, h);
+    free(new_ptr);
+  }
+  else {
+    assert(0);
+  }
 }
 
 // APIs below are already implemented.
