@@ -10,7 +10,7 @@
 */
 
 // enable strace here
-#define STRACE 1
+// #define STRACE 1
 
 #define MAX_NUM 100
 
