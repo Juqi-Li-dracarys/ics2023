@@ -7,10 +7,10 @@ int main() {
     FILE *fp = fopen("/share/files/test", "r");
     int times = 0;
     char buf [10] = {0};
-    while (!feof(fp) && times < 10)
+    while (!feof(fp) && times < 1)
     {
-        // int size_in = fscanf(fp, "%s\n", buf);
-        int size_in = fread(buf, 1, 7, fp);
+        int size_in = fscanf(fp, "%s\n", buf);
+        // int size_in = fread(buf, 1, 7, fp);
         printf("[%d]  eof:%d  offset:%d  size:%d  str:%s", times, feof(fp), ftell(fp), size_in, buf);
         times++;
     }
