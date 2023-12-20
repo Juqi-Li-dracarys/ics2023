@@ -10,7 +10,7 @@ int main() {
     while (!feof(fp) && times < 1)
     {
         // fscanf(fp, "%s\n", buf);
-        int size_in = fread(buf, 7, 1, fp);
+        int size_in = fread(buf, 1, 7, fp);
         printf("[%d]  eof:%d  offset:%d  size:%d  str:%s", times, feof(fp), ftell(fp), size_in, buf);
         times++;
     }
