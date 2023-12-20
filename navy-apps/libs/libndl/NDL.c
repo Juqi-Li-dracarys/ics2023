@@ -96,8 +96,7 @@ void NDL_OpenCanvas(int *w, int *h) {
 
 // 面向画布，输出图形
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
-  // 注意是以像素为单位
-  // 不要整成 byte 了
+  // 注意是以像素为单位(32 位)
   assert(pixels);
   int x_r = x + canvas_x;
   int y_r = y + canvas_y;
