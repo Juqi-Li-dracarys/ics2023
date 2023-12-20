@@ -28,12 +28,13 @@ int SDL_PollEvent(SDL_Event *ev) {
     assert(ev);
     memset(key_map, 0, sizeof(key_map));
     sscanf(buf, "%c %d\n", &type, &name);
-    if (type == 'd')
+    if(type == 'd')
       ev->type = SDL_KEYDOWN;
     else
       ev->type = SDL_KEYUP;
     ev->key.keysym.sym = name;
     key_map[name] = (ev->type == SDL_KEYDOWN) ? 1 : 0;
+    printf("keycode: %d\n", name);
     return 1;
     }
   return 0;
