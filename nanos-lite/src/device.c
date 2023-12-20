@@ -19,6 +19,7 @@ static uint32_t max_height = 0;
 static uint32_t max_width = 0;
 
 size_t serial_write(const void *buf, size_t offset, size_t len) {
+  assert(buf);
   char *ptr = (char *)buf;
   for(int i = 0; i < len; i++) {
     putch(ptr[i]);
@@ -27,15 +28,16 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
+  assert(buf);
   if(io_read(AM_INPUT_CONFIG).present == true) {
     AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
     if(ev.keycode == AM_KEY_NONE) return 0;
     else {
       if(ev.keydown) {
-        return snprintf((char *)buf, len, "d %s\n", keyname[ev.keycode]);
+        return snprintf((char *)buf, len, "d %d\n", ev.keycode);
       }
       else {
-        return snprintf((char *)buf, len, "u %s\n", keyname[ev.keycode]);
+        return snprintf((char *)buf, len, "u %d\n", ev.keycode);
       }
     }
   }
@@ -43,6 +45,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
+  assert(buf);
   if(io_read(AM_GPU_CONFIG).present == true) {
     // 注意是像素单位
     max_height = io_read(AM_GPU_CONFIG).height;
@@ -56,11 +59,12 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 // offset len 必须时 4 的倍数
 // 该函数面向屏幕，而不是画布
 size_t fb_write(const void* buf, size_t offset, size_t len) {
+  assert(buf);
   // 换算成像素
   size_t pix_len = 0;
   size_t pix_offset = 0;
   size_t pix_in = 0;
-  if (buf == NULL || offset % 4 != 0 || len % 4 != 0) {
+  if (offset % 4 != 0 || len % 4 != 0) {
     return 0;
   }
   else {
