@@ -1,6 +1,7 @@
 #include <NDL.h>
 #include <SDL.h>
 #include <string.h>
+#include <assert.h>
 
 #define keyname(k) #k,
 
@@ -9,9 +10,10 @@ static const char *keyname[] = {
   _KEYS(keyname)
 };
 
-char type = 0;
-char buf[15] = {0};
-char name[10] = {0};
+// parsing event
+static char type = 0;
+static char name[10] = {0};
+static char buf[15] = {0};
 
 int SDL_PushEvent(SDL_Event *ev) {
   return 0;
@@ -20,6 +22,7 @@ int SDL_PushEvent(SDL_Event *ev) {
 int SDL_PollEvent(SDL_Event *ev) {
   if (NDL_PollEvent(buf, sizeof(buf))) {
     // parsing the event
+    assert(ev);
     sscanf(buf, "%c %s\n", &type, name);
     if (type == 'd')
       ev->type = SDL_KEYDOWN;
@@ -38,6 +41,7 @@ int SDL_PollEvent(SDL_Event *ev) {
 }
 
 int SDL_WaitEvent(SDL_Event* event) {
+  assert(event);
   int ret = 0;
   while (1) {
     // success
