@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <string.h>
 #include <assert.h>
+#include <ctype.h>
 
 #define keyname(k) #k,
 
@@ -11,9 +12,9 @@ static const char *keyname[] = {
 };
 
 // parsing event
-static char type = 0;
-static int name = 0;
-static char buf[15] = {0};
+static char type[5] = {0};
+static char name[15] = {0};
+static char buf[20] = {0};
 
 static char key_map[sizeof(keyname)];
 
@@ -27,16 +28,23 @@ int SDL_PollEvent(SDL_Event *ev) {
     // parsing the event
     assert(ev);
     memset(key_map, 0, sizeof(key_map));
-    sscanf(buf, "%c %d\n", &type, &name);
-    if(type == 'd')
+    sscanf(buf, "%s %s\n", type, name);
+    if(strcmp(type, "kd") == 0)
       ev->type = SDL_KEYDOWN;
-    else
+    else if(strcmp(type, "ku") == 0)
       ev->type = SDL_KEYUP;
-    ev->key.keysym.sym = name;
-    key_map[name] = (ev->type == SDL_KEYDOWN) ? 1 : 0;
-    printf("keycode: %d\n", name);
-    return 1;
+    else assert(0);
+    for (int i = 0; i < sizeof(keyname) / sizeof(char *); i++) {
+      if (strcmp(name, keyname[i]) == 0) {
+        ev->key.keysym.sym = i;
+        key_map[i] = (ev->type == SDL_KEYDOWN) ? 1 : 0;
+        return 1;
+      }
     }
+    // printf("type:%s   keycode:%s\n", type, name);
+    // printf("%s", buf);
+    return 1;
+  }
   return 0;
 }
 
