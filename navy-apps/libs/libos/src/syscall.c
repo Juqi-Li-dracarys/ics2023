@@ -76,7 +76,7 @@ int _write(int fd, void *buf, size_t count) {
 // manage the heap area
 void *_sbrk(intptr_t increment) {
   uintptr_t old_break = prog_break;
-  if(!_syscall_(SYS_brk, (uintptr_t)(&prog_break), increment, 0))
+  if(_syscall_(SYS_brk, (uintptr_t)(&prog_break), increment, 0))
     return old_break;
   else
     return -1;

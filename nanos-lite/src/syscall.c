@@ -92,7 +92,7 @@ static uintptr_t sys_close(uintptr_t fd) {
 // 堆区处理
 static uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
   *ptr = *ptr + increment;
-  return 0;
+  return *ptr;
 }
 
 // 系统时间获取(非 RTC 时间)
