@@ -9,9 +9,9 @@ int main() {
     char buf [10] = {0};
     while (!feof(fp) && times < 20)
     {
-        // fscanf(fp, "%s\n", buf);
-        fread(buf, 6, 1, fp);
-        printf("[%d]  eof:%d  %s\n", times, feof(fp), buf);
+        // fscanf(fp, "%s\n", buf);       
+        fread(buf, 7, 1, fp);
+        printf("[%d]  eof:%d  %s", times, feof(fp), buf);
         times++;
     }
     return 0;
