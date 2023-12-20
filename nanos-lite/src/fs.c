@@ -12,7 +12,7 @@ typedef struct {
   size_t open_offset; // 文件指针
 } Finfo;
 
-# define DEVICE_NUM 5
+# define DEVICE_NUM 6
 
 enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_EVENTS, FD_INFO, FD_FB};
 
@@ -39,6 +39,11 @@ static Finfo file_table[] __attribute__((used)) = {
 
 void init_fs() {
   file_table[FD_FB].size = io_read(AM_GPU_CONFIG).vmemsz;
+  // 真实文件
+  for(uintptr_t i = DEVICE_NUM; i < sizeof(file_table) / sizeof(Finfo); i++) {
+    file_table[i].read =  ramdisk_read;
+    file_table[i].write = ramdisk_write;
+  }
   return;
 }
 
@@ -51,8 +56,6 @@ int fs_open(const char *pathname, int flags, int mode) {
   for(uintptr_t i = 0; i < sizeof(file_table) / sizeof(Finfo); i++) {
     if(strcmp(pathname, file_table[i].name) == 0) {
       file_table[i].open_offset = 0;
-      file_table[i].read = (!(file_table[i].read) ? ramdisk_read : file_table[i].read);
-      file_table[i].write = (!(file_table[i].write) ? ramdisk_write : file_table[i].write);
       return i;
     }
   }
@@ -93,7 +96,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
     return -1;
   }
   // 文件越界检查, std 跳过
-  if((fd <= DEVICE_NUM) || (file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset))  {
+  if((fd < DEVICE_NUM) || (file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset))  {
     size_t f_size = file_table[fd].read(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
     file_table[fd].open_offset += f_size;
     return f_size;
@@ -111,7 +114,7 @@ size_t fs_write(int fd, const void *buf, size_t len) {
     return -1;
   }
   // 文件越界检查, std 跳过
-  if((fd <= DEVICE_NUM) || (file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset))  {
+  if((fd < DEVICE_NUM) || (file_table[fd].open_offset + file_table[fd].disk_offset < file_table[fd].disk_offset + file_table[fd].size && file_table[fd].open_offset + file_table[fd].disk_offset >= file_table[fd].disk_offset))  {
     size_t f_size = file_table[fd].write(buf, file_table[fd].open_offset + file_table[fd].disk_offset, len);
     file_table[fd].open_offset += f_size;
     return f_size;
