@@ -7,6 +7,7 @@
 #include <sys/types.h>    
 #include <sys/stat.h>    
 #include <fcntl.h>
+#include <assert.h>
 
 // control the canvas
 #define CENTRAL 1
@@ -39,6 +40,7 @@ uint32_t NDL_GetTicks() {
 
 // open and read keyboard
 int NDL_PollEvent(char *buf, int len) {
+  assert(buf);
   if(event_fp == -1) {
     event_fp = open("/dev/events", 0, 0);
   }
@@ -47,6 +49,7 @@ int NDL_PollEvent(char *buf, int len) {
 
 // 打开一张 w*h 大小的画布
 void NDL_OpenCanvas(int *w, int *h) {
+  assert(w != NULL && h != NULL);
   if(info_fp == -1) {
     info_fp = open("/proc/dispinfo", 0, 0);
   }
@@ -95,6 +98,7 @@ void NDL_OpenCanvas(int *w, int *h) {
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   // 注意是以像素为单位
   // 不要整成 byte 了
+  assert(pixels);
   int x_r = x + canvas_x;
   int y_r = y + canvas_y;
   int x_max = screen_w + canvas_x >= max_width ? max_width : screen_w + canvas_x;
