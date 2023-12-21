@@ -41,8 +41,6 @@ int SDL_PollEvent(SDL_Event *ev) {
         return 1;
       }
     }
-    // printf("type:%s   keycode:%s\n", type, name);
-    // printf("%s", buf);
     return 1;
   }
   return 0;
