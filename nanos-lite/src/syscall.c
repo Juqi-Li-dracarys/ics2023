@@ -65,7 +65,7 @@ static uintptr_t sys_yield() {
 
 static void sys_exit(uintptr_t status) {
   // nemu halt here
-  Log("\nsystem halt in EXIT CODE: %p", status);
+  printf("\nsystem halt in EXIT CODE: %p\n", status);
   halt(status);
 }
 
