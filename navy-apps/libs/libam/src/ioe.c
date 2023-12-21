@@ -5,6 +5,24 @@
 
 # define NONE 0
 
+// screen size
+static  uint32_t width = 0;
+static  uint32_t height = 0;
+static SDL_Surface screen = {0};
+
+
+static void surface_init(SDL_Surface *s, void *pix, size_t w, size_t h) {
+  if(s && pix) {
+    s->w = w;
+    s->h = h;
+    s->pixels = pix;
+    s->format->BitsPerPixel = 32;
+    s->format-> palette = NULL;
+    return;
+  }
+  else panic("NULL ptr.");
+}
+
 // IOE for timer
 void __am_timer_init() {
   return;
@@ -30,9 +48,11 @@ void __am_gpu_init() {
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
-  uint32_t width = 0;
-  uint32_t height = 0;
-  NDL_OpenCanvas(&width, &height);
+  if(width == 0 && height == 0) {
+    NDL_OpenCanvas(&width, &height);
+    void *buf = malloc(sizeof(uint32_t) * height * width);
+    surface_init(&screen, buf, width, height);
+  }
   *cfg = (AM_GPU_CONFIG_T) {
   .present = true, .has_accel = false,
   .width = width, .height = height,
@@ -45,7 +65,18 @@ void __am_gpu_status(AM_GPU_STATUS_T *status) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  NDL_DrawRect((uint32_t *)ctl->pixels, ctl->x, ctl->y, ctl->w, ctl->h);
+  if(ctl->sync == true) {
+    SDL_UpdateRect(&screen, 0, 0, 0, 0);
+    return;
+  }
+  else {
+    SDL_Surface temp;
+    SDL_Rect dstrect;
+    dstrect.x = ctl->x;
+    dstrect.y = ctl->y;
+    surface_init(&temp, ctl->pixels, ctl->w, ctl->h);
+    SDL_BlitSurface(&temp, NULL, &screen, &dstrect);
+  }
 }
 
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
