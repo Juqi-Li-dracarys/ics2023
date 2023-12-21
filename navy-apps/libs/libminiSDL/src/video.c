@@ -45,7 +45,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       }
     }
   }
-  else if(dst->format->palette != NULL && dst->format->BitsPerPixel == 8){
+  else if(dst->format->palette != NULL && dst->format->BitsPerPixel == 8) {
     uint8_t *ptr_s = (uint8_t *)src->pixels;
     uint8_t *ptr_d = (uint8_t *)dst->pixels;
     // 第一个复制矩形的起始点和宽高
@@ -139,6 +139,7 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
     // 转化成 32 位像素值
     for(int i = 0; i < s->w * s->h; i++) {
       rgb_color = s->format->palette->colors[s->pixels[i]];
+      // 00RRGGBB
       new_ptr[i] = rgb_color.a << 24 | rgb_color.r << 16 | rgb_color.g << 8 | rgb_color.b;
     }
     if((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) {
