@@ -50,11 +50,11 @@ void __am_gpu_init() {
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
   if(width == 0 && height == 0) {
     NDL_OpenCanvas(&width, &height);
-    printf("ok1");
+    printf("ok1\n");
     void *buf = malloc(sizeof(uint32_t) * height * width);
-    printf("ok2");
+    printf("ok2\n");
     surface_init(&screen, buf, width, height);
-    printf("ok0");
+    printf("ok0\n");
   }
   *cfg = (AM_GPU_CONFIG_T) {
   .present = true, .has_accel = false,
