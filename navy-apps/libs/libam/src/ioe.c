@@ -6,8 +6,8 @@
 # define NONE 0
 
 // screen size
-static  uint32_t width = 0;
-static  uint32_t height = 0;
+static uint32_t width = 0;
+static uint32_t height = 0;
 static SDL_Surface screen = {0};
 
 
