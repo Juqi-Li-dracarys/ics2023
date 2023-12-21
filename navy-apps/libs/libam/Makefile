@@ -7,10 +7,11 @@ else
   $(shell ln -sf -T $(AM_HOME)/am/include/amdev.h include/amdev.h)
   $(shell ln -sf -T $(AM_HOME)/klib/include/klib.h include/klib.h)
   $(shell ln -sf -T $(AM_HOME)/klib/include/klib-macros.h include/klib-macros.h)
+  $(shell ln -sf -T $(AM_HOME)/am/src/platform/nemu/ioe/ioe.c include/ioe.h)
 endif
 endif
 
 NAME = libam
 SRCS = $(shell find ./src -name "*.c" -o -name "*.cpp")
-LIB_DEP = libndl
+LIB_DEP = libndl libminiSDL
 include $(NAVY_HOME)/Makefile

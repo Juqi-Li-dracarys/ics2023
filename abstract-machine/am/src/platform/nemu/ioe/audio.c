@@ -33,10 +33,10 @@ void __am_audio_init() {
 
 void __am_audio_config(AM_AUDIO_CONFIG_T *cfg) {
 #ifdef CONFIG_HAS_AUDIO
-  cfg->present = 1;
+  cfg->present = true;
   cfg->bufsize = 0x10000;
 #else
-  cfg->present = 0;
+  cfg->present = false;
 #endif
 }
 
