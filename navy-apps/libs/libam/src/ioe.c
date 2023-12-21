@@ -65,7 +65,7 @@ void __am_gpu_status(AM_GPU_STATUS_T *status) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  if(ctl->sync == true) {
+  if(ctl->sync == true || ctl->pixels == NULL) {
     SDL_UpdateRect(&screen, 0, 0, 0, 0);
     return;
   }
@@ -76,6 +76,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     dstrect.y = ctl->y;
     surface_init(&temp, ctl->pixels, ctl->w, ctl->h);
     SDL_BlitSurface(&temp, NULL, &screen, &dstrect);
+    
   }
 }
 
