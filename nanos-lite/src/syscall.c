@@ -2,6 +2,7 @@
 #include "syscall.h"
 #include <common.h>
 #include <time.h>
+#include <proc.h>
 
 /* 
   注意目录下 syscall.h 和 files.h 是两个
@@ -13,6 +14,8 @@
 // #define STRACE 1
 
 #define MAX_NUM 100
+
+void naive_uload(PCB *pcb, const char *filename);
 
 typedef struct node {
   uintptr_t type;
@@ -89,7 +92,6 @@ static uintptr_t sys_close(uintptr_t fd) {
   return fs_close(fd);
 }
 
-// 堆区处理
 static uintptr_t sys_brk(uintptr_t *ptr, uintptr_t increment) {
   *ptr = *ptr + increment;
   return *ptr;
@@ -106,6 +108,11 @@ static uintptr_t sys_gettimeofday(timeval *tv, timezone *tz) {
   else return -1;
 }
 
+static uintptr_t sys_execve(const char * filename) {
+  naive_uload(NULL, filename);
+  return 0;
+}
+
 // 处理各种系统调用号
 void do_syscall(Context *c) {
   uintptr_t gpr2_temp = c->GPR2;
@@ -119,6 +126,7 @@ void do_syscall(Context *c) {
     case SYS_close:        c->GPRx = sys_close(c->GPR2);                                         add_strace(SYS_close, gpr2_temp, 0, 0, c->GPRx); break;
     case SYS_brk:          c->GPRx = sys_brk((uintptr_t *)(c->GPR2), c->GPR3);                   add_strace(SYS_brk, gpr2_temp,c->GPR3, 0, c->GPRx); break;
     case SYS_gettimeofday: c->GPRx = sys_gettimeofday((timeval *)c->GPR2, (timezone *)c->GPR3);  add_strace(SYS_gettimeofday, gpr2_temp, c->GPR3, 0, c->GPRx); break;
+    case SYS_execve:       c->GPRx = sys_execve((const char *)c->GPR2);                                        add_strace(SYS_execve, gpr2_temp, 0, 0, c->GPRx); break;
     default:               panic("Unhandled syscall ID = %d", c->GPR1);
   }
 }
