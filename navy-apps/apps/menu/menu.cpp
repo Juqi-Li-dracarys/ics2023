@@ -32,9 +32,10 @@ struct MenuItem {
   {"Flappy Bird", "/bin/bird", NULL},
   {"Xian Jian Qi Xia Zhuan", "/bin/pal", NULL},
   // {"NPlayer", "/bin/nplayer", NULL},
-  // {"coremark", "/bin/coremark", NULL},
+  {"coremark", "/bin/coremark", NULL},
   // {"dhrystone", "/bin/dhrystone", NULL},
   {"typing-game", "/bin/typing-game", NULL},
+  {"microbench", "/bin/microbench", NULL},
   // {"ONScripter", "/bin/onscripter", NULL},
   {"Quit", "/bin/quit", NULL},
 };
