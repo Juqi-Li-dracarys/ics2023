@@ -27,7 +27,7 @@ struct MenuItem {
 } items[] = {
   // {"NJU Terminal", "/bin/nterm", NULL},
   {"NSlider", "/bin/nslider", NULL},
-  // {"FCEUX (Super Mario Bros)", "/bin/fceux", "/share/games/nes/mario.nes"},
+  {"FCEUX (Super Mario Bros)", "/bin/fceux", "/share/games/nes/mario.nes"},
   // {"FCEUX (100 in 1)", "/bin/fceux", "/share/games/nes/100in1.nes"},
   {"Flappy Bird", "/bin/bird", NULL},
   {"Xian Jian Qi Xia Zhuan", "/bin/pal", NULL},
