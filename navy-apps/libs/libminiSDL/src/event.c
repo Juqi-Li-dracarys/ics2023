@@ -41,8 +41,9 @@ int SDL_PollEvent(SDL_Event *ev) {
         return 1;
       }
     }
-    return 1;
+    assert(0);
   }
+  ev->key.keysym.sym = 0;
   return 0;
 }
 

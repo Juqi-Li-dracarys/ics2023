@@ -49,7 +49,7 @@ NANOS_DIR = $(NANOS_HOME)/build
 ifneq ($(ISA), native)
 
 ### Add lib here
-LIBS += libc libos libndl libfixedptc
+LIBS += libc libos libndl libfixedptc libminiSDL
 CFLAGS += -U_FORTIFY_SOURCE  # fix compile error in Newlib on ubuntu
 else
 WL = -Wl,
@@ -192,7 +192,7 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 # APPS = nslider menu nterm bird pal
-APPS = pal menu bird nslider
+APPS = pal menu bird nslider am-kernels
 # TESTS = dummy hello file-test timer-test event-test bmp-test fixed-test eof-test
 TESTS =
 

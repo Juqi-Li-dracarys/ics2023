@@ -3,5 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <NDL.h>
+#include <SDL.h>
 
 #endif

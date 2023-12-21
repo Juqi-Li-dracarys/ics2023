@@ -60,9 +60,10 @@ void NDL_OpenCanvas(int *w, int *h) {
   if(read(info_fp, buf, 50)) {
     sscanf(buf, "WIDTH:%d\nHEIGHT:%d\n", &max_width, &max_height);
   }
+  // w = 0 || h = 0, open the full screen
   *w = (*w <= max_width && *w > 0) ? *w : max_width;
   *h = (*h <= max_height && *h > 0) ? *h : max_height;
-  // 画布大小
+  // 画布尺寸设置
   screen_w = *w; 
   screen_h = *h;
   // 画布居中
