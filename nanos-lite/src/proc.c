@@ -24,21 +24,7 @@ void hello_fun(void *arg) {
 void init_proc() {
   switch_boot_pcb();
   Log("Initializing processes...");
-  // load program here
-  // single app entry
-  // naive_uload(NULL, NULL)
-  // naive_uload(NULL, "/bin/timer-test");
-  // naive_uload(NULL, "/bin/file-test");
-  // naive_uload(NULL, "/bin/hello");
-  // naive_uload(NULL, "/bin/event-test");
-  // naive_uload(NULL, "/bin/bmp-test");
-  // naive_uload(NULL, "/bin/fixed-test");
-  // naive_uload(NULL, "/bin/nslider");
   naive_uload(NULL, "/bin/menu");
-  // naive_uload(NULL, "/bin/nterm");
-  // naive_uload(NULL, "/bin/bird");
-  // naive_uload(NULL, "/bin/eof-test");
-  // naive_uload(NULL, "/bin/pal");
 }
 
 Context* schedule(Context *prev) {
