@@ -66,10 +66,19 @@ static uintptr_t sys_yield() {
   return 0;
 }
 
+static uintptr_t sys_execve(const char * filename) {
+  naive_uload(NULL, filename);
+  return 0;
+}
+
 static void sys_exit(uintptr_t status) {
-  // nemu halt here
-  printf("\nsystem halt in EXIT CODE: %p\n", status);
-  halt(status);
+  if(!status) {
+    sys_execve("/bin/menu");
+  }
+  else {
+    printf("\nsystem halt in EXIT CODE: %p\n", status);
+    halt(status);
+  }
 }
 
 static uintptr_t sys_open(const char *path, int flags, uintptr_t mode) {
@@ -106,11 +115,6 @@ static uintptr_t sys_gettimeofday(timeval *tv, timezone *tz) {
     return 0;
   }
   else return -1;
-}
-
-static uintptr_t sys_execve(const char * filename) {
-  naive_uload(NULL, filename);
-  return 0;
 }
 
 // 处理各种系统调用号

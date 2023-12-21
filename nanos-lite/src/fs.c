@@ -13,9 +13,9 @@ typedef struct {
 } Finfo;
 
 // 虚拟文件数量
-# define DEVICE_NUM 6
+# define DEVICE_NUM 7
 
-enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_EVENTS, FD_INFO, FD_FB};
+enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_EVENTS, FD_INFO, FD_FB, FD_QUIT};
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
   panic("should read here, son of bitch.");
@@ -36,6 +36,7 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_EVENTS] = {"/dev/events", 0x80000000, 0, events_read, invalid_write},
   [FD_INFO]   = {"/proc/dispinfo", 0x80000000, 0, dispinfo_read, invalid_write},
   [FD_FB]     = {"/dev/fb", 0x80000000, 0, invalid_read, fb_write},
+  [FD_QUIT]   = {"/bin/quit", 0x80000000, 0, invalid_read, invalid_write},
 #include "files.h"
 };
 
@@ -71,6 +72,10 @@ int fs_open(const char *pathname, int flags, int mode) {
   }
   for(uintptr_t i = 0; i < sizeof(file_table) / sizeof(Finfo); i++) {
     if(strcmp(pathname, file_table[i].name) == 0) {
+      if(i == FD_QUIT) {
+        printf("\nsystem halt in EXIT CODE: %p\n", 0);
+        halt(0);
+      }
       file_table[i].open_offset = 0;
       return i;
     }
