@@ -5,6 +5,8 @@ extern char _heap_start;
 int main(const char *args);
 
 Area heap = RANGE(&_heap_start, PMEM_END);
+
+// Makefile 的 mainarg 从这里传入
 #ifndef MAINARGS
 #define MAINARGS ""
 #endif
