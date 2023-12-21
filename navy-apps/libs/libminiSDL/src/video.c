@@ -123,35 +123,52 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
   return;
 }
 
-// 将 SDL surface 内容输出到画布上的(x,y)处
+/*
+
+Makes sure the given area is updated on the given screen. The rectangle
+must be confined within the screen boundaries (no clipping is done).
+
+If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the  en‐
+tire screen.
+
+*/
+// 在 suface 的 (x,y) 处截取一块 w*h 的矩形，之后在画布的 (x,y) 画出相同的矩形
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   assert(s);
   if(s->format->palette == NULL && s->format->BitsPerPixel == 32) {
     if((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) {
       NDL_DrawRect((uint32_t *)s->pixels, x, y, s->w, s->h);
     }
-    else
-      NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
+    else {
+      uint32_t *rect = (uint32_t *)malloc(w * h * sizeof(uint32_t));
+      uint32_t offset = 0;
+      for(int j = 0; j < h && j + y < s->h; j++) {
+        for(int i = 0; i < w && i + x < s->w; i++) {
+          rect[offset++] = ((uint32_t *)(s->pixels))[i + x + (j + y) * (s->w)];
+        }
+      }
+      NDL_DrawRect(rect, x, y, w, h);
+      free(rect);
+    }
   }
+  // 加入对仙剑的支持
   else if(s->format->palette != NULL && s->format->BitsPerPixel == 8) {
-    uint32_t *new_ptr = (uint32_t *)malloc(s->w * s->h * sizeof(uint32_t));
+    size_t rect_height = ((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) ? s->h : h;
+    size_t rect_width = ((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) ? s->w : w;
+    uint32_t *rect = (uint32_t *)malloc(rect_height * rect_width * sizeof(uint32_t));
     SDL_Color rgb_color = {0};
-    // 转化成 32 位像素值
-    for(int i = 0; i < s->w * s->h; i++) {
-      rgb_color = s->format->palette->colors[s->pixels[i]];
-      // 00RRGGBB
-      new_ptr[i] = rgb_color.a << 24 | rgb_color.r << 16 | rgb_color.g << 8 | rgb_color.b;
+    uint32_t offset = 0;
+    for(int j = 0; j < rect_height && j + y < s->h; j++) {
+      for(int i = 0; i < rect_width && i + x < s->w; i++) {
+        rgb_color = s->format->palette->colors[s->pixels[i + x + (j + y) * (s->w)]];
+        // 00RRGGBB
+        rect[offset++] = rgb_color.a << 24 | rgb_color.r << 16 | rgb_color.g << 8 | rgb_color.b;
+      }
     }
-    if((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) {
-      NDL_DrawRect((uint32_t *)new_ptr, x, y, s->w, s->h);
-    }
-    else
-      NDL_DrawRect((uint32_t *)new_ptr, x, y, w, h);
-    free(new_ptr);
+    NDL_DrawRect((uint32_t *)rect, x, y, w, h);
+    free(rect);
   }
-  else {
-    assert(0);
-  }
+  else assert(0);
 }
 
 // APIs below are already implemented.

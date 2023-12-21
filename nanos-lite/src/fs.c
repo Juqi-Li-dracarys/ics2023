@@ -12,6 +12,7 @@ typedef struct {
   size_t open_offset; // 文件指针
 } Finfo;
 
+// 虚拟文件数量
 # define DEVICE_NUM 6
 
 enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_EVENTS, FD_INFO, FD_FB};
