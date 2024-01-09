@@ -45,11 +45,17 @@ APP     ?= $(WORK_DIR)/build/$(NAME)-$(ISA)
 ARCHIVE  = $(WORK_DIR)/build/$(NAME)-$(ISA).a
 NANOS_DIR = $(NANOS_HOME)/build
 
+
 ### Add default libraries for ISA != native
 ifneq ($(ISA), native)
+### Add libminiSDL for AM
+ifeq ($(LIBS), libam)
+LIBS += libminiSDL
+endif
 
-### Add lib here
-LIBS += libc libos libndl libfixedptc libminiSDL
+### Add common lib here
+LIBS += libc libos libndl
+
 CFLAGS += -U_FORTIFY_SOURCE  # fix compile error in Newlib on ubuntu
 else
 WL = -Wl,
