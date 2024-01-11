@@ -1,8 +1,14 @@
+/*
+ * @Author: Juqi Li @ NJU 
+ * @Date: 2024-01-11 23:44:19 
+ * @Last Modified by: Juqi Li @ NJU
+ * @Last Modified time: 2024-01-11 23:53:53
+ */
 
 #include <elf.h>
 #include <common.h>
-#include <../include/cpu/decode.h>
-#include <../include/utils.h>
+#include <cpu/decode.h>
+#include <utils.h>
 
 #define FTRACE_TABLE_SIZE 1000
 #define FUN_STACK_SIZE 2000

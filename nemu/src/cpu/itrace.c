@@ -1,7 +1,14 @@
+/*
+ * @Author: Juqi Li @ NJU 
+ * @Date: 2024-01-11 23:44:11 
+ * @Last Modified by: Juqi Li @ NJU
+ * @Last Modified time: 2024-01-11 23:53:43
+ */
 
 #include <common.h>
 
 #define buffer_size 10
+
 typedef struct buffer
 {
   char log_buf[80];

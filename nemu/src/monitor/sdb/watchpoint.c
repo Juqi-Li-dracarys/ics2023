@@ -1,21 +1,14 @@
-/***************************************************************************************
-* Copyright (c) 2014-2022 Zihao Yu, Nanjing University
-*
-* NEMU is licensed under Mulan PSL v2.
-* You can use this software according to the terms and conditions of the Mulan PSL v2.
-* You may obtain a copy of Mulan PSL v2 at:
-*          http://license.coscl.org.cn/MulanPSL2
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*
-* See the Mulan PSL v2 for more details.
-***************************************************************************************/
+/*
+ * @Author: Juqi Li @ NJU 
+ * @Date: 2024-01-11 23:44:45 
+ * @Last Modified by: Juqi Li @ NJU
+ * @Last Modified time: 2024-01-11 23:50:33
+ */
+
+// source code for wp bp
 
 #include "sdb.h"
-#include "../include/cpu/decode.h"
-#define NR_WP 32
+#include <cpu/decode.h>
 
 typedef struct watchpoint {
   int NO;
@@ -25,6 +18,8 @@ typedef struct watchpoint {
   char expr [128]; // To store the expr
   uint32_t result; // To store the latest result of expr
 } WP;
+
+#define NR_WP 32
 
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;

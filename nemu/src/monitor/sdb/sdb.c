@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <memory/paddr.h>
+#include <trace.h>
 #include "sdb.h"
 
 static int is_batch_mode = false;
@@ -26,45 +27,6 @@ static int is_batch_mode = false;
 void init_regex();
 word_t vaddr_read(vaddr_t addr, int len);
 
-#ifdef CONFIG_WBCHECK
-typedef struct watchpoint {
-  int NO;
-  struct watchpoint *next;
-
-  /* TODO: Add more members if necessary */
-  char expr [128]; // To store the expr
-  uint32_t result; // To store the latest result of expr
-} WP;
-
-void init_wp_pool();
-void init_wp_pool();
-WP* new_wp();
-void print_wp(void);
-void delete_wp(unsigned int index);
-void set_bp(uint32_t pc_add);
-void delete_bp(void);
-#endif
-
-#ifdef CONFIG_ITRACE
-typedef struct buffer
-{
-  char log_buf[40];
-  bool use_state;
-  struct buffer *next;
-} 
-ring_buffer;
-
-extern ring_buffer *ring_head;
-
-ring_buffer *init_ring_buffer(void);
-void print_ring_buffer(ring_buffer *head);
-void destroy_ring_buffer(ring_buffer *head);
-#endif
-
-#ifdef CONFIG_FTRACE
-void ftrace_table_d(void);
-void ftrace_log_d(void);
-#endif
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {

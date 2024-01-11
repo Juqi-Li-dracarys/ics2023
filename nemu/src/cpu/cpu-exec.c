@@ -32,31 +32,6 @@ static bool g_print_step = false;
 
 void device_update();
 
-#ifdef CONFIG_WBCHECK
-bool check_wp(void);
-bool check_bp(Decode * s);
-#endif
-
-// Ftrace
-#ifdef CONFIG_FTRACE
-void ftrace_process(Decode *ptr);
-void ftrace_log_d(void);
-#endif
-
-// Itrace ring buffer
-#ifdef CONFIG_ITRACE
-typedef struct buffer
-{
-  char log_buf[80];
-  bool use_state;
-  struct buffer *next;
-} 
-ring_buffer;
-extern ring_buffer* ring_head;
-ring_buffer *write_ring_buffer(ring_buffer *head, char *log_str);
-void print_ring_buffer(ring_buffer *head);
-#endif
-
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   IFDEF(CONFIG_FTRACE, ftrace_process(_this));
 #ifdef CONFIG_ITRACE_COND
