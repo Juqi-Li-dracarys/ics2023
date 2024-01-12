@@ -36,13 +36,13 @@ CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 
 # compile rulers for simulation
 $(BIN_S): $(VSRCS) $(CSRCS_S)
-	@rm -rf $(SIM_DIR)
 	@echo "------- SIMULATION ON THE SOURCE CODE--------"
 	@$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
 		--Mdir $(SIM_DIR) --exe -o $(abspath $(BIN_S))
 
 sim: $(BIN_S)
+	$(MAKE) clean
 	$(call git_commit, "sim RTL")
 	@echo "------- RUNNING THE SIMULATION--------"
 	@$^
@@ -52,7 +52,6 @@ sim: $(BIN_S)
 
 # compile rulers for implementation
 $(BIN_I): $(VSRCS) $(CSRCS_I) $(NVBOARD_ARCHIVE)
-	@rm -rf $(IMP_DIR)
 	@echo "------- IMPLEMENTATION ON THE SOURCE CODE--------"
 	@$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
@@ -60,6 +59,7 @@ $(BIN_I): $(VSRCS) $(CSRCS_I) $(NVBOARD_ARCHIVE)
 		--Mdir $(IMP_DIR) --exe -o $(abspath $(BIN_I))
 
 imp: $(BIN_I)
+	$(MAKE) clean
 	$(call git_commit, "imp RTL")
 	@echo "------- RUNNING THE IMPLEMENTATION--------"
 	@$^
