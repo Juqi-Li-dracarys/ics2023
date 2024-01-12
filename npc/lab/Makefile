@@ -20,7 +20,9 @@ IMP_DIR = $(BUILD_DIR)/imp
 BIN_S = $(SIM_DIR)/$(TOPNAME)
 BIN_I = $(IMP_DIR)/$(TOPNAME)
 
-
+# creat build dir
+$(shell mkdir -p $(SIM_DIR))
+$(shell mkdir -p $(IMP_DIR))
 
 # generate constraint file for implementation
 SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/imp/auto_bind.cpp)
