@@ -29,6 +29,8 @@ SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/imp/auto_bind.cpp)
 CSRCS_I += $(SRC_AUTO_BIND)
 
 $(SRC_AUTO_BIND): $(NXDC_FILES)
+	@rm -rf $(IMP_DIR)
+	@mkdir -p $(IMP_DIR)
 	@echo "generate autobind"
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
