@@ -20,9 +20,7 @@ IMP_DIR = $(BUILD_DIR)/imp
 BIN_S = $(SIM_DIR)/$(TOPNAME)
 BIN_I = $(IMP_DIR)/$(TOPNAME)
 
-# creat build dir
-$(shell mkdir -p $(SIM_DIR))
-$(shell mkdir -p $(IMP_DIR))
+
 
 # generate constraint file for implementation
 SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/imp/auto_bind.cpp)
@@ -30,9 +28,9 @@ CSRCS_I += $(SRC_AUTO_BIND)
 
 $(SRC_AUTO_BIND): $(NXDC_FILES)
 	@rm -rf $(IMP_DIR)
-	@mkdir -p $(IMP_DIR)
 	@echo "generate autobind"
-	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
+	@mkdir -p $(IMP_DIR)
+	@python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 # import args from nvboard
 INCFLAGS = $(addprefix -I, $(INC_PATH))
