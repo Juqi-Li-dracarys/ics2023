@@ -42,7 +42,6 @@ $(BIN_S): $(VSRCS) $(CSRCS_S)
 		--Mdir $(SIM_DIR) --exe -o $(abspath $(BIN_S))
 
 sim: $(BIN_S)
-	$(MAKE) clean
 	$(call git_commit, "sim RTL")
 	@echo "------- RUNNING THE SIMULATION--------"
 	@$^
@@ -59,7 +58,6 @@ $(BIN_I): $(VSRCS) $(CSRCS_I) $(NVBOARD_ARCHIVE)
 		--Mdir $(IMP_DIR) --exe -o $(abspath $(BIN_I))
 
 imp: $(BIN_I)
-	$(MAKE) clean
 	$(call git_commit, "imp RTL")
 	@echo "------- RUNNING THE IMPLEMENTATION--------"
 	@$^
