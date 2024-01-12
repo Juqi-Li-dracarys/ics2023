@@ -25,9 +25,11 @@ $(shell mkdir -p $(SIM_DIR))
 $(shell mkdir -p $(IMP_DIR))
 
 # generate constraint file for implementation
-SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/imp/auto_bind.cpp)
 CSRCS_I += $(SRC_AUTO_BIND)
+
 $(SRC_AUTO_BIND): $(NXDC_FILES)
+	@echo "generate autobind"
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 # import args from nvboard
@@ -36,6 +38,7 @@ CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 
 # compile rulers for simulation
 $(BIN_S): $(VSRCS) $(CSRCS_S)
+	@rm -rf $(SIM_DIR)
 	@echo "------- SIMULATION ON THE SOURCE CODE--------"
 	@$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
