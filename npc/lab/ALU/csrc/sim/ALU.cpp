@@ -73,8 +73,10 @@ int main(int argc, char** argv, char** env) {
                 break;
             case 2:
                 assert((uint32_t)top->Less == (int32_t)data_a < (int32_t)data_b);
+                break;
             case 3:
                 assert((uint32_t)top->Less == (uint32_t)data_a < (uint32_t)data_b);
+                break;
             default:
                 assert(0); break;
         }
