@@ -22,11 +22,12 @@ int main(int argc, char** argv, char** env) {
     top->trace(tfp, 0);
     tfp->open("wave.vcd");                  //设置输出的文件wave.vcd
 
-    // 随机测试次数
+    // 初始化
     int i = 0;
     int data_a = 0;
     int data_b = 0;
     int ctr = 0;
+    top->eval();
 
     while ((!contextp->gotFinish()) && i < 100) {
         data_a = rand();
