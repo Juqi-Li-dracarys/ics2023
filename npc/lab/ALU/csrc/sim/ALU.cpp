@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stdint.h>
+#include <iostream>
 
 #include "verilated.h"
 #include "verilated_vcd_c.h"
@@ -9,26 +10,6 @@
 
 // dpi-c
 #include <verilated_dpi.h>
-
-uint32_t mem [5] = {0x00000001, 0x80000000, 0x8100F081, 0x0011A01F, 0xFFFFFFFF};
-
-extern "C" int vaddr_read (int addrs, int len) {
-    switch(len) {
-        case 1: return *(uint8_t  *)(mem + (uint32_t)addrs -0x80000000);
-        case 2: return *(uint16_t *)(mem + (uint32_t)addrs -0x80000000);
-        case 4: return *(uint32_t *)(mem + (uint32_t)addrs -0x80000000);
-        default: return 0;
-    }
-}
-
-extern "C" void vaddr_write(int addrs, int len, int data) {
-    switch(len) {
-        case 1: *(uint8_t  *)(mem + (uint32_t)addrs -0x80000000) = (uint32_t)data; return;
-        case 2: *(uint16_t *)(mem + (uint32_t)addrs -0x80000000) = (uint32_t)data; return;
-        case 4: *(uint32_t *)(mem + (uint32_t)addrs -0x80000000) = (uint32_t)data; return;
-        default: return ;
-    }
-}
 
 int main(int argc, char** argv, char** env) {
     // Verilator 初始化
@@ -41,19 +22,28 @@ int main(int argc, char** argv, char** env) {
     top->trace(tfp, 0);
     tfp->open("wave.vcd");                  //设置输出的文件wave.vcd
 
-
-
-    // 开始仿真
+    // 随机测试次数
     int i = 0;
+    int data_a = 0;
+    int data_b = 0;
+    int ctr = 0;
 
-    while ((!contextp->gotFinish()) && i < 10) {
+    while ((!contextp->gotFinish()) && i < 100) {
+        data_a = rand();
+        data_b = rand();
+        top->da = data_a;
+        top->db = data_b;
+        top->ALU_ctr = ctr;
+        top->eval();
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
+        assert((uint32_t)top->ALUout == (uint32_t)data_a + (uint32_t)data_b);
         i++;
     }
     delete top;
     tfp->close();
     delete contextp;
+    std::cout << "PASS" << std::endl;
     return 0;
 }
 
