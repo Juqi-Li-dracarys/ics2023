@@ -26,8 +26,8 @@ extern "C" int vaddr_read (int addrs, int len) {
 
 extern "C" void vaddr_write(int addrs, int len, int data) {
     switch(len) {
-        case 1: *(uint8_t  *)(mem + (uint32_t)addrs - 0x80000000) = (uint32_t)data; return;
-        case 2: *(uint16_t *)(mem + (uint32_t)addrs - 0x80000000) = (uint32_t)data; return;
+        case 1: *(uint8_t  *)(mem + (uint32_t)addrs - 0x80000000) = (uint8_t) data; return;
+        case 2: *(uint16_t *)(mem + (uint32_t)addrs - 0x80000000) = (uint16_t)data; return;
         case 4: *(uint32_t *)(mem + (uint32_t)addrs - 0x80000000) = (uint32_t)data; return;
         default: return ;
     }
@@ -68,10 +68,15 @@ int main(int argc, char** argv, char** env) {
         printf("After edge, ramdom_MemOp = 0x%08x, ramdom_addr = 0x%08x, result = 0x%08x\n", ramdom_MemOp, ramdom_addr, top->DataOut);
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
-        
+
         i++;
         ramdom_addr++;
     }
+
+    for(i = 0; i < 5; i++) {
+        printf("%d\n", mem[i]);
+    }
+
 
     delete top;
     tfp->close();
