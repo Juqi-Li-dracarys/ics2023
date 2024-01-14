@@ -73,8 +73,9 @@ int main(int argc, char** argv, char** env) {
         ramdom_addr++;
     }
 
+
     for(i = 0; i < 5; i++) {
-        printf("%d\n", mem[i]);
+        printf("0x%08x\n", mem[i]);
     }
 
 
