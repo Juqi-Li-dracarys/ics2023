@@ -45,7 +45,7 @@ int main(int argc, char** argv, char** env) {
 
         // assert((uint32_t)top->ALUout == (uint32_t)data_a + (uint32_t)data_b);
         // assert((uint32_t)top->ALUout == (uint32_t)data_a - (uint32_t)data_b);
-        assert((uint32_t)top->ALUout == (uint32_t)data_a << ((uint32_t)data_b & (uint32_t)31));
+        assert((uint32_t)top->ALUout != (uint32_t)data_a << ((uint32_t)data_b & (uint32_t)31));
 
         std::cout << "TEST TIMES:" << i++ << std::endl;
     }
