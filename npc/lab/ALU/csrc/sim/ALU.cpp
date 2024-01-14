@@ -94,6 +94,7 @@ int main(int argc, char** argv, char** env) {
                 break;
             case 7:
                 printf("data_a:%08x  data_b:%08x  top->ALUout:%08x\n", data_a, data_b, top->ALUout);
+                printf("data_a & data_b : %08x\n", data_a & data_b);
                 assert((uint32_t)top->ALUout == (uint32_t)data_a & (uint32_t)data_b);
                 break;
             default:
