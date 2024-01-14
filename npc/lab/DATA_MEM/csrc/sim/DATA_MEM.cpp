@@ -64,6 +64,7 @@ int main(int argc, char** argv, char** env) {
         printf("ramdom_MemOp = 0x%08x, ramdom_addr = 0x%08x, result = 0x%08x\n", ramdom_MemOp, ramdom_addr, top->DataOut);
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
+        i++;
     }
     delete top;
     tfp->close();
