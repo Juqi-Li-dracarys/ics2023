@@ -11,7 +11,7 @@
 #include "VDATA_MEM__Dpi.h"
 #include <verilated_dpi.h>
 
-uint32_t mem [10] = {0};
+uint32_t mem [5] = {0x00000001, 0x81000000, 0x81000001, 0x801100FF, 0xFFFFFFFF};
 
 extern "C" int vaddr_read (int addrs, int len) {
     switch(len) {
@@ -57,11 +57,11 @@ int main(int argc, char** argv, char** env) {
 
     while ((!contextp->gotFinish()) && contextp->time() < 100) {
         ramdom_MemOp = (rand() % 8);
-        ramdom_addr = 0x80000000 + rand() % 10;
+        ramdom_addr = 0x80000000 + rand() % 5;
         top->MemOp = ramdom_MemOp;
         top->addr = ramdom_addr;
         top->eval();
-        printf("ramdom_MemOp = %d, ramdom_addr = %d, result = %d\n", ramdom_MemOp, ramdom_addr, top->DataOut);
+        printf("ramdom_MemOp = 0x%08x, ramdom_addr = 0x%08x, result = 0x%08x\n", ramdom_MemOp, ramdom_addr, top->DataOut);
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
     }
