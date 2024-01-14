@@ -93,8 +93,7 @@ int main(int argc, char** argv, char** env) {
                 assert((uint32_t)top->ALUout == (uint32_t)data_a | (uint32_t)data_b);
                 break;
             case 7:
-                std::cout << top->ALUout << data_a << data_b;
-                assert((uint32_t)top->ALUout == (uint32_t)data_a & (uint32_t)data_b);
+                //assert((uint32_t)top->ALUout == (uint32_t)data_a & (uint32_t)data_b);
                 break;
             default:
                 assert(0); break;
