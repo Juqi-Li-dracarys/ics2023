@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-13 20:12:55 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-14 00:45:48
+ * @Last Modified time: 2024-01-14 16:40:23
  */
 
 // naive way of building an adder
@@ -17,7 +17,7 @@ module ADDER #(parameter data_width = 6'd32) (
     output [data_width-1 : 0]  addout    // output of the result
 );
 
-    assign {cout,addout} = data_a + data_b + cin;
+    assign {cout,addout} = data_a + data_b + {{31{1'b0}}, cin};
     assign overflow = (data_a[data_width-1] == data_b[data_width-1]) && (data_a[data_width-1] != addout[data_width-1]);
     assign zero = (addout == 32'b0);
 

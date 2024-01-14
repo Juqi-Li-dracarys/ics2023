@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-13 20:39:08 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-14 10:33:28
+ * @Last Modified time: 2024-01-14 16:34:54
  */
 
 // ALU of the CPU
@@ -41,7 +41,7 @@ module ALU (
     input       [4 : 0]     ALU_ctr,  // set the mode of algorithm
     output                  Less,
     output                  Zero,
-    output reg  [31 : 0]    ALUout,   // output of the result
+    output reg  [31 : 0]    ALUout    // output of the result
 );
 
     // Control bus
