@@ -55,12 +55,12 @@ int main(int argc, char** argv, char** env) {
         data_b = rand();
         top->da = data_a;
         top->db = data_b;
-        top->ALU_ctr = op[i % 6];
+        top->ALU_ctr = op[i % 11];
         top->eval();
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
 
-        switch (op[i % 6])
+        switch (op[i % 11])
         {
             case 0:
                 assert((uint32_t)top->ALUout == (uint32_t)data_a + (uint32_t)data_b);
@@ -79,6 +79,21 @@ int main(int argc, char** argv, char** env) {
                 break;
             case 24:
                 assert((uint32_t)top->ALUout == (uint32_t)data_b);
+                break;
+            case 4:
+                assert((uint32_t)top->ALUout == (uint32_t)data_a ^ (uint32_t)data_b);
+                break;
+            case 5:
+                assert((uint32_t)top->ALUout == (uint32_t)data_a >> ((uint32_t)data_b & (uint32_t)31));
+                break;
+            case 21:
+                assert((int32_t)top->ALUout == (int32_t)data_a >> ((uint32_t)data_b & (uint32_t)31));
+                break;
+            case 6:
+                assert((uint32_t)top->ALUout == (uint32_t)data_a | (uint32_t)data_b);
+                break;
+            case 7:
+                assert((uint32_t)top->ALUout == (uint32_t)data_a & (uint32_t)data_b);
                 break;
             default:
                 assert(0); break;
