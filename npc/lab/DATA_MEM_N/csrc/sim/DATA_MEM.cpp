@@ -63,14 +63,16 @@ int main(int argc, char** argv, char** env) {
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
 
+        // 这里 data_out 不会变化，因为有延迟，但其实已经写入
         top->clk = 1;
         top->eval();
-        printf("After edge 1, ramdom_MemOp = 0x%08x, ramdom_addr = 0x%08x, result = 0x%08x\n", ramdom_MemOp, ramdom_addr, top->DataOut);
+        printf("After edge 0, ramdom_MemOp = 0x%08x, ramdom_addr = 0x%08x, result = 0x%08x\n", ramdom_MemOp, ramdom_addr, top->DataOut);
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
 
+        // 1ps 后 data_out 变化
         top->eval();
-        printf("After edge 2, ramdom_MemOp = 0x%08x, ramdom_addr = 0x%08x, result = 0x%08x\n", ramdom_MemOp, ramdom_addr, top->DataOut);
+        printf("After edge 1, ramdom_MemOp = 0x%08x, ramdom_addr = 0x%08x, result = 0x%08x\n", ramdom_MemOp, ramdom_addr, top->DataOut);
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
 
@@ -78,11 +80,9 @@ int main(int argc, char** argv, char** env) {
         ramdom_addr++;
     }
 
-
     for(i = 0; i < 5; i++) {
         printf("0x%08x\n", mem[i]);
     }
-
 
     delete top;
     tfp->close();
