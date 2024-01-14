@@ -52,7 +52,7 @@ int main(int argc, char** argv, char** env) {
     top->eval();
 
     // 开始仿真
-    int ramdom_MemOp = 1;
+    int ramdom_MemOp = 0;
     int ramdom_addr = 0x80000000;
     int i = 0;
     while ((!contextp->gotFinish()) && i < 5) {
