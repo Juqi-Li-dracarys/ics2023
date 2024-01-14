@@ -54,10 +54,10 @@ int main(int argc, char** argv, char** env) {
     // 开始仿真
     int ramdom_MemOp = 0;
     int ramdom_addr = 0x80000000;
-
-    while ((!contextp->gotFinish()) && contextp->time() < 100) {
-        ramdom_MemOp = (rand() % 8);
-        ramdom_addr = 0x80000000 + rand() % 5;
+    int i = 0;
+    while ((!contextp->gotFinish()) && i < 5) {
+        ramdom_MemOp = 2;
+        ramdom_addr = 0x80000000 + i;
         top->MemOp = ramdom_MemOp;
         top->addr = ramdom_addr;
         top->eval();
