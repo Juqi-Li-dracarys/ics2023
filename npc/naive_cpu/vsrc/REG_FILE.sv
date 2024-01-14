@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-12 20:25:26 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-14 09:29:26
+ * @Last Modified time: 2024-01-14 21:31:32
  */
 
 // register file for RV32E
@@ -13,7 +13,7 @@ module REG_FILE #(parameter reg_num = 16, reg_width = 4)(
     input   [31 : 0]  inst,
     input             RegWr,                    // write enable
     input   [31 : 0]  rf_busW,                  // write data
-    output  [31 : 0]  rf_busA, rf_busB          // read result
+    output  [31 : 0]  rf_busA, rf_busB,         // read result
     output            reg_signal                // should be 0
 );
 
@@ -40,7 +40,7 @@ module REG_FILE #(parameter reg_num = 16, reg_width = 4)(
     always_ff @(posedge clk) begin
         // should not write $0
         if(RegWr && !rst && rd != 5'h0 && rd < reg_num) begin
-            reg_file[rd] <= rf_busW;
+            reg_file[rd[reg_width-1 : 0]] <= rf_busW;
         end
         else if(rst) begin
             for(i = 0; i < reg_num; i = i + 1) begin
