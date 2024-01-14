@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-13 17:52:15 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-13 20:37:25
+ * @Last Modified time: 2024-01-14 10:14:27
  */
 
 // Control the next PC
@@ -16,9 +16,8 @@ module PC_SEL(
     output    [31 : 0]     next_pc
 );
 
-    wire   [32 : 0]    A_line;
-    wire   [32 : 0]    B_line;
-    wire               cout;
+    wire   [31 : 0]    A_line;
+    wire   [31 : 0]    B_line;
     
     MuxKey #(2, 1, 32) M1 (
         A_line, 
@@ -36,14 +35,8 @@ module PC_SEL(
         }
     );
 
-    ADDER A1 (
-        A_line,
-        B_line,
-        1'b0,
-        next_pc,
-        cout
-    );
-
+    assign next_pc = A_line + B_line;
+    
 endmodule
 
 

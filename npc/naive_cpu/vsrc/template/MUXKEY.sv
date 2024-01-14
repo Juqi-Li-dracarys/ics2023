@@ -2,27 +2,27 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-12 17:19:22 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-12 20:13:10
+ * @Last Modified time: 2024-01-14 01:42:45
  */
 
 /*
-module mux21(a,b,s,y);
-  input   a,b,s;
-  output  y;
+  module mux21(a,b,s,y);
+    input   a,b,s;
+    output  y;
 
-  // 通过MuxKey实现如下always代码
-  // always @(*) begin
-  //  case (s)
-  //    1'b0: y = a;
-  //    1'b1: y = b;
-  //  endcase
-  // end
-  
-  MuxKey #(2, 1, 1) i0 (y, s, {
-    1'b0, a,
-    1'b1, b
-  });
-endmodule
+    // 通过MuxKey实现如下always代码
+    // always @(*) begin
+    //  case (s)
+    //    1'b0: y = a;
+    //    1'b1: y = b;
+    //  endcase
+    // end
+    
+    MuxKey #(2, 1, 1) i0 (y, s, {
+      1'b0, a,
+      1'b1, b
+    });
+  endmodule
 */
 
 // 不带默认值的选择器模板

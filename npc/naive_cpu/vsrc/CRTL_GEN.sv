@@ -2,12 +2,11 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-12 20:11:50 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-13 20:40:13
+ * @Last Modified time: 2024-01-14 10:19:49
  */
 
-
 // Main control of CPU
-// Support ISA: riscv32-IM
+// Support ISA: riscv32-EM
 
 `define   I_type   3'b000
 `define   S_type   3'b010
@@ -16,14 +15,8 @@
 `define   J_type   3'b100
 `define   R_type   3'b111
 
-// Stage of CPU
-`define  RUNNING   2'b00
-`define  HALT      2'b01
-`define  ERROR     2'b10
-
 module CRTL_GEN (
     input        [31 : 0]    inst,
-    input        [31 : 0]    pc,
     // 立即数输出类型
     output reg   [2 : 0]     ExtOp,
 
@@ -57,7 +50,10 @@ module CRTL_GEN (
     // 控制数据存储器读写格式，为 010 时为 4 字节读写，
     // 为 001 时为 2 字节读写带符号扩展，为 000 时为 1 字节读写带符号扩展，
     // 为 101 时为 2 字节读写无符号扩展，为 100 时为 1 字节读写无符号扩展
-    output reg   [2 : 0]     MemOP
+    output reg   [2 : 0]     MemOP,
+    
+    // 00: running    01: error    10: ebreak
+    output reg   [1 : 0]     ctr_signal
 );
 
     // 标志提取
@@ -70,17 +66,13 @@ module CRTL_GEN (
     assign funct7 = inst[31 : 25];
 
     reg      [2 : 0]       inst_type;
-    
-    // DIP-C in verilog
-    import "DPI-C" function void ebreak();
-    import "DPI-C" function invalid_inst(input int thispc);
 
     // 指令类型解析
     always_comb begin
         // R 型指令解析(未包含mret)
         unique if(op == 6'b0110011) begin
-            inst_type = R_type;
-            ExtOp = R_type;
+            inst_type = `R_type;
+            ExtOp = `R_type;
             RegWr = 1'b1;
             ALUAsrc = 1'b0;
             ALUBsrc = 2'b00;
@@ -89,54 +81,55 @@ module CRTL_GEN (
             MemtoReg = 1'b0;
             MemWr = 1'b0;
             MemOP = 3'b000;
+            inst_signal = 2'b00;
         end
 
         // B 型指令
         else if(op == 6'b1100011) begin
-            inst_type = B_type;
-            ExtOp = B_type;
+            inst_type = `B_type;
+            ExtOp = `B_type;
             RegWr = 1'b0;
             ALUAsrc = 1'b0;
             ALUBsrc = 2'b00;
             unique case(func3)
                 // beq
                 3'b000: begin
-                    Branch = 3'b100; ALUctr = 5'b00010; 
+                    Branch = 3'b100; ALUctr = 5'b00010; inst_signal = 2'b00;
                 end
                 // bne
                 3'b001: begin
-                    Branch = 3'b101; ALUctr = 5'b00010; 
+                    Branch = 3'b101; ALUctr = 5'b00010; inst_signal = 2'b00;
                 end
                 // blt
                 3'b100: begin
-                    Branch = 3'b110; ALUctr = 5'b00010; 
+                    Branch = 3'b110; ALUctr = 5'b00010; inst_signal = 2'b00;
                 end
                 // bge
                 3'b101: begin
-                    Branch = 3'b111; ALUctr = 5'b00010; 
+                    Branch = 3'b111; ALUctr = 5'b00010; inst_signal = 2'b00;
                 end
                 // bltu
                 3'b110: begin
-                    Branch = 3'b110; ALUctr = 5'b10010; 
+                    Branch = 3'b110; ALUctr = 5'b00011; inst_signal = 2'b00;
                 end
                 // bgeu
                 3'b111: begin
-                    Branch = 3'b111; ALUctr = 5'b10010; 
+                    Branch = 3'b111; ALUctr = 5'b00011; inst_signal = 2'b00;
                 end
                 // unkown instruction, should not reach here
                 default: begin
-                    invalid_inst(pc);
+                    Branch = 3'b000; ALUctr = 5'b00000; inst_signal = 2'b01;
                 end            
             endcase
             MemtoReg = 1'b0;
             MemWr = 1'b0;
-            MemOP = 3'b000;          
+            MemOP = 3'b000;         
         end
 
         // S 型指令
         else if(op == 6'b0100011) begin
-            inst_type = S_type;
-            ExtOp = S_type;
+            inst_type = `S_type;
+            ExtOp = `S_type;
             RegWr = 1'b0;
             ALUAsrc = 1'b0;
             ALUBsrc = 2'b01;
@@ -145,12 +138,13 @@ module CRTL_GEN (
             MemtoReg = 1'b0;
             MemWr = 1'b1;
             MemOP = func3;
+            inst_signal = 2'b00;
         end
 
         // U 型指令
         else if(op == 6'b0010111 || op == 6'b0110111) begin
-            inst_type = U_type;
-            ExtOp = U_type;
+            inst_type = `U_type;
+            ExtOp = `U_type;
             RegWr = 1'b1;
             ALUAsrc = 1'b1;
             ALUBsrc = 2'b01;
@@ -160,12 +154,13 @@ module CRTL_GEN (
             MemtoReg = 1'b0;
             MemWr = 1'b0;
             MemOP = 3'b000;
+            inst_signal = 2'b00;
         end
 
         // J 型指令
         else if(op == 6'b1101111) begin
-            inst_type = J_type;
-            ExtOp = J_type;
+            inst_type = `J_type;
+            ExtOp = `J_type;
             RegWr = 1'b1;
             ALUAsrc = 1'b1;
             ALUBsrc = 2'b10;
@@ -174,12 +169,13 @@ module CRTL_GEN (
             MemtoReg = 1'b0;
             MemWr = 1'b0;
             MemOP = 3'b000;
+            inst_signal = 2'b00;
         end
 
         // I 型指令的第一部分
         else if(op == 6'b0010011) begin
-            inst_type = I_type;
-            ExtOp = I_type;
+            inst_type = `I_type;
+            ExtOp = `I_type;
             RegWr = 1'b1;
             ALUAsrc = 1'b0;
             ALUBsrc = 2'b01;
@@ -188,12 +184,13 @@ module CRTL_GEN (
             MemtoReg = 1'b0;
             MemWr = 1'b0;
             MemOP = 3'b000;
+            inst_signal = 2'b00;
         end
 
         // I 型指令的第二部分(jalr)
         else if(op == 6'b1100111) begin
-            inst_type = I_type;
-            ExtOp = I_type;          
+            inst_type = `I_type;
+            ExtOp = `I_type;          
             RegWr = 1'b1;
             ALUAsrc = 1'b1;
             ALUBsrc = 2'b10;
@@ -202,12 +199,13 @@ module CRTL_GEN (
             MemtoReg = 1'b0;
             MemWr = 1'b0;
             MemOP = 3'b000;
+            inst_signal = 2'b00;
         end
 
         // I 型指令的第三部分(load)
         else if(op == 6'b0000011) begin
-            inst_type = I_type;
-            ExtOp = I_type;          
+            inst_type = `I_type;
+            ExtOp = `I_type;          
             RegWr = 1'b1;
             ALUAsrc = 1'b0;
             ALUBsrc = 2'b01;
@@ -216,19 +214,30 @@ module CRTL_GEN (
             MemtoReg = 1'b1;
             MemWr = 1'b0;
             MemOP = func3;
+            inst_signal = 2'b00;
         end
-        
+        // I 型指令的第四部分(ebreak)
         else if(op == 6'b1110011) begin
-            ebreak();
+            inst_type = `I_type;
+            ExtOp = `I_type;
+            RegWr = 1'b0;
+            ALUAsrc = 1'b0;
+            ALUBsrc = 2'b00;
+            ALUctr = 5'b00000;
+            Branch = 3'b000;
+            MemtoReg = 1'b0;
+            MemWr = 1'b0;
+            MemOP = 3'b000;  
+            inst_signal = 2'b10;
         end
 
+        // should not reach here
         else begin
-            invalid_inst(pc);
+            inst_signal = 2'b01;
         end
 
     end
     
 endmodule
-
 
 

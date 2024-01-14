@@ -11,7 +11,6 @@ include $(NVBOARD_HOME)/scripts/nvboard.mk
 # define some path and flags
 VERILATOR = verilator
 WAVE = gtkwave
-TOPNAME = top
 VERILATOR_CFLAGS += -MMD --cc --trace --build -O3 \
 				--x-assign fast --x-initial fast --noassert
 BUILD_DIR = $(NPC_HOME)/lab/build

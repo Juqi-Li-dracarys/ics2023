@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-13 18:06:14 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-13 20:38:04
+ * @Last Modified time: 2024-01-14 15:13:16
  */
 
 
@@ -19,7 +19,7 @@
 module DATA_MEM (
     input                      clk,
     input                      WrEn,
-    input        [3 : 0]       MemOp,
+    input        [2 : 0]       MemOp,
     input        [31 : 0]      addr,
     input        [31 : 0]      DataIn,
     output  reg  [31 : 0]      DataOut
@@ -29,17 +29,17 @@ module DATA_MEM (
     import "DPI-C" function void vaddr_write(input int addrs, input int len, input int data);
     
     always_comb begin
-        unique case(MemOP)
+        unique case(MemOp)
             3'b010: begin
                 DataOut = vaddr_read(addr, 32'h4);
             end
             3'b001: begin
                 DataOut = vaddr_read(addr, 32'h2);
-                DataOut = DataOut | ({16{DataOut[15]}} << 16);
+                DataOut = DataOut | {{16{DataOut[15]}}, {16{1'b0}}};
             end
             3'b000: begin
                 DataOut = vaddr_read(addr, 32'h1);
-                DataOut = DataOut | ({24{DataOut[7]}} << 8);
+                DataOut = DataOut | {{24{DataOut[7]}}, {8{1'b0}}};
             end
             3'b101: begin
                 DataOut = vaddr_read(addr, 32'h2);
@@ -57,7 +57,7 @@ module DATA_MEM (
     // 下一个周期写入数据
     always_ff @(posedge clk) begin
         if(WrEn) begin
-            unique case(MemOP)
+            unique case(MemOp)
                 3'b010: begin
                     vaddr_write(addr, 32'h4, DataIn);
                 end
