@@ -61,16 +61,18 @@ int main(int argc, char** argv, char** env) {
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
 
+        top->WrEn = 1;
         top->clk = 1;
         top->eval();
         printf("After edge, ramdom_MemOp = 0x%08x, ramdom_addr = 0x%08x, result = 0x%08x\n", ramdom_MemOp, ramdom_addr, top->DataOut);
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
 
+        top->WrEn = 0;
         i++;
         ramdom_addr++;
     }
-    
+
     delete top;
     tfp->close();
     delete contextp;
