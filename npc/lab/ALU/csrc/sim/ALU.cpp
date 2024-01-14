@@ -55,7 +55,7 @@ int main(int argc, char** argv, char** env) {
         data_b = rand();
         top->da = data_a;
         top->db = data_b;
-        top->ALU_ctr = op[i % 11];
+        top->ALU_ctr = op[i % 5];
         top->eval();
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
