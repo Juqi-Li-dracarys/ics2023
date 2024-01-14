@@ -11,8 +11,10 @@
 #include "VDATA_MEM__Dpi.h"
 #include <verilated_dpi.h>
 
-
+// memory
 uint32_t mem  [5] = {0x0};
+
+// source
 uint32_t data [5] = {0x00000001, 0x80000000, 0x8100F081, 0x0011A01F, 0xFFFFFFFF};
 
 extern "C" int vaddr_read (int addrs, int len) {
@@ -46,7 +48,7 @@ int main(int argc, char** argv, char** env) {
 
 
     // 开始仿真
-    int ramdom_MemOp = 2;
+    int ramdom_MemOp = 1;
     int ramdom_addr = 0x80000000;
     int i = 0;
 
@@ -63,7 +65,7 @@ int main(int argc, char** argv, char** env) {
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
 
-        // 这里 data_out 不会变化，因为有延迟，但其实已经写入
+        // 上升沿后立即计算，这里 data_out 不会变化，因为有延迟，但其实已经写入
         top->clk = 1;
         top->eval();
         printf("After edge 0, ramdom_MemOp = 0x%08x, ramdom_addr = 0x%08x, result = 0x%08x\n", ramdom_MemOp, ramdom_addr, top->DataOut);
