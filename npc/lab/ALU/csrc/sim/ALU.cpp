@@ -26,7 +26,8 @@ int main(int argc, char** argv, char** env) {
     int i = 0;
     int data_a = 0;
     int data_b = 0;
-    int ctr = 0;
+    // int ctr = 0;
+    int ctr = 16;
     top->eval();
 
     while ((!contextp->gotFinish()) && i < 100) {
@@ -38,7 +39,8 @@ int main(int argc, char** argv, char** env) {
         top->eval();
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
-        assert((uint32_t)top->ALUout == (uint32_t)data_a + (uint32_t)data_b);
+        // assert((uint32_t)top->ALUout == (uint32_t)data_a + (uint32_t)data_b);
+        assert((uint32_t)top->ALUout == (uint32_t)data_a - (uint32_t)data_b);
         std::cout << "TEST TIMES:" << i++ << std::endl;
     }
     delete top;
