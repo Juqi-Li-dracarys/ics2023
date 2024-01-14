@@ -5,8 +5,11 @@
 !*.mk
 !*.[cSh]
 !*.v
+!*.sv
 !*.cc
 !*.cpp
+!*.c
+!*.h
 !.gitignore
 !README.md
 build/
