@@ -38,7 +38,7 @@ int main(int argc, char** argv, char** env) {
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1);        // 推动仿真时间
         assert((uint32_t)top->ALUout == (uint32_t)data_a + (uint32_t)data_b);
-        i++;
+        std::cout << "TEST TIMES:" << i++ << std::endl;
     }
     delete top;
     tfp->close();
