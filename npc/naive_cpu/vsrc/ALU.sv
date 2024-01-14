@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-13 20:39:08 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-14 16:57:55
+ * @Last Modified time: 2024-01-14 18:00:33
  */
 
 // ALU of the CPU
@@ -149,6 +149,7 @@ module ALU (
             5'b01110: ALUout = rem_result;
             5'b01111: ALUout = rem_result;
 `endif
+
             default: ALUout = 32'b0;
         endcase
     end
