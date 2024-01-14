@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-12 20:11:50 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-14 10:19:49
+ * @Last Modified time: 2024-01-14 21:24:55
  */
 
 // Main control of CPU
@@ -53,7 +53,7 @@ module CRTL_GEN (
     output reg   [2 : 0]     MemOP,
     
     // 00: running    01: error    10: ebreak
-    output reg   [1 : 0]     ctr_signal
+    output reg   [1 : 0]     inst_signal
 );
 
     // 标志提取
@@ -62,21 +62,21 @@ module CRTL_GEN (
     wire      [6 : 0]       func7;
 
     assign op =  inst[6 : 0];
-    assign funct3 = inst[14 : 12];
-    assign funct7 = inst[31 : 25];
+    assign func3 = inst[14 : 12];
+    assign func7 = inst[31 : 25];
 
     reg      [2 : 0]       inst_type;
 
     // 指令类型解析
     always_comb begin
         // R 型指令解析(未包含mret)
-        unique if(op == 6'b0110011) begin
+        unique if(op == 7'b0110011) begin
             inst_type = `R_type;
             ExtOp = `R_type;
             RegWr = 1'b1;
             ALUAsrc = 1'b0;
             ALUBsrc = 2'b00;
-            ALUctr = {func7[5], funct7[0], func3};
+            ALUctr = {func7[5], func7[0], func3};
             Branch = 3'b000;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
@@ -85,7 +85,7 @@ module CRTL_GEN (
         end
 
         // B 型指令
-        else if(op == 6'b1100011) begin
+        else if(op == 7'b1100011) begin
             inst_type = `B_type;
             ExtOp = `B_type;
             RegWr = 1'b0;
@@ -127,7 +127,7 @@ module CRTL_GEN (
         end
 
         // S 型指令
-        else if(op == 6'b0100011) begin
+        else if(op == 7'b0100011) begin
             inst_type = `S_type;
             ExtOp = `S_type;
             RegWr = 1'b0;
@@ -142,14 +142,14 @@ module CRTL_GEN (
         end
 
         // U 型指令
-        else if(op == 6'b0010111 || op == 6'b0110111) begin
+        else if(op == 7'b0010111 || op == 7'b0110111) begin
             inst_type = `U_type;
             ExtOp = `U_type;
             RegWr = 1'b1;
             ALUAsrc = 1'b1;
             ALUBsrc = 2'b01;
             // aupic or lui
-            ALUctr = (op == 6'b0010111 ? 5'b00000 : 5'b11000);
+            ALUctr = (op == 7'b0010111 ? 5'b00000 : 5'b11000);
             Branch = 3'b000;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
@@ -158,7 +158,7 @@ module CRTL_GEN (
         end
 
         // J 型指令
-        else if(op == 6'b1101111) begin
+        else if(op == 7'b1101111) begin
             inst_type = `J_type;
             ExtOp = `J_type;
             RegWr = 1'b1;
@@ -173,7 +173,7 @@ module CRTL_GEN (
         end
 
         // I 型指令的第一部分
-        else if(op == 6'b0010011) begin
+        else if(op == 7'b0010011) begin
             inst_type = `I_type;
             ExtOp = `I_type;
             RegWr = 1'b1;
@@ -188,7 +188,7 @@ module CRTL_GEN (
         end
 
         // I 型指令的第二部分(jalr)
-        else if(op == 6'b1100111) begin
+        else if(op == 7'b1100111) begin
             inst_type = `I_type;
             ExtOp = `I_type;          
             RegWr = 1'b1;
@@ -203,7 +203,7 @@ module CRTL_GEN (
         end
 
         // I 型指令的第三部分(load)
-        else if(op == 6'b0000011) begin
+        else if(op == 7'b0000011) begin
             inst_type = `I_type;
             ExtOp = `I_type;          
             RegWr = 1'b1;
@@ -217,7 +217,7 @@ module CRTL_GEN (
             inst_signal = 2'b00;
         end
         // I 型指令的第四部分(ebreak)
-        else if(op == 6'b1110011) begin
+        else if(op == 7'b1110011) begin
             inst_type = `I_type;
             ExtOp = `I_type;
             RegWr = 1'b0;
