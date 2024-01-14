@@ -11,7 +11,7 @@
 #include "VDATA_MEM__Dpi.h"
 #include <verilated_dpi.h>
 
-uint32_t mem [5] = {0x00000001, 0x81000000, 0x81000001, 0x801100FF, 0xFFFFFFFF};
+uint32_t mem [5] = {0x00000000, 0x80000000, 0x8100F081, 0x0011A01F, 0xFFFFFFFF};
 
 extern "C" int vaddr_read (int addrs, int len) {
     switch(len) {
