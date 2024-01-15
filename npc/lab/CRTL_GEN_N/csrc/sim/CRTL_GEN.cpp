@@ -11,6 +11,15 @@
 // dpi-c
 #include <verilated_dpi.h>
 
+static const uint32_t img [] = {
+  0x00000297,  // auipc t0,0
+  0x00028823,  // sb  zero,16(t0)
+  0x0102c503,  // lbu a0,16(t0)
+  0x00100073,  // ebreak (used as nemu_trap)
+  0xdeadbeef,  // some data
+};
+
+
 int main(int argc, char** argv, char** env) {
     // Verilator 初始化
     VerilatedContext* contextp = new VerilatedContext;
@@ -24,16 +33,21 @@ int main(int argc, char** argv, char** env) {
 
     // 初始化
     int i = 0;
-    while ((!contextp->gotFinish()) && i < 10000) {
+    top->inst = 0;
+    top->eval();
+    tfp->dump(contextp->time()); // dump wave
+    contextp->timeInc(1);        // 推动仿真时间
 
-        // TODD
-        
+    while ((!contextp->gotFinish()) && i < sizeof(img)) {
+        top->inst = img[i];
+        top->eval();
+        tfp->dump(contextp->time()); // dump wave
+        contextp->timeInc(5);        // 推动仿真时间
         i++;
     }
     delete top;
     tfp->close();
     delete contextp;
-    std::cout << "PASS" << std::endl;
     return 0;
 }
 
