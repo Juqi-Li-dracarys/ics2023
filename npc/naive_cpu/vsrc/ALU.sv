@@ -38,7 +38,7 @@
 module ALU (
     input       [31 : 0]    da,       // input signal A
     input       [31 : 0]    db,       // input signal B
-    input       [4 : 0]     ALU_ctr,  // set the mode of algorithm
+    input       [4 : 0]     ALUctr,  // set the mode of algorithm
     output                  Less,
     output                  Zero,
     output reg  [31 : 0]    ALUout,   // output of the result
@@ -53,12 +53,12 @@ module ALU (
     wire [1 : 0]  mul_op;
     wire          div_rem_op;
 
-    assign sub_add = (ALU_ctr == 5'b10000)|(ALU_ctr == 5'b00010)|(ALU_ctr == 5'b00011); // sub_add = 1, subtract
-    assign US = (ALU_ctr == 5'b00011);       // US = 1, unsigned
-    assign LR = (ALU_ctr[2 : 0] == 3'b001);  // LR = 1, left
-    assign AL = (ALU_ctr[4 : 3] == 2'b10);   // AL = 1, algorithm shift
-    assign mul_op = ALU_ctr[1 : 0];          // control mul
-    assign div_rem_op = ALU_ctr[0];          // control div and rem
+    assign sub_add = (ALUctr == 5'b10000)|(ALUctr == 5'b00010)|(ALUctr == 5'b00011); // sub_add = 1, subtract
+    assign US = (ALUctr == 5'b00011);       // US = 1, unsigned
+    assign LR = (ALUctr[2 : 0] == 3'b001);  // LR = 1, left
+    assign AL = (ALUctr[4 : 3] == 2'b10);   // AL = 1, algorithm shift
+    assign mul_op = ALUctr[1 : 0];          // control mul
+    assign div_rem_op = ALUctr[0];          // control div and rem
     
     // subtract db
     wire  [31 : 0]   sub_db;
@@ -127,7 +127,7 @@ module ALU (
 
     // ALU output control
     always_comb begin
-        unique case(ALU_ctr)
+        unique case(ALUctr)
             5'b00000: begin ALUout = add_result;     ALU_signal = 1'b0; end
             5'b10000: begin ALUout = add_result;     ALU_signal = 1'b0; end
             5'b00001: begin ALUout = result_shifter; ALU_signal = 1'b0; end

@@ -8,7 +8,7 @@
 // instruction cache
 
 module INST_MEM #(parameter PC_RST = 32'h80000000) (
-    input      [31 : 0]   next_addr,
+    input      [31 : 0]   pc_next,
     input                 clk,
     input                 rst,
     output reg [31 : 0]   inst
@@ -21,7 +21,7 @@ module INST_MEM #(parameter PC_RST = 32'h80000000) (
         if(rst)
             inst <= vaddr_ifetch(PC_RST, 32'h4);
         else
-            inst <= vaddr_ifetch(next_addr, 32'h4);
+            inst <= vaddr_ifetch(pc_next, 32'h4);
     end
 
 endmodule

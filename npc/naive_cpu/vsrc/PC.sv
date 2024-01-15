@@ -23,7 +23,7 @@ module PC #(parameter PC_RST = 32'h80000000) (
             pc <= pc_next;
     end
 
-    assign pc_cur = pc;
+    assign  pc_cur = pc;
 
 endmodule
 
