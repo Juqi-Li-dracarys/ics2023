@@ -79,16 +79,18 @@ int main(int argc, char** argv, char** env) {
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(3);        // 推动仿真时间
 
+        for(i = 0; i < 16; i++) {
+            printf("0x%08x\t", cpu_gpr[i]);
+            if((i + 1) % 3 == 0) {
+                putchar('\n');
+            }
+        }
+        
         i++;
         ramdom_addr++;
     }
 
-    for(i = 0; i < 16; i++) {
-        printf("0x%08x\t", cpu_gpr[i]);
-        if(i % 3 == 0) {
-            putchar('\n');
-        }
-    }
+
 
     delete top;
     tfp->close();
