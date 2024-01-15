@@ -81,7 +81,7 @@ int main(int argc, char** argv, char** env) {
 
         for(int i = 0; i < 16; i++) {
             printf("0x%08x\t", cpu_gpr[i]);
-            if((i + 1) % 3 == 0) {
+            if((i + 1) % 4 == 0) {
                 putchar('\n');
             }
         }
