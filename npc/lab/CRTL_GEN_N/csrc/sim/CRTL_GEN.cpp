@@ -45,6 +45,10 @@ int main(int argc, char** argv, char** env) {
         contextp->timeInc(5);        // 推动仿真时间
         i++;
     }
+    contextp->timeInc(20);        // 推动仿真时间
+    top->eval();
+    tfp->dump(contextp->time()); // dump wave
+
     delete top;
     tfp->close();
     delete contextp;
