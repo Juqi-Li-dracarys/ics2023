@@ -38,7 +38,7 @@ int main(int argc, char** argv, char** env) {
     tfp->dump(contextp->time()); // dump wave
     contextp->timeInc(1);        // 推动仿真时间
 
-    while ((!contextp->gotFinish()) && i < sizeof(img)) {
+    while ((!contextp->gotFinish()) && (i < sizeof(img) / sizeof(img[0]))) {
         top->inst = img[i];
         top->eval();
         tfp->dump(contextp->time()); // dump wave
