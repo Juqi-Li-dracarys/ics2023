@@ -13,7 +13,7 @@
 
 
 // source
-uint32_t data [5] = {0x12345678, 0x80000000, 0x8100F081, 0x0011A01F, 0xFFFFFFFF};
+uint32_t data [5] = {0x12345678, 0x87654321, 0x8100F081, 0x0011A01F, 0x44444444};
 
 
 uint32_t *cpu_gpr = NULL;
