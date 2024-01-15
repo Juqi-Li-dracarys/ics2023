@@ -8,6 +8,8 @@
 // Main control of CPU
 // Support ISA: riscv32-EM
 
+// naive version
+
 `define   I_type   3'b000
 `define   S_type   3'b010
 `define   B_type   3'b011

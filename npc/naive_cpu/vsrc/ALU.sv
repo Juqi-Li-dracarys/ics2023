@@ -149,7 +149,7 @@ module ALU (
             5'b01110: ALUout = rem_result;
             5'b01111: ALUout = rem_result;
 `endif
-
+            // should not reach here
             default: ALUout = 32'b0;
         endcase
     end
