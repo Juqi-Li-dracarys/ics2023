@@ -24,9 +24,8 @@ int main(int argc, char** argv, char** env) {
 
     // 初始化
     int i = 0;
-    
     while ((!contextp->gotFinish()) && i < 10000) {
-
+        i++;
     }
     delete top;
     tfp->close();
