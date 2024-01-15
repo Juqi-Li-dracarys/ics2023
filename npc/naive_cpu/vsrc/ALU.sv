@@ -41,7 +41,8 @@ module ALU (
     input       [4 : 0]     ALU_ctr,  // set the mode of algorithm
     output                  Less,
     output                  Zero,
-    output reg  [31 : 0]    ALUout    // output of the result
+    output reg  [31 : 0]    ALUout,   // output of the result
+    output reg              ALU_signal
 );
 
     // Control bus
@@ -127,30 +128,30 @@ module ALU (
     // ALU output control
     always_comb begin
         unique case(ALU_ctr)
-            5'b00000: ALUout = add_result;
-            5'b10000: ALUout = add_result;
-            5'b00001: ALUout = result_shifter;
-            5'b00010: ALUout = {32{Less}};
-            5'b00011: ALUout = {32{Less}};
-            5'b11000: ALUout = db;
-            5'b00100: ALUout = da ^ db;
-            5'b00101: ALUout = result_shifter;
-            5'b10101: ALUout = result_shifter;
-            5'b00110: ALUout = da | db;
-            5'b00111: ALUout = da & db;
+            5'b00000: begin ALUout = add_result;     ALU_signal = 1'b0; end
+            5'b10000: begin ALUout = add_result;     ALU_signal = 1'b0; end
+            5'b00001: begin ALUout = result_shifter; ALU_signal = 1'b0; end
+            5'b00010: begin ALUout = {32{Less}};     ALU_signal = 1'b0; end
+            5'b00011: begin ALUout = {32{Less}};     ALU_signal = 1'b0; end
+            5'b11000: begin ALUout = db;             ALU_signal = 1'b0; end
+            5'b00100: begin ALUout = da ^ db;        ALU_signal = 1'b0; end
+            5'b00101: begin ALUout = result_shifter; ALU_signal = 1'b0; end
+            5'b10101: begin ALUout = result_shifter; ALU_signal = 1'b0; end
+            5'b00110: begin ALUout = da | db;        ALU_signal = 1'b0; end
+            5'b00111: begin ALUout = da & db;        ALU_signal = 1'b0; end
             
 `ifdef RV32M
             // M 指令      
-            5'b01000: ALUout = mul_result;
-            5'b01001: ALUout = mul_result;
-            5'b01011: ALUout = mul_result;
-            5'b01100: ALUout = div_result;
-            5'b01101: ALUout = div_result;
-            5'b01110: ALUout = rem_result;
-            5'b01111: ALUout = rem_result;
+            5'b01000: begin ALUout = mul_result;     ALU_signal = 1'b0; end
+            5'b01001: begin ALUout = mul_result;     ALU_signal = 1'b0; end
+            5'b01011: begin ALUout = mul_result;     ALU_signal = 1'b0; end
+            5'b01100: begin ALUout = div_result;     ALU_signal = 1'b0; end
+            5'b01101: begin ALUout = div_result;     ALU_signal = 1'b0; end
+            5'b01110: begin ALUout = rem_result;     ALU_signal = 1'b0; end
+            5'b01111: begin ALUout = rem_result;     ALU_signal = 1'b0; end
 `endif
             // should not reach here
-            default: ALUout = 32'b0;
+            default: begin  ALUout = 32'b0;          ALU_signal = 1'b1; end
         endcase
     end
 
