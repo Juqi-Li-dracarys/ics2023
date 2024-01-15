@@ -6,7 +6,7 @@
 
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include "VALU.h"  
+#include "VCRTL_GEN.h"  
 
 // dpi-c
 #include <verilated_dpi.h>
@@ -15,7 +15,7 @@ int main(int argc, char** argv, char** env) {
     // Verilator 初始化
     VerilatedContext* contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
-    VALU* top = new VALU{ contextp };
+    VALU* top = new VCRTL_GEN{ contextp };
     Verilated::traceEverOn(true);
     VerilatedVcdC* tfp = new VerilatedVcdC; //初始化VCD对象指针
     contextp->traceEverOn(true);            //打开追踪功能
@@ -26,7 +26,9 @@ int main(int argc, char** argv, char** env) {
     int i = 0;
     int data_a = 0;
     int data_b = 0;
-    int op[11] = {0, 16, 1, 2, 3, 24, 4, 5, 21, 6, 7};
+    int op[11] = {
+        0, 16, 1, 2, 3, 24, 4, 5, 21, 6, 7
+        };
 
     while ((!contextp->gotFinish()) && i < 10000) {
         data_a = rand();
