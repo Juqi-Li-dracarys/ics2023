@@ -29,7 +29,7 @@ module CRTL_GEN (
     output reg               RegWr,
 
     // 选择 ALU 输入端 A 的来源
-    // 0 时选择 rs1,为 1 时选择 PC
+    // 0 时选择 rs1, 为 1 时选择 PC
     output reg               ALUAsrc,
 
     // ALU 输入端 B 的来源
@@ -55,7 +55,7 @@ module CRTL_GEN (
     // 控制数据存储器读写格式，为 010 时为 4 字节读写，
     // 为 001 时为 2 字节读写带符号扩展，为 000 时为 1 字节读写带符号扩展，
     // 为 101 时为 2 字节读写无符号扩展，为 100 时为 1 字节读写无符号扩展
-    output reg   [2 : 0]     MemOP,
+    output reg   [2 : 0]     MemOp,
     
     // 00: running    01: error    10: ebreak
     output reg   [1 : 0]     inst_signal
@@ -82,7 +82,7 @@ module CRTL_GEN (
             Branch = 3'b000;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
-            MemOP = 3'b000;
+            MemOp = 3'b000;
             inst_signal = 2'b00;
         end
 
@@ -124,7 +124,7 @@ module CRTL_GEN (
             endcase
             MemtoReg = 1'b0;
             MemWr = 1'b0;
-            MemOP = 3'b000;         
+            MemOp = 3'b000;         
         end
 
         // S 型指令
@@ -137,7 +137,7 @@ module CRTL_GEN (
             Branch = 3'b000;
             MemtoReg = 1'b0;
             MemWr = 1'b1;
-            MemOP = func3;
+            MemOp = func3;
             inst_signal = 2'b00;
         end
 
@@ -152,7 +152,7 @@ module CRTL_GEN (
             Branch = 3'b000;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
-            MemOP = 3'b000;
+            MemOp = 3'b000;
             inst_signal = 2'b00;
         end
 
@@ -166,7 +166,7 @@ module CRTL_GEN (
             Branch = 3'b001;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
-            MemOP = 3'b000;
+            MemOp = 3'b000;
             inst_signal = 2'b00;
         end
 
@@ -180,7 +180,7 @@ module CRTL_GEN (
             Branch = 3'b000;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
-            MemOP = 3'b000;
+            MemOp = 3'b000;
             inst_signal = 2'b00;
         end
 
@@ -194,7 +194,7 @@ module CRTL_GEN (
             Branch = 3'b010;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
-            MemOP = 3'b000;
+            MemOp = 3'b000;
             inst_signal = 2'b00;
         end
 
@@ -208,7 +208,7 @@ module CRTL_GEN (
             Branch = 3'b000;
             MemtoReg = 1'b1;
             MemWr = 1'b0;
-            MemOP = func3;
+            MemOp = func3;
             inst_signal = 2'b00;
         end
         // I 型指令的第四部分(ebreak)
@@ -221,7 +221,7 @@ module CRTL_GEN (
             Branch = 3'b000;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
-            MemOP = 3'b000;  
+            MemOp = 3'b000;  
             inst_signal = 2'b10;
         end
 
@@ -235,7 +235,7 @@ module CRTL_GEN (
             Branch = 3'b000;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
-            MemOP = 3'b000; 
+            MemOp = 3'b000; 
             inst_signal = 2'b01;
         end
 

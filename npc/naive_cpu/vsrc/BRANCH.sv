@@ -18,7 +18,7 @@
 */
 
 module BRANCH (
-        input     [2 : 0]      Branch
+        input     [2 : 0]      Branch,
         input                  Zero, 
         input                  Less,
         output    reg          PCAsrc,
@@ -27,29 +27,30 @@ module BRANCH (
 
     always_comb begin
         unique case(Branch)
-            3'h000: begin
+            3'b000: begin
                 PCAsrc = 1'b0; PCBsrc = 1'b0;
             end
-            3'h001: begin
+            3'b001: begin
                 PCAsrc = 1'b1; PCBsrc = 1'b0;
             end
-            3'h010: begin
+            3'b010: begin
                 PCAsrc = 1'b1; PCBsrc = 1'b1;
             end                       
-            3'h100: begin
+            3'b100: begin
                 PCAsrc = Zero; PCBsrc = 1'b0;
             end
-            3'h101: begin
+            3'b101: begin
                 PCAsrc = ~Zero; PCBsrc = 1'b0;
             end
-            3'h110: begin
+            3'b110: begin
                 PCAsrc = Less; PCBsrc = 1'b0;
             end
-            3'h111: begin
+            3'b111: begin
                 PCAsrc = ~Less; PCBsrc = 1'b0;
             end
-            default:
+            default: begin
                 PCAsrc = 1'b0; PCBsrc = 1'b0;
+            end
         endcase
     end
 

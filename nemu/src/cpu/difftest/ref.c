@@ -18,6 +18,10 @@
 #include <difftest-def.h>
 #include <memory/paddr.h>
 
+
+// 将 nemu 作为 Ref，
+// 编译为动态链接库，供 NPC 使用
+
 __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   assert(0);
 }
