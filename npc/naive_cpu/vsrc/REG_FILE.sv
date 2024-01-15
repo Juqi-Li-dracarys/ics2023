@@ -28,7 +28,7 @@ module REG_FILE #(parameter reg_num = 16, reg_width = 4)(
     // DIP-C in verilog
     import "DPI-C" function void set_gpr_ptr(input logic [31 : 0] a []);
 
-    reg  [31 : 0]   reg_file   [0 : reg_num-1];
+    reg  [31 : 0]   reg_file [0 : reg_num-1];
 
     // set the ptr to register
     initial begin
