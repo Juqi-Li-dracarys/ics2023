@@ -26,7 +26,6 @@ module BRANCH (
 );
 
     always_comb begin
-
         unique case(Branch)
             3'h000: begin
                 PCAsrc = 1'b0; PCBsrc = 1'b0;
@@ -38,7 +37,7 @@ module BRANCH (
                 PCAsrc = 1'b1; PCBsrc = 1'b1;
             end                       
             3'h100: begin
-                PCAsrc = zero; PCBsrc = 1'b0;
+                PCAsrc = Zero; PCBsrc = 1'b0;
             end
             3'h101: begin
                 PCAsrc = ~Zero; PCBsrc = 1'b0;
