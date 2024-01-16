@@ -8,7 +8,6 @@
 
 // header of verilator
 
-#include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "VCPU_TOP.h"  
 
