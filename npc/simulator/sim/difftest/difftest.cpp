@@ -45,7 +45,8 @@ void difftest_skip_dut(int nr_ref, int nr_dut) {
 
 void init_difftest(char *ref_so_file, long img_size, int port) {
 
-  #ifdef DIF
+  #ifdef DIFF
+  
   // ref_so_file is the nemu lib
   assert(ref_so_file != NULL);
 
