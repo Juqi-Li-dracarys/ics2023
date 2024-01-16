@@ -20,7 +20,6 @@ size_t sim_time = 0;
 // state of our simulated cpu
 CPU_state sim_cpu;
 
-uint32_t *cpu_gpr = NULL;
 // the runing state of simulator
 extern SimState sim_state;
 
