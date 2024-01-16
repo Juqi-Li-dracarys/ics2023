@@ -2,14 +2,13 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 17:57:11 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-16 18:27:24
+ * @Last Modified time: 2024-01-16 19:37:54
  */
 
 
 #include <stdbool.h>
 #include <common.h>
 #include <SDL2/SDL.h>
-
 
 void init_map();
 void init_serial();
