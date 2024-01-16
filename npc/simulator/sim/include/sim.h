@@ -15,3 +15,7 @@
 #include "VCPU_TOP__Dpi.h"
 #include <verilated_dpi.h>
 
+#ifndef __STDC_FORMAT_MACROS
+#define __STDC_FORMAT_MACROS
+#endif
+
