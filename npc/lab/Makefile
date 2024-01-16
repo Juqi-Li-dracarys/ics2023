@@ -1,9 +1,9 @@
-
-# **********************************************
-#  Makefile for lab in NPC
-#  Author: LJQ @ NJU_EE
-#  Date: 2024.1.12
-# **********************************************
+# /*
+#  * @Author: Juqi Li @ NJU 
+#  * @Date: 2024-01-16 11:04:33 
+#  * @Last Modified by:   Juqi Li @ NJU 
+#  * @Last Modified time: 2024-01-16 11:04:33 
+#  */
 
 include $(NPC_HOME)/../Makefile
 include $(NVBOARD_HOME)/scripts/nvboard.mk
