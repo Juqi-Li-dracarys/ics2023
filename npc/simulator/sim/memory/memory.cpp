@@ -7,6 +7,7 @@
 
 #include <assert.h>
 #include <common.h>
+#include <sim.h>
 
 extern VCPU_TOP* dut;
 

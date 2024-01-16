@@ -7,6 +7,7 @@
 
 
 // header of verilator
+
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "VCPU_TOP.h"  
@@ -15,7 +16,4 @@
 #include "VCPU_TOP__Dpi.h"
 #include <verilated_dpi.h>
 
-#ifndef __STDC_FORMAT_MACROS
-#define __STDC_FORMAT_MACROS
-#endif
 
