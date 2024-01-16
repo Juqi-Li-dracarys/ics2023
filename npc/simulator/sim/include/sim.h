@@ -7,9 +7,8 @@
 
 
 // header of verilator
-
 #include "verilated_vcd_c.h"
-#include "VCPU_TOP.h"  
+#include "VCPU_TOP.h"
 
 // dpi-c
 #include "VCPU_TOP__Dpi.h"

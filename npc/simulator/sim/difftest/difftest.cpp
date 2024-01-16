@@ -42,7 +42,10 @@ void difftest_skip_dut(int nr_ref, int nr_dut) {
   }
 }
 
+
 void init_difftest(char *ref_so_file, long img_size, int port) {
+
+  #ifdef DIF
   // ref_so_file is the nemu lib
   assert(ref_so_file != NULL);
 
@@ -72,6 +75,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   difftest_memcpy(CONFIG_MBASE, guest_to_host(CONFIG_MBASE), CONFIG_MSIZE, DIFFTEST_TO_REF);
   sim_cpu.pc = CONFIG_MBASE;
   difftest_regcpy(&sim_cpu, DIFFTEST_TO_REF);
+
+  #endif
 }
 
 // copy our registers to nemu
