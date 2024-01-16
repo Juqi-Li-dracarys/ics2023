@@ -12,7 +12,7 @@ default: VCPU_TOP
 include VCPU_TOP.mk
 
 CXXFLAGS += -MMD -O3 -std=c++14 -fno-exceptions -fPIE -Wno-unused-result
-CXXFLAGS += $(filter-out -D__STDC_CONSTANT_MACROS, $(shell llvm-config-11 --cxxflags)) -fPIC -DDEVICE -D__GUEST_ISA__=$(ISA)
+CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-11 --cxxflags)) -fPIC -DDEVICE -D__GUEST_ISA__=$(ISA)
 LDFLAGS += -O3 -rdynamic -shared -fPIC
 LIBS += $(shell llvm-config-11 --libs)
 LIBS += -lreadline -ldl -pie -lSDL2
