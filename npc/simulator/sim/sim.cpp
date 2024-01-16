@@ -4,6 +4,7 @@
 #include <common.h>
 #include <disasm.h>
 #include <memory.h>
+#include <sim.h>
 
 using namespace std;
 

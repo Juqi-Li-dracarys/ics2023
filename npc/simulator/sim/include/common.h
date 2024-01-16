@@ -3,10 +3,10 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <assert.h>
 #include <generated/autoconf.h>
 #include <macro.h>
-#include <sim.h>
 #include <memory.h>
 
 #define MAX_SIM_TIME 40000000

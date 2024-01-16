@@ -9,6 +9,7 @@
 #include <debug.h>
 #include <common.h>
 #include <disasm.h>
+#include <sim.h>
 
 // verilog instance
 VCPU_TOP *dut = new VCPU_TOP;
