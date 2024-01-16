@@ -16,7 +16,7 @@ override ARGS += $(ARGS_DIFF)
 $(VBIN): $(CSRC) $(VSRC)
 	@echo "$(COLOR_YELLOW)[VERILATE]$(COLOR_NONE) $(notdir $(OBJ_DIR))/VCPU_TOP"
 	@verilator $(VFLAGS) $(VSRC) $(CSRC) $(CINC_PATH)
-	@make -s -C $(OBJ_DIR) -f $(REWRITE)
+# @make -s -C $(OBJ_DIR) -f $(REWRITE)
 
 $(NEMUISO):
 	@echo "$(COLOR_YELLOW)[Make DIFF]$(COLOR_NONE) $(notdir $(NEMU_DIR))/build/riscv32-nemu-interpreter-so"
