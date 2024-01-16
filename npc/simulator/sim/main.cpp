@@ -25,10 +25,8 @@ uint32_t *cpu_gpr = NULL;
 extern SimState sim_state;
 
 int main(int argc, char** argv, char** env) {
-
-
+    // simulation monitor
     init_monitor(argc, argv);
-
     // start wave trace
     Verilated::traceEverOn(true);
     dut->trace(m_trace, 5);
