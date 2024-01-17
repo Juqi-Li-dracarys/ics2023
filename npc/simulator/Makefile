@@ -32,5 +32,4 @@ COLOR_GREEN 		= \033[1;32m
 COLOR_YELLOW 		= \033[33m
 COLOR_NONE  		= \033[0m
 
-include ./script/build.mk
-
+include $(WORK_DIR)/script/build.mk
