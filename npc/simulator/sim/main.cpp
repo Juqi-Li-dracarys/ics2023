@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 13:33:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 21:36:38
+ * @Last Modified time: 2024-01-17 21:39:24
  */
 
 #include <bits/stdc++.h>
@@ -31,7 +31,7 @@ VerilatedVcdC *m_trace = new VerilatedVcdC;
 //////////////////////////////////////////////////////
 
 // state of our simulated cpu
-CPU_state sim_cpu = {.csr = {1}};
+CPU_state sim_cpu;
 
 // the runing state of simulator
 extern SimState sim_state;
@@ -50,6 +50,11 @@ int main(int argc, char** argv, char** env) {
     Verilated::traceEverOn(true);
     dut->trace(m_trace, 5);
     m_trace->open("waveform.vcd");
+    
+    sim_cpu.csr.mcause = 1314;
+    sim_cpu.csr.mepc = 1;
+    sim_cpu.csr.mstatus = 1234;
+    sim_cpu.csr.mtvec = 444;
     
     reset(1);
     
