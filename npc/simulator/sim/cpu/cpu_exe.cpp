@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 11:53:58
+ * @Last Modified time: 2024-01-17 13:08:06
  */
 
 #include <bits/stdc++.h>
@@ -74,7 +74,7 @@ void single_cycle() {
 
 // reset the cpu
 void reset(int n) {
-  dut->clk = 0;
+  dut->clk = 1;
   dut->rst = 1;
   dut->eval();
   m_trace->dump(contextp->time()); // dump wave
@@ -132,7 +132,7 @@ static void statistic() {
 }
 
 void excute(uint64_t n) {
-  
+
   while (n--) {
 
     // if (dut->commit_wb) {
