@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 20:29:02
+ * @Last Modified time: 2024-01-17 20:30:23
  */
 
 #include <bits/stdc++.h>
@@ -143,6 +143,10 @@ void excute(uint64_t n) {
       // save the end state
       sim_state.halt_pc = dut->pc_cur;
       sim_state.halt_ret = cpu_gpr[10];
+      log_ptr->pc = dut->pc_cur;
+      log_ptr->inst = dut->inst;
+      g_nr_guest_inst++;
+      trace_and_difftest(log_ptr);
       break;
     }
   }
