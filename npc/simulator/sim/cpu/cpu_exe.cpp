@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 18:51:22
+ * @Last Modified time: 2024-01-17 19:38:25
  */
 
 #include <bits/stdc++.h>
@@ -48,7 +48,6 @@ static uint64_t g_timer = 0; // unit: us
 
 static bool g_print_step = false;
 
-
 static void statistic() {
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
@@ -56,7 +55,6 @@ static void statistic() {
   if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
-
 
 static void trace_and_difftest(inst_log *_ptr) {
   IFDEF(CONFIG_FTRACE, ftrace_process(_ptr));
