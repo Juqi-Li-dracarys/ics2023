@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 20:13:43
+ * @Last Modified time: 2024-01-17 20:15:15
  */
 
 #include <bits/stdc++.h>
@@ -94,6 +94,7 @@ static void trace_and_difftest(inst_log *_ptr) {
 
 // reset the cpu
 void reset(int n) {
+  g_print_step = true;
   dut->clk = 0;
   dut->rst = 1;
   dut->eval();
