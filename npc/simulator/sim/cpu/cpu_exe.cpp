@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 13:10:06
+ * @Last Modified time: 2024-01-17 13:12:02
  */
 
 #include <bits/stdc++.h>
@@ -74,7 +74,11 @@ void single_cycle() {
 
 // reset the cpu
 void reset(int n) {
+  dut->clk = 0;
   dut->rst = 1;
+  dut->eval();
+  m_trace->dump(contextp->time()); // dump wave
+  contextp->timeInc(5);            // 推动仿真时间
   while (n-- > 0) {
     single_cycle();
   }
