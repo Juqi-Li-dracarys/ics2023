@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 20:27:40
+ * @Last Modified time: 2024-01-17 20:29:02
  */
 
 #include <bits/stdc++.h>
@@ -112,10 +112,6 @@ void reset(int n) {
 
 // execute n instructions
 void excute(uint64_t n) {
-  
-  // 保留即将执行的指令
-  log_ptr->pc = dut->pc_cur;
-  log_ptr->inst = dut->inst;
 
   // 注意：每条指令的计算在该 posedge，但读写执行却在下一个 posedge
   while (n--) {
@@ -127,6 +123,10 @@ void excute(uint64_t n) {
     //   npc_cpu_uncache_pre = dut->uncache_read_wb;
     // }
 
+    // 保留即将执行的指令
+    log_ptr->pc = dut->pc_cur;
+    log_ptr->inst = dut->inst;
+    
     do {
       single_cycle();
     }
