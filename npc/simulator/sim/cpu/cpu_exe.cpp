@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 20:15:58
+ * @Last Modified time: 2024-01-17 20:27:40
  */
 
 #include <bits/stdc++.h>
@@ -108,16 +108,16 @@ void reset(int n) {
   dut->eval();
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
-
-  g_nr_guest_inst++;
-  log_ptr->pc = dut->pc_cur;
-  log_ptr->inst = dut->inst;
-  trace_and_difftest(log_ptr);
 }
 
 // execute n instructions
 void excute(uint64_t n) {
   
+  // 保留即将执行的指令
+  log_ptr->pc = dut->pc_cur;
+  log_ptr->inst = dut->inst;
+
+  // 注意：每条指令的计算在该 posedge，但读写执行却在下一个 posedge
   while (n--) {
     // if (dut->commit_wb) {
     //   if(npc_cpu_uncache_pre){
@@ -134,11 +134,11 @@ void excute(uint64_t n) {
 
     // update the log after excute one inst
     g_nr_guest_inst++;
-    log_ptr->pc = dut->pc_cur;
-    log_ptr->inst = dut->inst;
     trace_and_difftest(log_ptr);
 
     IFDEF(CONFIG_DEVICE, device_update());
+
+    // 对于有异常的指令，会在执行前终止程序
     if(signal_detect() || sim_state.state != SIM_RUNNING) {
       // save the end state
       sim_state.halt_pc = dut->pc_cur;
