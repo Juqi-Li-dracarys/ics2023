@@ -2,12 +2,11 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 15:48:16 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 16:06:07
+ * @Last Modified time: 2024-01-17 17:27:58
  */
 
 #include <common.h>
 #include <reg.h>
-
 
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
@@ -42,4 +41,17 @@ word_t isa_reg_str2val(const char* s, bool* success) {
     }
     *success = 0;
     return 0;
+}
+
+// set cpu_gpr point to your cpu's gpr
+extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
+  cpu_gpr = (uint32_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
+// set the pointers pint to you cpu's csr
+extern "C" void set_csr_ptr(const svOpenArrayHandle mstatus, const svOpenArrayHandle mtvec, const svOpenArrayHandle mepc, const svOpenArrayHandle mcause) {
+  cpu_mstatus = (uint32_t *)(((VerilatedDpiOpenVar*)mstatus)->datap());
+  cpu_mtvec = (uint32_t *)(((VerilatedDpiOpenVar*)mtvec)->datap());
+  cpu_mepc = (uint32_t *)(((VerilatedDpiOpenVar*)mepc)->datap());
+  cpu_mcause = (uint32_t *)(((VerilatedDpiOpenVar*)mcause)->datap());
 }
