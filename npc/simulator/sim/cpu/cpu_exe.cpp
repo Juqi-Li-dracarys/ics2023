@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 19:38:25
+ * @Last Modified time: 2024-01-17 20:03:46
  */
 
 #include <bits/stdc++.h>
@@ -23,6 +23,7 @@ void difftest_step();
 void device_update();
 void single_cycle();
 bool signal_detect();
+void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 
 static const char *regs[] = {
@@ -98,8 +99,6 @@ void excute(uint64_t n) {
     // update the log after excute one inst
     log_ptr->pc = dut->pc_cur;
     log_ptr->inst = dut->inst;
-
-    trace_and_difftest(log_ptr);
     
 #ifdef CONFIG_ITRACE
       char *p = log_ptr->buf;
@@ -111,7 +110,11 @@ void excute(uint64_t n) {
       }
       memset(p, ' ', 1);
       p++;
+      disassemble(p, log_ptr->buf + sizeof(log_ptr->buf) - p,
+      log_ptr->pc, (uint8_t *)&log_ptr->inst, 4);
 #endif
+
+    trace_and_difftest(log_ptr);
 
     IFDEF(CONFIG_DEVICE, device_update());
     if(signal_detect() || sim_state.state != SIM_RUNNING) {
