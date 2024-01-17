@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:24 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 23:19:04
+ * @Last Modified time: 2024-01-17 23:21:18
  */
 
 #include <dlfcn.h>
@@ -75,8 +75,6 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   difftest_init(port);
   // copy the memory, the registers, the pc to nemu, so our cpu and nemu can run with the same initial state
   difftest_memcpy(CONFIG_MBASE, guest_to_host(CONFIG_MBASE), CONFIG_MSIZE, DIFFTEST_TO_REF);
-  sim_cpu.pc = CONFIG_MBASE;
-  difftest_regcpy(&sim_cpu, DIFFTEST_TO_REF);
 }
 
 // copy our registers to nemu
