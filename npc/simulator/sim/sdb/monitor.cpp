@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 16:33:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 23:37:28
+ * @Last Modified time: 2024-01-17 23:44:52
  */
 
 #include <common.h>
@@ -17,14 +17,14 @@ uint8_t init_ftrace(char *elf_addr);
 extern unsigned char isa_logo[];
 
 static void welcome() {
-  printf("%s\n", isa_logo);
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
   IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
         "to record the trace. This may lead to a large log file. "
         "If it is not necessary, you can disable it in menuconfig"));
   Log("Build time: %s, %s", __TIME__, __DATE__);
   printf("Welcome to %s-NPC Simulator! \n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED));
-  printf("For help, type \"help\"\n");
+  printf("For help, type \"help\", as an EE rat @NJU, please always remember to RTFM:\n");
+  Log("%s\n", isa_logo);
 }
 
 static const uint32_t img [] = {
