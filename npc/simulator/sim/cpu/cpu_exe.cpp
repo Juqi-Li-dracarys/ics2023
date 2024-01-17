@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 11:12:08
+ * @Last Modified time: 2024-01-17 11:32:15
  */
 
 #include <bits/stdc++.h>
@@ -163,6 +163,8 @@ void excute(uint64_t n) {
 // execute n instructions
 void cpu_exec(unsigned int n){
   
+  std::cout << sim_state.state << std::endl;
+
   switch (sim_state.state) {
     case SIM_END: case SIM_ABORT: case SIM_QUIT:
       printf("Program execution has ended. To restart the program, exit NPC and run again.\n");
