@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 20:03:46
+ * @Last Modified time: 2024-01-17 20:13:43
  */
 
 #include <bits/stdc++.h>
@@ -58,6 +58,21 @@ static void statistic() {
 }
 
 static void trace_and_difftest(inst_log *_ptr) {
+
+#ifdef CONFIG_ITRACE
+  char *p = log_ptr->buf;
+  p += snprintf(p, sizeof(log_ptr->buf),"ITRACE: " FMT_WORD "\t", log_ptr->pc);
+  int i;
+  uint8_t *inst = (uint8_t *)&(log_ptr->inst);
+  for (i = 4 - 1; i >= 0; i --) {
+    p += snprintf(p, 4, " %02x", inst[i]);
+  }
+  memset(p, ' ', 1);
+  p++;
+  disassemble(p, log_ptr->buf + sizeof(log_ptr->buf) - p,
+  log_ptr->pc, (uint8_t *)&log_ptr->inst, 4);
+#endif
+
   IFDEF(CONFIG_FTRACE, ftrace_process(_ptr));
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n\n", _ptr->buf); }
@@ -77,6 +92,28 @@ static void trace_and_difftest(inst_log *_ptr) {
 #endif 
 }
 
+// reset the cpu
+void reset(int n) {
+  dut->clk = 0;
+  dut->rst = 1;
+  dut->eval();
+  m_trace->dump(contextp->time()); // dump wave
+  contextp->timeInc(5);            // 推动仿真时间
+  while (n-- > 0) {
+    single_cycle();
+  }
+  dut->rst = 0;
+  dut->clk = 0;
+  dut->eval();
+  m_trace->dump(contextp->time()); // dump wave
+  contextp->timeInc(5);            // 推动仿真时间
+
+  g_nr_guest_inst++;
+  log_ptr->pc = dut->pc_cur;
+  log_ptr->inst = dut->inst;
+  trace_and_difftest(log_ptr);
+}
+
 // execute n instructions
 void excute(uint64_t n) {
   
@@ -94,26 +131,10 @@ void excute(uint64_t n) {
     }
     while(false);
 
-    g_nr_guest_inst++;
-
     // update the log after excute one inst
+    g_nr_guest_inst++;
     log_ptr->pc = dut->pc_cur;
     log_ptr->inst = dut->inst;
-    
-#ifdef CONFIG_ITRACE
-      char *p = log_ptr->buf;
-      p += snprintf(p, sizeof(log_ptr->buf),"ITRACE: " FMT_WORD "\t", log_ptr->pc);
-      int i;
-      uint8_t *inst = (uint8_t *)&(log_ptr->inst);
-      for (i = 4 - 1; i >= 0; i --) {
-        p += snprintf(p, 4, " %02x", inst[i]);
-      }
-      memset(p, ' ', 1);
-      p++;
-      disassemble(p, log_ptr->buf + sizeof(log_ptr->buf) - p,
-      log_ptr->pc, (uint8_t *)&log_ptr->inst, 4);
-#endif
-
     trace_and_difftest(log_ptr);
 
     IFDEF(CONFIG_DEVICE, device_update());

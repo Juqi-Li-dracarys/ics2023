@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 17:44:39 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 19:47:22
+ * @Last Modified time: 2024-01-17 20:07:40
  */
 
 #include <common.h>
@@ -28,23 +28,6 @@ void single_cycle() {
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
   set_state();
-}
-
-// reset the cpu
-void reset(int n) {
-  dut->clk = 0;
-  dut->rst = 1;
-  dut->eval();
-  m_trace->dump(contextp->time()); // dump wave
-  contextp->timeInc(5);            // 推动仿真时间
-  while (n-- > 0) {
-    single_cycle();
-  }
-  dut->rst = 0;
-  dut->clk = 0;
-  dut->eval();
-  m_trace->dump(contextp->time()); // dump wave
-  contextp->timeInc(5);            // 推动仿真时间
 }
 
 // check if the program should end
