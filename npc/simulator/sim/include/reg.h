@@ -22,7 +22,7 @@ static inline int check_csr_idx(int idx) {
 
 // refer to gpr and csr in cpu
 #define gpr(idx) (sim_cpu.gpr[check_reg_idx(idx)])
-#define csr(idx) (sim_cpu.csr[check_csr_idx(idx)])
+#define csr(idx) (word_t)*((word_t *)&(sim_cpu.csr) + check_csr_idx(idx))
 
 static inline const char* reg_name(int idx) {
   extern const char* regs[];
