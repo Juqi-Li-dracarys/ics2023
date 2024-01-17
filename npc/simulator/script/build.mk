@@ -28,6 +28,7 @@ run: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "RUN NPC")
 	@$(VBIN) $(ARGS) $(IMG)
+	@gtkwave waveform.vcd
 
 gdb: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[GDB IMG]$(COLOR_NONE)" $(notdir $(IMG))
