@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 13:33:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 16:26:59
+ * @Last Modified time: 2024-01-17 21:36:18
  */
 
 #include <bits/stdc++.h>
@@ -31,7 +31,7 @@ VerilatedVcdC *m_trace = new VerilatedVcdC;
 //////////////////////////////////////////////////////
 
 // state of our simulated cpu
-CPU_state sim_cpu;
+CPU_state sim_cpu = {.csr = {0}};
 
 // the runing state of simulator
 extern SimState sim_state;
