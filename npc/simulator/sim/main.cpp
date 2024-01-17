@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 13:33:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 11:20:47
+ * @Last Modified time: 2024-01-17 12:16:05
  */
 
 #include <bits/stdc++.h>
@@ -42,7 +42,7 @@ int main(int argc, char** argv, char** env) {
     Verilated::traceEverOn(true);
     dut->trace(m_trace, 5);
     m_trace->open("waveform.vcd");
-    reset(1);
+    // reset(1);
     
     // start running
     sdb_mainloop();
