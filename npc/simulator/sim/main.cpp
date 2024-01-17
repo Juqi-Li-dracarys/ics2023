@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 13:33:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-16 13:58:21
+ * @Last Modified time: 2024-01-17 09:52:48
  */
 
 #include <bits/stdc++.h>
@@ -11,12 +11,17 @@
 #include <disasm.h>
 #include <sim.h>
 
+//////////////////////////////////////////////////////
+// context ptr
+VerilatedContext* contextp = new VerilatedContext;
+
 // verilog instance
-VCPU_TOP *dut = new VCPU_TOP;
+VCPU_TOP *dut = new VCPU_TOP{contextp};
+
 // wave tracer
 VerilatedVcdC *m_trace = new VerilatedVcdC;
+//////////////////////////////////////////////////////
 
-size_t sim_time = 0;
 // state of our simulated cpu
 CPU_state sim_cpu;
 
@@ -40,5 +45,9 @@ int main(int argc, char** argv, char** env) {
     // close wave trace
     m_trace->close();
     delete dut;
+    // close wave trace
+    delete contextp;
     return sim_state.state == SIM_ABORT;
 }
+
+
