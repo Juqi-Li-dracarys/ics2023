@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 16:33:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 13:43:06
+ * @Last Modified time: 2024-01-17 21:48:04
  */
 
 #include <common.h>
@@ -135,5 +135,4 @@ void init_monitor(int argc, char *argv[]) {
   /* Display welcome message. */
   welcome();
 }
-
 

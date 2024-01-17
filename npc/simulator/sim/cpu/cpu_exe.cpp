@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 20:44:28
+ * @Last Modified time: 2024-01-17 21:51:21
  */
 
 #include <bits/stdc++.h>
@@ -54,6 +54,7 @@ static void statistic() {
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
+
 static void trace_and_difftest(inst_log *_ptr) {
 
 #ifdef CONFIG_ITRACE
@@ -89,6 +90,7 @@ static void trace_and_difftest(inst_log *_ptr) {
   }
 #endif 
 }
+
 
 // execute n instructions
 void excute(uint64_t n) {

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 13:33:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 21:39:24
+ * @Last Modified time: 2024-01-17 21:43:23
  */
 
 #include <bits/stdc++.h>
@@ -36,13 +36,6 @@ CPU_state sim_cpu;
 // the runing state of simulator
 extern SimState sim_state;
 
-
-inline bool is_exit_status_bad() {
-  bool good = (sim_state.state == SIM_END && sim_state.halt_ret == 0) ||
-    (sim_state.state == SIM_QUIT);
-  return !good;
-}
-
 int main(int argc, char** argv, char** env) {
     // simulation monitor
     init_monitor(argc, argv);
@@ -50,19 +43,10 @@ int main(int argc, char** argv, char** env) {
     Verilated::traceEverOn(true);
     dut->trace(m_trace, 5);
     m_trace->open("waveform.vcd");
-    
-    sim_cpu.csr.mcause = 1314;
-    sim_cpu.csr.mepc = 1;
-    sim_cpu.csr.mstatus = 1234;
-    sim_cpu.csr.mtvec = 444;
-    
+    // reset the whole circuit
     reset(1);
-    
     // start running
     sdb_mainloop();
-
-    printf(ANSI_FG_GREEN "Testcase end!\n" ANSI_NONE);
-    
     // close wave trace
     m_trace->close();
     delete dut;
