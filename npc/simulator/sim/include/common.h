@@ -35,11 +35,17 @@ typedef struct {
   uint32_t halt_ret;
 } SimState;
 
+typedef struct {
+  word_t mepc;
+  word_t mstatus;
+  word_t mcause;
+  word_t mtvec;
+} CSR;
 
 typedef struct {
-  word_t gpr[16];
+  word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
   vaddr_t pc;
-  word_t csr[4];
+  CSR csr;
 } CPU_state;
 
 typedef struct log{

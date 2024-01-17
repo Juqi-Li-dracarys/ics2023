@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 17:38:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 19:08:20
+ * @Last Modified time: 2024-01-17 20:44:15
  */
 
 #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
@@ -52,3 +52,4 @@
 #define ITRACE_COND  1
 #define CONFIG_TRACE_START 0
 #define CONFIG_TRACE_END 10000
+#define CONFIG_DIFFTEST 1

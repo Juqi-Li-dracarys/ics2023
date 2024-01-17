@@ -21,31 +21,13 @@
 #include <memory/paddr.h>
 #include <utils.h>
 #include <difftest-def.h>
+#include <trace.h>
 
 void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 
-// Ftrace
-#ifdef CONFIG_FTRACE
-void ftrace_process(Decode *ptr);
-void ftrace_log_d(void);
-#endif
-
-// Itrace ring buffer
-#ifdef CONFIG_ITRACE
-typedef struct buffer
-{
-  char log_buf[80];
-  bool use_state;
-  struct buffer *next;
-} 
-ring_buffer;
-extern ring_buffer* ring_head;
-ring_buffer *write_ring_buffer(ring_buffer *head, char *log_str);
-void print_ring_buffer(ring_buffer *head);
-#endif
 
 #ifdef CONFIG_DIFFTEST
 
