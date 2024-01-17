@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 16:10:48
+ * @Last Modified time: 2024-01-17 18:51:22
  */
 
 #include <bits/stdc++.h>
@@ -11,14 +11,19 @@
 #include <disasm.h>
 #include <memory.h>
 #include <sim.h>
+#include <trace.h>
 
 using namespace std;
 
+#define MAX_INST_TO_PRINT 20
+
 extern uint8_t pmem[];
 
-void print_itrace();
 void difftest_step();
 void device_update();
+void single_cycle();
+bool signal_detect();
+
 
 static const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
@@ -26,11 +31,7 @@ static const char *regs[] = {
 };
 
 
-// Lab2 HINT: instruction log struct for instruction trace
-struct inst_log{
-  word_t pc;
-  word_t inst;
-};
+inst_log *log_ptr = new inst_log;
 
 // reg dpi-c
 uint32_t *cpu_gpr = NULL;
@@ -45,75 +46,7 @@ uint64_t g_nr_guest_inst = 0;
 // time spend
 static uint64_t g_timer = 0; // unit: us
 
-bool npc_cpu_uncache_pre = 0;
-
-
-// load the state of your simulated cpu into sim_cpu
-void set_state() {
-  sim_cpu.pc = dut->pc_cur;
-  memcpy(&sim_cpu.gpr[0], cpu_gpr, sizeof(uint32_t) * MUXDEF(CONFIG_RVE, 16, 32));
-  // // Lab4 TODO: set the state of csr to sim_cpu
-}
-
-// just give a single posedge clk
-void single_cycle() {
-  dut->clk = 1;
-  dut->eval();
-  m_trace->dump(contextp->time()); // dump wave
-  contextp->timeInc(5);            // 推动仿真时间
-
-  dut->clk = 0;
-  dut->eval();
-  m_trace->dump(contextp->time()); // dump wave
-  contextp->timeInc(5);            // 推动仿真时间
-  set_state();
-}
-
-// reset the cpu
-void reset(int n) {
-  dut->clk = 0;
-  dut->rst = 1;
-  dut->eval();
-  m_trace->dump(contextp->time()); // dump wave
-  contextp->timeInc(5);            // 推动仿真时间
-  while (n-- > 0) {
-    single_cycle();
-  }
-  dut->rst = 0;
-  dut->clk = 0;
-  dut->eval();
-  m_trace->dump(contextp->time()); // dump wave
-  contextp->timeInc(5);            // 推动仿真时间
-}
-
-// check if the program should end
-bool signal_detect() {
-  if(dut->inst_signal == 1) {
-    Log("Inst Error detect, stop simulation.");
-    sim_state.state = SIM_ABORT;
-    dut->final();
-    return true;
-  }
-  else if(dut->reg_signal) {
-    Log("Reg Error detect, stop simulation.");
-    sim_state.state = SIM_ABORT;
-    dut->final();
-    return true;
-  }
-  else if(dut->ALU_signal) {
-    Log("ALU Error detect, stop simulation.");
-    sim_state.state = SIM_ABORT;
-    dut->final();
-    return true;
-  }
-  else if(dut->inst_signal == 2) {
-    Log("ebreak detect, stop simulation.");
-    sim_state.state = SIM_END;
-    dut->final();
-    return true;
-  }
-  else return false;
-}
+static bool g_print_step = false;
 
 
 static void statistic() {
@@ -125,27 +58,64 @@ static void statistic() {
 }
 
 
+static void trace_and_difftest(inst_log *_ptr) {
+  IFDEF(CONFIG_FTRACE, ftrace_process(_ptr));
+#ifdef CONFIG_ITRACE_COND
+  if (ITRACE_COND) { log_write("%s\n\n", _ptr->buf); }
+#endif
+  // Value of g_print_step is related to the times of CPU excution
+  if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_ptr->buf)); }
+  // record trace in ring buffer
+  IFDEF(CONFIG_ITRACE, ring_head = write_ring_buffer(ring_head, _ptr->buf));
+  IFDEF(CONFIG_DIFFTEST, difftest_step());
+  
+#ifdef CONFIG_WBCHECK
+  if (check_wp() == true || check_bp(_this) == true) {
+    // To avoid OJ compile error
+    IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
+    nemu_state.state = NEMU_STOP;
+  }
+#endif 
+}
+
+// execute n instructions
 void excute(uint64_t n) {
-
+  
   while (n--) {
-
     // if (dut->commit_wb) {
     //   if(npc_cpu_uncache_pre){
     //     difftest_sync();
     //   }
     //   // Lab3 TODO: use difftest_step function here to execute difftest
-      
-      g_nr_guest_inst++;
     //   npc_cpu_uncache_pre = dut->uncache_read_wb;
     // }
 
-    // your cpu step a cycle
-    single_cycle();
+    do {
+      single_cycle();
+    }
+    while(false);
 
-#ifdef DEVICE
-    device_update();
+    g_nr_guest_inst++;
+
+    // update the log after excute one inst
+    log_ptr->pc = dut->pc_cur;
+    log_ptr->inst = dut->inst;
+
+    trace_and_difftest(log_ptr);
+    
+#ifdef CONFIG_ITRACE
+      char *p = log_ptr->buf;
+      p += snprintf(p, sizeof(log_ptr->buf),"ITRACE: " FMT_WORD "\t", log_ptr->pc);
+      int i;
+      uint8_t *inst = (uint8_t *)&(log_ptr->inst);
+      for (i = 4 - 1; i >= 0; i --) {
+        p += snprintf(p, 4, " %02x", inst[i]);
+      }
+      memset(p, ' ', 1);
+      p++;
 #endif
 
+    IFDEF(CONFIG_DEVICE, device_update());
     if(signal_detect() || sim_state.state != SIM_RUNNING) {
       // save the end state
       sim_state.halt_pc = dut->pc_cur;
@@ -155,16 +125,16 @@ void excute(uint64_t n) {
   }
 }
 
+
 // execute n instructions
 void cpu_exec(unsigned int n){
-  
+  g_print_step = (n < MAX_INST_TO_PRINT);
   switch (sim_state.state) {
     case SIM_END: case SIM_ABORT: case SIM_QUIT:
       printf("Program execution has ended. To restart the program, exit NPC and run again.\n");
       return;
     default: sim_state.state = SIM_RUNNING;
   }
-  
   // Lab2 TODO: implement instruction trace for your cpu
 
   uint64_t timer_start = get_time();
@@ -183,20 +153,4 @@ void cpu_exec(unsigned int n){
       // fall through
     case SIM_QUIT: statistic();
   }
-}
-
-// set cpu_gpr point to your cpu's gpr
-extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-  cpu_gpr = (uint32_t *)(((VerilatedDpiOpenVar*)r)->datap());
-}
-// set the pointers pint to you cpu's csr
-extern "C" void set_csr_ptr(const svOpenArrayHandle mstatus, const svOpenArrayHandle mtvec, const svOpenArrayHandle mepc, const svOpenArrayHandle mcause) {
-  cpu_mstatus = (uint32_t *)(((VerilatedDpiOpenVar*)mstatus)->datap());
-  cpu_mtvec = (uint32_t *)(((VerilatedDpiOpenVar*)mtvec)->datap());
-  cpu_mepc = (uint32_t *)(((VerilatedDpiOpenVar*)mepc)->datap());
-  cpu_mcause = (uint32_t *)(((VerilatedDpiOpenVar*)mcause)->datap());
-}
-
-void print_itrace() {
-  // Lab2 HINT: you can implement this function to help you print the instruction trace
 }

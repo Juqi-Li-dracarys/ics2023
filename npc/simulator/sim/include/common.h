@@ -42,6 +42,14 @@ typedef struct {
   word_t csr[4];
 } CPU_state;
 
+typedef struct log{
+  word_t pc;
+  word_t inst;
+#ifdef CONFIG_ITRACE
+  char buf [50];
+#endif
+} inst_log;
+
 extern CPU_state sim_cpu;
 
 enum { SIM_RUNNING, SIM_STOP, SIM_END, SIM_ABORT, SIM_QUIT };

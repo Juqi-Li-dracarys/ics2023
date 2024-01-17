@@ -1,9 +1,10 @@
 /*
- *
- * Automatically generated file; DO NOT EDIT.
- * NEMU Configuration Menu
- *
+ * @Author: Juqi Li @ NJU 
+ * @Date: 2024-01-17 17:38:18 
+ * @Last Modified by: Juqi Li @ NJU
+ * @Last Modified time: 2024-01-17 19:08:20
  */
+
 #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
 #define CONFIG_DIFFTEST_REF_NAME "none"
 #define CONFIG_ENGINE "interpreter"
@@ -41,7 +42,13 @@
 #define CONFIG_ISA "riscv32"
 #define CONFIG_VGA_CTL_MMIO 0xa0000100
 #define CONFIG_PMEM_GARRAY 1
-
 #define CONFIG_FFB_ADDR 0xa2000000
 
+// mannual define
+#define CONFIG_TRACE 1
 #define CONFIG_RVE 1
+#define CONFIG_ITRACE 1
+#define CONFIG_ITRACE_COND 1
+#define ITRACE_COND  1
+#define CONFIG_TRACE_START 0
+#define CONFIG_TRACE_END 10000
