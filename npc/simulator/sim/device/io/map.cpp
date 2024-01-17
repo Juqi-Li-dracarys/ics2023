@@ -41,6 +41,12 @@ void init_map() {
 // call the function, then read the device memory
 word_t map_read(paddr_t addr, int len, IOMap *map) {
   assert(len >= 1 && len <= 8);
+  
+  if(!addr) {
+    printf("Warning: map addr = 0.\n");
+    return 0;
+  }
+
   if(!check_bound(map, addr))
     return 0;
   paddr_t offset = addr - map->low;
@@ -52,6 +58,12 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
 // write the device memory, then call the function
 void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   assert(len >= 1 && len <= 8);
+
+  if(!addr) {
+    printf("Warning: map addr = 0.\n");
+    return ;
+  }
+
   if(!check_bound(map, addr)){
     return;
   }
