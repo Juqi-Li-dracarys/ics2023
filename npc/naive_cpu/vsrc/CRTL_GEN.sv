@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-12 20:11:50 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 23:30:50
+ * @Last Modified time: 2024-01-17 23:31:11
  */
 
 // Main control of CPU
@@ -148,7 +148,7 @@ module CRTL_GEN (
             ALUAsrc = 1'b1;
             ALUBsrc = 2'b01;
             // aupic or lui
-            ALUctr = (op == 7'b0010111 ? 5'b11000 : 5'b11000);
+            ALUctr = (op == 7'b0010111 ? 5'b00000 : 5'b11000);
             Branch = 3'b000;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
