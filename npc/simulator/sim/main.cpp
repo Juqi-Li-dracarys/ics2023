@@ -2,14 +2,22 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 13:33:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 13:20:00
+ * @Last Modified time: 2024-01-17 16:26:59
  */
 
 #include <bits/stdc++.h>
 #include <debug.h>
 #include <common.h>
 #include <disasm.h>
-#include <sim.h>
+
+// header of verilator
+#include "verilated_vcd_c.h"
+#include "VCPU_TOP.h"
+
+// dpi-c
+#include "VCPU_TOP__Dpi.h"
+#include <verilated_dpi.h>
+
 
 //////////////////////////////////////////////////////
 // context ptr
