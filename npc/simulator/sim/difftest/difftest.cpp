@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:24 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 22:40:29
+ * @Last Modified time: 2024-01-17 22:48:40
  */
 
 #include <dlfcn.h>
@@ -10,6 +10,8 @@
 #include <debug.h>
 #include <trace.h>
 #include <reg.h>
+
+extern inst_log *log_ptr;
 
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 // the size of registers that should be checked in difftest, 32 gpr, 1 pc, 4 csr
@@ -97,7 +99,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
       return false;
     }
   }
-  if(ref_r->pc != sim_cpu.pc) {
+  if(ref_r->pc != pc) {
     printf("difftest fail @PC = 0x%08x, due to wrong PC.\n", pc);
     printf("REF PC = 0x%08x\n", ref_r->pc);
     return false;
@@ -146,6 +148,7 @@ void difftest_step() {
   difftest_exec(1);
   difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
   // difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
-  checkregs(&ref_r, sim_cpu.pc);
+  checkregs(&ref_r, log_ptr->pc);
   // checkmem(ref_pmem, sim_cpu.pc);
 }
+
