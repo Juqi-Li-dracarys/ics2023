@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 20:31:18
+ * @Last Modified time: 2024-01-17 20:33:33
  */
 
 #include <bits/stdc++.h>
@@ -21,10 +21,7 @@ extern uint8_t pmem[];
 
 void difftest_step();
 void device_update();
-void single_cycle();
-bool signal_detect();
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-
 
 static const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
