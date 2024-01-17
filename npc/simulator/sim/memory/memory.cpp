@@ -2,18 +2,15 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:40 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-16 17:42:10
+ * @Last Modified time: 2024-01-17 16:18:42
  */
 
 #include <assert.h>
 #include <common.h>
 #include <sim.h>
 
-extern VCPU_TOP* dut;
-
 // the physical memory of our simulator
 uint8_t pmem[CONFIG_MSIZE];
-
 
 // check if the addr is valid
 static inline bool in_pmem(paddr_t addr) {
@@ -43,10 +40,16 @@ extern "C" int vaddr_ifetch(int addr, int len) {
 }
 
 extern "C" int vaddr_read(int addr, int len) {
-  if (in_pmem(addr))
+  if (in_pmem(addr)) {
     return paddr_read(addr, len);
+  }
+  // avoid error befor cpu reset
+  else if(!addr) {
+    printf("Warning: memory-read addr = 0x0000000, if it emerges before reset, ignore it\n");
+    return 0;
+  }
   // if not in mem, then check mmio
-  else 
+  else
     return mmio_read(addr, len);
 }
 

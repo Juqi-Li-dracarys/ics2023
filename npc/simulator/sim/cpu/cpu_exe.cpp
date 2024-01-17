@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 16:09:08
+ * @Last Modified time: 2024-01-17 16:10:48
  */
 
 #include <bits/stdc++.h>
@@ -86,40 +86,35 @@ void reset(int n) {
   contextp->timeInc(5);            // 推动仿真时间
 }
 
-
 // check if the program should end
 bool signal_detect() {
-
   if(dut->inst_signal == 1) {
     Log("Inst Error detect, stop simulation.");
     sim_state.state = SIM_ABORT;
     dut->final();
     return true;
   }
-
   else if(dut->reg_signal) {
     Log("Reg Error detect, stop simulation.");
     sim_state.state = SIM_ABORT;
     dut->final();
     return true;
   }
-
   else if(dut->ALU_signal) {
     Log("ALU Error detect, stop simulation.");
     sim_state.state = SIM_ABORT;
     dut->final();
     return true;
   }
-
   else if(dut->inst_signal == 2) {
     Log("ebreak detect, stop simulation.");
     sim_state.state = SIM_END;
     dut->final();
     return true;
   }
-
   else return false;
 }
+
 
 static void statistic() {
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
