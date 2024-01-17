@@ -18,7 +18,7 @@
 #include <isa.h>
 
 void set_nemu_state(int state, vaddr_t pc, int halt_ret) {
-  printf("nemu end\n");
+  printf("difftest ref-nemu stop\n");
 }
 
 __attribute__((noinline))
