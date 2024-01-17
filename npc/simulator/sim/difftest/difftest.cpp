@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:24 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 23:04:08
+ * @Last Modified time: 2024-01-17 23:19:04
  */
 
 #include <dlfcn.h>
@@ -86,7 +86,7 @@ void difftest_sync(){
 
 
 // check the registers with nemu
-bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
+bool isa_difftest_checkregs(REF_CPU_state *ref_r, vaddr_t pc) {
   for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
     if(ref_r->gpr[i] != (sim_cpu.gpr[check_reg_idx(i)])) {
       printf("difftest fail @PC = 0x%08x, due to wrong reg[%d].\n", pc, i);
@@ -126,7 +126,7 @@ bool isa_difftest_checkmem(uint8_t *ref_m, vaddr_t pc) {
   return true;
 }
 
-static void checkregs(CPU_state *ref, vaddr_t pc) {
+static void checkregs(REF_CPU_state *ref, vaddr_t pc) {
   if (!isa_difftest_checkregs(ref, pc)) {
     sim_state.state = SIM_ABORT;
     sim_state.halt_pc = pc;
@@ -144,7 +144,7 @@ static void checkmem(uint8_t *ref_m, vaddr_t pc) {
 }
 
 void difftest_step() {
-  CPU_state ref_r;
+  REF_CPU_state ref_r;
   difftest_exec(1);
   difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
   // difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
