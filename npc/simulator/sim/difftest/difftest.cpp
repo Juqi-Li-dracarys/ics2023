@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:24 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 22:29:00
+ * @Last Modified time: 2024-01-17 22:29:46
  */
 
 #include <dlfcn.h>
@@ -105,7 +105,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   else {
     return true;
   }
-  
+
   // const char *csr_names[] = {"mepc", "mstatus", "mcause", "mtvec"};
   // check csr
   // Lab4 TODO: (In Lab3, you can ignore this part.)implement the csr check function, return false if any difference, and output some infomation of the difference
@@ -142,10 +142,10 @@ static void checkmem(uint8_t *ref_m, vaddr_t pc) {
 }
 
 void difftest_step() {
-  // CPU_state ref_r;
-  // difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-  // // difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
-  // checkregs(&ref_r, sim_cpu.pc);
+  CPU_state ref_r;
+  difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
+  // difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
+  checkregs(&ref_r, sim_cpu.pc);
   difftest_exec(1);
-  // checkmem(ref_pmem, sim_cpu.pc);
+  checkmem(ref_pmem, sim_cpu.pc);
 }
