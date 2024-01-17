@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 11:32:15
+ * @Last Modified time: 2024-01-17 11:53:58
  */
 
 #include <bits/stdc++.h>
@@ -132,6 +132,7 @@ static void statistic() {
 }
 
 void excute(uint64_t n) {
+  
   while (n--) {
 
     // if (dut->commit_wb) {
@@ -151,7 +152,7 @@ void excute(uint64_t n) {
     device_update();
 #endif
 
-    if(signal_detect()) {
+    if(signal_detect() || sim_state.state != SIM_RUNNING) {
       // save the end state
       sim_state.halt_pc = dut->pc_cur;
       sim_state.halt_ret = cpu_gpr[10];

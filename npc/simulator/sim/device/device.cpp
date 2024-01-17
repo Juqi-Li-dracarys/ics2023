@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 17:57:11 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-16 19:37:54
+ * @Last Modified time: 2024-01-17 11:52:17
  */
 
 
@@ -68,8 +68,8 @@ void init_device(const char *diskpath) {
   IFDEF(CONFIG_HAS_KEYBOARD, init_i8042());
   IFDEF(CONFIG_HAS_AUDIO, init_audio());
 
-  if (diskpath != NULL) IFDEF(CONFIG_HAS_DISK, init_disk(diskpath));
+  // if (diskpath != NULL) IFDEF(CONFIG_HAS_DISK, init_disk(diskpath));
 
-  IFDEF(CONFIG_HAS_SDCARD, init_sdcard());
+  // IFDEF(CONFIG_HAS_SDCARD, init_sdcard());
 
 }
