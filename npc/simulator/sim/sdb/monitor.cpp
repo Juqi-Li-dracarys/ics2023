@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 16:33:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 21:48:04
+ * @Last Modified time: 2024-01-17 23:37:28
  */
 
 #include <common.h>
@@ -14,7 +14,10 @@
 uint8_t init_ftrace(char *elf_addr);
 #endif
 
+extern unsigned char isa_logo[];
+
 static void welcome() {
+  printf("%s\n", isa_logo);
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
   IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
         "to record the trace. This may lead to a large log file. "
