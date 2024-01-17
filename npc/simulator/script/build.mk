@@ -35,8 +35,8 @@ gdb: $(VBIN) $(NEMUISO) $(IMG)
 	$(call git_commit, "GDB NPC")
 	@gdb -s $(VBIN) --args $(VBIN) $(ARGS) $(IMG)
 
-app: $(VBIN) $(APP_IMG) $(NEMUISO)
-	@$(VBIN) $(ARGS) $(APP_IMG)
+wave: run
+	@gtkwave waveform.vcd
 
 
 clean:
@@ -50,4 +50,4 @@ clean-all:
 	@rm -rf *.vcd
 	@make -s -C $(NEMU_DIR) clean
 
-.PHONY: test test_all clean
+.PHONY: run gdb wave clean-all clean
