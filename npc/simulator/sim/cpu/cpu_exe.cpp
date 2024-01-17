@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 13:41:56
+ * @Last Modified time: 2024-01-17 13:44:16
  */
 
 #include <bits/stdc++.h>
@@ -182,7 +182,7 @@ void cpu_exec(unsigned int n){
   switch (sim_state.state) {
     case SIM_RUNNING: sim_state.state = SIM_STOP; break;
     case SIM_END: case SIM_ABORT:
-      Log("sim: %s at pc = " FMT_WORD,
+      Log("NPC simulator: %s at pc = " FMT_WORD,
           (sim_state.state == SIM_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
            (sim_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
