@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 20:30:23
+ * @Last Modified time: 2024-01-17 20:31:18
  */
 
 #include <bits/stdc++.h>
@@ -92,28 +92,8 @@ static void trace_and_difftest(inst_log *_ptr) {
 #endif 
 }
 
-// reset the cpu
-void reset(int n) {
-  g_print_step = true;
-  dut->clk = 0;
-  dut->rst = 1;
-  dut->eval();
-  m_trace->dump(contextp->time()); // dump wave
-  contextp->timeInc(5);            // 推动仿真时间
-  while (n-- > 0) {
-    single_cycle();
-  }
-  dut->rst = 0;
-  dut->clk = 0;
-  dut->eval();
-  m_trace->dump(contextp->time()); // dump wave
-  contextp->timeInc(5);            // 推动仿真时间
-}
-
 // execute n instructions
 void excute(uint64_t n) {
-
-  // 注意：每条指令的计算在该 posedge，但读写执行却在下一个 posedge
   while (n--) {
     // if (dut->commit_wb) {
     //   if(npc_cpu_uncache_pre){
@@ -122,7 +102,8 @@ void excute(uint64_t n) {
     //   // Lab3 TODO: use difftest_step function here to execute difftest
     //   npc_cpu_uncache_pre = dut->uncache_read_wb;
     // }
-
+    
+    // 注意：每条指令的计算在该 posedge，但读写执行却在下一个 posedge
     // 保留即将执行的指令
     log_ptr->pc = dut->pc_cur;
     log_ptr->inst = dut->inst;
