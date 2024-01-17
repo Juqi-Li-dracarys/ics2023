@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 22:51:52
+ * @Last Modified time: 2024-01-17 23:25:18
  */
 
 #include <bits/stdc++.h>
@@ -55,7 +55,7 @@ static void statistic() {
 }
 
 
-static void trace_and_difftest(inst_log *_ptr) {
+static void trace_and_difftest(inst_log *_ptr, bool interrupt) {
 
 #ifdef CONFIG_ITRACE
   char *p = log_ptr->buf;
@@ -80,7 +80,7 @@ static void trace_and_difftest(inst_log *_ptr) {
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_ptr->buf)); }
   // record trace in ring buffer
   IFDEF(CONFIG_ITRACE, ring_head = write_ring_buffer(ring_head, _ptr->buf));
-  IFDEF(CONFIG_DIFFTEST, difftest_step());
+  IFDEF(CONFIG_DIFFTEST, if(!interrupt) difftest_step(););
   
 #ifdef CONFIG_WBCHECK
   if (check_wp() == true || check_bp(_this) == true) {
@@ -115,7 +115,7 @@ void excute(uint64_t n) {
 
     // update the log after excute one inst
     g_nr_guest_inst++;
-    trace_and_difftest(log_ptr);
+    trace_and_difftest(log_ptr, false);
 
     IFDEF(CONFIG_DEVICE, device_update());
 
@@ -127,7 +127,7 @@ void excute(uint64_t n) {
       log_ptr->pc = dut->pc_cur;
       log_ptr->inst = dut->inst;
       g_nr_guest_inst++;
-      trace_and_difftest(log_ptr);
+      trace_and_difftest(log_ptr, true);
       break;
     }
 
