@@ -11,7 +11,7 @@ default: VCPU_TOP
 
 include VCPU_TOP.mk
 
-CXXFLAGS += -MMD -O3 -std=c++14 -fno-exceptions -fPIE -Wno-unused-result
+CXXFLAGS += -MMD -O3 -g -std=c++14 -fno-exceptions -fPIE -Wno-unused-result
 CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-11 --cxxflags)) -fPIC -DDEVICE -D__GUEST_ISA__=$(ISA)
 LDFLAGS += -O3 -rdynamic -shared -fPIC
 LIBS += $(shell llvm-config-11 --libs)
