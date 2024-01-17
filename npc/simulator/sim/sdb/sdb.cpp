@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 18:53:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 23:35:02
+ * @Last Modified time: 2024-01-17 23:38:47
  */
 
 #include <common.h>
@@ -26,7 +26,7 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  line_read = readline("(NPC_simulator) ");
+  line_read = readline("(simulator) ");
 
   if (line_read && *line_read) {
     add_history(line_read);
