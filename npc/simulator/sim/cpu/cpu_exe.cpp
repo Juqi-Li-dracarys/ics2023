@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 23:25:18
+ * @Last Modified time: 2024-01-17 23:25:50
  */
 
 #include <bits/stdc++.h>
@@ -80,7 +80,7 @@ static void trace_and_difftest(inst_log *_ptr, bool interrupt) {
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_ptr->buf)); }
   // record trace in ring buffer
   IFDEF(CONFIG_ITRACE, ring_head = write_ring_buffer(ring_head, _ptr->buf));
-  IFDEF(CONFIG_DIFFTEST, if(!interrupt) difftest_step(););
+  IFDEF(CONFIG_DIFFTEST, if(!interrupt) difftest_step());
   
 #ifdef CONFIG_WBCHECK
   if (check_wp() == true || check_bp(_this) == true) {
