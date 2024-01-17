@@ -17,11 +17,11 @@ $(VBIN): $(CSRC) $(VSRC)
 	@echo "$(COLOR_YELLOW)[GENERATE]$(COLOR_NONE) Creating System Verilog Model"
 	@$(VERILATOR) $(VFLAGS) $(VSRC) $(CSRC) $(CINC_PATH)
 	@echo "$(COLOR_YELLOW)[COMPILE]$(COLOR_NONE) Compiling C++ files"
-	@make -C $(OBJ_DIR) -f $(REWRITE)
+	@$(MAKE) -s -C $(OBJ_DIR) -f $(REWRITE)
 
 $(NEMUISO):
 	@echo "$(COLOR_YELLOW)[Make DIFF]$(COLOR_NONE) $(notdir $(NEMU_DIR))/build/riscv32-nemu-interpreter-so"
-	@make -C $(NEMU_DIR)
+	@$(MAKE) -C $(NEMU_DIR)
 
 run: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
