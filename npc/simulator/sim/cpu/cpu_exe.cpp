@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 21:51:21
+ * @Last Modified time: 2024-01-17 22:39:31
  */
 
 #include <bits/stdc++.h>
@@ -120,7 +120,7 @@ void excute(uint64_t n) {
     IFDEF(CONFIG_DEVICE, device_update());
 
     // 对于有异常的指令，会在执行前终止程序
-    if(signal_detect() || sim_state.state != SIM_RUNNING) {
+    if(signal_detect()) {
       // save the end state
       sim_state.halt_pc = dut->pc_cur;
       sim_state.halt_ret = cpu_gpr[10];
@@ -130,6 +130,9 @@ void excute(uint64_t n) {
       trace_and_difftest(log_ptr);
       break;
     }
+
+    if(sim_state.state != SIM_RUNNING)
+      break;
   }
 }
 
