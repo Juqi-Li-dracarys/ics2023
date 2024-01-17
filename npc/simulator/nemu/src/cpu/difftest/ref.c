@@ -28,6 +28,7 @@ __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction)
 
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
   if (direction == DIFFTEST_TO_DUT) {
+    printf("0x%08x\n", cpu.pc);
     memcpy(dut, &cpu, DIFFTEST_REG_SIZE);
   } else if (direction == DIFFTEST_TO_REF) {
     memcpy(&cpu, dut, DIFFTEST_REG_SIZE);
@@ -35,9 +36,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
 }
 
 __EXPORT void difftest_exec(uint64_t n) {
-  printf("0x%08x\n", cpu.pc);
   cpu_exec(n);
-  printf("0x%08x\n", cpu.pc);
 }
 
 __EXPORT void difftest_init(int port) {
