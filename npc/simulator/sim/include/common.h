@@ -48,6 +48,13 @@ typedef struct {
   CSR csr;
 } CPU_state;
 
+
+typedef struct {
+  word_t gpr[32];
+  vaddr_t pc;
+  CSR csr;
+} REF_CPU_state;
+
 typedef struct log{
   word_t pc;
   word_t inst;
