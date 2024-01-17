@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 13:33:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 12:17:04
+ * @Last Modified time: 2024-01-17 13:20:00
  */
 
 #include <bits/stdc++.h>
@@ -46,8 +46,7 @@ int main(int argc, char** argv, char** env) {
     reset(1);
     
     // start running
-    
-    // sdb_mainloop();
+    sdb_mainloop();
 
     printf(ANSI_FG_GREEN "Testcase end!\n" ANSI_NONE);
     
