@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 16:33:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 23:44:52
+ * @Last Modified time: 2024-01-17 23:45:44
  */
 
 #include <common.h>
@@ -24,7 +24,7 @@ static void welcome() {
   Log("Build time: %s, %s", __TIME__, __DATE__);
   printf("Welcome to %s-NPC Simulator! \n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\", as an EE rat @NJU, please always remember to RTFM:\n");
-  Log("%s\n", isa_logo);
+  Log("\n\n\n\n%s\n", isa_logo);
 }
 
 static const uint32_t img [] = {
