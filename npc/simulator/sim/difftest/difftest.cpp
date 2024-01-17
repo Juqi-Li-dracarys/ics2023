@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:24 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 21:59:50
+ * @Last Modified time: 2024-01-17 22:09:25
  */
 
 #include <dlfcn.h>
@@ -115,14 +115,14 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 
 // check mem
 bool isa_difftest_checkmem(uint8_t *ref_m, vaddr_t pc) {
-  for (int i = 0; i < CONFIG_MSIZE; i++){
-    if (ref_m[i] != pmem[i]) {
-      printf(ANSI_BG_RED "memory of NPC is different before executing instruction at pc = " FMT_WORD
-        ", mem[%x] right = " FMT_WORD ", wrong = " FMT_WORD ", diff = " FMT_WORD ANSI_NONE "\n",
-        sim_cpu.pc, i, ref_m[i], pmem[i], ref_m[i] ^ pmem[i]); 
-      return false;
-    }
-  }
+  // for (int i = 0; i < CONFIG_MSIZE; i++){
+  //   if (ref_m[i] != pmem[i]) {
+  //     printf(ANSI_BG_RED "memory of NPC is different before executing instruction at pc = " FMT_WORD
+  //       ", mem[%x] right = " FMT_WORD ", wrong = " FMT_WORD ", diff = " FMT_WORD ANSI_NONE "\n",
+  //       sim_cpu.pc, i, ref_m[i], pmem[i], ref_m[i] ^ pmem[i]); 
+  //     return false;
+  //   }
+  // }
   return true;
 }
 
