@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 13:37:28
+ * @Last Modified time: 2024-01-17 13:41:56
  */
 
 #include <bits/stdc++.h>
@@ -116,7 +116,7 @@ bool signal_detect() {
 
   else if(dut->inst_signal == 2) {
     Log("ebreak detect, stop simulation.");
-    sim_state.state = SIM_STOP;
+    sim_state.state = SIM_END;
     dut->final();
     return true;
   }
