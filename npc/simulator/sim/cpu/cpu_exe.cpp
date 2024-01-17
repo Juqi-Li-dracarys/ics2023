@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 20:33:33
+ * @Last Modified time: 2024-01-17 20:40:54
  */
 
 #include <bits/stdc++.h>
@@ -71,6 +71,7 @@ static void trace_and_difftest(inst_log *_ptr) {
 #endif
 
   IFDEF(CONFIG_FTRACE, ftrace_process(_ptr));
+  
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n\n", _ptr->buf); }
 #endif
