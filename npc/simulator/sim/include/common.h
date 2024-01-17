@@ -110,5 +110,7 @@ void init_monitor(int argc, char *argv[]);
 // log
 void init_log(const char *log_file);
 
+bool is_exit_status_bad();
+
 #endif
 

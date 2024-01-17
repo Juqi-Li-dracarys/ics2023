@@ -10,6 +10,8 @@ extern uint32_t *cpu_mtvec;
 extern uint32_t *cpu_mepc;
 extern uint32_t *cpu_mcause;
 
+extern const char *regs[];
+
 static inline int check_reg_idx(int idx) {
   IFDEF(CONFIG_RT_CHECK, assert(idx >= 0 && idx < MUXDEF(CONFIG_RVE, 16, 32)));
   return idx;
