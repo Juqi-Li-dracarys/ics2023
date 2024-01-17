@@ -13,18 +13,18 @@ override ARGS ?= --log=$(OBJ_DIR)/nemu-log.txt
 override ARGS += $(ARGS_DIFF)
 
 $(VBIN): $(CSRC) $(VSRC)
-	@echo "$(COLOR_YELLOW)[VERILATE]$(COLOR_NONE) $(notdir $(OBJ_DIR))/VCPU_TOP"
+	@echo "$(COLOR_YELLOW)[VERILATOR]$(COLOR_NONE) $(notdir $(OBJ_DIR))/VCPU_TOP"
 	@echo "$(COLOR_YELLOW)[GENERATE]$(COLOR_NONE) Creating System Verilog Model"
 	@$(VERILATOR) $(VFLAGS) $(VSRC) $(CSRC) $(CINC_PATH)
 	@echo "$(COLOR_YELLOW)[COMPILE]$(COLOR_NONE) Compiling C++ files"
-	@make -s -C $(OBJ_DIR) -f $(REWRITE)
+	@make -C $(OBJ_DIR) -f $(REWRITE)
 
 $(NEMUISO):
 	@echo "$(COLOR_YELLOW)[Make DIFF]$(COLOR_NONE) $(notdir $(NEMU_DIR))/build/riscv32-nemu-interpreter-so"
-	@make -s -C $(NEMU_DIR)
+	@make -C $(NEMU_DIR)
 
 run: $(VBIN) $(NEMUISO) $(IMG)
-	@echo "$(COLOR_YELLOW)[Run IMG]$(COLOR_NONE)" $(notdir $(IMG))
+	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "RUN NPC")
 	@$(VBIN) $(ARGS) $(IMG)
 
