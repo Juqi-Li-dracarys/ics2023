@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:24 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 22:48:40
+ * @Last Modified time: 2024-01-17 22:59:31
  */
 
 #include <dlfcn.h>
@@ -145,7 +145,7 @@ static void checkmem(uint8_t *ref_m, vaddr_t pc) {
 
 void difftest_step() {
   CPU_state ref_r;
-  difftest_exec(1);
+  difftest_exec(2);
   difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
   // difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
   checkregs(&ref_r, log_ptr->pc);
