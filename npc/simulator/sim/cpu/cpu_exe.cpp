@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 13:12:02
+ * @Last Modified time: 2024-01-17 13:37:28
  */
 
 #include <bits/stdc++.h>
@@ -89,6 +89,7 @@ void reset(int n) {
   contextp->timeInc(5);            // 推动仿真时间
 }
 
+
 // check if the program should end
 bool signal_detect() {
 
@@ -141,7 +142,7 @@ void excute(uint64_t n) {
     //   }
     //   // Lab3 TODO: use difftest_step function here to execute difftest
       
-    //   g_nr_guest_inst++;
+      g_nr_guest_inst++;
     //   npc_cpu_uncache_pre = dut->uncache_read_wb;
     // }
 
@@ -164,8 +165,6 @@ void excute(uint64_t n) {
 // execute n instructions
 void cpu_exec(unsigned int n){
   
-  std::cout << sim_state.state << std::endl;
-
   switch (sim_state.state) {
     case SIM_END: case SIM_ABORT: case SIM_QUIT:
       printf("Program execution has ended. To restart the program, exit NPC and run again.\n");
