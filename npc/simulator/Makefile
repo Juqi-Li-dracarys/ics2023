@@ -14,7 +14,6 @@ OBJ_DIR   			= $(abspath $(WORK_DIR)/build)
 CSRC_DIR 			= $(abspath $(WORK_DIR)/sim)
 VSRC_DIR 			= $(abspath $(NPC_HOME)/naive_cpu)
 NEMU_DIR 			= $(abspath $(WORK_DIR)/nemu)
-TEST_DIR 			= $(abspath $(WORK_DIR)/testcases)
 
 VERILOG_TOP 		= $(VSRC_DIR)/vsrc/CPU_TOP.sv
 NEMUISO 			= $(NEMU_DIR)/build/riscv32-nemu-interpreter-so

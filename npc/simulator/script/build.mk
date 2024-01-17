@@ -5,9 +5,8 @@
 #  * @Last Modified time: 2024-01-16 13:22:39 
 #  */
 
-APP ?= hello
-APP_IMG = $(addprefix $(TEST_DIR)/app/, $(addsuffix -riscv32.bin, $(APP)))
-IMG ?= $(APP_IMG)
+IMG ?= 
+VERILATOR = verilator
 ARGS_DIFF = --diff=$(NEMUISO)
 
 override ARGS ?= --log=$(OBJ_DIR)/nemu-log.txt
@@ -16,7 +15,7 @@ override ARGS += $(ARGS_DIFF)
 $(VBIN): $(CSRC) $(VSRC)
 	@echo "$(COLOR_YELLOW)[VERILATE]$(COLOR_NONE) $(notdir $(OBJ_DIR))/VCPU_TOP"
 	@echo "$(COLOR_YELLOW)[GENERATE]$(COLOR_NONE) Creating System Verilog Model"
-	@verilator $(VFLAGS) $(VSRC) $(CSRC) $(CINC_PATH)
+	@$(VERILATOR) $(VFLAGS) $(VSRC) $(CSRC) $(CINC_PATH)
 	@echo "$(COLOR_YELLOW)[COMPILE]$(COLOR_NONE) Compiling C++ files"
 	@make -s -C $(OBJ_DIR) -f $(REWRITE)
 
@@ -36,6 +35,7 @@ gdb: $(VBIN) $(NEMUISO) $(IMG)
 
 app: $(VBIN) $(APP_IMG) $(NEMUISO)
 	@$(VBIN) $(ARGS) $(APP_IMG)
+
 
 clean:
 	@echo rm -rf OBJ_DIR *vcd
