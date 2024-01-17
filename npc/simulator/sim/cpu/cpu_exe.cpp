@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 13:44:16
+ * @Last Modified time: 2024-01-17 16:09:08
  */
 
 #include <bits/stdc++.h>
@@ -14,10 +14,6 @@
 
 using namespace std;
 
-extern VCPU_TOP *dut;
-extern uint64_t sim_time;
-extern VerilatedVcdC *m_trace;
-extern VerilatedContext* contextp;
 extern uint8_t pmem[];
 
 void print_itrace();
@@ -51,10 +47,11 @@ static uint64_t g_timer = 0; // unit: us
 
 bool npc_cpu_uncache_pre = 0;
 
+
 // load the state of your simulated cpu into sim_cpu
 void set_state() {
   sim_cpu.pc = dut->pc_cur;
-  memcpy(&sim_cpu.gpr[0], cpu_gpr, sizeof(uint32_t) * 16);
+  memcpy(&sim_cpu.gpr[0], cpu_gpr, sizeof(uint32_t) * MUXDEF(CONFIG_RVE, 16, 32));
   // // Lab4 TODO: set the state of csr to sim_cpu
 }
 
@@ -132,6 +129,7 @@ static void statistic() {
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
+
 void excute(uint64_t n) {
 
   while (n--) {
@@ -192,22 +190,6 @@ void cpu_exec(unsigned int n){
   }
 }
 
-// map the name of reg to its value
-word_t isa_reg_str2val(const char *s, bool *success) {;
-  if(!strcmp(s, "pc")){
-    *success = true;
-    return dut->pc_cur;
-  }
-  for(int i = 0; i < 16; i++){
-    if(!strcmp(s, regs[i])){
-      *success = true;
-      return cpu_gpr[i];
-    }
-  }
-  *success = false;
-  return 0;
-}
-
 // set cpu_gpr point to your cpu's gpr
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   cpu_gpr = (uint32_t *)(((VerilatedDpiOpenVar*)r)->datap());
@@ -218,12 +200,6 @@ extern "C" void set_csr_ptr(const svOpenArrayHandle mstatus, const svOpenArrayHa
   cpu_mtvec = (uint32_t *)(((VerilatedDpiOpenVar*)mtvec)->datap());
   cpu_mepc = (uint32_t *)(((VerilatedDpiOpenVar*)mepc)->datap());
   cpu_mcause = (uint32_t *)(((VerilatedDpiOpenVar*)mcause)->datap());
-}
-
-void isa_reg_display() {
-  for (int i = 0; i < 16; i++) {
-    printf("gpr[%d](%s) = 0x%x\n", i, regs[i], cpu_gpr[i]);
-  }
 }
 
 void print_itrace() {

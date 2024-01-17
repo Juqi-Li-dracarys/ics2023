@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 10:58:17 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-16 11:16:58
+ * @Last Modified time: 2024-01-17 16:08:00
  */
 
 
@@ -13,5 +13,9 @@
 // dpi-c
 #include "VCPU_TOP__Dpi.h"
 #include <verilated_dpi.h>
+
+extern VCPU_TOP *dut;
+extern VerilatedVcdC *m_trace;
+extern VerilatedContext* contextp;
 
 
