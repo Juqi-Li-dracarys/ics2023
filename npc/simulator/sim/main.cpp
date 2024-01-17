@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 13:33:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 09:52:48
+ * @Last Modified time: 2024-01-17 11:20:47
  */
 
 #include <bits/stdc++.h>
@@ -28,6 +28,13 @@ CPU_state sim_cpu;
 // the runing state of simulator
 extern SimState sim_state;
 
+
+inline bool is_exit_status_bad() {
+  bool good = (sim_state.state == SIM_END && sim_state.halt_ret == 0) ||
+    (sim_state.state == SIM_QUIT);
+  return !good;
+}
+
 int main(int argc, char** argv, char** env) {
     // simulation monitor
     init_monitor(argc, argv);
@@ -47,7 +54,6 @@ int main(int argc, char** argv, char** env) {
     delete dut;
     // close wave trace
     delete contextp;
-    return sim_state.state == SIM_ABORT;
+    return is_exit_status_bad();
 }
-
 

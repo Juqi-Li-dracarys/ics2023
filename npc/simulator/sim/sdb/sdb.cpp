@@ -368,3 +368,4 @@ void init_sdb() {
   ring_head = init_ring_buffer();
 #endif
 }
+
