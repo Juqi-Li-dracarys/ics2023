@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:24 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 22:21:21
+ * @Last Modified time: 2024-01-17 22:29:00
  */
 
 #include <dlfcn.h>
@@ -85,30 +85,30 @@ void difftest_sync(){
 
 // check the registers with nemu
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
-  // for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
-  //   if(ref_r->gpr[i] != (sim_cpu.gpr[check_reg_idx(i)])) {
-  //     printf("difftest fail @PC = 0x%08x, due to wrong reg[%d].\n", pc, i);
-  //     puts("REF register map:");
-  //     for(int j = 0; j < MUXDEF(CONFIG_RVE, 16, 32); j++) {
-  //       printf("%s:0X%08x ",regs[j], ref_r->gpr[j]);
-  //       if((j + 1) % 4 == 0)
-  //       putchar('\n');
-  //     }
-  //     return false;
-  //   }
-  // }
-  // if(ref_r->pc != sim_cpu.pc) {
-  //   printf("difftest fail @PC = 0x%08x, due to wrong PC.\n", pc);
-  //   printf("REF PC = 0x%08x\n", ref_r->pc);
-  //   return false;
-  // }
-  // else {
-  //   return true;
-  // }
+  for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
+    if(ref_r->gpr[i] != (sim_cpu.gpr[check_reg_idx(i)])) {
+      printf("difftest fail @PC = 0x%08x, due to wrong reg[%d].\n", pc, i);
+      puts("REF register map:");
+      for(int j = 0; j < MUXDEF(CONFIG_RVE, 16, 32); j++) {
+        printf("%s:0X%08x ",regs[j], ref_r->gpr[j]);
+        if((j + 1) % 4 == 0)
+        putchar('\n');
+      }
+      return false;
+    }
+  }
+  if(ref_r->pc != sim_cpu.pc) {
+    printf("difftest fail @PC = 0x%08x, due to wrong PC.\n", pc);
+    printf("REF PC = 0x%08x\n", ref_r->pc);
+    return false;
+  }
+  else {
+    return true;
+  }
+  
   // const char *csr_names[] = {"mepc", "mstatus", "mcause", "mtvec"};
-  // // check csr
-  // // Lab4 TODO: (In Lab3, you can ignore this part.)implement the csr check function, return false if any difference, and output some infomation of the difference
-  return true;
+  // check csr
+  // Lab4 TODO: (In Lab3, you can ignore this part.)implement the csr check function, return false if any difference, and output some infomation of the difference
 }
 
 // check mem
