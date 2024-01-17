@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-13 18:06:14 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-14 18:11:35
+ * @Last Modified time: 2024-01-17 19:55:44
  */
 
 
@@ -18,6 +18,7 @@
 
 module DATA_MEM (
     input                      clk,
+    input                      rst,
     input                      WrEn,
     input        [2 : 0]       MemOp,
     input        [31 : 0]      addr,
@@ -56,7 +57,7 @@ module DATA_MEM (
 
     // 下一个周期写入数据
     always_ff @(posedge clk) begin
-        if(WrEn) begin
+        if(WrEn && !rst) begin
             unique case(MemOp)
                 3'b010: begin
                     vaddr_write(addr, 32'h4, DataIn);
