@@ -65,6 +65,7 @@ void single_cycle();
 
 void reset(int n);
 
+bool signal_detect();
 
 // device
 void init_device(const char *diskpath);
