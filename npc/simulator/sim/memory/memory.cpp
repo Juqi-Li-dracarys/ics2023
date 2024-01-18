@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:40 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 08:33:22
+ * @Last Modified time: 2024-01-18 08:46:05
  */
 
 #include <assert.h>
@@ -161,7 +161,7 @@ word_t paddr_read(paddr_t addr, int len) {
   else 
     out_of_bound(addr);
 #ifdef CONFIG_MTRACE_COND
-    if (MTRACE_COND) {log_write("MTRACE: 0x%08x\t write %d byte 0x%08x in mem: 0x%08x\n", log_ptr->pc, len, r_data, addr);}
+    if (MTRACE_COND) {log_write("MTRACE: 0x%08x\t read %d byte 0x%08x in mem: 0x%08x\n", log_ptr->pc, len, r_data, addr);}
 #endif
   return r_data;
 }
