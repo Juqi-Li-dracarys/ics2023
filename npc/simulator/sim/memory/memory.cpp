@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:40 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 08:46:46
+ * @Last Modified time: 2024-01-18 14:42:16
  */
 
 #include <assert.h>
@@ -154,7 +154,6 @@ void host_write(void *addr, int len, word_t data) {
 
 // read with addr in riscv code, without mmio
 word_t paddr_read(paddr_t addr, int len) {
-
   word_t r_data;
   if (in_pmem(addr))  
     r_data = host_read(guest_to_host(addr), len);

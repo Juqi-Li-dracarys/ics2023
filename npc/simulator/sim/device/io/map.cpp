@@ -27,6 +27,7 @@ static bool check_bound(IOMap *map, paddr_t addr) {
    printf("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD "\n",
       addr, CONFIG_MBASE, CONFIG_MBASE + CONFIG_MSIZE, log_ptr->pc);
     sim_state.state = SIM_ABORT;
+    sim_state.halt_pc = log_ptr->pc;
     return false;
   } 
   return true;
