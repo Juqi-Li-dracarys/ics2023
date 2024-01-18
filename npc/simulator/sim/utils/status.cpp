@@ -13,6 +13,6 @@ bool is_exit_status_bad() {
     bool good = (sim_state.state == SIM_END && sim_state.halt_ret == 0) ||
     (sim_state.state == SIM_QUIT);
     printf(ANSI_FG_YELLOW "Simulator exit\n" ANSI_NONE);
-    return true;
+    return false;
 }
 
