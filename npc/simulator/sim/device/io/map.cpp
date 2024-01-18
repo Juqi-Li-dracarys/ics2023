@@ -21,13 +21,19 @@ uint8_t* new_space(int size) {
   return p;
 }
 
-static bool check_bound(IOMap *map, paddr_t addr) {
+static bool w_check_bound(IOMap *map, paddr_t addr) {
   if (map == NULL || addr > map->high || addr < map->low) {
-
-   printf("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD "\n",
+    printf("write-memory address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD "\n",
       addr, CONFIG_MBASE, CONFIG_MBASE + CONFIG_MSIZE, log_ptr->pc);
     sim_state.state = SIM_ABORT;
     sim_state.halt_pc = log_ptr->pc;
+    return false;
+  } 
+  return true;
+}
+
+static bool r_check_bound(IOMap *map, paddr_t addr) {
+  if (map == NULL || addr > map->high || addr < map->low) {
     return false;
   } 
   return true;
@@ -47,7 +53,7 @@ void init_map() {
 // call the function, then read the device memory
 word_t map_read(paddr_t addr, int len, IOMap *map) {
   assert(len >= 1 && len <= 8);
-  if(!check_bound(map, addr))
+  if(!r_check_bound(map, addr))
     return 0;
   paddr_t offset = addr - map->low;
   invoke_callback(map->callback, offset, len, false); // prepare data to read
@@ -58,7 +64,7 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
 // write the device memory, then call the function
 void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   assert(len >= 1 && len <= 8);
-  if(!check_bound(map, addr)){
+  if(!w_check_bound(map, addr)){
     return;
   }
   paddr_t offset = addr - map->low;
