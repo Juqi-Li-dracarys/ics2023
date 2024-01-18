@@ -11,7 +11,7 @@ ARGS_DIFF = --diff=$(NEMUISO)
 SILENT = -s
 BATCH_MODE = -b
 
-override ARGS ?= --log=$(OBJ_DIR)/nemu-log.txt
+override ARGS ?= --log=$(OBJ_DIR)/npc-log.txt
 override ARGS += $(ARGS_DIFF)
 
 $(VBIN): $(CSRC) $(VSRC)
