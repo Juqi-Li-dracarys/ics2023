@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-12 20:25:26 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-14 21:31:32
+ * @Last Modified time: 2024-01-18 11:58:34
  */
 
 // register file for RV32E
@@ -54,7 +54,7 @@ module REG_FILE #(parameter reg_num = 16, reg_width = 4)(
     assign rf_busB = reg_file[rs2[reg_width-1 : 0]];
 
     // Error sinal
-    assign reg_signal = RegWr && (rd == 5'h0 || rd >= reg_num);
+    assign reg_signal = RegWr && (rd >= reg_num);
 
 endmodule
 
