@@ -9,6 +9,8 @@ static uint8_t *io_space = NULL;
 static uint8_t *p_space = NULL;
 extern CPU_state npc_cpu;
 
+extern inst_log *log_ptr;
+
 // alloc use a memory space
 uint8_t* new_space(int size) {
   uint8_t *p = p_space;
@@ -21,6 +23,9 @@ uint8_t* new_space(int size) {
 
 static bool check_bound(IOMap *map, paddr_t addr) {
   if (map == NULL || addr > map->high || addr < map->low) {
+
+   printf("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD "\n",
+      addr, CONFIG_MBASE, CONFIG_MBASE + CONFIG_MSIZE, log_ptr->pc);
     sim_state.state = SIM_ABORT;
     return false;
   } 
