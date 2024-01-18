@@ -1,3 +1,5 @@
+SIMULATOR_HOME = $(NPC_HOME)/simulator
+
 AM_SRCS := riscv/npc/start.S \
            riscv/npc/trm.c \
            riscv/npc/ioe.c \
@@ -15,7 +17,18 @@ LDFLAGS   += --gc-sections -e _start
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
 .PHONY: $(AM_HOME)/am/src/riscv/npc/trm.c
 
+NPC_FLAGS += -l $(shell dirname $(IMAGE).elf)/nemu-log.txt
+# send the elf dir to the main
+NPC_FLAGS += -f $(IMAGE).elf
+
+
 image: $(IMAGE).elf
 	@$(OBJDUMP) -d $(IMAGE).elf > $(IMAGE).txt
 	@echo + OBJCOPY "->" $(IMAGE_REL).bin
 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
+
+# load the image on npc simulator
+
+run: image
+	@echo + Load "->" $(IMAGE).bin 
+	@$(MAKE) -C $(SIMULATOR_HOME) run ARGS=$(NPC_FLAGS) IMG=$(IMAGE).bin
