@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:40 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 14:42:16
+ * @Last Modified time: 2024-01-18 14:59:51
  */
 
 #include <assert.h>
@@ -42,14 +42,10 @@ extern "C" int vaddr_ifetch(int addr, int len) {
   return paddr_read(addr, len);
 }
 
+// To avoid misjudgement, read addr can be invalid
 extern "C" int vaddr_read(int addr, int len) {
   if (in_pmem(addr)) {
     return paddr_read(addr, len);
-  }
-  // avoid error befor cpu reset
-  else if(!addr) {
-    printf("Warning: detect memory-read addr = 0x0000000, if it emerges during CPU reset, just ignore it\n");
-    return 0;
   }
   // if not in mem, then check mmio
   else
