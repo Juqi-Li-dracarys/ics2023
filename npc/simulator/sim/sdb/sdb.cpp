@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 18:53:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 10:53:58
+ * @Last Modified time: 2024-01-18 10:56:56
  */
 
 #include <common.h>
@@ -251,7 +251,6 @@ static int cmd_b(char *args) {
   return 0;
 }
 
-
 static int cmd_help(char *args);
 
 // The structure decide the next action in the gdb_loop, including the pointer of function
@@ -300,9 +299,12 @@ static int cmd_help(char *args) {
   return 0;
 }
 
+
 void sdb_set_batch_mode() {
   is_batch_mode = true;
 }
+
+
 
 void sdb_mainloop() {
 

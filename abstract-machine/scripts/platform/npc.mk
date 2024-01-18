@@ -36,3 +36,7 @@ run: image
 wave: image
 	@echo + Load "->" $(IMAGE).bin
 	$(MAKE) -C $(SIMULATOR_HOME) ARGS="$(NPC_FLAGS)" IMG="$(IMAGE).bin" wave
+
+gdb: image
+	@echo + Load "->" $(IMAGE).bin
+	$(MAKE) -C $(SIMULATOR_HOME) ARGS="$(NPC_FLAGS)" IMG="$(IMAGE).bin" gdb
