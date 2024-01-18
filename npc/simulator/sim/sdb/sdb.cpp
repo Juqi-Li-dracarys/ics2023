@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 18:53:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 09:57:29
+ * @Last Modified time: 2024-01-18 10:47:00
  */
 
 #include <common.h>
@@ -42,6 +42,7 @@ static int cmd_c(char *args) {
 
 static int cmd_q(char *args) {
   // Change the flag of nemu_state
+  sim_state.state == SIM_QUIT;
 #ifdef CONFIG_ITRACE
   destroy_ring_buffer(ring_head);
 #endif
