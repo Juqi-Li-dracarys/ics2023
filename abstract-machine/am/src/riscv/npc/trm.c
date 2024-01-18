@@ -18,6 +18,7 @@ static const char mainargs[] = MAINARGS;
 void putch(char ch) {
 }
 
+// 内联汇编，结束程序
 void halt(int code) {
   asm volatile(
     "mv a0, %0\n\t"
