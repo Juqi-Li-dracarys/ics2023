@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 17:38:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 08:25:22
+ * @Last Modified time: 2024-01-18 23:06:41
  */
 
 #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
@@ -56,7 +56,7 @@
 #define CONFIG_TRACE_END 10000
 
 // diff test
-#define CONFIG_DIFFTEST 1
+// #define CONFIG_DIFFTEST 1
 
 // Mtrace
 # define CONFIG_MTRACE_COND 1
