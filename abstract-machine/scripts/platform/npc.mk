@@ -31,4 +31,4 @@ image: $(IMAGE).elf
 
 run: image
 	@echo + Load "->" $(IMAGE).bin
-	$(MAKE) -C $(SIMULATOR_HOME) run ARGS="$(NPC_FLAGS)" IMG="$(IMAGE).bin"
+	$(MAKE) -C $(SIMULATOR_HOME) ARGS="$(NPC_FLAGS)" IMG="$(IMAGE).bin" run
