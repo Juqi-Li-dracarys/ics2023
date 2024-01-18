@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 23:28:06
+ * @Last Modified time: 2024-01-18 08:27:41
  */
 
 #include <bits/stdc++.h>
@@ -83,10 +83,10 @@ static void trace_and_difftest(inst_log *_ptr, bool interrupt) {
   IFDEF(CONFIG_DIFFTEST, difftest_step(interrupt));
   
 #ifdef CONFIG_WBCHECK
-  if (check_wp() == true || check_bp(_this) == true) {
+  if (check_wp() == true || check_bp(sim_cpu.pc) == true) {
     // To avoid OJ compile error
-    IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
-    nemu_state.state = NEMU_STOP;
+    IFDEF(CONFIG_ITRACE, puts(_ptr->buf));
+    sim_state.state = SIM_STOP;
   }
 #endif 
 }

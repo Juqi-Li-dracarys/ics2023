@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 17:38:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 22:14:09
+ * @Last Modified time: 2024-01-18 08:25:22
  */
 
 #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
@@ -44,12 +44,23 @@
 #define CONFIG_PMEM_GARRAY 1
 #define CONFIG_FFB_ADDR 0xa2000000
 
-// mannual define
+// Trace
 #define CONFIG_TRACE 1
 #define CONFIG_RVE 1
+
+// Itrace
 #define CONFIG_ITRACE 1
 #define CONFIG_ITRACE_COND 1
 #define ITRACE_COND  1
 #define CONFIG_TRACE_START 0
 #define CONFIG_TRACE_END 10000
+
+// diff test
 #define CONFIG_DIFFTEST 1
+
+// Mtrace
+# define CONFIG_MTRACE_COND 1
+# define MTRACE_COND 1
+
+// watch/break point
+#define CONFIG_WBCHECK 1
