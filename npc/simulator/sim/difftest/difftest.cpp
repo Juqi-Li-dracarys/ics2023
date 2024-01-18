@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:24 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 16:07:29
+ * @Last Modified time: 2024-01-18 23:13:08
  */
 
 #include <dlfcn.h>
@@ -11,7 +11,7 @@
 #include <trace.h>
 #include <reg.h>
 
-#ifdef CONFIG_DIFFTEST 
+
 
 extern inst_log *log_ptr;
 
@@ -25,10 +25,14 @@ void (*difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NUL
 void (*difftest_exec)(uint64_t n) = NULL;
 void (*difftest_raise_intr)(uint64_t NO) = NULL;
 
+
+
 // should skip difftest 
 static bool is_skip_ref = false;
 // the num of instruction that should be skipped
 static int skip_dut_nr_inst = 0;
+
+#ifdef CONFIG_DIFFTEST 
 
 extern uint8_t pmem[];
 static uint8_t ref_pmem[CONFIG_MSIZE];
@@ -160,4 +164,12 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
     Log("Differential testing: %s", ANSI_FMT("OFF", ANSI_FG_GREEN));
 }
 
+
+void difftest_skip_ref() {
+
+}
+
+void difftest_skip_dut(int nr_ref, int nr_dut) {
+
+}
 #endif
