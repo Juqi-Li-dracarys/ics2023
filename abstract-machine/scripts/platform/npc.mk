@@ -17,7 +17,7 @@ LDFLAGS   += --gc-sections -e _start
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
 .PHONY: $(AM_HOME)/am/src/riscv/npc/trm.c
 
-NPC_FLAGS += -l $(shell dirname $(IMAGE).elf)/nemu-log.txt
+NPC_FLAGS += -l $(shell dirname $(IMAGE).elf)/npc-log.txt
 # send the elf dir to the main
 NPC_FLAGS += -f $(IMAGE).elf
 
