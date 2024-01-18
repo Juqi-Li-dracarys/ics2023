@@ -59,7 +59,7 @@ typedef struct log{
   word_t pc;
   word_t inst;
 #ifdef CONFIG_ITRACE
-  char buf [80];
+  char buf [100];
 #endif
 } inst_log;
 
