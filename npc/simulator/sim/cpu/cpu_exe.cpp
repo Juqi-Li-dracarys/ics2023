@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 09:39:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 08:27:41
+ * @Last Modified time: 2024-01-18 14:11:45
  */
 
 #include <bits/stdc++.h>
@@ -146,7 +146,6 @@ void cpu_exec(unsigned int n){
       return;
     default: sim_state.state = SIM_RUNNING;
   }
-  // Lab2 TODO: implement instruction trace for your cpu
 
   uint64_t timer_start = get_time();
   excute(n);
