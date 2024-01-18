@@ -30,5 +30,5 @@ image: $(IMAGE).elf
 # load the image on npc simulator
 
 run: image
-	@echo + Load "->" $(IMAGE).bin 
-	@$(MAKE) -C $(SIMULATOR_HOME) run ARGS=$(NPC_FLAGS) IMG=$(IMAGE).bin
+	@echo + Load "->" $(IMAGE).bin
+	$(MAKE) -C $(SIMULATOR_HOME) run ARGS="$(NPC_FLAGS)" IMG=$(IMAGE).bin
