@@ -1,10 +1,20 @@
+/*
+ * @Author: Juqi Li @ NJU 
+ * @Date: 2024-01-18 22:24:36 
+ * @Last Modified by:   Juqi Li @ NJU 
+ * @Last Modified time: 2024-01-18 22:24:36 
+ */
+
 #include <am.h>
+#include <npc.h>
 
 void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-  uptime->us = 0;
+  uint64_t us_lower = (uint64_t)inl(RTC_ADDR);
+  uint64_t us_higher = (uint64_t)inl(RTC_ADDR + 4);
+  uptime->us = us_lower | (us_higher << 32);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
