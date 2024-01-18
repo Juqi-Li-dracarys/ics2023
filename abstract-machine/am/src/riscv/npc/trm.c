@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 20:57:31
+ * @Last Modified time: 2024-01-18 21:18:52
  */
 
 #include <am.h>
@@ -19,7 +19,7 @@ Area heap = RANGE(&_heap_start, PMEM_END);
 static const char mainargs[] = MAINARGS;
 
 void putch(char ch) {
-  outb(SERIAL_PORT, ch);
+  inb(SERIAL_PORT);
 }
 
 // 内联汇编，结束 npc 
