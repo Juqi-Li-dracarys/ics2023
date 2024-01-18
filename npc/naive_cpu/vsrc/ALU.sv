@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-13 20:39:08 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-14 21:13:34
+ * @Last Modified time: 2024-01-18 15:55:51
  */
 
 // ALU of the CPU
@@ -33,7 +33,7 @@
     01 111 求余，无符号
 */
 
-`define   RV32M    1
+// `define   RV32M    1
 
 module ALU (
     input       [31 : 0]    da,       // input signal A
@@ -128,17 +128,17 @@ module ALU (
     // ALU output control
     always_comb begin
         unique case(ALUctr)
-            5'b00000: begin ALUout = add_result;     ALU_signal = 1'b0; end
-            5'b10000: begin ALUout = add_result;     ALU_signal = 1'b0; end
-            5'b00001: begin ALUout = result_shifter; ALU_signal = 1'b0; end
-            5'b00010: begin ALUout = {32{Less}};     ALU_signal = 1'b0; end
-            5'b00011: begin ALUout = {32{Less}};     ALU_signal = 1'b0; end
-            5'b11000: begin ALUout = db;             ALU_signal = 1'b0; end
-            5'b00100: begin ALUout = da ^ db;        ALU_signal = 1'b0; end
-            5'b00101: begin ALUout = result_shifter; ALU_signal = 1'b0; end
-            5'b10101: begin ALUout = result_shifter; ALU_signal = 1'b0; end
-            5'b00110: begin ALUout = da | db;        ALU_signal = 1'b0; end
-            5'b00111: begin ALUout = da & db;        ALU_signal = 1'b0; end
+            5'b00000: begin ALUout = add_result;          ALU_signal = 1'b0; end
+            5'b10000: begin ALUout = add_result;          ALU_signal = 1'b0; end
+            5'b00001: begin ALUout = result_shifter;      ALU_signal = 1'b0; end
+            5'b00010: begin ALUout = {{31{1'b0}}, Less};  ALU_signal = 1'b0; end
+            5'b00011: begin ALUout = {{31{1'b0}}, Less};  ALU_signal = 1'b0; end
+            5'b11000: begin ALUout = db;                  ALU_signal = 1'b0; end
+            5'b00100: begin ALUout = da ^ db;             ALU_signal = 1'b0; end
+            5'b00101: begin ALUout = result_shifter;      ALU_signal = 1'b0; end
+            5'b10101: begin ALUout = result_shifter;      ALU_signal = 1'b0; end
+            5'b00110: begin ALUout = da | db;             ALU_signal = 1'b0; end
+            5'b00111: begin ALUout = da & db;             ALU_signal = 1'b0; end
             
 `ifdef RV32M
             // M 指令      
