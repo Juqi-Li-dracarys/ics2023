@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-11 23:41:53 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 18:53:15
+ * @Last Modified time: 2024-01-18 08:22:44
  */
 
 // header of all tracer for other module
@@ -24,10 +24,10 @@ void init_wp_pool();
 WP* new_wp();
 void print_wp(void);
 void delete_wp(unsigned int index);
-void set_bp(uint32_t pc_add);
+void set_bp(word_t _pc_addr);
 void delete_bp(void);
 bool check_wp(void);
-bool check_bp(inst_log * s);
+bool check_bp(word_t pc);
 
 
 // Itrace

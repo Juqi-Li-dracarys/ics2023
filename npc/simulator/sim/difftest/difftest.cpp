@@ -11,6 +11,8 @@
 #include <trace.h>
 #include <reg.h>
 
+#ifdef CONFIG_DIFFTEST 
+
 extern inst_log *log_ptr;
 
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
@@ -150,3 +152,10 @@ void difftest_step(bool interrupt) {
   // checkmem(ref_pmem, sim_cpu.pc);
 }
 
+#else
+
+void init_difftest(char *ref_so_file, long img_size, int port) {
+    Log("Differential testing: %s", ANSI_FMT("OFF", ANSI_FG_GREEN));
+}
+
+#endif

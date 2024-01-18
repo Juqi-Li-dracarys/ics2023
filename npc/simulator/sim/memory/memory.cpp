@@ -2,12 +2,15 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:40 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 16:18:42
+ * @Last Modified time: 2024-01-18 08:28:37
  */
 
 #include <assert.h>
 #include <common.h>
 #include <sim.h>
+#include <debug.h>
+
+extern inst_log *log_ptr;
 
 // the physical memory of our simulator
 uint8_t pmem[CONFIG_MSIZE];
@@ -151,13 +154,23 @@ void host_write(void *addr, int len, word_t data) {
 
 // read with addr in riscv code, without mmio
 word_t paddr_read(paddr_t addr, int len) {
-  if (in_pmem(addr)) return host_read(guest_to_host(addr), len);
-  out_of_bound(addr);
-  return 0;
+
+  word_t r_data;
+  if (in_pmem(addr))  
+    r_data = host_read(guest_to_host(addr), len);
+  else 
+    out_of_bound(addr);
+#ifdef CONFIG_MTRACE_COND
+    if (MTRACE_COND) {log_write("MTRACE: 0x%08x\t write %d byte 0x%08x in mem: 0x%08x\n", log_ptr->pc, len, r_data, addr);}
+#endif
+  return r_data;
 }
 
 // write with addr in riscv code, without mmio
 void paddr_write(paddr_t addr, int len, word_t data) {
+  #ifdef CONFIG_MTRACE_COND
+    if (MTRACE_COND) {log_write("MTRACE: 0x%08x\t write %d byte 0x%08x in mem: 0x%08x\n", log_ptr->pc, len, data, addr);}
+  #endif
   if (in_pmem(addr)) { host_write(guest_to_host(addr), len, data); return; }
   out_of_bound(addr);
 }

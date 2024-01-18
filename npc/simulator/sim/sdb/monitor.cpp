@@ -9,10 +9,8 @@
 #include <getopt.h>
 #include <debug.h>
 #include <disasm.h>
+#include <trace.h>
 
-#ifdef CONFIG_FTRACE
-uint8_t init_ftrace(char *elf_addr);
-#endif
 
 extern unsigned char isa_logo[];
 
