@@ -12,6 +12,7 @@ SILENT = -s
 
 override ARGS ?= --log=$(OBJ_DIR)/nemu-log.txt
 override ARGS += $(ARGS_DIFF)
+override ARGS += -b
 
 $(VBIN): $(CSRC) $(VSRC)
 	@echo "$(COLOR_YELLOW)[VERILATOR]$(COLOR_NONE) $(notdir $(OBJ_DIR))/VCPU_TOP"
