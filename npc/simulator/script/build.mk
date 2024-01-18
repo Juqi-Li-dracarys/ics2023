@@ -30,6 +30,11 @@ run: $(VBIN) $(NEMUISO) $(IMG)
 	$(call git_commit, "RUN NPC")
 	@$(VBIN) $(ARGS) $(IMG)
 
+test: $(VBIN) $(NEMUISO) $(IMG)
+	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
+	$(call git_commit, "RUN NPC")
+	@$(VBIN) $(ARGS) $(BATCH_MODE) $(IMG)
+
 gdb: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[GDB IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "GDB NPC")
