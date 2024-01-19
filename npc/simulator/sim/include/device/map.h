@@ -42,8 +42,9 @@ static inline int find_mapid_by_addr(IOMap *maps, int size, paddr_t addr) {
       if(addr == 0xa0000060) {
         printf("fuck it\n");
         printf("got it\n");
+        difftest_skip_ref();
       }
-      difftest_skip_ref();
+      // difftest_skip_ref();
       return i;
     }
   }
