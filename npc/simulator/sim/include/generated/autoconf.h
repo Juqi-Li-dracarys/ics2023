@@ -52,7 +52,7 @@
 #define CONFIG_TRACE_END 10000
 
 
-#define CONFIG_TRACE 1
+// #define CONFIG_TRACE 1
 
 // // Itrace
 // #define CONFIG_ITRACE 1
@@ -60,7 +60,7 @@
 // #define ITRACE_COND  1
 
 // diff test
-#define CONFIG_DIFFTEST 1
+// #define CONFIG_DIFFTEST 1
 
 // // Mtrace
 // # define CONFIG_MTRACE_COND 1

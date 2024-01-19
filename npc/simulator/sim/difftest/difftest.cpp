@@ -177,7 +177,7 @@ void difftest_step(bool interrupt) {
 #else
 
 void init_difftest(char *ref_so_file, long img_size, int port) {
-    Log("Differential testing: %s", ANSI_FMT("OFF", ANSI_FG_GREEN));
+    Log("Differential testing: %s", ANSI_FMT("OFF", ANSI_FG_RED));
 }
 
 
