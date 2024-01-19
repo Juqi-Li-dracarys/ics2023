@@ -149,7 +149,6 @@ static void checkmem(uint8_t *ref_m, vaddr_t pc) {
   }
 }
 
-
 void difftest_step(bool interrupt) {
   CPU_state ref_r;
   if(is_skip_ref) {
