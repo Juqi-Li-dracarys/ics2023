@@ -56,7 +56,6 @@ static void statistic() {
 
 
 static void trace_and_difftest(inst_log *_ptr, bool interrupt) {
-
 #ifdef CONFIG_ITRACE
   char *p = log_ptr->buf;
   p += snprintf(p, sizeof(log_ptr->buf),"ITRACE: " FMT_WORD "\t", log_ptr->pc);
@@ -80,8 +79,6 @@ static void trace_and_difftest(inst_log *_ptr, bool interrupt) {
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_ptr->buf)); }
   // record trace in ring buffer
   IFDEF(CONFIG_ITRACE, ring_head = write_ring_buffer(ring_head, _ptr->buf));
-  IFDEF(CONFIG_DIFFTEST, difftest_step(interrupt));
-  
 #ifdef CONFIG_WBCHECK
   if (check_wp() == true || check_bp(sim_cpu.pc) == true) {
     // To avoid OJ compile error
@@ -89,6 +86,7 @@ static void trace_and_difftest(inst_log *_ptr, bool interrupt) {
     sim_state.state = SIM_STOP;
   }
 #endif 
+  IFDEF(CONFIG_DIFFTEST, difftest_step(interrupt));
 }
 
 
