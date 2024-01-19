@@ -39,7 +39,7 @@ static inline int find_mapid_by_addr(IOMap *maps, int size, paddr_t addr) {
   int i;
   for (i = 0; i < size; i ++) {
     if (map_inside(maps + i, addr)) {
-      if(addr == 0xa0000060) {
+      if(addr == 0xa0000060 || addr == 4294934528) {
         printf("fuck it\n");
         printf("got it\n");
         difftest_skip_ref();
