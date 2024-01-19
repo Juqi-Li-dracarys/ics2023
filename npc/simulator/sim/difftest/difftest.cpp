@@ -86,10 +86,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 }
 
 // copy our registers to nemu
-void difftest_sync(){
-  CPU_state ref_r;
-  difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-  // difftest_regcpy(&sim_cpu, DIFFTEST_TO_REF);
+void difftest_sync() {
+  difftest_regcpy(&sim_cpu, DIFFTEST_TO_REF);
 }
 
 
