@@ -44,26 +44,28 @@
 #define CONFIG_PMEM_GARRAY 1
 #define CONFIG_FFB_ADDR 0xa2000000
 
-// Trace
-#define CONFIG_TRACE 1
+
 #define CONFIG_RVE 1
 
-// Itrace
-#define CONFIG_ITRACE 1
-#define CONFIG_ITRACE_COND 1
-#define ITRACE_COND  1
-#define CONFIG_TRACE_START 0
-#define CONFIG_TRACE_END 10000
+// Trace
+#define CONFIG_TRACE 1
+
+// // Itrace
+// #define CONFIG_ITRACE 1
+// #define CONFIG_ITRACE_COND 1
+// #define ITRACE_COND  1
+// #define CONFIG_TRACE_START 0
+// #define CONFIG_TRACE_END 10000
 
 // diff test
 #define CONFIG_DIFFTEST 1
 
-// Mtrace
-# define CONFIG_MTRACE_COND 1
-# define MTRACE_COND 1
+// // Mtrace
+// # define CONFIG_MTRACE_COND 1
+// # define MTRACE_COND 1
 
-// watch/break point
-#define CONFIG_WBCHECK 1
+// // watch/break point
+// #define CONFIG_WBCHECK 1
 
 // wave record
 // #define WAVE_RECORD 1
