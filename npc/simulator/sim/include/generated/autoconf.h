@@ -48,14 +48,16 @@
 #define CONFIG_RVE 1
 
 // Trace
-#define CONFIG_TRACE 1
+#define CONFIG_TRACE_START 0
+#define CONFIG_TRACE_END 10000
+
+
+// #define CONFIG_TRACE 1
 
 // // Itrace
 // #define CONFIG_ITRACE 1
 // #define CONFIG_ITRACE_COND 1
 // #define ITRACE_COND  1
-// #define CONFIG_TRACE_START 0
-// #define CONFIG_TRACE_END 10000
 
 // diff test
 // #define CONFIG_DIFFTEST 1
