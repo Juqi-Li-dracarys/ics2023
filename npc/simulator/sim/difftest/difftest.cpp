@@ -154,11 +154,11 @@ static void checkmem(uint8_t *ref_m, vaddr_t pc) {
 
 void difftest_step(bool interrupt) {
   CPU_state ref_r;
-  // if(is_skip_next) {
-  //   is_skip_next = false;
-  //   difftest_sync();
-  //   return;
-  // }
+  if(is_skip_next) {
+    is_skip_next = false;
+    difftest_sync();
+    return;
+  }
   difftest_exec(1);
   difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
   // difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
