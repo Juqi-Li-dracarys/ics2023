@@ -43,17 +43,10 @@ typedef struct {
 } CSR;
 
 typedef struct {
-  word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
-  vaddr_t pc;
-  CSR csr;
-} CPU_state;
-
-
-typedef struct {
   word_t gpr[32];
   vaddr_t pc;
   CSR csr;
-} REF_CPU_state;
+} CPU_state;
 
 typedef struct log{
   word_t pc;

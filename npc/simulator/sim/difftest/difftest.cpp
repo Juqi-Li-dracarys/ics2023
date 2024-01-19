@@ -12,7 +12,6 @@
 #include <reg.h>
 
 
-
 extern inst_log *log_ptr;
 
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
@@ -26,7 +25,6 @@ void (*difftest_exec)(uint64_t n) = NULL;
 void (*difftest_raise_intr)(uint64_t NO) = NULL;
 
 
-
 // should skip difftest 
 static bool is_skip_ref = false;
 // the num of instruction that should be skipped
@@ -38,15 +36,17 @@ extern uint8_t pmem[];
 static uint8_t ref_pmem[CONFIG_MSIZE];
 
 // this is used to let ref skip instructions which
-// can not produce consistent behavior with NEMU
+// can not produce consistent behavior with npc simulator
+// we use it when we read device memory 
 void difftest_skip_ref() {
   is_skip_ref = true;
   skip_dut_nr_inst = 0;
 }
 
+// Do not consider it in npc simulator
+// since we use nemu as ref
 void difftest_skip_dut(int nr_ref, int nr_dut) {
   skip_dut_nr_inst += nr_dut;
-
   while (nr_ref -- > 0) {
     difftest_exec(1);
   }
@@ -79,6 +79,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 
   // init difftest
   difftest_init(port);
+  // copy register
+  difftest_regcpy(&sim_cpu, DIFFTEST_TO_REF);
   // copy the memory, the registers, the pc to nemu, so our cpu and nemu can run with the same initial state
   difftest_memcpy(CONFIG_MBASE, guest_to_host(CONFIG_MBASE), CONFIG_MSIZE, DIFFTEST_TO_REF);
 }
@@ -90,7 +92,7 @@ void difftest_sync(){
 
 
 // check the registers with nemu
-bool isa_difftest_checkregs(REF_CPU_state *ref_r, vaddr_t pc) {
+bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
     if(ref_r->gpr[i] != (sim_cpu.gpr[check_reg_idx(i)])) {
       printf("difftest fail @PC = 0x%08x, due to wrong reg[%d].\n", pc, i);
@@ -130,7 +132,7 @@ bool isa_difftest_checkmem(uint8_t *ref_m, vaddr_t pc) {
   return true;
 }
 
-static void checkregs(REF_CPU_state *ref, vaddr_t pc) {
+static void checkregs(CPU_state *ref, vaddr_t pc) {
   if (!isa_difftest_checkregs(ref, pc)) {
     sim_state.state = SIM_ABORT;
     sim_state.halt_pc = pc;
@@ -147,8 +149,14 @@ static void checkmem(uint8_t *ref_m, vaddr_t pc) {
   }
 }
 
+
 void difftest_step(bool interrupt) {
-  REF_CPU_state ref_r;
+  CPU_state ref_r;
+  if(is_skip_ref) {
+    difftest_sync();
+    is_skip_ref = false;
+    return;
+  }
   difftest_exec(1);
   difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
   // difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
