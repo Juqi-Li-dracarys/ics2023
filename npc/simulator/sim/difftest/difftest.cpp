@@ -154,8 +154,9 @@ static void checkmem(uint8_t *ref_m, vaddr_t pc) {
 
 void difftest_step(bool interrupt) {
   CPU_state ref_r;
+  // we should jump diff here
   if(is_skip_next) {
-    is_skip_next = false;
+    is_skip_next = is_skip_ref;
     difftest_sync();
     return;
   }
