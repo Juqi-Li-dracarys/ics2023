@@ -156,7 +156,7 @@ void difftest_step(bool interrupt) {
   CPU_state ref_r;
   if(is_skip_next) {
     is_skip_next = false;
-    // difftest_sync();
+    difftest_sync();
     return;
   }
   difftest_exec(1);
