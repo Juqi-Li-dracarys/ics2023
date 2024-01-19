@@ -30,6 +30,9 @@ static bool is_skip_ref = false;
 // the num of instruction that should be skipped
 static int skip_dut_nr_inst = 0;
 
+// skip in the next cycle
+static bool is_skip_next = false;
+
 #ifdef CONFIG_DIFFTEST 
 
 extern uint8_t pmem[];
@@ -151,18 +154,23 @@ static void checkmem(uint8_t *ref_m, vaddr_t pc) {
 
 void difftest_step(bool interrupt) {
   CPU_state ref_r;
-  if(is_skip_ref) {
+  if(is_skip_next) {
+    is_skip_next = false;
     difftest_sync();
-    is_skip_ref = false;
     return;
   }
   difftest_exec(1);
   difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
   // difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
-  if(!interrupt || is_skip_ref) {
+  if(!interrupt) {
     checkregs(&ref_r, sim_cpu.pc);
     // checkmem(ref_pmem, sim_cpu.pc);
   }
+  if(is_skip_ref) {
+    is_skip_ref = false;
+    is_skip_next = true;
+  }
+  return;
 }
 
 #else
