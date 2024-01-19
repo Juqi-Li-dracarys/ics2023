@@ -134,6 +134,7 @@ bool isa_difftest_checkmem(uint8_t *ref_m, vaddr_t pc) {
 
 static void checkregs(CPU_state *ref, vaddr_t pc) {
   if (!isa_difftest_checkregs(ref, pc)) {
+    printf("%d\n", is_skip_ref);
     sim_state.state = SIM_ABORT;
     sim_state.halt_pc = pc;
     isa_reg_display();
