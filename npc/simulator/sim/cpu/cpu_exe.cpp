@@ -134,7 +134,6 @@ void excute(uint64_t n) {
   }
 }
 
-
 // execute n instructions
 void cpu_exec(unsigned int n){
   g_print_step = (n < MAX_INST_TO_PRINT);
