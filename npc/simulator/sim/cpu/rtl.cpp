@@ -21,16 +21,20 @@ void reset(int n) {
   dut->clk = 0;
   dut->rst = 1;
   dut->eval();
+#ifdef WAVE_RECORD
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
+#endif
   while (n-- > 0) {
     single_cycle();
   }
   dut->rst = 0;
   dut->clk = 0;
   dut->eval();
+#ifdef WAVE_RECORD
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
+#endif
 }
 
 
@@ -38,13 +42,16 @@ void reset(int n) {
 void single_cycle() {
   dut->clk = 1;
   dut->eval();
+#ifdef WAVE_RECORD
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
-
+#endif
   dut->clk = 0;
   dut->eval();
+#ifdef WAVE_RECORD
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
+#endif
   set_state();
 }
 
