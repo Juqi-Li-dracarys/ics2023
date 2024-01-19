@@ -56,7 +56,7 @@
 #define CONFIG_TRACE_END 10000
 
 // diff test
-// #define CONFIG_DIFFTEST 1
+#define CONFIG_DIFFTEST 1
 
 // Mtrace
 # define CONFIG_MTRACE_COND 1
