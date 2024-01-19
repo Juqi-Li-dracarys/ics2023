@@ -58,25 +58,25 @@ void single_cycle() {
 // check if the program should end
 bool signal_detect() {
   if(dut->inst_signal == 1) {
-    Log("RTL: %s, Inst Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_CYAN));
+    Log("HDL: %s, Inst Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
     sim_state.state = SIM_ABORT;
     dut->final();
     return true;
   }
   else if(dut->reg_signal) {
-    Log("RTL: %s, Reg Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_CYAN));
+    Log("HDL: %s, Reg Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
     sim_state.state = SIM_ABORT;
     dut->final();
     return true;
   }
   else if(dut->ALU_signal) {
-    Log("RTL: %s, ALU Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_CYAN));
+    Log("HDL: %s, ALU Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
     sim_state.state = SIM_ABORT;
     dut->final();
     return true;
   }
   else if(dut->inst_signal == 2) {
-    Log("RTL: %s, ebreak detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_CYAN));
+    Log("HDL: %s, ebreak detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
     sim_state.state = SIM_END;
     dut->final();
     return true;
