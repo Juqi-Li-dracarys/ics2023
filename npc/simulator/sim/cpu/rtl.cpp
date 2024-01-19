@@ -36,7 +36,16 @@ void reset(int n) {
 
 // just give a single posedge clk
 void single_cycle() {
+  dut->clk = 0;
   dut->eval();
+  m_trace->dump(contextp->time()); // dump wave
+  contextp->timeInc(5);            // 推动仿真时间
+
+  dut->clk = 0;
+  dut->eval();
+  m_trace->dump(contextp->time()); // dump wave
+  contextp->timeInc(5);            // 推动仿真时间
+
   dut->clk = 1;
   dut->eval();
   m_trace->dump(contextp->time()); // dump wave
