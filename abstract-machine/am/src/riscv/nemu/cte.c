@@ -41,9 +41,8 @@ Context* __am_irq_handle(Context *c) {
     c = user_handler(ev, c);
     assert(c != NULL);
   }
-  // 这里的 return 没有什么用
-  // 因为切换上下文之后
-  // 会以 context 的内容为准
+  // 切换上下文之后的 context
+  // 不一定是之前的 context 指针
   return c;
 }
 
@@ -60,8 +59,11 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
   return true;
 }
 
+// convert PCB into Context
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+  Context *c = (Context *)kstack.end - 1;
+  c->mepc = (uintptr_t)entry;
+  return c;
 }
 
 void yield() {

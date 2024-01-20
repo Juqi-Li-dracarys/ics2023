@@ -41,8 +41,11 @@ f(30) f(31)
 .align 3
 .globl __am_asm_trap
 __am_asm_trap:
+
+  # 开辟栈空间用于保存上下文
   addi sp, sp, -CONTEXT_SIZE
 
+  # 保存上下文
   MAP(REGS, PUSH)
 
   csrr t0, mcause
@@ -58,9 +61,16 @@ __am_asm_trap:
   or t1, t1, a0
   csrw mstatus, t1
 
+  # riscv 默认用寄存器 a0 传入第一个参数
+  # 这里传入函数的栈顶指针，作为 Context*
+  # 之后跳转到 handler 执行
   mv a0, sp
   jal __am_irq_handle
 
+  # 根据返回值改变栈顶指针
+  mv sp, a0
+
+  # 恢复上下文，有可能开始执行其他进程
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
   csrw mstatus, t1
