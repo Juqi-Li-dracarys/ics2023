@@ -11,15 +11,10 @@ static PCB pcb_boot = {};
 PCB *current = NULL;
 
 void naive_uload(PCB *pcb, const char *filename);
+void context_kload(PCB *pcb, void (*entry)(void *), void *arg);
 
 void switch_boot_pcb() {
   current = &pcb_boot;
-}
-
-
-void context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
-  pcb->cp = kcontext((Area) {(void *)(pcb->stack), (void *)(pcb + 1)}, entry, arg);
-  return;
 }
 
 void hello_fun(void *arg) {
@@ -28,19 +23,17 @@ void hello_fun(void *arg) {
     for (int volatile i = 0; i < 100000; i++) ;
     Log("Hello World from Nanos-lite with arg '%p' for the %dth time!", (uintptr_t)arg, j);
     j ++;
-    if(j < 10)
-      yield();
-    else
-      return;
+    yield();
   }
 }
 
 void init_proc() {
-  switch_boot_pcb();
   Log("Initializing processes...");
-  context_kload(&pcb[0], hello_fun, (void *)0L);
-  context_kload(&pcb[1], hello_fun, (void *)1L);
-  naive_uload(&pcb[0], NULL);
+
+  context_kload(&pcb[0], hello_fun, (void *)1L);
+  context_kload(&pcb[1], hello_fun, (void *)2L);
+  switch_boot_pcb();
+  hello_fun((void *)1L);
   // naive_uload(NULL, "/bin/menu");
 }
 

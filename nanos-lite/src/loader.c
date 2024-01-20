@@ -32,12 +32,6 @@
 
 // 解读 elf 文件内容，将单个程序的指令和数据拷贝到正确位置
 static uintptr_t loader(PCB *pcb, const char *filename) {
-
-  if(pcb != NULL) {
-    Context *c = (Context *)(pcb + 1) - 1;
-    return c->mepc;
-  }
-
   uintptr_t fd = 0;
   uintptr_t entry_ = 0x0;
   Elf_Ehdr ehdr = {0};
@@ -101,10 +95,19 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   return entry_;
 }
 
+// 批处理，单进程
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
   Log("Jump to entry = %p", entry);
   // 通过调用这个函数指针，实际上执行了加载文件的代码
   ((void(*)())entry) ();
 }
+
+// 内核线程创建
+void context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
+  pcb->cp = kcontext((Area) {(void *)(pcb->stack), (void *)(pcb + 1)}, entry, arg);
+  return;
+}
+
+
 
