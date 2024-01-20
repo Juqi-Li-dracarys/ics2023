@@ -9,7 +9,7 @@ static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
   // assert(offset == 0 || offset == 4);
   if(offset != 0 && offset != 4) {
     printf("fuck:%d\n", offset);
-    assert(0);
+    sim_state.state = SIM_ABORT;
   }
 
   //注意，这里 offset = 4 读高32位时不会更新（已经修正bug）
