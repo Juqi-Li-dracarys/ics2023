@@ -35,7 +35,7 @@ void hello_fun(void *arg) {
 void init_proc() {
   switch_boot_pcb();
   Log("Initializing processes...");
-  context_kload(&pcb[0], hello_fun, (void *)1L);
+  context_kload(&pcb[0], hello_fun, (void *)0L);
   context_kload(&pcb[1], hello_fun, (void *)1L);
   naive_uload(&pcb[0], NULL);
   // naive_uload(NULL, "/bin/menu");
