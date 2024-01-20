@@ -104,9 +104,16 @@ void naive_uload(PCB *pcb, const char *filename) {
 }
 
 // 内核线程创建
-void context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
+uintptr_t context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
   pcb->cp = kcontext((Area) {(void *)(pcb->stack), (void *)(pcb + 1)}, entry, arg);
-  return;
+  return (uintptr_t)entry;
+}
+
+// 创建用户进程
+uintptr_t context_uload(PCB *pcb, const char *filename) {
+  uintptr_t entry = loader(pcb, filename);
+  pcb->cp = ucontext(NULL, (Area) {(void *)(pcb->stack), (void *)(pcb + 1)}, (void *)entry);
+  return entry;
 }
 
 
