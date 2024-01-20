@@ -28,7 +28,10 @@ void hello_fun(void *arg) {
     for (int volatile i = 0; i < 100000; i++) ;
     Log("Hello World from Nanos-lite with arg '%p' for the %dth time!", (uintptr_t)arg, j);
     j ++;
-    yield();
+    if(j < 10)
+      yield();
+    else
+      return;
   }
 }
 
