@@ -67,10 +67,11 @@ __am_asm_trap:
   mv a0, sp
   jal __am_irq_handle
 
-  # 根据返回值改变栈顶指针
+  # 根据handle返回值改变栈顶指针
   mv sp, a0
 
-  # 恢复上下文，有可能开始执行其他进程
+  # 恢复上下文，从这里开始有可能开始执行其他进程
+  # 即恢复的是其他栈顶指针的上下文
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
   csrw mstatus, t1
