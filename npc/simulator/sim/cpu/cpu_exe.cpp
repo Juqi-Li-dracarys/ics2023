@@ -128,11 +128,11 @@ void excute(uint64_t n) {
       trace_and_difftest(log_ptr, true);
       break;
     }
-
     if(sim_state.state != SIM_RUNNING)
       break;
   }
 }
+
 
 // execute n instructions
 void cpu_exec(unsigned int n){
