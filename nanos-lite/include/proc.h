@@ -7,8 +7,10 @@
 #define STACK_SIZE (8 * PGSIZE)
 
 typedef union {
+  // 上下文栈区内容
   uint8_t stack[STACK_SIZE] PG_ALIGN;
   struct {
+    // 栈顶指针
     Context *cp;
     AddrSpace as;
     // we do not free memory, so use `max_brk' to determine when to call _map()
