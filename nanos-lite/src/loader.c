@@ -135,7 +135,7 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
   *user_stack = 0;
   
   // create string area
-  while(argv[argc]) {
+  while(argv != NULL && argv[argc]) {
     size_t len = strlen(argv[argc]) + 1;
     // 4 字节对齐
     len = (len % 4 == 0) ? len : ((len / 4) + 1) * 4;
@@ -146,7 +146,7 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
     argc++;
   }
 
-  while(envp[envc]) {
+  while(envp != NULL && envp[envc]) {
     size_t len = strlen(envp[envc]) + 1;
     // 4 字节对齐
     len = (len % 4 == 0) ? len : ((len / 4) + 1) * 4;

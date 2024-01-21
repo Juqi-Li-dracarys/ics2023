@@ -32,6 +32,7 @@ void init_proc() {
   Log("Initializing processes...");
   switch_boot_pcb();
 
+  // 注意现在只能从内核线程开始执行
   void *entry = (void *)context_kload(&pcb[0], hello_fun, (void *)1L);
   context_uload(&pcb[1], "/bin/pal", argv, envp);
   Log("Jump to entry = %p", entry);
