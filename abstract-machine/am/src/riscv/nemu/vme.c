@@ -11,6 +11,7 @@ static Area segments[] = {      // Kernel memory mappings
   NEMU_PADDR_SPACE
 };
 
+// 虚拟内存空间
 #define USER_SPACE RANGE(0x40000000, 0x80000000)
 
 static inline void set_satp(void *pdir) {
@@ -67,6 +68,24 @@ void __am_switch(Context *c) {
 }
 
 void map(AddrSpace *as, void *va, void *pa, int prot) {
+  // 各个地址提取
+  uint32_t PPN = PA_PPN((uint32_t)pa);
+  uint32_t VPN_1 = VA_VPN_1((uint32_t)va);
+  uint32_t VPN_2 = VA_VPN_2((uint32_t)va);
+ 
+  // 一级页表的目标位置
+  PTE *VPN_1_TARGET = as->ptr + VPN_1;
+  PTE *VPN_2_BASE = NULL;
+  // 如果一级页表中的页表项的地址为空，则创建页表项
+  if (!(*VPN_1_TARGET)) { 
+    // 设置二级页表的基地址, 指向一个物理页面，专门存储页表
+    *VPN_1_TARGET = (PTE)pgalloc_usr(PGSIZE);
+  }
+  // 第二页表基地址和目标地址
+  VPN_2_BASE = (PTE *)(*VPN_1_TARGET);
+  PTE *VPN_2_TAGET = VPN_2_BASE + VPN_2;
+  // 将物理页号填写到二级页表的页表项中
+  *VPN_2_TAGET = (PPN << 12) | 0xF;
 }
 
 // 创建用户进程
