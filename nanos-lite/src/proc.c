@@ -29,19 +29,22 @@ void init_proc() {
   // char *str_arry_1[2] = {"hello_arg", NULL};
   // char *str_arry_2[2] = {"hello_env", NULL};
 
+
   Log("Initializing processes...");
   switch_boot_pcb();
-  // context_kload(&pcb[0], hello_fun, (void *)1L);
-  // void *entry = (void *)context_uload(&pcb[1], "/bin/pal", str_arry_1, str_arry_2);
-  // ((void(*)())entry) ();
-  naive_uload(NULL, "/bin/menu");
+  context_kload(&pcb[0], hello_fun, (void *)1L);
+  void *entry = (void *)context_uload(&pcb[1], "/bin/pal",NULL, NULL);
+  ((void(*)())entry) ();
+
+
+  // naive_uload(NULL, "/bin/menu");
 }
 
 Context* schedule(Context *prev) {
-  // // 保存当前上下文的栈顶指针
-  // current->cp = prev;
-  // // 切换到另外一个进程
-  // current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
-  // // 返回另一个进程的栈顶指针
+  // 保存当前上下文的栈顶指针
+  current->cp = prev;
+  // 切换到另外一个进程
+  current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
+  // 返回另一个进程的栈顶指针
   return current->cp;
 }
