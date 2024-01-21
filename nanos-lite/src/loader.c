@@ -179,6 +179,17 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
   uintptr_t entry = loader(pcb, filename);
   pcb->cp = ucontext(NULL, kernel_stack, (void *)entry);
   pcb->cp->GPRx = (uintptr_t)user_stack;
+
+  int argc_t = (int)user_stack[0];
+  int envc_t = (int)user_stack[argc_t + 2];
+  char **argv_t = (char **)(user_stack + 1);
+  char **envp_t = (char **)(user_stack + argc_t + 3);
+
+  printf("%d\n", argc_t);
+  printf("%d\n", envc_t);
+  printf("%s\n", argv_t[0]);
+  printf("%s\n", envp_t[0]);
+
   return (uintptr_t)entry;
 }
 
