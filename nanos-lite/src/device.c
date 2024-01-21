@@ -19,7 +19,7 @@ static uint32_t max_height = 0;
 static uint32_t max_width = 0;
 
 size_t serial_write(const void *buf, size_t offset, size_t len) {
-  // yield();
+  yield();
   assert(buf);
   char *ptr = (char *)buf;
   for(int i = 0; i < len; i++) {
@@ -29,7 +29,7 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  // yield();
+  yield();
   assert(buf);
   if(io_read(AM_INPUT_CONFIG).present == true) {
     AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
@@ -61,7 +61,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 // offset len 必须时 4 的倍数
 // 该函数面向屏幕，而不是画布
 size_t fb_write(const void* buf, size_t offset, size_t len) {
-  // yield();
+  yield();
   assert(buf);
   // 换算成像素
   size_t pix_len = 0;
