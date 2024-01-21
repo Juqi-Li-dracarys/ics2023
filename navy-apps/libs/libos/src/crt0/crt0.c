@@ -15,6 +15,6 @@ void call_main(uintptr_t *args) {
   char **argv = (char **)(args + 1);
   // char **envp = (char **)(args + argc + 3);
   environ = empety;
-  exit(main((uint32_t)args, argv, empety));
+  exit(main(argc, argv, empety));
   assert(0);
 }
