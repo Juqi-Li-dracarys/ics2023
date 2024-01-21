@@ -33,6 +33,7 @@ void isa_reg_display() {
     if((i + 1) % 4 == 0)
     putchar('\n');
   }
+  putchar('\n');
   return ;
 }
 
