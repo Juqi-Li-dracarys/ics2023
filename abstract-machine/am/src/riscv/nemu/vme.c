@@ -69,6 +69,7 @@ void __am_switch(Context *c) {
 
 // 确定映射关系
 void map(AddrSpace *as, void *va, void *pa, int prot) {
+  // DO NOT give shit to priority and type
   // 各个地址提取
   uint32_t PPN = PA_PPN((uint32_t)pa);
   uint32_t VPN_1 = VA_VPN_1((uint32_t)va);
@@ -85,6 +86,7 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
   VPN_2_BASE = (PTE *)(VPN_1_BASE[VPN_1]);
   // 将物理页号填写到二级页表的页表项中，低 12 位是标志位
   VPN_2_BASE[VPN_2] = (PPN << 12) | 0xF;
+  return;
 }
 
 
