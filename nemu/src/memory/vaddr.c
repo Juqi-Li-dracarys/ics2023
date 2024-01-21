@@ -16,38 +16,22 @@
 #include <isa.h>
 #include <memory/paddr.h>
 
-
+// virtual memory write or read
 word_t read_vmm(vaddr_t addr, int len, int type) {
-  // 权限检查
-  int flag = isa_mmu_check(addr, len, type);
-  // 恒等映射
   paddr_t paddr = addr;
-  switch (flag) {
-    case MMU_DIRECT:
-        break;
-    case MMU_TRANSLATE:
-        paddr = isa_mmu_translate(addr, len, type);
-        break;
-    case MMU_FAIL:
-        assert(0);
+  // rewrite paddr
+  if(isa_mmu_check(addr, len, type) == MMU_TRANSLATE) {
+    paddr = isa_mmu_translate(addr, len, type);
   }
   return paddr_read(paddr, len);
 }
 
 
-void vaddr_write(vaddr_t addr, int len, word_t data) {
-  // 权限检查
-  int flag = isa_mmu_check(addr, len, MEM_TYPE_WRITE);
-  // 恒等映射
+void write_vmm(vaddr_t addr, int len, word_t data) {
   paddr_t paddr = addr;
-  switch (flag) {
-    case MMU_DIRECT:
-        break;
-    case MMU_TRANSLATE:
-        paddr = isa_mmu_translate(addr, len, MEM_TYPE_WRITE); 
-        break;
-    case MMU_FAIL:
-        assert(0);
+  // rewrite paddr
+  if(isa_mmu_check(addr, len, MEM_TYPE_WRITE) == MMU_TRANSLATE) {
+    paddr = isa_mmu_translate(addr, len, MEM_TYPE_WRITE);
   }
   paddr_write(paddr, len, data);
 }
@@ -60,6 +44,10 @@ word_t vaddr_ifetch(vaddr_t addr, int len) {
 
 word_t vaddr_read(vaddr_t addr, int len) {
   return read_vmm(addr, len, MEM_TYPE_READ);
+}
+
+void vaddr_write(vaddr_t addr, int len, word_t data) {
+  write_vmm(addr, len, data);
 }
 
 
