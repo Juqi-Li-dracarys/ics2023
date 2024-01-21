@@ -18,6 +18,14 @@
 
 #include <common.h>
 
+#define VA_OFFSET(addr) (addr & 0x00000FFF)         // 页面内的偏移
+#define VA_VPN_2(addr)  ((addr >> 12) & 0x000003FF) // 2级页号
+#define VA_VPN_1(addr)  ((addr >> 22) & 0x000003FF) // 1级页号
+ 
+#define PA_OFFSET(addr) (addr & 0x00000FFF)         // 提取物理地址的低 12 位，即在页面内的偏移
+#define PA_PPN(addr)    ((addr >> 12) & 0x000FFFFF) // 提取物理地址的高 20 位，即物理页号
+
+// 寄存器代号
 enum {
   _mepc, _mstatus,
   _mcause, _mtvec, _satp
@@ -37,6 +45,8 @@ typedef struct {
   } inst;
 } MUXDEF(CONFIG_RV64, riscv64_ISADecodeInfo, riscv32_ISADecodeInfo);
 
-#define isa_mmu_check(vaddr, len, type)  ((((cpu.csr[_satp] & 0x80000000) >> 31) == 1) ? MMU_TRANSLATE : MMU_DIRECT)
+
+// 检查最高位是否开启分页
+#define isa_mmu_check(vaddr, len, type)  ((cpu.csr[_satp] & 0x80000000) ? MMU_TRANSLATE : MMU_DIRECT)
 
 #endif
