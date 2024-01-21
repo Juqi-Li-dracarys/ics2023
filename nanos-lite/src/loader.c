@@ -179,7 +179,6 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
   pcb->cp = ucontext(NULL, kernel_stack, (void *)entry);
   pcb->cp->GPRx = (uintptr_t)user_stack;
   return (uintptr_t)entry;
-
 }
 
 

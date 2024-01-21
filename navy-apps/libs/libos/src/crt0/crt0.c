@@ -9,27 +9,19 @@ extern char **environ;
 
 void call_main(uintptr_t *args) {
 
-  // int argc = (int)args[0];
-  // int envc = (int)args[argc + 2];
-  // char **argv = (char **)(args + 1);
-  // char **envp = (char **)(args + argc + 3);
+  int argc = (int)args[0];
+  int envc = (int)args[argc + 2];
+  char **argv = (char **)(args + 1);
+  char **envp = (char **)(args + argc + 3);
 
-  // assert(argc == 1 && envc == 1);
-  // assert(strcmp("hello_arg", argv[0]) == 0);
-  // assert(0);
-
-  // int argc = 0;
-  // char **argv = NULL;
-  // char **envp = NULL;
-
-  // environ = envp;
-
-  // exit(main(argc, argv, envp));
+  assert(argc == 1 && envc == 1);
+  assert(strcmp("hello_arg", argv[0]) == 0);
+  exit(main(argc, argv, envp));
 
 
-  char *empty[] =  {NULL};
-  environ = empty;
-  exit(main(0, empty, empty));
+  // char *empty[] =  {NULL};
+  // environ = empty;
+  // exit(main(0, empty, empty));
 
 
   assert(0);
