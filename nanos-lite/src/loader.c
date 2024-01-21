@@ -186,6 +186,7 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
   char **envp_t = (char **)(user_stack + argc_t + 3);
 
   printf("%p\n", (uintptr_t)user_stack);
+  printf("%p\n", (uintptr_t)(kernel_stack.end));
   printf("%d\n", argc_t);
   printf("%d\n", envc_t);
   printf("%s\n", argv_t[0]);
