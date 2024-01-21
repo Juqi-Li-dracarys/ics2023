@@ -137,7 +137,7 @@ void do_syscall(Context *c) {
     case SYS_close:        c->GPRx = sys_close(c->GPR2);                                         add_strace(SYS_close, gpr2_temp, 0, 0, c->GPRx); break;
     case SYS_brk:          c->GPRx = sys_brk((uintptr_t *)(c->GPR2), c->GPR3);                   add_strace(SYS_brk, gpr2_temp,c->GPR3, 0, c->GPRx); break;
     case SYS_gettimeofday: c->GPRx = sys_gettimeofday((timeval *)c->GPR2, (timezone *)c->GPR3);  add_strace(SYS_gettimeofday, gpr2_temp, c->GPR3, 0, c->GPRx); break;
-    case SYS_execve:       c->GPRx = sys_execve((const char *)c->GPR2);                                        add_strace(SYS_execve, gpr2_temp, 0, 0, c->GPRx); break;
+    case SYS_execve:       c->GPRx = sys_execve((const char *)c->GPR2);                          add_strace(SYS_execve, gpr2_temp, 0, 0, c->GPRx); break;
     default:               panic("Unhandled syscall ID = %d", c->GPR1);
   }
 }
