@@ -30,6 +30,7 @@ void call_main(uintptr_t *args) {
   char *empty[] =  {NULL };
   environ = empty;
   exit(main(0, empty, empty));
-  assert(0);
+
+  
   assert(0);
 }
