@@ -103,7 +103,9 @@ void naive_uload(PCB *pcb, const char *filename) {
   ((void(*)())entry) ();
 }
 
-// 内核线程创建
+// 创建内核线程
+// 目前我们让 pcb.stack 作为内核线程的栈
+// 将内容保存在 pcb.stack 中,将 pcb->cp 作为栈顶
 uintptr_t context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
   pcb->cp = kcontext((Area) {(void *)(pcb->stack), (void *)(pcb + 1)}, entry, arg);
   return (uintptr_t)entry;
