@@ -9,6 +9,8 @@ extern char **environ;
 
 void call_main(uintptr_t *args) {
 
+  char *empty[] =  {NULL};
+
   int argc = (int)args[0];
   int envc = (int)args[argc + 2];
   char **argv = (char **)(args + 1);
@@ -16,12 +18,10 @@ void call_main(uintptr_t *args) {
 
   assert(argc == 1 && envc == 1);
   assert(strcmp("hello_arg", argv[0]) == 0);
-  exit(main(0, argv, envp));
 
 
-  // char *empty[] =  {NULL};
-  // environ = empty;
-  // exit(main(0, empty, empty));
+  environ = empty;
+  exit(main(0, empty, empty));
 
 
   assert(0);
