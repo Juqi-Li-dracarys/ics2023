@@ -106,15 +106,21 @@ void naive_uload(PCB *pcb, const char *filename) {
 // 创建内核线程
 // 将上下文保存在 pcb.stack 中,运行时也用 PCB 栈
 uintptr_t context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
-  pcb->cp = kcontext((Area) {(void *)(pcb->stack), (void *)(pcb + 1)}, entry, arg);
+  Area kernels_stack;
+  kernels_stack.start = pcb->stack;
+  kernels_stack.end = pcb->stack + STACK_SIZE;
+  pcb->cp = kcontext(kernels_stack, entry, arg);
   return (uintptr_t)entry;
 }
 
 // 创建用户进程
 // 将上下文保存在 pcb.stack 中,但运行时的栈要切换到用户栈
 uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]) {
+  Area kernel_stack;
+  kernel_stack.start = pcb->stack;
+  kernel_stack.end = pcb->stack + STACK_SIZE;
   uintptr_t entry = loader(pcb, filename);
-  pcb->cp = ucontext(NULL, (Area) {(void *)(pcb->stack), (void *)(pcb + 1)}, (void *)entry);
+  pcb->cp = ucontext(NULL, kernel_stack, (void *)entry);
   pcb->cp->GPRx = (uintptr_t)heap.end;
   return entry;
 }
