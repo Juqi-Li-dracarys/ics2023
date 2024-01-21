@@ -104,19 +104,17 @@ void naive_uload(PCB *pcb, const char *filename) {
 }
 
 // 创建内核线程
-// 目前我们让 pcb.stack 作为内核线程的栈
-// 将内容保存在 pcb.stack 中,将 pcb->cp 作为栈顶
+// 将上下文保存在 pcb.stack 中,运行时也用 PCB 栈
 uintptr_t context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
   pcb->cp = kcontext((Area) {(void *)(pcb->stack), (void *)(pcb + 1)}, entry, arg);
   return (uintptr_t)entry;
 }
 
 // 创建用户进程
-// 目前我们让 heap.end 作为用户进程的栈顶
-// 将内容保存在 heap 中，而并非将 pcb->cp 作为栈顶
-uintptr_t context_uload(PCB *pcb, const char *filename) {
+// 将上下文保存在 pcb.stack 中,但运行时的栈要切换到用户栈
+uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]) {
   uintptr_t entry = loader(pcb, filename);
-  pcb->cp = ucontext(NULL, heap, (void *)entry);
+  pcb->cp = ucontext(NULL, (Area) {(void *)(pcb->stack), (void *)(pcb + 1)}, (void *)entry);
   pcb->cp->GPRx = (uintptr_t)heap.end;
   return entry;
 }
