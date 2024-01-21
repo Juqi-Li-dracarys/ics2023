@@ -39,6 +39,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   // can't open file
   if((fd = fs_open(filename, 0, 0)) == -1) {
     // 获取ELF头表
+    Log("Warning: laoder fail to open file\n");
     ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
     if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F') {
         Log("error file type.");
