@@ -10,9 +10,10 @@ extern char **environ;
 void call_main(uintptr_t *args) {
   int argc = (int)args[0];
   int envc = (int)args[argc + 2];
-  char **argv = (char **)(args + 1);
-  char **envp = (char **)(args + argc + 3);
-  environ = envp;
+  // char **argv = (char **)(args + 1);
+  // char **envp = (char **)(args + argc + 3);
+  // environ = envp;
+
   exit(main(0, NULL, NULL));
   assert(0);
 }
