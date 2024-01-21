@@ -31,12 +31,14 @@ bool vme_init(void* (*pgalloc_f)(int), void (*pgfree_f)(void*)) {
   kas.ptr = pgalloc_f(PGSIZE);
 
   int i;
+  // 分页
   for (i = 0; i < LENGTH(segments); i ++) {
     void *va = segments[i].start;
     for (; va < segments[i].end; va += PGSIZE) {
       map(&kas, va, va, 0);
     }
   }
+  // 设置一级页表基地址
   set_satp(kas.ptr);
   vme_enable = 1;
 
@@ -65,8 +67,8 @@ void __am_switch(Context *c) {
   }
 }
 
+// 确定映射关系
 void map(AddrSpace *as, void *va, void *pa, int prot) {
-
   // 各个地址提取
   uint32_t PPN = PA_PPN((uint32_t)pa);
   uint32_t VPN_1 = VA_VPN_1((uint32_t)va);
@@ -74,7 +76,7 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
   // 基地址
   PTE *VPN_1_BASE = as->ptr;
   PTE *VPN_2_BASE = NULL;
-  // 一级页表中的页表项的地址为空，则创建页表项
+  // 一级页表页表项的地址为空，则创建页表项
   if (!(VPN_1_BASE[VPN_1])) { 
     // 设置二级页表的基地址, 指向一个物理页面，专门存储页表
     VPN_1_BASE[VPN_1] = (PTE)pgalloc_usr(PGSIZE);
