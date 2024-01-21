@@ -80,7 +80,9 @@ static uintptr_t sys_execve(const char * filename) {
 
 static void sys_exit(uintptr_t status) {
   if(!status) {
-    sys_execve("/bin/menu");
+    // sys_execve("/bin/menu");
+    printf("\nsystem halt in EXIT CODE: %p\n", status);
+    halt(status);
   }
   else {
     printf("\nsystem halt in EXIT CODE: %p\n", status);
