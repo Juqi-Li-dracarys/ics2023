@@ -29,12 +29,12 @@ void init_proc() {
   Log("Initializing processes...");
   switch_boot_pcb();
 
-  // context_kload(&pcb[0], hello_fun, (void *)1L);
-  // void *entry = (void *)context_uload(&pcb[1], "/bin/pal", NULL, NULL);
-  // Log("Jump to entry = %p", entry);
-  // ((void(*)())entry) ();
+  context_kload(&pcb[0], hello_fun, (void *)1L);
+  void *entry = (void *)context_uload(&pcb[1], "/bin/pal", NULL, NULL);
+  Log("Jump to entry = %p", entry);
+  ((void(*)())entry) ();
 
-  naive_uload(NULL, "/bin/pal");
+  // naive_uload(NULL, "/bin/pal");
 }
 
 Context* schedule(Context *prev) {

@@ -27,10 +27,10 @@ void call_main(uintptr_t *args) {
   // exit(main(argc, argv, envp));
 
 
-  char *empty[] =  {NULL };
+  char *empty[] =  {NULL};
   environ = empty;
   exit(main(0, empty, empty));
 
-  
+
   assert(0);
 }
