@@ -121,57 +121,57 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
   kernel_stack.start = pcb->stack;
   kernel_stack.end = pcb->stack + STACK_SIZE;
 
-  // 函数参数压入用户栈
-  int argc = 0;
-  int envc = 0;
-  // 记录字符串在栈中地址
-  char *argv_[100] = {NULL};
-  char *envp_[100] = {NULL};
+  // // 函数参数压入用户栈
+  // int argc = 0;
+  // int envc = 0;
+  // // 记录字符串在栈中地址
+  // char *argv_[100] = {NULL};
+  // char *envp_[100] = {NULL};
 
-  // Set NULL
-  user_stack--;
-  *user_stack = 0;
+  // // Set NULL
+  // user_stack--;
+  // *user_stack = 0;
   
-  // create string area
-  while(argv[argc]) {
-    size_t len = strlen(argv[argc]) + 1;
-    // 4 字节对齐
-    len = (len % 4 == 0) ? len : ((len / 4) + 1) * 4;
-    user_stack = user_stack - (len / 4);
-    strcpy((char *)user_stack, argv[argc]);
-    // 记录字符串开头
-    argv_[argc] = (char *)user_stack;
-    argc++;
-  }
+  // // create string area
+  // while(argv[argc]) {
+  //   size_t len = strlen(argv[argc]) + 1;
+  //   // 4 字节对齐
+  //   len = (len % 4 == 0) ? len : ((len / 4) + 1) * 4;
+  //   user_stack = user_stack - (len / 4);
+  //   strcpy((char *)user_stack, argv[argc]);
+  //   // 记录字符串开头
+  //   argv_[argc] = (char *)user_stack;
+  //   argc++;
+  // }
 
-  while(envp[envc]) {
-    size_t len = strlen(envp[envc]) + 1;
-    // 4 字节对齐
-    len = (len % 4 == 0) ? len : ((len / 4) + 1) * 4;
-    user_stack = user_stack - (len / 4);
-    strcpy((char *)user_stack, envp[envc]);
-    // 记录字符串开头
-    envp_[envc] = (char *)user_stack;
-    envc++;
-  }
+  // while(envp[envc]) {
+  //   size_t len = strlen(envp[envc]) + 1;
+  //   // 4 字节对齐
+  //   len = (len % 4 == 0) ? len : ((len / 4) + 1) * 4;
+  //   user_stack = user_stack - (len / 4);
+  //   strcpy((char *)user_stack, envp[envc]);
+  //   // 记录字符串开头
+  //   envp_[envc] = (char *)user_stack;
+  //   envc++;
+  // }
 
-  // Set NULL
-  user_stack--;
-  *user_stack = 0;
+  // // Set NULL
+  // user_stack--;
+  // *user_stack = 0;
 
-  // NULL 结尾和 argc/envc 的值
-  user_stack -= (argc + envc + 4);
-  user_stack[0] = argc;
-  for(int i = 0; i < argc; i++) {
-    user_stack[1 + i] = (uintptr_t)argv_[i];
-  }
-   // Set NULL
-  user_stack[1 + argc] = 0;
-  user_stack[2 + argc] = envc;
+  // // NULL 结尾和 argc/envc 的值
+  // user_stack -= (argc + envc + 4);
+  // user_stack[0] = argc;
+  // for(int i = 0; i < argc; i++) {
+  //   user_stack[1 + i] = (uintptr_t)argv_[i];
+  // }
+  //  // Set NULL
+  // user_stack[1 + argc] = 0;
+  // user_stack[2 + argc] = envc;
 
-  for(int i = 0; i < envc; i++) {
-    user_stack[3 + argc + i] = (uintptr_t)envp_[i];
-  }
+  // for(int i = 0; i < envc; i++) {
+  //   user_stack[3 + argc + i] = (uintptr_t)envp_[i];
+  // }
 
   // 上下文压入内核栈
   uintptr_t entry = loader(pcb, filename);
