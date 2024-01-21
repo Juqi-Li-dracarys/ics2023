@@ -16,7 +16,7 @@ void call_main(uintptr_t *args) {
 
   assert(argc == 1 && envc == 1);
   assert(strcmp("hello_arg", argv[0]) == 0);
-  exit(main(argc, argv, envp));
+  exit(main(0, argv, envp));
 
 
   // char *empty[] =  {NULL};
