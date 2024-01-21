@@ -7,12 +7,14 @@ int main(int argc, char *argv[], char *envp[]);
 
 extern char **environ;
 
+char *empety[1] = {NULL}; 
+
 void call_main(uintptr_t *args) {
   int argc = (int)args[0];
   int envc = (int)args[argc + 2];
   char **argv = (char **)(args + 1);
-  char **envp = (char **)(args + argc + 3);
-  environ = envp;
-  exit(main((uint32_t)args, argv, envp));
+  // char **envp = (char **)(args + argc + 3);
+  environ = empety;
+  exit(main((uint32_t)args, argv, empety));
   assert(0);
 }
