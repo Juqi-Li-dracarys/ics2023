@@ -22,7 +22,8 @@ void call_main(uintptr_t *args) {
   char **argv = NULL;
   char **envp = NULL;
 
-  environ = envp;
+  // environ = envp;
+  
   exit(main(argc, argv, envp));
   assert(0);
 }
