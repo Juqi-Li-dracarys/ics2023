@@ -28,13 +28,13 @@ static inline uintptr_t get_satp() {
 bool vme_init(void* (*pgalloc_f)(int), void (*pgfree_f)(void*)) {
   pgalloc_usr = pgalloc_f;
   pgfree_usr = pgfree_f;
-  printf("OK1\n");
   kas.ptr = pgalloc_f(PGSIZE);
-  printf("OK2\n");
+
   int i;
   for (i = 0; i < LENGTH(segments); i ++) {
     void *va = segments[i].start;
     for (; va < segments[i].end; va += PGSIZE) {
+      printf("OK\n");
       map(&kas, va, va, 0);
     }
   }
@@ -85,9 +85,10 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
   // 第二页表基地址和目标地址
   VPN_2_BASE = (PTE *)(*VPN_1_TARGET);
   PTE *VPN_2_TAGET = VPN_2_BASE + VPN_2;
-  // 将物理页号填写到二级页表的页表项中
+  // 将物理页号填写到二级页表的页表项中，低 12 位是标志位
   *VPN_2_TAGET = (PPN << 12) | 0xF;
 }
+
 
 // 创建用户进程
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
