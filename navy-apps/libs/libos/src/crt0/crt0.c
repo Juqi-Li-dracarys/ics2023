@@ -18,12 +18,18 @@ void call_main(uintptr_t *args) {
   // assert(strcmp("hello_arg", argv[0]) == 0);
   // assert(0);
 
-  int argc = 0;
-  char **argv = NULL;
-  char **envp = NULL;
+  // int argc = 0;
+  // char **argv = NULL;
+  // char **envp = NULL;
 
   // environ = envp;
-  
-  exit(main(argc, argv, envp));
+
+  // exit(main(argc, argv, envp));
+
+
+  char *empty[] =  {NULL };
+  environ = empty;
+  exit(main(0, empty, empty));
+  assert(0);
   assert(0);
 }
