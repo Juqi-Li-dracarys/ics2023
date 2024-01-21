@@ -200,7 +200,7 @@ $(CLEAN_ALL):
 # APPS = nslider menu nterm bird pal
 APPS = pal
 # TESTS = dummy hello file-test timer-test event-test bmp-test fixed-test eof-test
-TESTS =
+TESTS = hello
 
 ### Compile and all elfs from APPS and TESTS to bin
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
