@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 int main(int argc, char *argv[], char *envp[]);
 
@@ -13,6 +14,8 @@ void call_main(uintptr_t *args) {
   char **envp = (char **)(args + argc + 3);
 
   assert(argc == 1 && envc == 1);
+  assert(strcmp("hello_arg", argv[0]) == 0);
+  
   // int argc = 0;
   // char **argv = NULL;
   // char **envp = NULL;
