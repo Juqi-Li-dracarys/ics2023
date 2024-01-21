@@ -69,6 +69,10 @@ void __am_switch(Context *c) {
 void map(AddrSpace *as, void *va, void *pa, int prot) {
 }
 
+// 创建用户进程
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
-  return NULL;
+  Context *c = (Context *)kstack.end - 1;
+  c->mepc = (uintptr_t)entry;
+  c->mstatus = 0x1800;
+  return c;
 }

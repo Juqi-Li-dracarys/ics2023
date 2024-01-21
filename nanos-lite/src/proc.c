@@ -12,6 +12,7 @@ PCB *current = NULL;
 
 void naive_uload(PCB *pcb, const char *filename);
 void context_kload(PCB *pcb, void (*entry)(void *), void *arg);
+uintptr_t context_uload(PCB *pcb, const char *filename);
 
 void switch_boot_pcb() {
   current = &pcb_boot;
@@ -31,8 +32,8 @@ void init_proc() {
   Log("Initializing processes...");
   switch_boot_pcb();
   context_kload(&pcb[0], hello_fun, (void *)1L);
-  context_kload(&pcb[1], hello_fun, (void *)2L);
-  hello_fun((void *)0L);
+  void *entry = (void *)context_uload(&pcb[1], "/bin/menu");
+  ((void(*)())entry) ();
   // naive_uload(NULL, "/bin/menu");
 }
 

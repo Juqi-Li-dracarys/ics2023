@@ -110,9 +110,12 @@ uintptr_t context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
 }
 
 // 创建用户进程
+// 目前我们让 heap.end 作为用户进程的栈顶
+// 将内容保存在 heap 中，而并非将 pcb->cp 作为栈顶
 uintptr_t context_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
-  pcb->cp = ucontext(NULL, (Area) {(void *)(pcb->stack), (void *)(pcb + 1)}, (void *)entry);
+  pcb->cp = ucontext(NULL, heap, (void *)entry);
+  pcb->cp->GPRx = (uintptr_t)heap.end;
   return entry;
 }
 
