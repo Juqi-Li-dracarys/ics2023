@@ -21,5 +21,6 @@ int main(int argc, char *argv[], char *envp[]) {
 
   printf("0x%08x\n", argc);
   printf("%s\n", argv[0]);
+  printf("%s\n", envp[0]);
   return 0;
 }

@@ -175,23 +175,12 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
     user_stack[3 + argc + i] = (uintptr_t)envp_[i];
   }
 
-  // 上下文压入内核栈
+  // 将上下文压入内核栈
+  // 当需要恢复此上下文时，先跳转到内核栈恢复上下文
+  // 然后通过 start.s 启动文件修正栈指针到用户栈上面
   uintptr_t entry = loader(pcb, filename);
   pcb->cp = ucontext(NULL, kernel_stack, (void *)entry);
   pcb->cp->GPRx = (uintptr_t)user_stack;
-
-  int argc_t = (int)user_stack[0];
-  int envc_t = (int)user_stack[argc_t + 2];
-  char **argv_t = (char **)(user_stack + 1);
-  char **envp_t = (char **)(user_stack + argc_t + 3);
-
-  printf("%p\n", (uintptr_t)user_stack);
-  printf("%p\n", (uintptr_t)(kernel_stack.end));
-  printf("%d\n", argc_t);
-  printf("%d\n", envc_t);
-  printf("%s\n", argv_t[0]);
-  printf("%s\n", envp_t[0]);
-
   return (uintptr_t)entry;
 }
 
