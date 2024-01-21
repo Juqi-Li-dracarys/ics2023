@@ -95,6 +95,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   return entry_;
 }
 
+
 // 批处理，单进程
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
@@ -116,7 +117,7 @@ uintptr_t context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
 // 创建用户进程
 // 将上下文保存在 pcb.stack 中,但运行时的栈要切换到用户栈
 uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]) {
-  
+
   // Area kernel_stack;
   // uintptr_t *user_stack = (uintptr_t *)heap.end;
   // kernel_stack.start = pcb->stack;
