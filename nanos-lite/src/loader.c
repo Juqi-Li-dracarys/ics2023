@@ -95,7 +95,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   return entry_;
 }
 
-
 // 批处理，单进程
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
@@ -181,17 +180,14 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
   // pcb->cp->GPRx = (uintptr_t)user_stack;
   // return (uintptr_t)entry;
 
-
-
   //这里用PCB的stack
   Area stack;
   stack.start = pcb->stack;
   stack.end = pcb->stack + STACK_SIZE;
   uintptr_t entry = loader(pcb, filename);
- 
   pcb->cp = ucontext(NULL, stack, (void*)entry);
   //这里用heap，表示用户栈
-  pcb->cp->GPRx = (uintptr_t) heap.end;
+  pcb->cp->GPRx = (uintptr_t)heap.end;
   return entry;
 }
 
