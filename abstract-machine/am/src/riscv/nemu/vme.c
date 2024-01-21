@@ -71,7 +71,7 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
 
 // 创建用户进程
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
-  Context *c = (Context *)(kstack.end);
+  Context *c = (Context *)(kstack.end-sizeof(Context));
   c->mepc = (uintptr_t)entry;
   c->mstatus = 0x1800;
   return c;
