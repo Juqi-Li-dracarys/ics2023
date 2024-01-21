@@ -116,10 +116,10 @@ uintptr_t context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
 // 创建用户进程
 // 将上下文保存在 pcb.stack 中,但运行时的栈要切换到用户栈
 uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]) {
-  Area kernel_stack;
-  uintptr_t *user_stack = (uintptr_t *)heap.end;
-  kernel_stack.start = pcb->stack;
-  kernel_stack.end = pcb->stack + STACK_SIZE;
+  // Area kernel_stack;
+  // uintptr_t *user_stack = (uintptr_t *)heap.end;
+  // kernel_stack.start = pcb->stack;
+  // kernel_stack.end = pcb->stack + STACK_SIZE;
 
   // // 函数参数压入用户栈
   // int argc = 0;
@@ -173,11 +173,24 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
   //   user_stack[3 + argc + i] = (uintptr_t)envp_[i];
   // }
 
-  // 上下文压入内核栈
+  // // 上下文压入内核栈
+  // uintptr_t entry = loader(pcb, filename);
+  // pcb->cp = ucontext(NULL, kernel_stack, (void *)entry);
+  // pcb->cp->GPRx = (uintptr_t)user_stack;
+  // return (uintptr_t)entry;
+
+
+
+  //这里用PCB的stack
+  Area stack;
+  stack.start = pcb->stack;
+  stack.end = pcb->stack + STACK_SIZE;
   uintptr_t entry = loader(pcb, filename);
-  pcb->cp = ucontext(NULL, kernel_stack, (void *)entry);
-  pcb->cp->GPRx = (uintptr_t)user_stack;
-  return (uintptr_t)entry;
+ 
+  pcb->cp = ucontext(NULL, stack, (void*)entry);
+  //这里用heap，表示用户栈
+  pcb->cp->GPRx = (uintptr_t) heap.end;
+  return entry;
 }
 
 
