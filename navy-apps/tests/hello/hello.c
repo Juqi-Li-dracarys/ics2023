@@ -19,7 +19,7 @@ int main(int argc, char *argv[], char *envp[]) {
   // printf("%s", buf);
 
 
-  printf("%d\n", argc);
+  printf("0x%08x\n", argc);
   printf("%s\n", argv[0]);
   return 0;
 }
