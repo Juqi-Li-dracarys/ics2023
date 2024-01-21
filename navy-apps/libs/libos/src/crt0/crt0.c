@@ -8,10 +8,9 @@ extern char **environ;
 
 void call_main(uintptr_t *args) {
   int argc = (int)args[0];
-  // 从参数中获取argv的地址
   char **argv = (char **)(args + 1);
-  // 从参数中获取envp的地址
-  char **envp = (char **)(args + argc + 1);
+  // char **envp = (char **)(args + argc + 1);
+  char **envp = NULL;
   environ = envp;
   exit(main(argc, argv, envp));
   assert(0);
