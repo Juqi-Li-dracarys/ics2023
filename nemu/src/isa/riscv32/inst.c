@@ -30,7 +30,7 @@ enum {
 
 enum {
   MEPC = 0x341, MSTATUS=0x300, 
-  MCAUSE = 0x342, MTVEC=0x305
+  MCAUSE = 0x342, MTVEC=0x305, SATP=0x180
 };
 
 // rs转寄存器的数
@@ -67,6 +67,7 @@ static inline word_t decode_csr(uint32_t code) {
     case MSTATUS: return _mstatus; break;
     case MCAUSE:  return _mcause;  break;
     case MTVEC:   return _mtvec;   break;
+    case SATP:    return _satp;    break;
     default: assert(0); break;
   }
 }

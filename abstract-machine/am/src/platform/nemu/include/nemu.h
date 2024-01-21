@@ -44,6 +44,16 @@ extern char _pmem_start;
 
 typedef uintptr_t PTE;
 
+
 #define PGSIZE    4096
+
+
+#define VA_OFFSET(addr) (addr & 0x00000FFF)         // 页面内的偏移
+#define VA_VPN_2(addr)  ((addr >> 12) & 0x000003FF) // 2级页号
+#define VA_VPN_1(addr)  ((addr >> 22) & 0x000003FF) // 1级页号
+ 
+#define PA_OFFSET(addr) (addr & 0x00000FFF)         //提取物理地址的低 12 位，即在页面内的偏移
+#define PA_PPN(addr)    ((addr >> 12) & 0x000FFFFF) //提取物理地址的高 20 位，即物理页号
+
 
 #endif

@@ -20,14 +20,14 @@
 
 enum {
   _mepc, _mstatus,
-  _mcause, _mtvec
+  _mcause, _mtvec, _satp
 };
 
 typedef struct {
   word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
   vaddr_t pc;
   // RISCV CSR registers for exception and interruption
-  word_t csr[4];
+  word_t csr[5];
 } MUXDEF(CONFIG_RV64, riscv64_CPU_state, riscv32_CPU_state);
 
 // decode
@@ -37,6 +37,6 @@ typedef struct {
   } inst;
 } MUXDEF(CONFIG_RV64, riscv64_ISADecodeInfo, riscv32_ISADecodeInfo);
 
-#define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)
+#define isa_mmu_check(vaddr, len, type)  ((((cpu.csr[_satp] & 0x80000000) >> 31) == 1) ? MMU_TRANSLATE : MMU_DIRECT)
 
 #endif
