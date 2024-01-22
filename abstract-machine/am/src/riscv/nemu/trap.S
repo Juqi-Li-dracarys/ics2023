@@ -57,9 +57,9 @@ __am_asm_trap:
   STORE t2, OFFSET_EPC(sp)
 
   # set mstatus.MPRV to pass difftest
-  #li a0, (1 << 17)
-  #or t1, t1, a0
-  #csrw mstatus, t1
+  li a0, (1 << 17)
+  or t1, t1, a0
+  csrw mstatus, t1
 
   # riscv 默认用寄存器 a0 传入第一个参数
   # 这里传入函数的栈顶指针，作为 Context*

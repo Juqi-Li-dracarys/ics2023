@@ -18,7 +18,7 @@
 #include <memory/paddr.h>
 
 paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
-  // DO NOT give shit to priority and type
+  // just give priority and type a shit
   uint32_t VPN_1 = VA_VPN_1((uint32_t)vaddr);
   uint32_t VPN_2 = VA_VPN_2((uint32_t)vaddr);
   // 根据 satp 取出一级页表基地址
