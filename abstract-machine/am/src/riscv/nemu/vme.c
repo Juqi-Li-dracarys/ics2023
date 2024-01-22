@@ -70,7 +70,7 @@ void __am_switch(Context *c) {
 
 // 确定映射关系
 void map(AddrSpace *as, void *va, void *pa, int prot) {
-  // DO NOT give shit to priority and type
+  // just give priority and type a shit
   // 各个地址提取
   uint32_t PPN = PA_PPN((uint32_t)pa);
   uint32_t VPN_1 = VA_VPN_1((uint32_t)va);
