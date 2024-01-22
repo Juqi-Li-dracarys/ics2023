@@ -40,7 +40,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 // 判断是否中断跳转
 word_t isa_query_intr() {
   // MIE = 1 且 cpu 中断位启动, 则产生中断信号
-  if (cpu.INTR && (cpu.csr[_mstatus] & (1 << MIE_OFFSET))) { 
+  if (cpu.INTR && (cpu.csr[_mstatus] & (1 << MIE_OFFSET))) {
       cpu.INTR = false;
       return IRQ_TIMER;
   }
