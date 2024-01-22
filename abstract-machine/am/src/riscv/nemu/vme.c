@@ -1,6 +1,7 @@
 #include <am.h>
 #include <nemu.h>
 #include <klib.h>
+#include <riscv/riscv.h>
 
 static AddrSpace kas = {};
 static void* (*pgalloc_usr)(int) = NULL;
@@ -95,6 +96,6 @@ Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
   // 内核栈顶部存放 context
   Context *c = (Context *)(kstack.end) - 1;
   c->mepc = (uintptr_t)entry;
-  c->mstatus = 0x1800;
+  c->mstatus =  0x1800 | (1 << MPIE_OFFSET);
   return c;
 }

@@ -26,6 +26,7 @@ Context* __am_irq_handle(Context *c) {
     // judge the event type accroding to $a7
     switch (c->GPR1) {
       case 0xffffffff: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
+      case 0x80000007: ev.event = EVENT_IRQ_TIMER; break;
       default: {
         if(c->GPR1 >= 0 && c->GPR1 <= 19) {
           ev.event = EVENT_SYSCALL;
@@ -46,6 +47,7 @@ Context* __am_irq_handle(Context *c) {
   return c;
 }
 
+
 extern void __am_asm_trap(void);
 
 bool cte_init(Context*(*handler)(Event, Context*)) {
@@ -64,7 +66,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   // 内核栈顶部存放 context
   Context *c = (Context *)(kstack.end) - 1;
   c->mepc = (uintptr_t)entry;
-  c->mstatus = 0x1800;
+  c->mstatus = 0x1800 | (1 << MPIE_OFFSET);
   c->GPR2 = (uintptr_t)arg;
   return c;
 }
