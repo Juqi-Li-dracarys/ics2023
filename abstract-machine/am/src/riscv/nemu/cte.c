@@ -6,6 +6,9 @@
  * @Last Modified time: 2023-12-28 23:26:29 
  */
 
+// timer interrupt for riscv32
+#define IRQ_TIMER 0x80000007
+
 #include <am.h>
 #include <riscv/riscv.h>
 #include <klib.h>
@@ -23,22 +26,26 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
-    // judge the event type accroding to $a7
-    switch (c->GPR1) {
-      case 0xffffffff: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
-      case 0x80000007: ev.event = EVENT_IRQ_TIMER; break;
-      default: {
-        if(c->GPR1 >= 0 && c->GPR1 <= 19) {
-          ev.event = EVENT_SYSCALL;
-          c->mepc = c->mepc + 4;
+    if(c->mstatus == IRQ_TIMER) {
+        ev.event = EVENT_IRQ_TIMER;
+    }
+    else if(c->mstatus == 0xb){
+        switch (c->GPR1) {
+        case 0xffffffff: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
+        default: {
+          if(c->GPR1 >= 0 && c->GPR1 <= 19) {
+            ev.event = EVENT_SYSCALL;
+            c->mepc = c->mepc + 4;
+          }
+          else {
+            ev.event = EVENT_ERROR;
+            c->mepc = c->mepc + 4;
+          }
+          break;
         }
-        else {
-          ev.event = EVENT_ERROR;
-          c->mepc = c->mepc + 4;
-        }
-        break;
       }
     }
+    else assert(0);
     c = user_handler(ev, c);
     assert(c != NULL);
   }
