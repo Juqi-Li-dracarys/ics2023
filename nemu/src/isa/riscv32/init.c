@@ -34,7 +34,7 @@ static void restart() {
   /* mstaus register is 0x1800. */
   // 开启中断
   cpu.gpr[0] = 0;
-  cpu.csr[_mstatus] = 0x1800 | (1 << MPIE_OFFSET);
+  cpu.csr[_mstatus] = 0x1800 | (1 << MIE_OFFSET);
 }
 
 void init_isa() {

@@ -19,8 +19,9 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 #define PTE_A 0x40
 #define PTE_D 0x80
 
-// 寄存器 mstatus MPIE 位
+// 寄存器 mstatus
 #define MPIE_OFFSET 7
+#define MIE_OFFSET 3
 
 enum { MODE_U, MODE_S, MODE_M = 3 };
 #define MSTATUS_MXR  (1 << 19)
