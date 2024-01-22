@@ -30,9 +30,8 @@
 #define MIE_OFFSET 3
 #define MPIE_OFFSET 7
 
-// timer interrupt for riscv32
+// timer interrupt for riscv32， mcause value
 #define IRQ_TIMER 0x80000007
-
 
 // 寄存器代号
 enum {
