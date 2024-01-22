@@ -31,7 +31,7 @@ Context* __am_irq_handle(Context *c) {
         ev.event = EVENT_IRQ_TIMER;
     }
     // 异常
-    else if(c->mcause == 0xb){
+    else if(c->mcause == 0xb) {
         switch (c->GPR1) {
         case 0xffffffff: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
         default: {
@@ -47,7 +47,7 @@ Context* __am_irq_handle(Context *c) {
         }
       }
     }
-    else assert(0);
+    else {assert(0);}
     c = user_handler(ev, c);
     assert(c != NULL);
   }
