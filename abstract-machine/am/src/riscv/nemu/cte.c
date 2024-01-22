@@ -66,6 +66,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   // 内核栈顶部存放 context
   Context *c = (Context *)(kstack.end) - 1;
   c->mepc = (uintptr_t)entry;
+  // 在恢复上下文时， MIE 位会为 1
   c->mstatus = 0x1800 | (1 << MPIE_OFFSET);
   c->GPR2 = (uintptr_t)arg;
   return c;
