@@ -26,10 +26,12 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
-    if(c->mstatus == IRQ_TIMER) {
+    // 中断
+    if(c->mcause == IRQ_TIMER) {
         ev.event = EVENT_IRQ_TIMER;
     }
-    else if(c->mstatus == 0xb){
+    // 异常
+    else if(c->mcause == 0xb){
         switch (c->GPR1) {
         case 0xffffffff: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
         default: {
