@@ -23,6 +23,9 @@
 #define Mr vaddr_read
 #define Mw vaddr_write
 
+// 重新开启定时器中断
+void set_intr();
+
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_B, TYPE_RE,
   TYPE_N // none
@@ -131,7 +134,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("0100000 ????? ????? 101 ????? 0110011", sra    ,RE, R(rd) = (uint32_t)((int32_t)src1 >> BITS(src2, 4, 0)));
   INSTPAT("0000000 ????? ????? 101 ????? 0110011", srl    ,RE, R(rd) = (src1 >> BITS(src2, 4, 0)));
   INSTPAT("0000001 ????? ????? 011 ????? 0110011", mulhu  ,RE, R(rd) = (word_t)((((uint64_t)src1) * ((uint64_t)src2)) >> 32));
-  INSTPAT("0011000 00010 00000 000 00000 1110011", mret   ,RE, s->dnpc = CSR(_mepc));
+  INSTPAT("0011000 00010 00000 000 00000 1110011", mret   ,RE, s->dnpc = CSR(_mepc); set_intr());
 
   INSTPAT("??????? ????? ????? ??? ????? 1101111", jal    , J, R(rd) = s->pc + 4; s->dnpc = s->pc + (imm << 1));
 
@@ -152,5 +155,3 @@ int isa_exec_once(Decode *s) {
   s->isa.inst.val = inst_fetch(&s->snpc, 4);
   return decode_exec(s);
 }
-
-

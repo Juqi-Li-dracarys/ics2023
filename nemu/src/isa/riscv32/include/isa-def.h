@@ -18,12 +18,21 @@
 
 #include <common.h>
 
+// VMM offset
 #define VA_OFFSET(addr) (addr & 0x00000FFF)         // 页面内的偏移
 #define VA_VPN_2(addr)  ((addr >> 12) & 0x000003FF) // 2级页号
 #define VA_VPN_1(addr)  ((addr >> 22) & 0x000003FF) // 1级页号
  
 #define PA_OFFSET(addr) (addr & 0x00000FFF)         // 提取物理地址的低 12 位，即在页面内的偏移
 #define PA_PPN(addr)    ((addr >> 12) & 0x000FFFFF) // 提取物理地址的高 20 位，即物理页号
+
+// OFFSET of msatus
+#define MIE_OFFSET 3
+#define MPIE_OFFSET 7
+
+// timer interrupt for riscv32
+#define IRQ_TIMER 0x80000007
+
 
 // 寄存器代号
 enum {
@@ -36,6 +45,7 @@ typedef struct {
   vaddr_t pc;
   // RISCV CSR registers for exception and interruption
   word_t csr[5];
+  bool INTR;
 } MUXDEF(CONFIG_RV64, riscv64_CPU_state, riscv32_CPU_state);
 
 // decode

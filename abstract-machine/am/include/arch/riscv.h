@@ -7,6 +7,7 @@
 #define NR_REGS 32
 #endif
 
+// 上下文结构
 // orgnize the following code according to trap.s
 struct Context {
   uintptr_t gpr[NR_REGS], mcause, mstatus, mepc;

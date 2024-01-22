@@ -15,5 +15,8 @@
 
 #include <isa.h>
 
+// 产生定时器中断
 void dev_raise_intr() {
+    cpu.INTR = true;
+    return;
 }
