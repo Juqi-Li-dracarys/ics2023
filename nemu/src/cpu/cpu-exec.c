@@ -94,7 +94,7 @@ static void execute(uint64_t n) {
     // 查询时钟中断信号
     word_t intr = isa_query_intr();
     if (intr != INTR_EMPTY) {
-      // cpu.pc = isa_raise_intr(intr, cpu.pc);
+      cpu.pc = isa_raise_intr(intr, cpu.pc);
     }
   }
 }
