@@ -23,7 +23,7 @@ void reset_intr() {
 }
 
 // 开启中断使能
-// 将mstatus.MPIE 还原到 mstatus.MIE 中, 然后将 mstatus.MPIE 位置为1
+// 将mstatus.MPIE 还原到 mstatus.MIE 中, 然后将 mstatus.MPIE 位置为 1
 void set_intr() { 
   cpu.csr[_mstatus] = (cpu.csr[_mstatus] & ~(1 << MIE_OFFSET)) | ((cpu.csr[_mstatus] >> MPIE_OFFSET) & 0x1) << MIE_OFFSET;
   cpu.csr[_mstatus] |= (1 << MPIE_OFFSET);
