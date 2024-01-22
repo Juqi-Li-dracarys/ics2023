@@ -14,6 +14,7 @@ void switch_boot_pcb() {
   current = &pcb_boot;
 }
 
+// 内核线程
 void hello_fun(void *arg) {
   int j = 1;
   while (1) {
@@ -35,6 +36,7 @@ void init_proc() {
   context_kload(&pcb[0], hello_fun, (void *)1L);
   context_uload(&pcb[1], "/bin/pal", argv, envp);
   yield();
+
   // Log("Jump to entry = %p", entry);
   // ((void(*)())entry) ();
 }
