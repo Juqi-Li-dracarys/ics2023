@@ -6,9 +6,9 @@ Context* schedule(Context *prev);
 static Context* do_event(Event e, Context* c) {
   Context* next_context = c;
   switch (e.event) {
-    case EVENT_YIELD:     next_context = schedule(c);   break;
-    case EVENT_SYSCALL:   do_syscall(c);                break;
-    // case EVENT_IRQ_TIMER: next_context = schedule(c);   break;
+    case EVENT_YIELD:     next_context = schedule(c);                     break;
+    case EVENT_SYSCALL:   do_syscall(c);                                  break;
+    case EVENT_IRQ_TIMER: next_context = schedule(c); Log("IRQ TIMER\n"); break;
     default: panic("Unhandled event ID = %d", e.event);
   }
   return next_context;
