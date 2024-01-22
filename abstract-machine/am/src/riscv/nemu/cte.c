@@ -77,7 +77,6 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   c->mepc = (uintptr_t)entry;
   // 在恢复上下文时， MIE 位会为 1
   c->mstatus = 0x1800 | (1 << MPIE_OFFSET);
-  // c->mstatus =  0x1800;
   c->GPR2 = (uintptr_t)arg;
   return c;
 }
