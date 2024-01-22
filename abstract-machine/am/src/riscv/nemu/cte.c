@@ -24,13 +24,11 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 // 6. 回到 __am_asm_trap，再次切换上下文
 
 Context* __am_irq_handle(Context *c) {
-  assert(0);
   if (user_handler) {
     Event ev = {0};
     // 中断
     if(c->mcause == IRQ_TIMER) {
-        // ev.event = EVENT_IRQ_TIMER;
-        assert(0);
+        ev.event = EVENT_IRQ_TIMER;
     }
     // 异常
     else if(c->mcause == 0xb) {
