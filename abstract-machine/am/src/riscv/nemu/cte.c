@@ -28,7 +28,8 @@ Context* __am_irq_handle(Context *c) {
     Event ev = {0};
     // 中断
     if(c->mcause == IRQ_TIMER) {
-        ev.event = EVENT_IRQ_TIMER;
+        // ev.event = EVENT_IRQ_TIMER;
+        assert(0);
     }
     // 异常
     else if(c->mcause == 0xb) {
