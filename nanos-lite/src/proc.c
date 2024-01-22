@@ -32,10 +32,11 @@ void init_proc() {
   switch_boot_pcb();
 
   // 从内核线程开始执行
-  void *entry = (void *)context_kload(&pcb[0], hello_fun, (void *)1L);
+  context_kload(&pcb[0], hello_fun, (void *)1L);
   context_uload(&pcb[1], "/bin/pal", argv, envp);
-  Log("Jump to entry = %p", entry);
-  ((void(*)())entry) ();
+  yield();
+  // Log("Jump to entry = %p", entry);
+  // ((void(*)())entry) ();
 }
 
 Context* schedule(Context *prev) {
