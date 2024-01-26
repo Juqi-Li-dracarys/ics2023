@@ -8,12 +8,16 @@
 #include <common.h>
 #include <sim.h>
 #include <debug.h>
+#include <reg.h>
 
 // load the state of your simulated cpu into sim_cpu
 void set_state() {
   sim_cpu.pc = dut->pc_cur;
   memcpy(&sim_cpu.gpr[0], cpu_gpr, sizeof(uint32_t) * MUXDEF(CONFIG_RVE, 16, 32));
-  // // Lab4 TODO: set the state of csr to sim_cpu
+  memcpy(&sim_cpu.csr.mstatus, cpu_mstatus, sizeof(uint32_t));
+  memcpy(&sim_cpu.csr.mepc, cpu_mepc, sizeof(uint32_t));
+  memcpy(&sim_cpu.csr.mcause, cpu_mcause, sizeof(uint32_t));
+  memcpy(&sim_cpu.csr.mtvec, cpu_mtvec, sizeof(uint32_t));
 }
 
 // reset the cpu
