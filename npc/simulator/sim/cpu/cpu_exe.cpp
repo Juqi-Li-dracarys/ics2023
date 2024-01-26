@@ -33,7 +33,7 @@ inst_log *log_ptr = new inst_log;
 
 // reg dpi-c
 uint32_t *cpu_gpr = NULL;
-uint32_t *cpu_mstatus = NULL, *cpu_mtvec = NULL, *cpu_mepc = NULL, *cpu_mcause = NULL;
+uint32_t *cpu_csr = NULL;
 
 // init the running state of our simulator
 SimState sim_state = { .state = SIM_STOP };

@@ -29,8 +29,7 @@ module REG_FILE #(parameter gpr_reg_num = 5'd16, csr_reg_num = 5'd4, gpr_reg_wid
 
     // DIP-C in verilog
     import "DPI-C" function void set_gpr_ptr(input logic [31 : 0] a []);
-    import "DPI-C" function void set_csr_ptr(input logic [31 : 0] a, 
-    input logic [31 : 0] b, input logic [31 : 0] c, input logic [31 : 0] d);
+    import "DPI-C" function void set_csr_ptr(input logic [31 : 0] b []);
 
 
     // mstatus mtvec mepc mcause;
@@ -41,7 +40,7 @@ module REG_FILE #(parameter gpr_reg_num = 5'd16, csr_reg_num = 5'd4, gpr_reg_wid
     // set the ptr to register
     initial begin
         set_gpr_ptr(gpr_reg);
-        set_csr_ptr(csr_reg[0], csr_reg[1], csr_reg[2], csr_reg[3]);
+        set_csr_ptr(csr_reg);
     end
 
 
