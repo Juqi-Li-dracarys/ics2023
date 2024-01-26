@@ -49,9 +49,6 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
 }
 
 // set the pointers pint to you cpu's csr
-extern "C" void set_csr_ptr(const svLogicVecVal *mstatus, const svLogicVecVal *mtvec, const svLogicVecVal *mepc, const svLogicVecVal *mcause) {
-  cpu_mstatus = (uint32_t *)(((VerilatedDpiOpenVar*)mstatus)->datap());
-  cpu_mtvec = (uint32_t *)(((VerilatedDpiOpenVar*)mtvec)->datap());
-  cpu_mepc = (uint32_t *)(((VerilatedDpiOpenVar*)mepc)->datap());
-  cpu_mcause = (uint32_t *)(((VerilatedDpiOpenVar*)mcause)->datap());
+extern "C" void set_csr_ptr(const svOpenArrayHandle r) {
+  cpu_csr = (uint32_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }

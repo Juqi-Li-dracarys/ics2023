@@ -5,10 +5,7 @@
 #include <sim.h>
 
 extern uint32_t *cpu_gpr;
-extern uint32_t *cpu_mstatus;
-extern uint32_t *cpu_mtvec; 
-extern uint32_t *cpu_mepc;
-extern uint32_t *cpu_mcause;
+extern uint32_t *cpu_csr;
 
 extern const char *regs[];
 
