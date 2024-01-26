@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-14 09:07:03 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-26 19:25:40
+ * @Last Modified time: 2024-01-26 19:27:52
  */
 
 // TOP module
@@ -50,7 +50,6 @@ module CPU_TOP #(parameter PC_RST = 32'h80000000) (
     wire                       Less;
     wire                       Zero;
     wire       [31 : 0]        ALUout;   // output of the result
-
 
 
     // Memory
