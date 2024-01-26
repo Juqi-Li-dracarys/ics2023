@@ -14,10 +14,10 @@
 void set_state() {
   sim_cpu.pc = dut->pc_cur;
   memcpy(&sim_cpu.gpr[0], cpu_gpr, sizeof(uint32_t) * MUXDEF(CONFIG_RVE, 16, 32));
-  memcpy(&sim_cpu.csr.mstatus, cpu_mstatus, sizeof(uint32_t));
-  memcpy(&sim_cpu.csr.mepc, cpu_mepc, sizeof(uint32_t));
-  memcpy(&sim_cpu.csr.mcause, cpu_mcause, sizeof(uint32_t));
-  memcpy(&sim_cpu.csr.mtvec, cpu_mtvec, sizeof(uint32_t));
+  memcpy(&(sim_cpu.csr.mstatus), cpu_mstatus, sizeof(uint32_t));
+  // memcpy(&sim_cpu.csr.mepc, cpu_mepc, sizeof(uint32_t));
+  // memcpy(&sim_cpu.csr.mcause, cpu_mcause, sizeof(uint32_t));
+  // memcpy(&sim_cpu.csr.mtvec, cpu_mtvec, sizeof(uint32_t));
 }
 
 // reset the cpu
