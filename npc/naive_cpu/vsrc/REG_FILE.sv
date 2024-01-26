@@ -2,13 +2,12 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-12 20:25:26 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 11:58:34
+ * @Last Modified time: 2024-01-26 19:23:43
  */
 
 // register file for RV32E
 
-
-module REG_FILE #(parameter gpr_reg_num = 5'd16, csr_reg_num = 5'd4, gpr_reg_width = 4, csr_reg_width = 2)(
+module REG_FILE #(parameter gpr_reg_num = 5'd16, csr_reg_num = 5'd4, gpr_reg_width = 4, csr_reg_width = 2) (
     input             clk,                      // clk for write
     input             rst,
     input   [31 : 0]  inst,
@@ -22,9 +21,10 @@ module REG_FILE #(parameter gpr_reg_num = 5'd16, csr_reg_num = 5'd4, gpr_reg_wid
     wire      [4 : 0]       rs2;
     wire      [4 : 0]       rd;
 
+
     assign rs1 = inst[19 : 15];
     assign rs2 = inst[24 : 20];
-    assign rd = inst[11 : 7];
+    assign rd =  inst[11 : 7];
 
 
     // DIP-C in verilog

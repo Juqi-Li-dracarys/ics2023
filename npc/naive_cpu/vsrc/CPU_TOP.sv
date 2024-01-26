@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-14 09:07:03 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-14 10:36:45
+ * @Last Modified time: 2024-01-26 19:25:40
  */
 
 // TOP module
@@ -61,17 +61,17 @@ module CPU_TOP #(parameter PC_RST = 32'h80000000) (
     // 模块例化
     // PC 计数器
     PC pc0 (
-        .clk, .rst, .*
+        .*
     );
 
     // 指令存储器
     INST_MEM inst0 (
-        .clk, .rst, .*
+        .*
     );
 
     // 通用寄存器组
     REG_FILE reg0 (
-        .clk, .rst, .*
+        .*
     );
 
     // 控制器
