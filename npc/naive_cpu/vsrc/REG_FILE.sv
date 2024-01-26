@@ -32,7 +32,7 @@ module REG_FILE #(parameter gpr_reg_num = 5'd16, csr_reg_num = 5'd4, gpr_reg_wid
     import "DPI-C" function void set_csr_ptr(input logic [31 : 0] b []);
 
 
-    // mstatus mtvec mepc mcause;
+    // mstatus mtvec mepc mcause
     reg  [31 : 0]   gpr_reg  [0 : gpr_reg_num - 1];
     reg  [31 : 0]   csr_reg  [0 : csr_reg_num - 1];
 
