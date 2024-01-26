@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-12 20:11:50 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 23:31:11
+ * @Last Modified time: 2024-01-26 20:30:25
  */
 
 // Main control of CPU
@@ -211,8 +211,22 @@ module CRTL_GEN (
             MemOp = func3;
             inst_signal = 2'b00;
         end
+
         // I 型指令的第四部分(ebreak)
-        else if(op == 7'b1110011) begin
+        else if(op == 7'b1110011 && inst[31 : 20] == 12'b1) begin
+            ExtOp = `I_type;
+            RegWr = 1'b0;
+            ALUAsrc = 1'b0;
+            ALUBsrc = 2'b00;
+            ALUctr = 5'b00000;
+            Branch = 3'b000;
+            MemtoReg = 1'b0;
+            MemWr = 1'b0;
+            MemOp = 3'b000;  
+            inst_signal = 2'b10;
+        end
+        // I 型指令的第五部分(ecall)
+        else if(op == 7'b1110011 && inst[31 : 20] == 12'b0) begin
             ExtOp = `I_type;
             RegWr = 1'b0;
             ALUAsrc = 1'b0;
