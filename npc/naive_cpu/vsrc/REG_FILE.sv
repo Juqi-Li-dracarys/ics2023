@@ -58,7 +58,7 @@ module REG_FILE #(parameter gpr_reg_num = 5'd16, csr_reg_num = 5'd4, gpr_reg_wid
             end
             csr_reg[0] <= 32'h1800;
         end
-        else if(RegWr) begin
+        else if(RegWr && rd != 5'b0) begin
             if(rd < gpr_reg_num)
                 gpr_reg[rd[3 : 0]] <= rf_busW;
             else 
