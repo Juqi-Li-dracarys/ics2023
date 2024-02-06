@@ -225,6 +225,7 @@ module CRTL_GEN (
             MemOp = 3'b000;  
             inst_signal = 2'b10;
         end
+        
         // I 型指令的第五部分(ecall)
         else if(op == 7'b1110011 && inst[31 : 20] == 12'b0) begin
             ExtOp = `I_type;
