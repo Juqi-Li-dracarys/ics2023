@@ -27,10 +27,11 @@ module CRTL_GEN (
 
     // 控制是否对寄存器 rd 进行写回，为 1 时写回寄存器
     output reg               RegWr,
+    output reg               CSRWr,
 
     // 选择 ALU 输入端 A 的来源
     // 0 时选择 rs1, 为 1 时选择 PC
-    output reg               ALUAsrc,
+    output reg   [1 : 0]     ALUAsrc,
 
     // ALU 输入端 B 的来源
     // 00 时选择 rs2
@@ -76,7 +77,8 @@ module CRTL_GEN (
         unique if(op == 7'b0110011) begin
             ExtOp = `R_type;
             RegWr = 1'b1;
-            ALUAsrc = 1'b0;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b0;
             ALUBsrc = 2'b00;
             ALUctr = {func7[5], func7[0], func3};
             Branch = 3'b000;
@@ -90,7 +92,8 @@ module CRTL_GEN (
         else if(op == 7'b1100011) begin
             ExtOp = `B_type;
             RegWr = 1'b0;
-            ALUAsrc = 1'b0;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b0;
             ALUBsrc = 2'b00;
             unique case(func3)
                 // beq
@@ -131,7 +134,8 @@ module CRTL_GEN (
         else if(op == 7'b0100011) begin
             ExtOp = `S_type;
             RegWr = 1'b0;
-            ALUAsrc = 1'b0;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b0;
             ALUBsrc = 2'b01;
             ALUctr = 5'b00000;
             Branch = 3'b000;
@@ -145,7 +149,8 @@ module CRTL_GEN (
         else if(op == 7'b0010111 || op == 7'b0110111) begin
             ExtOp = `U_type;
             RegWr = 1'b1;
-            ALUAsrc = 1'b1;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b1;
             ALUBsrc = 2'b01;
             // aupic or lui
             ALUctr = (op == 7'b0010111 ? 5'b00000 : 5'b11000);
@@ -160,7 +165,8 @@ module CRTL_GEN (
         else if(op == 7'b1101111) begin
             ExtOp = `J_type;
             RegWr = 1'b1;
-            ALUAsrc = 1'b1;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b1;
             ALUBsrc = 2'b10;
             ALUctr = 5'b00000;
             Branch = 3'b001;
@@ -174,7 +180,8 @@ module CRTL_GEN (
         else if(op == 7'b0010011) begin
             ExtOp = `I_type;
             RegWr = 1'b1;
-            ALUAsrc = 1'b0;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b0;
             ALUBsrc = 2'b01;
             ALUctr = (func3 == 3'b101 && func7[5]) ? {2'b10, func3} : {2'b00, func3};
             Branch = 3'b000;
@@ -188,7 +195,8 @@ module CRTL_GEN (
         else if(op == 7'b1100111) begin
             ExtOp = `I_type;          
             RegWr = 1'b1;
-            ALUAsrc = 1'b1;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b1;
             ALUBsrc = 2'b10;
             ALUctr = 5'b00000;
             Branch = 3'b010;
@@ -202,7 +210,8 @@ module CRTL_GEN (
         else if(op == 7'b0000011) begin
             ExtOp = `I_type;          
             RegWr = 1'b1;
-            ALUAsrc = 1'b0;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b0;
             ALUBsrc = 2'b01;
             ALUctr = 5'b00000;
             Branch = 3'b000;
@@ -216,7 +225,8 @@ module CRTL_GEN (
         else if(op == 7'b1110011 && inst[31 : 20] == 12'b1) begin
             ExtOp = `I_type;
             RegWr = 1'b0;
-            ALUAsrc = 1'b0;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b0;
             ALUBsrc = 2'b00;
             ALUctr = 5'b00000;
             Branch = 3'b000;
@@ -230,21 +240,23 @@ module CRTL_GEN (
         else if(op == 7'b1110011 && inst[31 : 20] == 12'b0) begin
             ExtOp = `I_type;
             RegWr = 1'b0;
-            ALUAsrc = 1'b0;
+            CSRWr = 1'b1;
+            ALUAsrc = 2'b0;
             ALUBsrc = 2'b00;
             ALUctr = 5'b00000;
             Branch = 3'b000;
             MemtoReg = 1'b0;
             MemWr = 1'b0;
             MemOp = 3'b000;  
-            inst_signal = 2'b10;
+            inst_signal = 2'b00;
         end
 
         // should not reach here
         else begin
             ExtOp = `N_type;
             RegWr = 1'b0;
-            ALUAsrc = 1'b0;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b0;
             ALUBsrc = 2'b00;
             ALUctr = 5'b00000;
             Branch = 3'b000;
