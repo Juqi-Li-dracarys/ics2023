@@ -58,7 +58,7 @@
 // #define ITRACE_COND  1
 
 // // diff test
-// #define CONFIG_DIFFTEST 1
+#define CONFIG_DIFFTEST 1
 
 // // Mtrace
 // # define CONFIG_MTRACE_COND 1
@@ -68,6 +68,6 @@
 // #define CONFIG_WBCHECK 1
 
 // wave record
-#define WAVE_RECORD 1
+// #define WAVE_RECORD 1
 
 
