@@ -49,8 +49,8 @@
 #define CONFIG_TRACE_START 0
 #define CONFIG_TRACE_END 10000
 
-// // Trace
-// #define CONFIG_TRACE 1
+// Trace
+#define CONFIG_TRACE 1
 
 // // Itrace
 // #define CONFIG_ITRACE 1
