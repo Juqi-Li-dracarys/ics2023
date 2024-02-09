@@ -88,6 +88,21 @@ module CRTL_GEN (
             inst_signal = 2'b00;
         end
 
+        // R 型指令解析(mret)
+        else if(op == 7'b1110011 && inst[31 : 20] == 12'b001100000010) begin
+            ExtOp = `R_type;
+            RegWr = 1'b0;
+            CSRWr = 1'b0;
+            ALUAsrc = 2'b0;
+            ALUBsrc = 2'b00;
+            ALUctr = 5'b0;
+            Branch = 3'b011;
+            MemtoReg = 1'b0;
+            MemWr = 1'b0;
+            MemOp = 3'b000;
+            inst_signal = 2'b00;
+        end
+
         // B 型指令
         else if(op == 7'b1100011) begin
             ExtOp = `B_type;
@@ -243,6 +258,21 @@ module CRTL_GEN (
             CSRWr = 1'b1;
             ALUAsrc = 2'b0;
             ALUBsrc = 2'b00;
+            ALUctr = 5'b00000;
+            Branch = 3'b011;
+            MemtoReg = 1'b0;
+            MemWr = 1'b0;
+            MemOp = 3'b000;  
+            inst_signal = 2'b00;
+        end
+
+        // I 型指令的第六部分(csrrw/csrrs)
+        else if(op == 7'b1110011 && (func3 == 3'b001 || func3 == 3'b010)) begin
+            ExtOp = `I_type;
+            RegWr = 1'b1;
+            CSRWr = 1'b1;
+            ALUAsrc = 2'b10;
+            ALUBsrc = 2'b11;
             ALUctr = 5'b00000;
             Branch = 3'b000;
             MemtoReg = 1'b0;

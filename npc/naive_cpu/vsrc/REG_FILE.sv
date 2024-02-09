@@ -64,16 +64,32 @@ module REG_FILE #(parameter gpr_reg_num = 5'd16, csr_reg_num = 5'd4) (
         set_csr_ptr(csr_reg);
     end
 
-
-    always_comb begin: intenal_ctr_csr
+    // calculate addr by imm
+    always_comb begin: intenal_ctr_csr_1
         unique case (inst[31 : 20])
             // ecall
-            12'd0:   begin CSR_Raddr = mtvec;   CSR_Waddr = mepc;     csr_busW = pc_cur;  end
-            12'd773: begin CSR_Raddr = mtvec;   CSR_Waddr = mtvec;    csr_busW = rf_busA; end
-            12'd768: begin CSR_Raddr = mstatus; CSR_Waddr = mstatus;  csr_busW = rf_busA; end
-            12'd834: begin CSR_Raddr = mcause;  CSR_Waddr = mcause;   csr_busW = rf_busA; end
-            12'd833: begin CSR_Raddr = mepc;    CSR_Waddr = mepc;     csr_busW = rf_busA; end
-            default: begin CSR_Raddr = mtvec;   CSR_Waddr = mepc;     csr_busW = pc_cur;  end
+            12'd0:   begin  CSR_Raddr = mtvec;   CSR_Waddr = mepc;     end
+            // other csr instructions
+            12'd773: begin  CSR_Raddr = mtvec;   CSR_Waddr = mtvec;    end
+            12'd768: begin  CSR_Raddr = mstatus; CSR_Waddr = mstatus;  end
+            12'd834: begin  CSR_Raddr = mcause;  CSR_Waddr = mcause;   end
+            12'd833: begin  CSR_Raddr = mepc;    CSR_Waddr = mepc;     end
+            // mret
+            12'd770: begin  CSR_Raddr = mepc;    CSR_Waddr = mepc;     end
+            // shoul not reach here
+            default: begin  CSR_Raddr = mtvec;   CSR_Waddr = mepc;     end
+        endcase
+    end
+
+    // calculate write data by func
+    always_comb begin: intenal_ctr_csr_2
+        unique case (inst[14 : 12])
+        // ecall
+        3'b000:  begin  csr_busW = pc_cur;              end
+        // csrrw
+        3'b001:  begin  csr_busW = rf_busA;             end
+        3'b010:  begin  csr_busW = rf_busA | csr_busA;  end
+        default: begin  csr_busW = pc_cur;              end
         endcase
     end
 
