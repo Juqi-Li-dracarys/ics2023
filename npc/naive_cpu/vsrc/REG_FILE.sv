@@ -115,7 +115,7 @@ module REG_FILE #(parameter gpr_reg_num = 5'd16, csr_reg_num = 5'd4) (
 
 
     // Error sinal
-    assign reg_signal = RegWr && (rd == 4'b0);
+    assign reg_signal = (RegWr && (rd == 4'b0));
 
 endmodule
 
