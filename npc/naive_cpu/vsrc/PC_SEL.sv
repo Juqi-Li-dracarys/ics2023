@@ -9,10 +9,11 @@
 
 module PC_SEL(
     input     [31 : 0]     pc_cur,
-    input     [31 : 0]     rs1,
+    input     [31 : 0]     rf_busA,
+    input     [31 : 0]     csr_busA,
     input     [31 : 0]     imm,
     input                  PCAsrc,
-    input                  PCBsrc,
+    input     [1 : 0]      PCBsrc,
     output    [31 : 0]     pc_next
 );
 
@@ -28,12 +29,14 @@ module PC_SEL(
         })
     );
     
-    MuxKey #(2, 1, 32) M2 (
+    MuxKey #(4, 2, 32) M2 (
         .out(B_line), 
         .key(PCBsrc), 
         .lut({
-            1'b0, pc_cur,
-            1'b1, rs1
+            2'd0, pc_cur,
+            2'd1, rf_busA,
+            2'd2, csr_busA,
+            2'd3, 32'b0
         })
     );
 
