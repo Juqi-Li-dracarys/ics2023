@@ -49,7 +49,7 @@ module BRANCH (
             3'b111: begin
                 PCAsrc = ~Less; PCBsrc = 2'b0;
             end
-            // ecall
+            // ecall and mret
             3'b011: begin
                 PCAsrc = 1'b1; PCBsrc = 2'h2;
             end

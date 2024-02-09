@@ -32,7 +32,7 @@ module IMM_GEN (
             `J_type:                                                                          // J type
                 imm = {{12{inst[31]}}, inst[19 : 12], inst[20], inst[30 : 21], 1'b0};
             default:
-                imm = 32'b0;
+                imm = 32'b0;                                                                  // R-type
         endcase
     end
 
