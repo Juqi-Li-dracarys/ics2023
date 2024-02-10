@@ -98,17 +98,17 @@ word_t isa_raise_intr(word_t NO, word_t epc) {
 
 // static uint32_t cpu_mode = 0x11;
 
-static void push_prv(word_t *mstatus) {
-  uint32_t tem = ((*mstatus & 0x1ff) << 3) | 0x6;
-  *mstatus &= ~(0xfff);
-  *mstatus |= tem;
-}
+// static void push_prv(word_t *mstatus) {
+//   uint32_t tem = ((*mstatus & 0x1ff) << 3) | 0x6;
+//   *mstatus &= ~(0xfff);
+//   *mstatus |= tem;
+// }
 
-static void pop_prv(word_t *mstatus) {
-  uint32_t tem = ((*mstatus & (0x1ff << 3)) >> 3) | (0x1 << 9);
-  *mstatus &= ~(0xfff);
-  *mstatus |= tem;
-}
+// static void pop_prv(word_t *mstatus) {
+//   uint32_t tem = ((*mstatus & (0x1ff << 3)) >> 3) | (0x1 << 9);
+//   *mstatus &= ~(0xfff);
+//   *mstatus |= tem;
+// }
 
 static int decode_exec(Decode *s) {
   int rd = 0;
@@ -193,8 +193,8 @@ static int decode_exec(Decode *s) {
   //other
   INSTPAT("0000000 00000 00000 001 00000 00011 11", fence.i, N, ;);
   INSTPAT("0000??? ????? 00000 000 00000 00011 11", fence  , N, ;);
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(11, s->pc); push_prv(&cpu.csr.mstatus));
-  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , N, s->dnpc = cpu.csr.mepc; pop_prv(&cpu.csr.mstatus));
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(11, s->pc); /*push_prv(&cpu.csr.mstatus)*/);
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , N, s->dnpc = cpu.csr.mepc; /*pop_prv(&cpu.csr.mstatus)*/);
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
 
