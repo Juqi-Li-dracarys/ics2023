@@ -2,10 +2,13 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-10 11:02:23 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-10 11:04:28
+ * @Last Modified time: 2024-02-10 11:07:18
  */
 
 // exception handle for NPC
+
+// timer interrupt for riscv32
+#define IRQ_TIMER 0x80000007
 
 #include <am.h>
 #include <riscv/riscv.h>
