@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 16:33:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 08:31:00
+ * @Last Modified time: 2024-02-10 13:36:40
  */
 
 #include <common.h>
@@ -10,7 +10,6 @@
 #include <debug.h>
 #include <disasm.h>
 #include <trace.h>
-
 
 extern unsigned char isa_logo[];
 
@@ -36,6 +35,7 @@ static const uint32_t img [] = {
 void init_isa() {
   // load built-in image size
   memcpy(guest_to_host(CONFIG_MBASE), img, sizeof(img));
+  sim_cpu.csr.mstatus = 0x1800;
   return ;
 }
 
