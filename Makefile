@@ -55,7 +55,7 @@ endef
 submit:
 	git gc
 	git push $(GIT_NAME) --all
-	STUID=$(STUID) STUNAME=$(STUNAME) bash -c "$$(curl -s http://why.ink:8080/static/submit.sh)"
+# STUID=$(STUID) STUNAME=$(STUNAME) bash -c "$$(curl -s http://why.ink:8080/static/submit.sh)"
 
 _default:
 	@echo "Please run 'make' under subprojects."
