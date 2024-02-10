@@ -71,7 +71,7 @@ word_t csr_read(word_t index) {
 }
 
 void csr_write(word_t index, word_t wdata) {
-  // printf("csr_write: index = %x, data = %x\n", index, wdata);
+  printf("csr_write: index = %x, data = %x\n", index, wdata);
   switch (index) {
     case 0x300:
       cpu.csr.mstatus = wdata;
