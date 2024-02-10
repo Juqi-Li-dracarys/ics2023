@@ -16,6 +16,7 @@ struct Context {
 
 // macro for syscall
 // ARGS_ARRAY ("ecall", "a7", "a0", "a1", "a2", "a0")
+// NPC support
 #ifdef __riscv_e
 #define GPR1 gpr[15] // a5
 #else
