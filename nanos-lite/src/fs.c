@@ -48,7 +48,7 @@ static Finfo file_table[] __attribute__((used)) = {
 };
 
 void init_fs() {
-  // file_table[FD_FB].size = io_read(AM_GPU_CONFIG).vmemsz;
+  file_table[FD_FB].size = io_read(AM_GPU_CONFIG).vmemsz;
   // 真实文件，读取磁盘即可
   // 虚拟文件，调用对应的读写函数
   for(uintptr_t i = DEVICE_NUM; i < sizeof(file_table) / sizeof(Finfo); i++) {
