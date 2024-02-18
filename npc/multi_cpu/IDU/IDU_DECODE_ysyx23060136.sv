@@ -1,11 +1,14 @@
 /*
  * @Author: Juqi Li @ NJU 
- * @Date: 2024-02-17 11:40:44 
+ * @Date: 2024-02-18 20:50:42 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-18 17:40:54
+ * @Last Modified time: 2024-02-19 00:07:20
  */
 
+
 // basic decode unit
+// first stage decoder of CPU
+// Support ISA: riscv32-e
 
 module IDU_DECODE_ysyx23060136(
     input    [31 : 0]    inst,
@@ -17,7 +20,7 @@ module IDU_DECODE_ysyx23060136(
     output   [4 : 0]     rs2,
     output   [6 : 0]     func7,
     // ===========================================================================
-    // ALU type define
+    // ALU calculating type define
     output               ALU_add,
     output               ALU_sub,
     // 带符号小于
@@ -35,19 +38,51 @@ module IDU_DECODE_ysyx23060136(
     // 直接输出
     output               ALU_explicit,
     // ===========================================================================
+    // ALU input 1, input 2 type
+    output               ALU_i1_rs1,
+    output               ALU_i1_pc,
+
+    output               ALU_i2_rs2,
+    output               ALU_i2_imm,
+    output               ALU_i2_4,
+    output               ALU_i2_csr,    
+    // ===========================================================================
     // OP type
-    output               is_R_type,
-    output               is_I_type
-    
+    output               op_R_type,
+    output               op_I_type,
+    output               op_B_type,
+    output               op_J_type,
+    output               op_U_type,
+    output               op_S_type,
+    // ===========================================================================
+    // jump
+    output               jump,
+    output               pc_plus_imm,
+    output               rs1_plus_imm,
+    output               csr_plus_imm,
+    // ===========================================================================
+    // write register
+    output               write_gpr,
+    output               write_csr,
+    output               mem_to_reg,
+
+    // ===========================================================================
+    // write/read memory
+    output               write_mem,    
+    output               mem_byte,   
+    output               mem_half,    
+    output               mem_word,     
+    output               mem_byte_u,  
+    output               mem_half_u
 ) ; 
 
     // ===========================================================================
-    assign  opcode  =   inst [6 : 0];
-    assign  rd      =   inst [11 : 7];
-    assign  func3   =   inst [14 : 12];
-    assign  rs1     =   inst [19 : 15];
-    assign  rs2     =   inst [24 : 20];
-    assign  func7   =   inst [31 : 25];
+    assign  opcode  =   inst[6 : 0];
+    assign  rd      =   inst[11 : 7];
+    assign  func3   =   inst[14 : 12];
+    assign  rs1     =   inst[19 : 15];
+    assign  rs2     =   inst[24 : 20];
+    assign  func7   =   inst[31 : 25];
 
     logic opcode_1_0_00  = (opcode[1 : 0] == 2'b00);
     logic opcode_1_0_01  = (opcode[1 : 0] == 2'b01);
@@ -108,19 +143,6 @@ module IDU_DECODE_ysyx23060136(
     
     // ===========================================================================
     // ALU Instructions are relative to imm(I type)
-    // ExtOp = `I_type;
-    // RegWr = 1'b1;
-    // CSRWr = 1'b0;
-    // ALUAsrc = 2'b0;
-    // ALUBsrc = 2'b01;
-    // ALUctr = (func3 == 3'b101 && func7[5]) ? {2'b10, func3} : {2'b00, func3};
-    // Branch = 3'b000;
-    // MemtoReg = 1'b0;
-    // MemWr = 1'b0;
-    // MemOp = 3'b000;
-    // inst_signal = 2'b00;
-
-
     logic rv32_op_i   = opcode_6_5_00 & opcode_4_2_100 & opcode_1_0_11;
     logic rv32_addi     =  rv32_op_i  &  func3_000;
     logic rv32_slti     =  rv32_op_i  &  func3_010;
@@ -185,15 +207,17 @@ module IDU_DECODE_ysyx23060136(
 
 
     // ===========================================================================
-    // Special Instructions
+    // jump without condition
     logic rv32_jalr     = opcode_6_5_11 & opcode_4_2_001 & opcode_1_0_11;
     logic rv32_jal      = opcode_6_5_11 & opcode_4_2_011 & opcode_1_0_11;
+
+    // U type inst
     logic rv32_auipc    = opcode_6_5_00 & opcode_4_2_101 & opcode_1_0_11; 
     logic rv32_lui      = opcode_6_5_01 & opcode_4_2_101 & opcode_1_0_11;
 
 
     // ===========================================================================
-    // ALU type
+    // ALU calculating type
     assign ALU_add       = rv32_add  | rv32_addi  | rv32_auipc;
     assign ALU_sub       = rv32_sub;
     assign ALU_slt       = rv32_slt  | rv32_slti  | rv32_beq  | rv32_bne | rv32_blt | rv32_bge;
@@ -204,16 +228,49 @@ module IDU_DECODE_ysyx23060136(
     assign ALU_sra       = rv32_sra  | rv32_srai;
     assign ALU_or        = rv32_or   | rv32_ori;
     assign ALU_and       = rv32_and  | rv32_andi;
-    assign ALU_explicit  = rv32_lui;
+    assign ALU_explicit  = rv32_lui  | rv32_csrrw | rv32_csrrs;
+
+    // ===========================================================================
+    // ALU input
+    assign ALU_i1_pc     = rv32_auipc | rv32_jal    | rv32_jal;
+    assign ALU_i1_rs1    = ~ALU_i1_pc;
+
+    assign ALU_i2_rs2    = rv32_op_r  | rv32_branch;
+    assign ALU_i2_imm    = rv32_op_i  | rv32_auipc  | rv32_lui  | rv32_load | rv32_store;
+    assign ALU_i2_4      = rv32_jal   | rv32_jalr;
+    assign ALU_i2_csr    = rv32_csrrw | rv32_csrrs;
+
+    // ===========================================================================
+    // op type define
+    assign op_I_type     = rv32_op_i  | rv32_load | rv32_jalr | rv32_csrrw | rv32_csrrs | rv32_ecall | rv32_ebreak; 
+    assign op_R_type     = rv32_op_r  | rv32_mret;
+    assign op_B_type     = rv32_branch;
+    assign op_J_type     = rv32_jal;
+    assign op_U_type     = rv32_auipc | rv32_lui;
+    assign op_S_type     = rv32_store;
+
+    // ===========================================================================
+    // jump signal
+    assign jump          = rv32_jal  | rv32_jalr | op_B_type | rv32_ecall | rv32_mret;
+    assign pc_plus_imm   = rv32_jal  | rv32_jalr;
+    assign rs1_plus_imm  = op_B_type;
+    assign csr_plus_imm  = rv32_mret | rv32_ecall;
 
 
     // ===========================================================================
-    // type define
-    assign is_I_type     = rv32_op_i | rv32_load | rv32_jalr | rv32_csrrw | rv32_csrrs; 
-    assign is_R_type     = rv32_op_r | rv32_mret;
+    // write register
+    assign write_gpr    = ~(rv32_branch | rv32_store | rv32_mret | rv32_ecall | rv32_ebreak); 
+    assign write_csr    = rv32_ecall | rv32_csrrs | rv32_csrrw;
+    assign mem_to_reg   = rv32_load;
 
-
-
+    // ===========================================================================
+    // write/read memory
+    assign write_mem    = rv32_store;
+    assign mem_byte     = rv32_lb | rv32_sb;
+    assign mem_half     = rv32_lh | rv32_sh;
+    assign mem_word     = rv32_lw | rv32_sw;
+    assign mem_byte_u   = rv32_lbu;
+    assign mem_half_u   = rv32_lhu;
 
 endmodule
 
