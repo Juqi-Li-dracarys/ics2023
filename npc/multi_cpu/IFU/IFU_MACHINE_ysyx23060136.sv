@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-14 21:49:38 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-18 11:43:38
+ * @Last Modified time: 2024-02-18 20:56:03
  */
 
  `include "IFU_DEFINES_ysyx23060136.sv"
@@ -17,7 +17,8 @@
     +--------------------------+      +----+
                 ready = 1
 */
-//////////////////////////////////////////////////////
+
+// ===========================================================================
 
 module IFU_MACHINE_ysyx23060136 (
         input                      clk,
@@ -50,8 +51,8 @@ module IFU_MACHINE_ysyx23060136 (
     
     logic [31  : 0] next_inst  =  ({32{state_1}}  &  inst_cur) 
                                  |({32{~state_1}} &  inst);
-  
     
+    // ===========================================================================
     always_ff @(posedge clk) begin : state_update
         if(rst) begin
             IFU_state <=   `idle;
