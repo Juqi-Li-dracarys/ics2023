@@ -2,9 +2,10 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-18 20:50:42 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-19 00:07:20
+ * @Last Modified time: 2024-02-19 20:55:36
  */
 
+`include "IDU_DEFINES_ysyx23060136.sv"
 
 // basic decode unit
 // first stage decoder of CPU
@@ -61,11 +62,11 @@ module IDU_DECODE_ysyx23060136(
     output               rs1_plus_imm,
     output               csr_plus_imm,
     // ===========================================================================
-    // write register
+    // write/read register
     output               write_gpr,
     output               write_csr,
     output               mem_to_reg,
-
+    output   [11 : 0]    csr_id,
     // ===========================================================================
     // write/read memory
     output               write_mem,    
@@ -73,7 +74,11 @@ module IDU_DECODE_ysyx23060136(
     output               mem_half,    
     output               mem_word,     
     output               mem_byte_u,  
-    output               mem_half_u
+    output               mem_half_u,
+    // ===========================================================================
+    // halt
+    output               system_halt
+
 ) ; 
 
     // ===========================================================================
@@ -83,6 +88,7 @@ module IDU_DECODE_ysyx23060136(
     assign  rs1     =   inst[19 : 15];
     assign  rs2     =   inst[24 : 20];
     assign  func7   =   inst[31 : 25];
+    assign  csr_id  =   inst[31 : 20];
 
     logic opcode_1_0_00  = (opcode[1 : 0] == 2'b00);
     logic opcode_1_0_01  = (opcode[1 : 0] == 2'b01);
@@ -140,7 +146,7 @@ module IDU_DECODE_ysyx23060136(
     logic func7_1101001 = (func7 == 7'b1101001);  
 
 
-    
+
     // ===========================================================================
     // ALU Instructions are relative to imm(I type)
     logic rv32_op_i   = opcode_6_5_00 & opcode_4_2_100 & opcode_1_0_11;
@@ -271,6 +277,10 @@ module IDU_DECODE_ysyx23060136(
     assign mem_word     = rv32_lw | rv32_sw;
     assign mem_byte_u   = rv32_lbu;
     assign mem_half_u   = rv32_lhu;
+
+    // ===========================================================================
+    // system halt
+    assign system_halt  = rv32_ebreak;
 
 endmodule
 
