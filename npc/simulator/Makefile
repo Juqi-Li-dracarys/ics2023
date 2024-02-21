@@ -15,7 +15,7 @@ CSRC_DIR 			= $(abspath $(WORK_DIR)/sim)
 VSRC_DIR 			= $(abspath $(NPC_HOME)/naive_cpu)
 NEMU_DIR 			= $(abspath $(WORK_DIR)/nemu)
 
-VERILOG_TOP 		= $(VSRC_DIR)/vsrc/CPU_TOP.sv
+VERILOG_TOP 		= $(VSRC_DIR)/CPU_TOP.sv
 NEMUISO 			= $(NEMU_DIR)/build/riscv32-nemu-interpreter-so
 VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all -I$(VSRC_DIR) \
 						-Mdir $(OBJ_DIR) -DDIFF --top-module $(basename $(notdir $(VERILOG_TOP)))
