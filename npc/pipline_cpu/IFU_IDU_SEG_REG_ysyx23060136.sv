@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-14 21:49:38 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-21 17:05:23
+ * @Last Modified time: 2024-02-21 21:13:14
  */
 
  `include "TOP_DEFINES_ysyx23060136.sv"
@@ -12,7 +12,7 @@
 */
 
 // ===========================================================================
-module IFU_IDU_REG_ysyx23060136 (
+module IFU_IDU_SEG_REG_ysyx23060136 (
         input                      clk,
         input                      rst,
         // forward unit signal

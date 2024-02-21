@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-19 13:23:33 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-21 20:36:35
+ * @Last Modified time: 2024-02-22 00:32:50
  */
 
 
@@ -29,8 +29,8 @@ module IDU_TOP_ysyx23060136 (
         output                  IDU_ready,
         output                  IDU_valid,
         // ===========================================================================
-        // data
-        output     [31 : 0]     IDU_pc_n,
+        // general data
+        output     [31 : 0]     IDU_pc_EXU,
         output     [4 : 0]      IDU_rd,
         output     [4 : 0]      IDU_rs1,
         output     [4 : 0]      IDU_rs2,
@@ -39,7 +39,6 @@ module IDU_TOP_ysyx23060136 (
         output     [31 : 0]     IDU_rs2_data,
         output     [1 : 0]      IDU_csr_rd,
         output     [31 : 0]     IDU_csr_rs_data,
-        
         // ===========================================================================
         // ALU signal
         output                  ALU_add,
@@ -70,6 +69,9 @@ module IDU_TOP_ysyx23060136 (
         output                  write_gpr,
         output                  write_csr,
         output                  mem_to_reg,
+        output                  rv32_csrrs,
+        output                  rv32_csrrw,
+        output                  rv32_ecall,
         // ===========================================================================
         // mem
         output                  write_mem,
@@ -85,19 +87,19 @@ module IDU_TOP_ysyx23060136 (
     );
 
 
-       logic     [11 : 0]       IDU_csr_id;
-       logic     [1 : 0]        IDU_csr_rs;
-       logic                    op_R_type;
-       logic                    op_I_type;
-       logic                    op_B_type;
-       logic                    op_J_type;
-       logic                    op_U_type;
-       logic                    op_S_type;
+    logic     [11 : 0]       IDU_csr_id;
+    logic     [1 : 0]        IDU_csr_rs;
+    logic                    op_R_type;
+    logic                    op_I_type;
+    logic                    op_B_type;
+    logic                    op_J_type;
+    logic                    op_U_type;
+    logic                    op_S_type;
 
 
-       assign                   IDU_valid    =       `true;
-       assign                   IDU_ready    =       `true;
-       assign                   IDU_pc_n     =        IDU_pc;
+    assign                   IDU_valid    =       `true;
+    assign                   IDU_ready    =       `true;
+    assign                   IDU_pc_EXU     =        IDU_pc;
 
 
     IDU_DECODE_ysyx23060136  IDU_DECODE_ysyx23060136_inst (
@@ -136,6 +138,9 @@ module IDU_TOP_ysyx23060136 (
                                  .write_gpr(write_gpr),
                                  .write_csr(write_csr),
                                  .mem_to_reg(mem_to_reg),
+                                 .rv32_csrrs(rv32_csrrs),
+                                 .rv32_csrrw(rv32_csrrw),
+                                 .rv32_ecall(rv32_ecall),
                                  .write_mem(write_mem),
                                  .mem_byte(mem_byte),
                                  .mem_half(mem_half),
@@ -177,12 +182,12 @@ module IDU_TOP_ysyx23060136 (
                                     .CSRWr(CSRWr),
                                     .csr_busW(csr_busW),
                                     .IDU_csr_rs_data(IDU_csr_rs_data)
-                                  );
-                                  
+                                );
+
     IDU_CSR_DECODE_ysyx_23060136  IDU_CSR_DECODE_ysyx_23060136_inst (
-                                    .IDU_csr_id(IDU_csr_id),
-                                    .IDU_csr_rs(IDU_csr_rs),
-                                    .IDU_csr_rd(IDU_csr_rd)
+                                      .IDU_csr_id(IDU_csr_id),
+                                      .IDU_csr_rs(IDU_csr_rs),
+                                      .IDU_csr_rd(IDU_csr_rd)
                                   );
 
 endmodule
