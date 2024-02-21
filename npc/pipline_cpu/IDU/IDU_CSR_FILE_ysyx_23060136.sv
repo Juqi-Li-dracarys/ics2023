@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-21 20:20:38 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-21 20:25:36
+ * @Last Modified time: 2024-02-21 21:17:45
  */
 
 
@@ -10,17 +10,17 @@
 
 `include "IDU_DEFINES_ysyx23060136.sv"
 
- 
+
 // ===========================================================================
 module IDU_CSR_FILE_ysyx_23060136 (
-    input             clk,                      // clk for write
-    input             rst,
-    input   [1 : 0]   IDU_csr_rs,               // read in IDU
-    input   [1 : 0]   WBU_csr_rd,               // write IN WBU
-    input             CSRWr,                    // write enable
-    input   [31 : 0]  csr_busW,                 // write data
-    output  [31 : 0]  IDU_csr_rs_data                  // read result
-);
+        input             clk,                      // clk for write
+        input             rst,
+        input   [1 : 0]   IDU_csr_rs,               // read in IDU
+        input   [1 : 0]   WBU_csr_rd,               // write IN WBU
+        input             CSRWr,                    // write enable
+        input   [31 : 0]  csr_busW,                 // write data
+        output  [31 : 0]  IDU_csr_rs_data                  // read result
+    );
 
 
     // mstatus mtvec mepc mcause
@@ -28,7 +28,7 @@ module IDU_CSR_FILE_ysyx_23060136 (
 
     logic             w_e          [0 : 3];
     logic             r_e          [0 : 3];
-    logic  [31 : 0]   data_out     [0 : 3] /*verilator split_var*/;     
+    logic  [31 : 0]   data_out     [0 : 3] /*verilator split_var*/;
 
 
     // DIP-C in verilog

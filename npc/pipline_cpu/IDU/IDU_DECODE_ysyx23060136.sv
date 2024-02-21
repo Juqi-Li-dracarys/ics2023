@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-18 20:50:42 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-21 20:18:41
+ * @Last Modified time: 2024-02-22 00:24:48
  */
 
 `include "IDU_DEFINES_ysyx23060136.sv"
@@ -67,6 +67,10 @@ module IDU_DECODE_ysyx23060136(
     output               write_gpr,
     output               write_csr,
     output               mem_to_reg,
+    // we wiil handle csr write date in the next stage
+    output               rv32_csrrs,
+    output               rv32_csrrw,
+    output               rv32_ecall,
     // ===========================================================================
     // write/read memory
     output               write_mem,    
@@ -204,12 +208,12 @@ module IDU_DECODE_ysyx23060136(
 
     // ===========================================================================
     // System IDU_Instructions
-    logic rv32_system   = opcode_6_5_11 & opcode_4_2_100 & opcode_1_0_11;
-    logic rv32_ecall    = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0000);
-    logic rv32_ebreak   = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0001);
-    logic rv32_mret     = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0011_0000_0010);
-    logic rv32_csrrw    = rv32_system & func3_001; 
-    logic rv32_csrrs    = rv32_system & func3_010; 
+    logic  rv32_system   = opcode_6_5_11 & opcode_4_2_100 & opcode_1_0_11;
+    assign rv32_ecall    = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0000);
+    logic  rv32_ebreak   = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0001);
+    logic  rv32_mret     = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0011_0000_0010);
+    assign rv32_csrrw    = rv32_system & func3_001; 
+    assign rv32_csrrs    = rv32_system & func3_010; 
 
 
     // ===========================================================================
