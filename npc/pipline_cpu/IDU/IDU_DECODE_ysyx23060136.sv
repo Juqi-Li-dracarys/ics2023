@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-18 20:50:42 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-19 20:55:36
+ * @Last Modified time: 2024-02-21 20:18:41
  */
 
 `include "IDU_DEFINES_ysyx23060136.sv"
@@ -11,15 +11,16 @@
 // first stage decoder of CPU
 // Support ISA: riscv32-e
 
+
+// ===========================================================================
 module IDU_DECODE_ysyx23060136(
-    input    [31 : 0]    inst,
+    input    [31 : 0]    IDU_inst,
     // ===========================================================================
-    output   [6 : 0]     opcode,
-    output   [4 : 0]     rd,
-    output   [2 : 0]     func3,
-    output   [4 : 0]     rs1,
-    output   [4 : 0]     rs2,
-    output   [6 : 0]     func7,
+    // REG addr
+    output   [4 : 0]     IDU_rd,
+    output   [4 : 0]     IDU_rs1,
+    output   [4 : 0]     IDU_rs2,
+    output   [11 : 0]    IDU_csr_id,
     // ===========================================================================
     // ALU calculating type define
     output               ALU_add,
@@ -66,7 +67,6 @@ module IDU_DECODE_ysyx23060136(
     output               write_gpr,
     output               write_csr,
     output               mem_to_reg,
-    output   [11 : 0]    csr_id,
     // ===========================================================================
     // write/read memory
     output               write_mem,    
@@ -82,13 +82,13 @@ module IDU_DECODE_ysyx23060136(
 ) ; 
 
     // ===========================================================================
-    assign  opcode  =   inst[6 : 0];
-    assign  rd      =   inst[11 : 7];
-    assign  func3   =   inst[14 : 12];
-    assign  rs1     =   inst[19 : 15];
-    assign  rs2     =   inst[24 : 20];
-    assign  func7   =   inst[31 : 25];
-    assign  csr_id  =   inst[31 : 20];
+    logic [6 : 0]  opcode      =   IDU_inst[6 : 0];
+    assign         IDU_rd      =   IDU_inst[11 : 7];
+    logic [2 : 0]  func3       =   IDU_inst[14 : 12];
+    assign         IDU_rs1     =   IDU_inst[19 : 15];
+    assign         IDU_rs2     =   IDU_inst[24 : 20];
+    logic [6 : 0]  func7       =   IDU_inst[31 : 25];
+    assign         IDU_csr_id  =   IDU_inst[31 : 20];
 
     logic opcode_1_0_00  = (opcode[1 : 0] == 2'b00);
     logic opcode_1_0_01  = (opcode[1 : 0] == 2'b01);
@@ -148,7 +148,7 @@ module IDU_DECODE_ysyx23060136(
 
 
     // ===========================================================================
-    // ALU Instructions are relative to imm(I type)
+    // ALU IDU_Instructions are relative to imm(I type)
     logic rv32_op_i   = opcode_6_5_00 & opcode_4_2_100 & opcode_1_0_11;
     logic rv32_addi     =  rv32_op_i  &  func3_000;
     logic rv32_slti     =  rv32_op_i  &  func3_010;
@@ -156,13 +156,13 @@ module IDU_DECODE_ysyx23060136(
     logic rv32_xori     =  rv32_op_i  &  func3_100;
     logic rv32_ori      =  rv32_op_i  &  func3_110;
     logic rv32_andi     =  rv32_op_i  &  func3_111;
-    logic rv32_slli     =  rv32_op_i  &  func3_001 & (inst[31 : 26] == 6'b000000);
-    logic rv32_srli     =  rv32_op_i  &  func3_101 & (inst[31 : 26] == 6'b000000);
-    logic rv32_srai     =  rv32_op_i  &  func3_101 & (inst[31 : 26] == 6'b010000);
+    logic rv32_slli     =  rv32_op_i  &  func3_001 & (IDU_inst[31 : 26] == 6'b000000);
+    logic rv32_srli     =  rv32_op_i  &  func3_101 & (IDU_inst[31 : 26] == 6'b000000);
+    logic rv32_srai     =  rv32_op_i  &  func3_101 & (IDU_inst[31 : 26] == 6'b010000);
 
     
     // ===========================================================================
-    // ALU Instructions are relative to register(R type)
+    // ALU IDU_Instructions are relative to register(R type)
     logic rv32_op_r     =  opcode_6_5_01 & opcode_4_2_100 & opcode_1_0_11;
     logic rv32_add      =  rv32_op_r  &  func3_000  &  func7_0000000;
     logic rv32_sub      =  rv32_op_r  &  func3_000  &  func7_0100000;
@@ -177,7 +177,7 @@ module IDU_DECODE_ysyx23060136(
     
 
     // ===========================================================================
-    // Load / Store Instructions
+    // Load / Store IDU_Instructions
     logic rv32_load     = opcode_6_5_00 & opcode_4_2_000 & opcode_1_0_11;
     logic rv32_lb       = rv32_load   &  func3_000;
     logic rv32_lh       = rv32_load   &  func3_001;
@@ -192,7 +192,7 @@ module IDU_DECODE_ysyx23060136(
     
 
     // ===========================================================================
-    // Branch Instructions
+    // Branch IDU_Instructions
     logic rv32_branch   = opcode_6_5_11 & opcode_4_2_000 & opcode_1_0_11;
     logic rv32_beq      = rv32_branch  &  func3_000;
     logic rv32_bne      = rv32_branch  &  func3_001;
@@ -203,11 +203,11 @@ module IDU_DECODE_ysyx23060136(
 
 
     // ===========================================================================
-    // System Instructions
+    // System IDU_Instructions
     logic rv32_system   = opcode_6_5_11 & opcode_4_2_100 & opcode_1_0_11;
-    logic rv32_ecall    = rv32_system & func3_000 & (inst[31:20] == 12'b0000_0000_0000);
-    logic rv32_ebreak   = rv32_system & func3_000 & (inst[31:20] == 12'b0000_0000_0001);
-    logic rv32_mret     = rv32_system & func3_000 & (inst[31:20] == 12'b0011_0000_0010);
+    logic rv32_ecall    = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0000);
+    logic rv32_ebreak   = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0001);
+    logic rv32_mret     = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0011_0000_0010);
     logic rv32_csrrw    = rv32_system & func3_001; 
     logic rv32_csrrs    = rv32_system & func3_010; 
 
@@ -217,7 +217,7 @@ module IDU_DECODE_ysyx23060136(
     logic rv32_jalr     = opcode_6_5_11 & opcode_4_2_001 & opcode_1_0_11;
     logic rv32_jal      = opcode_6_5_11 & opcode_4_2_011 & opcode_1_0_11;
 
-    // U type inst
+    // U type IDU_inst
     logic rv32_auipc    = opcode_6_5_00 & opcode_4_2_101 & opcode_1_0_11; 
     logic rv32_lui      = opcode_6_5_01 & opcode_4_2_101 & opcode_1_0_11;
 

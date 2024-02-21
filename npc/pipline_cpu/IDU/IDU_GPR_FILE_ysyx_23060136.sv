@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-19 17:45:55 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-19 18:17:52
+ * @Last Modified time: 2024-02-21 20:12:44
  */
 
 
@@ -13,14 +13,16 @@
 // ===========================================================================
 module IDU_GPR_FILE_ysyx_23060136 (
 
-        input             clk,                      // clk for write
+        input             clk,                       // clk for write
         input             rst,
-        input   [4 : 0]   rs1,
-        input   [4 : 0]   rs2,
-        input   [4 : 0]   rd,
-        input             RegWr,                    // write gpr reg enable
-        input   [31 : 0]  rf_busW,                  // write gpr data
-        output  [31 : 0]  rf_busA, rf_busB          // gpr read result
+        input   [4 : 0]   IDU_rs1,
+        input   [4 : 0]   IDU_rs2,
+        // rd is from WBU
+        input   [4 : 0]   WBU_rd,
+        input             RegWr,                     // write gpr reg enable
+        input   [31 : 0]  rf_busW,                   // write gpr data
+        output  [31 : 0]  IDU_rs1_data, 
+        output  [31 : 0]  IDU_rs2_data               // gpr read result
     );
 
     // DIP-C in verilog
@@ -64,10 +66,10 @@ module IDU_GPR_FILE_ysyx_23060136 (
                 assign w_e[j] = 1'b0;
             end
             else begin
-                assign w_e[j] = RegWr & (rd == j);
+                assign w_e[j] = RegWr & (WBU_rd == j);
             end
-            assign r_e_1[j] = (rs1 == j);
-            assign r_e_2[j] = (rs2 == j);
+            assign r_e_1[j] = (IDU_rs1 == j);
+            assign r_e_2[j] = (IDU_rs2 == j);
         end
     endgenerate
 
@@ -80,8 +82,8 @@ module IDU_GPR_FILE_ysyx_23060136 (
         end
     endgenerate
 
-    assign rf_busA = data_out_1[15];
-    assign rf_busB = data_out_2[15];
+    assign IDU_rs1_data = data_out_1[15];
+    assign IDU_rs2_data = data_out_2[15];
 
 endmodule
 
