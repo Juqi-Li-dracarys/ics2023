@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-18 20:50:42 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-22 00:24:48
+ * @Last Modified time: 2024-02-24 00:28:27
  */
 
 `include "IDU_DEFINES_ysyx23060136.sv"
@@ -62,6 +62,10 @@ module IDU_DECODE_ysyx23060136(
     output               pc_plus_imm,
     output               rs1_plus_imm,
     output               csr_plus_imm,
+    output               cmp_eq ,
+    output               cmp_neq,
+    output               cmp_ge,
+    output               cmp_lt,
     // ===========================================================================
     // write/read register
     output               write_gpr,
@@ -265,6 +269,11 @@ module IDU_DECODE_ysyx23060136(
     assign pc_plus_imm   = rv32_jal  | rv32_jalr;
     assign rs1_plus_imm  = op_B_type;
     assign csr_plus_imm  = rv32_mret | rv32_ecall;
+    // for branch
+    assign cmp_eq        = rv32_beq;
+    assign cmp_neq       = rv32_bne;
+    assign cmp_ge        = rv32_bge  | rv32_bgeu;
+    assign cmp_lt        = rv32_blt  | rv32_bltu;
 
 
     // ===========================================================================

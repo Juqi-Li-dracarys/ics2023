@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-19 13:23:33 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-22 00:32:50
+ * @Last Modified time: 2024-02-24 00:24:39
  */
 
 
@@ -41,49 +41,53 @@ module IDU_TOP_ysyx23060136 (
         output     [31 : 0]     IDU_csr_rs_data,
         // ===========================================================================
         // ALU signal
-        output                  ALU_add,
-        output                  ALU_sub,
-        output                  ALU_slt,
-        output                  ALU_sltu,
-        output                  ALU_or,
-        output                  ALU_and,
-        output                  ALU_xor,
-        output                  ALU_sll,
-        output                  ALU_srl,
-        output                  ALU_sra,
-        output                  ALU_explicit,
-        output                  ALU_i1_rs1,
-        output                  ALU_i1_pc,
-        output                  ALU_i2_rs2,
-        output                  ALU_i2_imm,
-        output                  ALU_i2_4,
-        output                  ALU_i2_csr,
+        output                  IDU_ALU_add,
+        output                  IDU_ALU_sub,
+        output                  IDU_ALU_slt,
+        output                  IDU_ALU_sltu,
+        output                  IDU_ALU_or,
+        output                  IDU_ALU_and,
+        output                  IDU_ALU_xor,
+        output                  IDU_ALU_sll,
+        output                  IDU_ALU_srl,
+        output                  IDU_ALU_sra,
+        output                  IDU_ALU_explicit,
+        output                  IDU_ALU_i1_rs1,
+        output                  IDU_ALU_i1_pc,
+        output                  IDU_ALU_i2_rs2,
+        output                  IDU_ALU_i2_imm,
+        output                  IDU_ALU_i2_4,
+        output                  IDU_ALU_i2_csr,
         // ===========================================================================
         // jump signal
-        output                  jump,
-        output                  pc_plus_imm,
-        output                  rs1_plus_imm,
-        output                  csr_plus_imm,
+        output                  IDU_jump,
+        output                  IDU_pc_plus_imm,
+        output                  IDU_rs1_plus_imm,
+        output                  IDU_csr_plus_imm,
+        output                  IDU_cmp_eq,
+        output                  IDU_cmp_neq,
+        output                  IDU_cmp_ge,
+        output                  IDU_cmp_lt,
         // ===========================================================================
         // write back
-        output                  write_gpr,
-        output                  write_csr,
-        output                  mem_to_reg,
-        output                  rv32_csrrs,
-        output                  rv32_csrrw,
-        output                  rv32_ecall,
+        output                  IDU_write_gpr,
+        output                  IDU_write_csr,
+        output                  IDU_mem_to_reg,
+        output                  IDU_rv32_csrrs,
+        output                  IDU_rv32_csrrw,
+        output                  IDU_rv32_ecall,
         // ===========================================================================
         // mem
-        output                  write_mem,
-        output                  mem_byte,
-        output                  mem_half,
-        output                  mem_word,
-        output                  mem_byte_u,
-        output                  mem_half_u,
+        output                  IDU_write_mem,
+        output                  IDU_mem_byte,
+        output                  IDU_mem_half,
+        output                  IDU_mem_word,
+        output                  IDU_mem_byte_u,
+        output                  IDU_mem_half_u,
         // ===========================================================================
         // system
-        output                  system_halt,
-        output                  op_valid
+        output                  IDU_system_halt,
+        output                  IDU_op_valid
     );
 
 
@@ -99,7 +103,7 @@ module IDU_TOP_ysyx23060136 (
 
     assign                   IDU_valid    =       `true;
     assign                   IDU_ready    =       `true;
-    assign                   IDU_pc_EXU     =        IDU_pc;
+    assign                   IDU_pc_EXU   =        IDU_pc;
 
 
     IDU_DECODE_ysyx23060136  IDU_DECODE_ysyx23060136_inst (
@@ -108,46 +112,52 @@ module IDU_TOP_ysyx23060136 (
                                  .IDU_rs1(IDU_rs1),
                                  .IDU_rs2(IDU_rs2),
                                  .IDU_csr_id(IDU_csr_id),
-                                 .ALU_add(ALU_add),
-                                 .ALU_sub(ALU_sub),
-                                 .ALU_slt(ALU_slt),
-                                 .ALU_sltu(ALU_sltu),
-                                 .ALU_or(ALU_or),
-                                 .ALU_and(ALU_and),
-                                 .ALU_xor(ALU_xor),
-                                 .ALU_sll(ALU_sll),
-                                 .ALU_srl(ALU_srl),
-                                 .ALU_sra(ALU_sra),
-                                 .ALU_explicit(ALU_explicit),
-                                 .ALU_i1_rs1(ALU_i1_rs1),
-                                 .ALU_i1_pc(ALU_i1_pc),
-                                 .ALU_i2_rs2(ALU_i2_rs2),
-                                 .ALU_i2_imm(ALU_i2_imm),
-                                 .ALU_i2_4(ALU_i2_4),
-                                 .ALU_i2_csr(ALU_i2_csr),
+                                 .ALU_add(IDU_ALU_add),
+                                 .ALU_sub(IDU_ALU_sub),
+                                 .ALU_slt(IDU_ALU_slt),
+                                 .ALU_sltu(IDU_ALU_sltu),
+                                 .ALU_or(IDU_ALU_or),
+                                 .ALU_and(IDU_ALU_and),
+                                 .ALU_xor(IDU_ALU_xor),
+                                 .ALU_sll(IDU_ALU_sll),
+                                 .ALU_srl(IDU_ALU_srl),
+                                 .ALU_sra(IDU_ALU_sra),
+                                 .ALU_explicit(IDU_ALU_explicit),
+                                 .ALU_i1_rs1(IDU_ALU_i1_rs1),
+                                 .ALU_i1_pc(IDU_ALU_i1_pc),
+                                 .ALU_i2_rs2(IDU_ALU_i2_rs2),
+                                 .ALU_i2_imm(IDU_ALU_i2_imm),
+                                 .ALU_i2_4(IDU_ALU_i2_4),
+                                 .ALU_i2_csr(IDU_ALU_i2_csr),
                                  .op_R_type(op_R_type),
                                  .op_I_type(op_I_type),
                                  .op_B_type(op_B_type),
                                  .op_J_type(op_J_type),
                                  .op_U_type(op_U_type),
                                  .op_S_type(op_S_type),
-                                 .jump(jump),
-                                 .pc_plus_imm(pc_plus_imm),
-                                 .rs1_plus_imm(rs1_plus_imm),
-                                 .csr_plus_imm(csr_plus_imm),
-                                 .write_gpr(write_gpr),
-                                 .write_csr(write_csr),
-                                 .mem_to_reg(mem_to_reg),
-                                 .rv32_csrrs(rv32_csrrs),
-                                 .rv32_csrrw(rv32_csrrw),
-                                 .rv32_ecall(rv32_ecall),
-                                 .write_mem(write_mem),
-                                 .mem_byte(mem_byte),
-                                 .mem_half(mem_half),
-                                 .mem_word(mem_word),
-                                 .mem_byte_u(mem_byte_u),
-                                 .mem_half_u(mem_half_u),
-                                 .system_halt(system_halt)
+                                 .jump(IDU_jump),
+                                 .pc_plus_imm(IDU_pc_plus_imm),
+                                 .rs1_plus_imm(IDU_rs1_plus_imm),
+                                 .csr_plus_imm(IDU_csr_plus_imm),
+
+                                 .cmp_eq(IDU_cmp_eq),
+                                 .cmp_neq(IDU_cmp_neq),
+                                 .cmp_ge(IDU_cmp_ge),
+                                 .cmp_lt(IDU_cmp_lt),
+
+                                 .write_gpr(IDU_write_gpr),
+                                 .write_csr(IDU_write_csr),
+                                 .mem_to_reg(IDU_mem_to_reg),
+                                 .rv32_csrrs(IDU_rv32_csrrs),
+                                 .rv32_csrrw(IDU_rv32_csrrw),
+                                 .rv32_ecall(IDU_rv32_ecall),
+                                 .write_mem(IDU_write_mem),
+                                 .mem_byte(IDU_mem_byte),
+                                 .mem_half(IDU_mem_half),
+                                 .mem_word(IDU_mem_word),
+                                 .mem_byte_u(IDU_mem_byte_u),
+                                 .mem_half_u(IDU_mem_half_u),
+                                 .system_halt(IDU_system_halt)
                              );
 
     IDU_IMM_GEN_ysyx_23060136  IDU_IMM_GEN_ysyx_23060136_inst (
@@ -159,7 +169,7 @@ module IDU_TOP_ysyx23060136 (
                                    .op_U_type(op_U_type),
                                    .op_S_type(op_S_type),
                                    .IDU_imm(IDU_imm),
-                                   .op_valid(op_valid)
+                                   .op_valid(IDU_op_valid)
                                );
 
     IDU_GPR_FILE_ysyx_23060136  IDU_GPR_FILE_ysyx_23060136_inst (

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-21 20:20:38 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-21 21:17:45
+ * @Last Modified time: 2024-02-23 01:25:34
  */
 
 
@@ -47,6 +47,7 @@ module IDU_CSR_FILE_ysyx_23060136 (
             csr_reg[`mstatus] <= 32'h1800;
             csr_reg[`mtvec]   <= 32'h0;
             csr_reg[`mepc]    <= 32'h0;
+            // 这里做了简化
             csr_reg[`mcause]  <= 32'hb;
         end
         else begin
