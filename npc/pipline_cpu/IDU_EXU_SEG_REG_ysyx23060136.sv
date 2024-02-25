@@ -31,6 +31,7 @@ module IDU_EXU_SEG_REG_ysyx23060136(
         input            [31 : 0]     IDU_rs1_data,
         input            [31 : 0]     IDU_rs2_data,
         input            [1 : 0]      IDU_csr_rd,
+        input            [1 : 0]      IDU_csr_rs,
         input            [31 : 0]     IDU_csr_rs_data,
 
         output  logic    [31 : 0]     EXU_pc,               
@@ -41,6 +42,7 @@ module IDU_EXU_SEG_REG_ysyx23060136(
         output  logic    [31 : 0]     EXU_rs1_data,
         output  logic    [31 : 0]     EXU_rs2_data,
         output  logic    [1 : 0]      EXU_csr_rd,
+        output  logic    [1 : 0]      EXU_csr_rs,
         output  logic    [31 : 0]     EXU_csr_rs_data,
         // ===========================================================================
         // ALU signal
@@ -98,7 +100,6 @@ module IDU_EXU_SEG_REG_ysyx23060136(
         output  logic                 EXU_cmp_neq,
         output  logic                 EXU_cmp_ge,
         output  logic                 EXU_cmp_lt,
-
         // ===========================================================================
         // write back
         input                         IDU_write_gpr,
@@ -153,6 +154,7 @@ module IDU_EXU_SEG_REG_ysyx23060136(
             EXU_rs1_data     <=  32'b0;
             EXU_rs2_data     <=  32'b0;
             EXU_csr_rd       <=  2'b0;
+            EXU_csr_rs       <=  2'b0;
             EXU_csr_rs_data  <=  32'b0;
 
             EXU_ALU_add      <=  1'b0;
@@ -211,7 +213,8 @@ module IDU_EXU_SEG_REG_ysyx23060136(
             EXU_imm          <=  IDU_imm;
             EXU_rs1_data     <=  IDU_rs1_data;  
             EXU_rs2_data     <=  IDU_rs2_data;  
-            EXU_csr_rd       <=  IDU_csr_rd; 
+            EXU_csr_rd       <=  IDU_csr_rd;
+            EXU_csr_rs       <=  IDU_csr_rs; 
             EXU_csr_rs_data  <=  IDU_csr_rs_data;
 
             EXU_ALU_add      <=  IDU_ALU_add;  
