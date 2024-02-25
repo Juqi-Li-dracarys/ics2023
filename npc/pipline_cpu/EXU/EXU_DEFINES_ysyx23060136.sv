@@ -6,8 +6,8 @@
  */
 
  // parameter define
- `define true   1'b1
- `define false  1'b0
+ `define true   'b1
+ `define false  'b0
 
 
  

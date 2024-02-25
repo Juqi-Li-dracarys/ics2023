@@ -30,7 +30,7 @@ module IDU_TOP_ysyx23060136 (
         output                  IDU_valid,
         // ===========================================================================
         // general data
-        output     [31 : 0]     IDU_pc_EXU,
+        output     [31 : 0]     IDU_pc_EXU, // push singnal to the next stage
         output     [4 : 0]      IDU_rd,
         output     [4 : 0]      IDU_rs1,
         output     [4 : 0]      IDU_rs2,
@@ -38,6 +38,7 @@ module IDU_TOP_ysyx23060136 (
         output     [31 : 0]     IDU_rs1_data,
         output     [31 : 0]     IDU_rs2_data,
         output     [1 : 0]      IDU_csr_rd,
+        output     [1 : 0]      IDU_csr_rs,
         output     [31 : 0]     IDU_csr_rs_data,
         // ===========================================================================
         // ALU signal
@@ -92,7 +93,6 @@ module IDU_TOP_ysyx23060136 (
 
 
     logic     [11 : 0]       IDU_csr_id;
-    logic     [1 : 0]        IDU_csr_rs;
     logic                    op_R_type;
     logic                    op_I_type;
     logic                    op_B_type;
