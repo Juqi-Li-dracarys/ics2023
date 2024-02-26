@@ -1,6 +1,6 @@
 /*
- * @Author: Juqi Li @ NJU 
- * @Date: 2024-02-21 20:20:38 
+ * @Author: Juqi Li @ NJU
+ * @Date: 2024-02-21 20:20:38
  * @Last Modified by: Juqi Li @ NJU
  * @Last Modified time: 2024-02-23 01:25:34
  */
@@ -13,13 +13,13 @@
 
 // ===========================================================================
 module IDU_CSR_FILE_ysyx_23060136 (
-        input             clk,                      // clk for write
-        input             rst,
-        input   [1 : 0]   IDU_csr_rs,               // read in IDU
-        input   [1 : 0]   WBU_csr_rd,               // write IN WBU
-        input             CSRWr,                    // write enable
-        input   [31 : 0]  csr_busW,                 // write data
-        output  [31 : 0]  IDU_csr_rs_data                  // read result
+    input                               clk                        ,// clk for write
+    input                               rst                        ,
+    input              [   1:0]         IDU_csr_rs                 ,// read in IDU
+    input              [   1:0]         WBU_csr_rd                 ,// write IN WBU
+    input                               CSRWr                      ,// write enable
+    input              [  31:0]         csr_busW                   ,// write data
+    output             [  31:0]         IDU_csr_rs_data             // read result
     );
 
 

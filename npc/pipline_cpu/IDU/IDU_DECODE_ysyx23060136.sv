@@ -1,6 +1,6 @@
 /*
- * @Author: Juqi Li @ NJU 
- * @Date: 2024-02-18 20:50:42 
+ * @Author: Juqi Li @ NJU
+ * @Date: 2024-02-18 20:50:42
  * @Last Modified by: Juqi Li @ NJU
  * @Last Modified time: 2024-02-24 00:28:27
  */
@@ -14,80 +14,80 @@
 
 // ===========================================================================
 module IDU_DECODE_ysyx23060136(
-    input    [31 : 0]    IDU_inst,
+    input              [  31:0]         IDU_inst                   ,
     // ===========================================================================
     // REG addr
-    output   [4 : 0]     IDU_rd,
-    output   [4 : 0]     IDU_rs1,
-    output   [4 : 0]     IDU_rs2,
-    output   [11 : 0]    IDU_csr_id,
+    output             [   4:0]         IDU_rd                     ,
+    output             [   4:0]         IDU_rs1                    ,
+    output             [   4:0]         IDU_rs2                    ,
+    output             [  11:0]         IDU_csr_id                 ,
     // ===========================================================================
     // ALU calculating type define
-    output               ALU_add,
-    output               ALU_sub,
+    output                              ALU_add                    ,
+    output                              ALU_sub                    ,
     // 带符号小于
-    output               ALU_slt,
+    output                              ALU_slt                    ,
     // 无符号小于
-    output               ALU_sltu,
+    output                              ALU_sltu                   ,
     // 与或异或运算
-    output               ALU_or,   
-    output               ALU_and,
-    output               ALU_xor,
+    output                              ALU_or                     ,
+    output                              ALU_and                    ,
+    output                              ALU_xor                    ,
     // 移位运算
-    output               ALU_sll,  
-    output               ALU_srl,
-    output               ALU_sra,
+    output                              ALU_sll                    ,
+    output                              ALU_srl                    ,
+    output                              ALU_sra                    ,
     // 直接输出
-    output               ALU_explicit,
+    output                              ALU_explicit               ,
     // ===========================================================================
     // ALU input 1, input 2 type
-    output               ALU_i1_rs1,
-    output               ALU_i1_pc,
+    output                              ALU_i1_rs1                 ,
+    output                              ALU_i1_pc                  ,
 
-    output               ALU_i2_rs2,
-    output               ALU_i2_imm,
-    output               ALU_i2_4,
-    output               ALU_i2_csr,    
+    output                              ALU_i2_rs2                 ,
+    output                              ALU_i2_imm                 ,
+    output                              ALU_i2_4                   ,
+    output                              ALU_i2_csr                 ,
     // ===========================================================================
     // OP type
-    output               op_R_type,
-    output               op_I_type,
-    output               op_B_type,
-    output               op_J_type,
-    output               op_U_type,
-    output               op_S_type,
+    output                              op_R_type                  ,
+    output                              op_I_type                  ,
+    output                              op_B_type                  ,
+    output                              op_J_type                  ,
+    output                              op_U_type                  ,
+    output                              op_S_type                  ,
     // ===========================================================================
     // jump
-    output               jump,
-    output               pc_plus_imm,
-    output               rs1_plus_imm,
-    output               csr_plus_imm,
-    output               cmp_eq ,
-    output               cmp_neq,
-    output               cmp_ge,
-    output               cmp_lt,
+    output                              jump                       ,
+    output                              pc_plus_imm                ,
+    output                              rs1_plus_imm               ,
+    output                              csr_plus_imm               ,
+    output                              cmp_eq                     ,
+    output                              cmp_neq                    ,
+    output                              cmp_ge                     ,
+    output                              cmp_lt                     ,
     // ===========================================================================
     // write/read register
-    output               write_gpr,
-    output               write_csr,
-    output               mem_to_reg,
+    output                              write_gpr                  ,
+    output                              write_csr                  ,
+    output                              mem_to_reg                 ,
     // we wiil handle csr write date in the next stage
-    output               rv32_csrrs,
-    output               rv32_csrrw,
-    output               rv32_ecall,
+    output                              rv32_csrrs                 ,
+    output                              rv32_csrrw                 ,
+    output                              rv32_ecall                 ,
     // ===========================================================================
     // write/read memory
-    output               write_mem,    
-    output               mem_byte,   
-    output               mem_half,    
-    output               mem_word,     
-    output               mem_byte_u,  
-    output               mem_half_u,
+    output                              write_mem                  ,
+    output                              mem_byte                   ,
+    output                              mem_half                   ,
+    output                              mem_word                   ,
+    output                              mem_byte_u                 ,
+    output                              mem_half_u                 ,
     // ===========================================================================
     // halt
-    output               system_halt
+    output                              system_halt                 
 
-) ; 
+) ;
 
     // ===========================================================================
     logic [6 : 0]  opcode      =   IDU_inst[6 : 0];
@@ -137,21 +137,21 @@ module IDU_DECODE_ysyx23060136(
     logic func7_0010001 = (func7 == 7'b0010001);
     logic func7_0101101 = (func7 == 7'b0101101);
     logic func7_1111111 = (func7 == 7'b1111111);
-    logic func7_0000100 = (func7 == 7'b0000100); 
-    logic func7_0001000 = (func7 == 7'b0001000); 
-    logic func7_0001100 = (func7 == 7'b0001100); 
-    logic func7_0101100 = (func7 == 7'b0101100); 
-    logic func7_0010000 = (func7 == 7'b0010000); 
-    logic func7_0010100 = (func7 == 7'b0010100); 
-    logic func7_1100000 = (func7 == 7'b1100000); 
-    logic func7_1110000 = (func7 == 7'b1110000); 
-    logic func7_1010000 = (func7 == 7'b1010000); 
-    logic func7_1101000 = (func7 == 7'b1101000); 
-    logic func7_1111000 = (func7 == 7'b1111000); 
-    logic func7_1010001 = (func7 == 7'b1010001);  
-    logic func7_1110001 = (func7 == 7'b1110001);  
-    logic func7_1100001 = (func7 == 7'b1100001);  
-    logic func7_1101001 = (func7 == 7'b1101001);  
+    logic func7_0000100 = (func7 == 7'b0000100);
+    logic func7_0001000 = (func7 == 7'b0001000);
+    logic func7_0001100 = (func7 == 7'b0001100);
+    logic func7_0101100 = (func7 == 7'b0101100);
+    logic func7_0010000 = (func7 == 7'b0010000);
+    logic func7_0010100 = (func7 == 7'b0010100);
+    logic func7_1100000 = (func7 == 7'b1100000);
+    logic func7_1110000 = (func7 == 7'b1110000);
+    logic func7_1010000 = (func7 == 7'b1010000);
+    logic func7_1101000 = (func7 == 7'b1101000);
+    logic func7_1111000 = (func7 == 7'b1111000);
+    logic func7_1010001 = (func7 == 7'b1010001);
+    logic func7_1110001 = (func7 == 7'b1110001);
+    logic func7_1100001 = (func7 == 7'b1100001);
+    logic func7_1101001 = (func7 == 7'b1101001);
 
 
 
@@ -216,8 +216,8 @@ module IDU_DECODE_ysyx23060136(
     assign rv32_ecall    = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0000);
     logic  rv32_ebreak   = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0001);
     logic  rv32_mret     = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0011_0000_0010);
-    assign rv32_csrrw    = rv32_system & func3_001; 
-    assign rv32_csrrs    = rv32_system & func3_010; 
+    assign rv32_csrrw    = rv32_system & func3_001;
+    assign rv32_csrrs    = rv32_system & func3_010;
 
 
     // ===========================================================================
@@ -226,7 +226,7 @@ module IDU_DECODE_ysyx23060136(
     logic rv32_jal      = opcode_6_5_11 & opcode_4_2_011 & opcode_1_0_11;
 
     // U type IDU_inst
-    logic rv32_auipc    = opcode_6_5_00 & opcode_4_2_101 & opcode_1_0_11; 
+    logic rv32_auipc    = opcode_6_5_00 & opcode_4_2_101 & opcode_1_0_11;
     logic rv32_lui      = opcode_6_5_01 & opcode_4_2_101 & opcode_1_0_11;
 
 
@@ -256,7 +256,7 @@ module IDU_DECODE_ysyx23060136(
 
     // ===========================================================================
     // op type define
-    assign op_I_type     = rv32_op_i  | rv32_load | rv32_jalr | rv32_csrrw | rv32_csrrs | rv32_ecall | rv32_ebreak; 
+    assign op_I_type     = rv32_op_i  | rv32_load | rv32_jalr | rv32_csrrw | rv32_csrrs | rv32_ecall | rv32_ebreak;
     assign op_R_type     = rv32_op_r  | rv32_mret;
     assign op_B_type     = rv32_branch;
     assign op_J_type     = rv32_jal;
@@ -278,7 +278,7 @@ module IDU_DECODE_ysyx23060136(
 
     // ===========================================================================
     // write register
-    assign write_gpr    = ~(rv32_branch | rv32_store | rv32_mret | rv32_ecall | rv32_ebreak); 
+    assign write_gpr    = ~(rv32_branch | rv32_store | rv32_mret | rv32_ecall | rv32_ebreak);
     assign write_csr    = rv32_ecall | rv32_csrrs | rv32_csrrw;
     assign mem_to_reg   = rv32_load;
 

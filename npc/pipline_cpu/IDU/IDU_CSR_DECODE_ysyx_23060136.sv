@@ -1,6 +1,6 @@
 /*
- * @Author: Juqi Li @ NJU 
- * @Date: 2024-02-21 17:23:48 
+ * @Author: Juqi Li @ NJU
+ * @Date: 2024-02-21 17:23:48
  * @Last Modified by: Juqi Li @ NJU
  * @Last Modified time: 2024-02-21 20:28:24
  */
@@ -12,9 +12,9 @@
  // CSR internal ctr
 // ===========================================================================
  module IDU_CSR_DECODE_ysyx_23060136 (
-    input      [11 : 0]     IDU_csr_id,
-    output     [1 : 0]      IDU_csr_rs,
-    output     [1 : 0]      IDU_csr_rd
+    input              [  11:0]         IDU_csr_id                 ,
+    output             [   1:0]         IDU_csr_rs                 ,
+    output             [   1:0]         IDU_csr_rd                  
  );
         // CSR internal ctr
     logic    csr_ecall    = (IDU_csr_id     ==     12'd0);
