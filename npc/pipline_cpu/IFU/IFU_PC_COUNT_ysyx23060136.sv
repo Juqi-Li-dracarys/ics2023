@@ -1,6 +1,6 @@
 /*
- * @Author: Juqi Li @ NJU 
- * @Date: 2024-02-15 22:21:15 
+ * @Author: Juqi Li @ NJU
+ * @Date: 2024-02-15 22:21:15
  * @Last Modified by: Juqi Li @ NJU
  * @Last Modified time: 2024-02-18 20:57:27
  */
@@ -11,12 +11,12 @@
 // ===========================================================================
 
 module IFU_PC_COUNT_ysyx23060136 (
-    input                      clk,
-    input                      rst,
-    input                      PCSrc,
-    input                      IFU_stall,
-    input        [31 : 0]      branch_target,
-    output logic [31 : 0]      IFU_pc
+    input                               clk                        ,
+    input                               rst                        ,
+    input                               PCSrc                      ,
+    input                               IFU_stall                  ,
+    input              [31 : 0]         branch_target              ,
+    output      logic  [31 : 0]         IFU_pc                     
 );
 
     logic [31 : 0]  pc_update;
@@ -26,10 +26,11 @@ module IFU_PC_COUNT_ysyx23060136 (
     assign pc_next = IFU_stall ? IFU_pc : pc_update;
     
     always_ff @(posedge clk) begin
-        if(rst)
-            IFU_pc <= `PC_RST;
+        if(rst) begin
+            IFU_pc        <= `PC_RST;
+        end
         else begin
-            IFU_pc <= pc_next;
+            IFU_pc        <= pc_next;
         end
     end
 
