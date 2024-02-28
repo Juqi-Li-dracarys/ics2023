@@ -13,31 +13,32 @@
 
 // ===========================================================================
 module IFU_IDU_SEG_REG_ysyx23060136 (
-        input                      clk,
-        input                      rst,
-        // forward unit signal
-        input                      BRANCH_flushIF,
-        input                      FORWARD_stallID,
-        // detect handshake 
-        input                      IFU_valid,
-        input                      IDU_ready,
+        input                               clk                        ,
+        input                               rst                        ,
+         // forward unit signal
+        input                               BRANCH_flushIF             ,
+        // FORWARD unit remote control
+        input                               FORWARD_stallID            ,
         // IDU buffer
-        input         [31 : 0]     IFU_pc,
-        input         [31 : 0]     IFU_inst,
-        output logic  [31 : 0]     IDU_pc,
-        output logic  [31 : 0]     IDU_inst
+        input              [  31:0]         IFU_pc                     ,
+        input              [  31:0]         IFU_inst                   ,
+        output      logic                   IDU_commit                 ,
+        output      logic  [31 : 0]         IDU_pc                     ,
+        output      logic  [31 : 0]         IDU_inst        
     );
 
-    logic hand_shake_succsess = IFU_valid & IDU_ready  & ~FORWARD_stallID;
     
     always_ff @(posedge clk) begin : update_pc
-        if(rst || (BRANCH_flushIF & ~FORWARD_stallID) ) begin
-            IDU_pc   <= `PC_RST;
-            IDU_inst <= `NOP;
+        if(rst || (BRANCH_flushIF & ~FORWARD_stallID)) begin
+            IDU_pc     <= `PC_RST;
+            IDU_inst   <= `NOP;
+            IDU_commit <= `false;
         end
-        else if(hand_shake_succsess) begin
-            IDU_pc   <= IFU_pc;
-            IDU_inst <= IFU_inst;
+        // 正常情况下，更新段寄存器
+        else if(!FORWARD_stallID) begin
+            IDU_pc     <= IFU_pc;
+            IDU_inst   <= IFU_inst;
+            IDU_commit <= `true;
         end
     end
     
