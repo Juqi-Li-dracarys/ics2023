@@ -1,9 +1,10 @@
 /*
  * @Author: Juqi Li @ NJU 
- * @Date: 2024-02-24 17:15:34 
+ * @Date: 2024-02-28 18:04:31 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-27 16:46:21
+ * @Last Modified time: 2024-02-29 00:08:48
  */
+
 
 
  `include "MEM_DEFINES_ysyx23060136.sv"
@@ -33,7 +34,7 @@
     input              [   1:0]         MEM_csr_rd                 ,
     input                               MEM_write_gpr              ,
     input                               MEM_write_csr              ,
-    input              [  31:0]         MEM_out                    ,
+    input              [  31:0]         MEM_rdata                  ,
 
     input              [  31:0]         MEM_ALU_ALUout             ,
     input              [  31:0]         MEM_ALU_CSR_out            ,
@@ -52,6 +53,7 @@
     // siganl for seg reg
     output                              FORWARD_stallIF            ,
     output                              FORWARD_stallID            ,
+    output                              FORWARD_stallEX            ,
     output                              FORWARD_stallME            ,
     output                              FORWARD_flushWB            ,
 
@@ -107,36 +109,40 @@
     // 所有的读写操作已经完成
     logic    mem_process_over    =  IFU_valid & MEM_rvalid & MEM_wready;
 
+
     // stall and flush signal
-    assign FORWARD_stallIF       =   ~mem_process_over;
-    assign FORWARD_stallID       =   ~mem_process_over;
-    assign FORWARD_stallME       =   ~mem_process_over;
-    assign FORWARD_flushWB       =   ~mem_process_over;
+    assign  FORWARD_stallIF       =   ~mem_process_over;
+    assign  FORWARD_stallID       =   ~mem_process_over;
+    assign  FORWARD_stallEX       =   ~mem_process_over;
+    assign  FORWARD_stallME       =   ~mem_process_over;
+    assign  FORWARD_flushWB       =   ~mem_process_over;
 
     // forward sel for EXU
-    assign FORWARD_rs1_hazard_EXU    =  second_stage_hazard_rs1 | first_stage_hazard_rs1 | load_use_hazard_rs1;
-    assign FORWARD_rs2_hazard_EXU    =  second_stage_hazard_rs2 | first_stage_hazard_rs2 | load_use_hazard_rs2;
-    assign FORWARD_csr_rs_hazard_EXU =  second_stage_hazard_csr | first_stage_hazard_csr | load_use_hazard_csr;
+    assign  FORWARD_rs1_hazard_EXU    =  second_stage_hazard_rs1 | first_stage_hazard_rs1 | load_use_hazard_rs1;
+    assign  FORWARD_rs2_hazard_EXU    =  second_stage_hazard_rs2 | first_stage_hazard_rs2 | load_use_hazard_rs2;
+    assign  FORWARD_csr_rs_hazard_EXU =  second_stage_hazard_csr | first_stage_hazard_csr | load_use_hazard_csr;
 
     // forward sel for IDU-EXU seg register
-    assign FORWARD_rs1_hazard_SEG    =  third_stage_hazard_rs1;
-    assign FORWARD_rs2_hazard_SEG    =  third_stage_hazard_rs2;
-    assign FORWARD_csr_rs_hazard_SEG =  third_stage_hazard_csr;
+    assign  FORWARD_rs1_hazard_SEG    =  third_stage_hazard_rs1;
+    assign  FORWARD_rs2_hazard_SEG    =  third_stage_hazard_rs2;
+    assign  FORWARD_csr_rs_hazard_SEG =  third_stage_hazard_csr;
 
     // forward data for EXU
-    assign  FORWARD_rs1_data_EXU     =    ({32{second_stage_hazard_rs1}} & WB_rs1_data_EXU)    |
-                                          ({32{load_use_hazard_rs1}}     & MEM_out)            |
-                                          ({32{first_stage_hazard_rs1}}  & MEM_ALU_ALUout)     ;
+    // 注意优先级关系
+    // 如果 stage_2 或者 load_use 为 true，则优先考虑 load_stroe
+    assign  FORWARD_rs1_data_EXU     =    (({32{second_stage_hazard_rs1}} & (~({32{load_use_hazard_rs1}} | {32{first_stage_hazard_rs1}}))) & WB_rs1_data_EXU)    |
+                                          ({32{load_use_hazard_rs1}}      & MEM_rdata)                                                                           |
+                                          ({32{first_stage_hazard_rs1}}   & MEM_ALU_ALUout)                                                                      ;
 
-    assign  FORWARD_rs2_data_EXU     =    ({32{second_stage_hazard_rs2}} & WB_rs2_data_EXU)    |
-                                          ({32{load_use_hazard_rs2}}     & MEM_out)            |
-                                          ({32{first_stage_hazard_rs2}}  & MEM_ALU_ALUout)     ; 
+    assign  FORWARD_rs2_data_EXU     =    (({32{second_stage_hazard_rs2}} & (~({32{load_use_hazard_rs2}} | {32{first_stage_hazard_rs2}}))) & WB_rs2_data_EXU)    |
+                                          ({32{load_use_hazard_rs2}}      & MEM_rdata)                                                                           |
+                                          ({32{first_stage_hazard_rs2}}   & MEM_ALU_ALUout)                                                                      ; 
 
-    assign  FORWARD_csr_rs_data_EXU  =    ({32{second_stage_hazard_csr}} & WB_csr_rs_data_EXU) |
-                                          ({32{load_use_hazard_csr}}     & MEM_out)            |
-                                          ({32{first_stage_hazard_csr}}  & MEM_ALU_CSR_out)    ;
+    assign  FORWARD_csr_rs_data_EXU  =    (({32{second_stage_hazard_csr}} & (~({32{load_use_hazard_csr}} | {32{first_stage_hazard_csr}}))) & WB_csr_rs_data_EXU) |
+                                          ({32{load_use_hazard_csr}}      & MEM_rdata)                                                                           |
+                                          ({32{first_stage_hazard_csr}}   & MEM_ALU_CSR_out)                                                                     ;
 
-   // forward data for IDU_EXU_REG
+    // forward data for IDU_EXU_REG
     assign  FORWARD_rs1_data_SEG     =    {32{third_stage_hazard_rs1}}   & WB_rs1_data_EXU     ;
     assign  FORWARD_rs2_data_SEG     =    {32{third_stage_hazard_rs2}}   & WB_rs2_data_EXU     ;
     assign  FORWARD_csr_rs_data_SEG  =    {32{third_stage_hazard_csr}}   & WB_csr_rs_data_EXU  ;   
