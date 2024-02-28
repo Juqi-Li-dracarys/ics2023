@@ -12,83 +12,83 @@
 // top module of IDU
 // ===========================================================================
 module IDU_TOP_ysyx23060136 (
-        input                   clk,
-        input                   rst,
-        input      [31 : 0]     IDU_pc,
-        input      [31 : 0]     IDU_inst,
+        input                               clk                        ,
+        input                               rst                        ,
+        input              [  31:0]         IDU_pc                     ,
+        input              [  31:0]         IDU_inst                   ,
+        input                               IDU_commit                 ,
         // ===========================================================================
         // WBU write back
-        input      [4 : 0]      WBU_rd,
-        input                   RegWr,
-        input      [31 : 0]     rf_busW,
-        input      [1 : 0]      WBU_csr_rd,
-        input                   CSRWr,
-        input      [31 : 0]     csr_busW,
-        // ===========================================================================
-        // hand shake
-        output                  IDU_ready,
-        output                  IDU_valid,
+        input              [   4:0]         WBU_rd                     ,
+        input                               RegWr                      ,
+        input              [  31:0]         rf_busW                    ,
+        input              [   1:0]         WBU_csr_rd                 ,
+        input                               CSRWr                      ,
+        input              [  31:0]         csr_busW                   ,
         // ===========================================================================
         // general data
-        output     [31 : 0]     IDU_pc_EXU, // push singnal to the next stage
-        output     [4 : 0]      IDU_rd,
-        output     [4 : 0]      IDU_rs1,
-        output     [4 : 0]      IDU_rs2,
-        output     [31 : 0]     IDU_imm,
-        output     [31 : 0]     IDU_rs1_data,
-        output     [31 : 0]     IDU_rs2_data,
-        output     [1 : 0]      IDU_csr_rd,
-        output     [1 : 0]      IDU_csr_rs,
-        output     [31 : 0]     IDU_csr_rs_data,
+        // push singnal to the next stage
+        output             [  31:0]         IDU_pc_EXU                 ,
+        output             [  31:0]         IDU_inst_EXU               ,
+        output                              IDU_commit_EXU             ,
+        output             [   4:0]         IDU_rd                     ,
+        output             [   4:0]         IDU_rs1                    ,
+        output             [   4:0]         IDU_rs2                    ,
+        output             [  31:0]         IDU_imm                    ,
+        output             [  31:0]         IDU_rs1_data               ,
+        output             [  31:0]         IDU_rs2_data               ,
+        output             [   1:0]         IDU_csr_rd                 ,
+        output             [   1:0]         IDU_csr_rs                 ,
+        output             [  31:0]         IDU_csr_rs_data            ,
         // ===========================================================================
         // ALU signal
-        output                  IDU_ALU_add,
-        output                  IDU_ALU_sub,
-        output                  IDU_ALU_slt,
-        output                  IDU_ALU_sltu,
-        output                  IDU_ALU_or,
-        output                  IDU_ALU_and,
-        output                  IDU_ALU_xor,
-        output                  IDU_ALU_sll,
-        output                  IDU_ALU_srl,
-        output                  IDU_ALU_sra,
-        output                  IDU_ALU_explicit,
-        output                  IDU_ALU_i1_rs1,
-        output                  IDU_ALU_i1_pc,
-        output                  IDU_ALU_i2_rs2,
-        output                  IDU_ALU_i2_imm,
-        output                  IDU_ALU_i2_4,
-        output                  IDU_ALU_i2_csr,
+        output                              IDU_ALU_add                ,
+        output                              IDU_ALU_sub                ,
+        output                              IDU_ALU_slt                ,
+        output                              IDU_ALU_sltu               ,
+        output                              IDU_ALU_or                 ,
+        output                              IDU_ALU_and                ,
+        output                              IDU_ALU_xor                ,
+        output                              IDU_ALU_sll                ,
+        output                              IDU_ALU_srl                ,
+        output                              IDU_ALU_sra                ,
+        output                              IDU_ALU_explicit           ,
+        output                              IDU_ALU_i1_rs1             ,
+        output                              IDU_ALU_i1_pc              ,
+        output                              IDU_ALU_i2_rs2             ,
+        output                              IDU_ALU_i2_imm             ,
+        output                              IDU_ALU_i2_4               ,
+        output                              IDU_ALU_i2_csr             ,
         // ===========================================================================
         // jump signal
-        output                  IDU_jump,
-        output                  IDU_pc_plus_imm,
-        output                  IDU_rs1_plus_imm,
-        output                  IDU_csr_plus_imm,
-        output                  IDU_cmp_eq,
-        output                  IDU_cmp_neq,
-        output                  IDU_cmp_ge,
-        output                  IDU_cmp_lt,
+        output                              IDU_jump                   ,
+        output                              IDU_pc_plus_imm            ,
+        output                              IDU_rs1_plus_imm           ,
+        output                              IDU_csr_plus_imm           ,
+        output                              IDU_cmp_eq                 ,
+        output                              IDU_cmp_neq                ,
+        output                              IDU_cmp_ge                 ,
+        output                              IDU_cmp_lt                 ,
         // ===========================================================================
         // write back
-        output                  IDU_write_gpr,
-        output                  IDU_write_csr,
-        output                  IDU_mem_to_reg,
-        output                  IDU_rv32_csrrs,
-        output                  IDU_rv32_csrrw,
-        output                  IDU_rv32_ecall,
+        output                              IDU_write_gpr              ,
+        output                              IDU_write_csr              ,
+        output                              IDU_mem_to_reg             ,
+        output                              IDU_rv32_csrrs             ,
+        output                              IDU_rv32_csrrw             ,
+        output                              IDU_rv32_ecall             ,
         // ===========================================================================
         // mem
-        output                  IDU_write_mem,
-        output                  IDU_mem_byte,
-        output                  IDU_mem_half,
-        output                  IDU_mem_word,
-        output                  IDU_mem_byte_u,
-        output                  IDU_mem_half_u,
+        output                              IDU_write_mem              ,
+        output                              IDU_mem_byte               ,
+        output                              IDU_mem_half               ,
+        output                              IDU_mem_word               ,
+        output                              IDU_mem_byte_u             ,
+        output                              IDU_mem_half_u             ,
         // ===========================================================================
         // system
-        output                  IDU_system_halt,
-        output                  IDU_op_valid
+        output                              IDU_system_halt            ,
+        output                              IDU_op_valid                
     );
 
 
@@ -100,11 +100,9 @@ module IDU_TOP_ysyx23060136 (
     logic                    op_U_type;
     logic                    op_S_type;
 
-
-    assign                   IDU_valid    =       `true;
-    assign                   IDU_ready    =       `true;
-    assign                   IDU_pc_EXU   =        IDU_pc;
-
+    assign                   IDU_pc_EXU      =        IDU_pc;
+    assign                   IDU_inst_EXU    =        IDU_inst;
+    assign                   IDU_commit_EXU  =        IDU_commit;
 
     IDU_DECODE_ysyx23060136  IDU_DECODE_ysyx23060136_inst (
                                  .IDU_inst(IDU_inst),

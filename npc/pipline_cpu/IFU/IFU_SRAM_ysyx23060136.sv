@@ -35,43 +35,44 @@
           bready  ---> -+
 
  */
+ 
 
 // ===========================================================================
 module IFU_SRAM_ysyx23060136(
-        input                       clk,
-        input                       rst,
+        input                               clk                        ,
+        input                               rst                        ,
         // ===========================================================================
         // 1. read addr
         // rvalid 指示CPU发送的 araddr 有效
-        input                       s_axi_arvalid,
-        input        [31 : 0]       s_axi_araddr,
-        output                      s_axi_aready,
+        input                               s_axi_arvalid              ,
+        input              [  31:0]         s_axi_araddr               ,
+        output                              s_axi_aready               ,
         // ===========================================================================
         // 2. read data
         // rready 指示 CPU 可以接受数据
-        input                       s_axi_rready,
-        output logic [31 : 0]       s_axi_rdata,
-        output                      s_axi_rvalid,
+        input                               s_axi_rready               ,
+        output logic       [31 : 0]         s_axi_rdata                ,
+        output                              s_axi_rvalid               ,
         // read response(don't need handshake)
-        output       [1 : 0]        s_axi_rresp,
+        output             [   1:0]         s_axi_rresp                ,
         // ===========================================================================
         // 3. write addr
-        input        [31 : 0]       s_axi_awaddr,
-        input                       s_axi_awvalid,
-        output                      s_axi_awready,
+        input              [  31:0]         s_axi_awaddr               ,
+        input                               s_axi_awvalid              ,
+        output                              s_axi_awready              ,
         // ===========================================================================
         // 4. write data
-        input        [31 : 0]       s_axi_wdata,
-        input        [3 : 0]        s_axi_wstrb,
-        input                       s_axi_wvalid,
-        output                      s_axi_wready,
+        input              [  31:0]         s_axi_wdata                ,
+        input              [   3:0]         s_axi_wstrb                ,
+        input                               s_axi_wvalid               ,
+        output                              s_axi_wready               ,
         // ===========================================================================
         // 5. response signal
         // backward(write) response signal
-        output       [1 : 0]        s_axi_bresp,
+        output             [   1:0]         s_axi_bresp                ,
         // handshake for backward response signal
-        input                       s_axi_bready,
-        output                      s_axi_bvalid
+        input                               s_axi_bready               ,
+        output                              s_axi_bvalid                
     );
     
 
@@ -80,14 +81,16 @@ module IFU_SRAM_ysyx23060136(
 
     // r_state machine control
     logic [1 : 0]  r_state;
-    logic [1 : 0]  next_r_state     =  ({2{r_state_idle}} & (s_axi_arvalid                 ? `busy : `idle))   | 
+    // handshake -> go to the netx stage
+    logic [1 : 0]  next_r_state     =  ({2{r_state_idle}} & (s_axi_arvalid & s_axi_aready  ? `busy : `idle))   | 
                                        ({2{r_state_busy}} & (sram_r_valid                  ? `done : `busy))   | 
-                                       ({2{r_state_done}} & (s_axi_rready                  ? `idle : `done))   ;
+                                       ({2{r_state_done}} & (s_axi_rready  & s_axi_rvalid  ? `idle : `done))   ;
 
 
     // w_state machine control
     logic [1 : 0]  w_state;
-    logic [1 : 0]  next_w_state     =  ({2{w_state_idle}} & (s_axi_awvalid                 ? `busy : `idle))   |
+    // handshake -> go to the netx stage
+    logic [1 : 0]  next_w_state     =  ({2{w_state_idle}} & (s_axi_awvalid & s_axi_awready ? `busy : `idle))   |
                                        ({2{w_state_busy}} & (s_axi_wvalid                  ? `done : `busy))   |
                                        ({2{w_state_done}} & (s_axi_bready & s_axi_bvalid   ? `idle : `done))   ;
     

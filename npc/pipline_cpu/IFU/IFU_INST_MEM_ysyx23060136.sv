@@ -14,11 +14,9 @@
 module IFU_INST_MEM_ysyx23060136(
       input                               clk                        ,
       input                               rst                        ,
-          // 这里代表 PC 寄存器发生更新，在
-          // PC 更新后，将通过 AXI 写入 sram
       input              [  31:0]         IFU_pc                     ,
       output             [  31:0]         IFU_inst                   ,
-      output                              inst_mem_valid             
+      output                              inst_valid             
     );
 
 
@@ -29,7 +27,8 @@ module IFU_INST_MEM_ysyx23060136(
     logic                                     m_axi_aready                                  ;
     logic                                     m_axi_rready   =  r_state_busy                ;
     logic        [31 : 0]                     m_axi_rdata                                   ;
-    logic                                     m_axi_rvalid                                  ; 
+    logic                                     m_axi_rvalid                                  ;
+    // we do not need response
     logic        [1 : 0]                      m_axi_rresp                                   ;
 
     // we do not need to write data from AXI
@@ -38,24 +37,22 @@ module IFU_INST_MEM_ysyx23060136(
     logic        [1 : 0]                      m_axi_bresp                ;
     logic                                     m_axi_bvalid               ;
 
-    // 暂存当前 PC 值
-    // 如果 PC 发生变化，则更新该寄存器
+    // 暂存当前 PC 值，当 PC 变化时，我们将新值视为有效值
     logic        [31 : 0]      temp_pc;
     logic                      pc_change = (temp_pc != IFU_pc);
 
     assign  IFU_inst        =  m_axi_rdata;
     // this signal is used for next phase of CPU 
-    assign  inst_mem_valid  =  r_state_idle & ~pc_change;
+    assign  inst_valid      =  r_state_idle & ~pc_change;
 
     logic          r_state_idle     =  (r_state == `idle);
     logic          r_state_busy     =  (r_state == `busy);
 
     // read mater state machine
     logic        [1 : 0]       r_state;
-    // 当 AXI lite 发生握手并且 pc 的值变化时，
-    // 我们将转移到下一个状态
-    logic        [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((m_axi_aready & pc_change) ? `busy : `idle)) |
-                                                 ({2{r_state_busy}} & ( m_axi_rvalid              ? `idle : `busy)) ;
+    // 当 AXI lite 发生握手，将转移到下一个状态
+    logic        [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((m_axi_aready & m_axi_arvalid) ? `busy : `idle)) |
+                                                 ({2{r_state_busy}} & ((m_axi_rvalid & m_axi_rready)  ? `idle : `busy)) ;
 
     always_ff @(posedge clk) begin : state_machine
       if(rst) begin
