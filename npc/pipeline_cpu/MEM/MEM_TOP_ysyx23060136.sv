@@ -70,6 +70,10 @@ module MEM_TOP_ysyx23060136 (
         output            [31 : 0]          MEM_ALU_CSR_out_WB         ,
         output            [31 : 0]          MEM_rdata                  ,
 
+        output                              MEM_write_gpr_WB           ,
+        output                              MEM_write_csr_WB           ,
+        output                              MEM_mem_to_reg_WB          ,
+
         output            [4 : 0]           MEM_rd_WB                  ,
         output            [1 : 0]           MEM_csr_rd_WB              ,
 
@@ -115,6 +119,9 @@ module MEM_TOP_ysyx23060136 (
     assign                         MEM_system_halt_WB =   MEM_system_halt;
     assign                         MEM_op_valid_WB    =   MEM_op_valid;
     assign                         MEM_ALU_valid_WB   =   MEM_ALU_valid;
+    assign                         MEM_write_gpr_WB   =   MEM_write_gpr;
+    assign                         MEM_write_csr_WB   =   MEM_write_csr;
+    assign                         MEM_mem_to_reg_WB  =   MEM_mem_to_reg;
     
 
 

@@ -25,6 +25,10 @@ module MEM_WB_SEG_REG_ysyx23060136 (
         input             [31 : 0]          MEM_ALU_CSR_out_WB         ,
         input             [31 : 0]          MEM_rdata                  ,
 
+        input                               MEM_write_gpr_WB           ,
+        input                               MEM_write_csr_WB           ,
+        input                               MEM_mem_to_reg_WB          ,
+
         input             [4 : 0]           MEM_rd_WB                  ,
         input             [1 : 0]           MEM_csr_rd_WB              ,
         // system signal
@@ -40,6 +44,10 @@ module MEM_WB_SEG_REG_ysyx23060136 (
         output   logic    [31 : 0]          WB_ALU_ALUout              ,
         output   logic    [31 : 0]          WB_ALU_CSR_out             ,
         output   logic    [31 : 0]          WB_rdata                   ,
+
+        output   logic                      WB_write_gpr               ,
+        output   logic                      WB_write_csr               ,
+        output   logic                      WB_mem_to_reg              ,
 
         output   logic    [4 : 0]           WB_rd                      ,
         output   logic    [1 : 0]           WB_csr_rd                  ,
@@ -58,6 +66,11 @@ module MEM_WB_SEG_REG_ysyx23060136 (
             WB_ALU_ALUout     <=     32'b0;
             WB_ALU_CSR_out    <=     32'b0;
             WB_rdata          <=     32'b0;
+
+            WB_write_gpr      <=     1'b0;
+            WB_write_csr      <=     1'b0;
+            WB_mem_to_reg     <=     1'b0;
+
             WB_rd             <=     5'b0;
             WB_csr_rd         <=     2'b0;
             WB_system_halt    <=     1'b0;
@@ -71,6 +84,11 @@ module MEM_WB_SEG_REG_ysyx23060136 (
             WB_ALU_ALUout     <=     MEM_ALU_ALUout_WB;
             WB_ALU_CSR_out    <=     MEM_ALU_CSR_out_WB;
             WB_rdata          <=     MEM_rdata;
+
+            WB_write_gpr      <=     MEM_write_gpr_WB ;
+            WB_write_csr      <=     MEM_write_csr_WB;
+            WB_mem_to_reg     <=     MEM_mem_to_reg_WB;
+
             WB_rd             <=     MEM_rd_WB;
             WB_csr_rd         <=     MEM_csr_rd_WB;
             WB_system_halt    <=     MEM_system_halt_WB;
