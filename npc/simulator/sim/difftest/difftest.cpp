@@ -116,13 +116,9 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   else {
     return true;
   }
-
-  // const char *csr_names[] = {"mepc", "mstatus", "mcause", "mtvec"};
-  // check csr
-  // Lab4 TODO: (In Lab3, you can ignore this part.)implement the csr check function, return false if any difference, and output some infomation of the difference
 }
 
-// check mem
+// check mem， use it carefully
 bool isa_difftest_checkmem(uint8_t *ref_m, vaddr_t pc) {
   for (int i = 0; i < CONFIG_MSIZE; i++){
     if (ref_m[i] != pmem[i]) {

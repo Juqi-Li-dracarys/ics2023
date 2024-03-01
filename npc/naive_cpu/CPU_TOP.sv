@@ -10,10 +10,24 @@
 module CPU_TOP #(parameter PC_RST = 32'h80000000) (
     input                      clk, rst,       // 时钟，高电平复位
     output     [31 : 0]        pc_cur, inst,   // 当前 PC，指令
-    output                     reg_signal,     // 寄存器异常
-    output     [1 : 0]         inst_signal,    // 指令异常
-    output                     ALU_signal      // ALU 异常         
+
+    output                     inst_commit,
+    output                     system_halt,
+    output                     op_valid,
+    output                     ALU_valid    
+
 );
+
+    wire                       reg_signal;     // 寄存器异常
+    wire     [1 : 0]           inst_signal;    // 指令异常
+    wire                       ALU_signal;     // ALU 异常
+
+    assign    inst_commit  =    1'b1;
+
+
+    assign    ALU_valid    =    ~ALU_signal & ~reg_signal;
+    assign    op_valid     =    (inst_signal != 2'h1);
+    assign    system_halt  =    (inst_signal == 2'h2);
 
     // PC next
     wire       [31 : 0]        pc_next;

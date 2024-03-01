@@ -55,7 +55,7 @@
     output                              FORWARD_stallID            ,
     output                              FORWARD_stallEX            ,
     output                              FORWARD_stallME            ,
-    output                              FORWARD_flushWB            ,
+    output                              FORWARD_flushME            ,
 
     // signal for hazard unit in EXU
     output             [  31:0]         FORWARD_rs1_data_EXU           ,
@@ -115,7 +115,7 @@
     assign  FORWARD_stallID       =   ~mem_process_over;
     assign  FORWARD_stallEX       =   ~mem_process_over;
     assign  FORWARD_stallME       =   ~mem_process_over;
-    assign  FORWARD_flushWB       =   ~mem_process_over;
+    assign  FORWARD_flushME       =   ~mem_process_over;
 
 
     // forward sel for EXU

@@ -6,8 +6,8 @@
  */
 
 // parameter define
- `define true   1'b1
- `define false  1'b0
+`define true   1'b1
+`define false  1'b0
 
 // parameter define
 `define PC_RST 32'h80000000

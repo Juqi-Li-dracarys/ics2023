@@ -108,6 +108,9 @@ void excute(uint64_t n) {
     
     do {
       single_cycle();
+      if(dut->inst_commit) {
+        set_state();
+      }
     }
     while(false);
 

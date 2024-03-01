@@ -90,7 +90,7 @@ module MEM_TOP_ysyx23060136 (
         output                              FORWARD_stallID            ,
         output                              FORWARD_stallME            ,
         output                              FORWARD_stallEX            ,
-        output                              FORWARD_flushWB            ,
+        output                              FORWARD_flushME            ,
 
         output            [31 : 0]          FORWARD_rs1_data_EXU       ,
         output            [31 : 0]          FORWARD_rs2_data_EXU       ,
@@ -181,7 +181,7 @@ module MEM_TOP_ysyx23060136 (
                                     .FORWARD_stallID                   (FORWARD_stallID           ),
                                     .FORWARD_stallEX                   (FORWARD_stallEX           ),
                                     .FORWARD_stallME                   (FORWARD_stallME           ),
-                                    .FORWARD_flushWB                   (FORWARD_flushWB           ),
+                                    .FORWARD_flushME                   (FORWARD_flushME           ),
                                     .FORWARD_rs1_data_EXU              (FORWARD_rs1_data_EXU      ),
                                     .FORWARD_rs2_data_EXU              (FORWARD_rs2_data_EXU      ),
                                     .FORWARD_csr_rs_data_EXU           (FORWARD_csr_rs_data_EXU   ),

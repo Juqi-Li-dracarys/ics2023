@@ -85,17 +85,20 @@ module EXU_ALU_ysyx23060136 (
                                 ({32{EXU_ALU_explicit}}  & (EXU_ALU_db))                 ;
 
 
-    assign EXU_ALU_valid  =     (EXU_ALU_add      && !(EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
-                                (EXU_ALU_sub      && !(EXU_ALU_add || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
-                                (EXU_ALU_slt      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
-                                (EXU_ALU_sltu     && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
-                                (EXU_ALU_or       && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
-                                (EXU_ALU_and      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
-                                (EXU_ALU_xor      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
-                                (EXU_ALU_sll      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
-                                (EXU_ALU_srl      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_sra || EXU_ALU_explicit)) ||
-                                (EXU_ALU_sra      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_explicit)) ||
-                                (EXU_ALU_explicit && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra));    
+    assign EXU_ALU_valid  =  `true;   
+    
+    
+    // (EXU_ALU_add      && !(EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
+    //                             (EXU_ALU_sub      && !(EXU_ALU_add || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
+    //                             (EXU_ALU_slt      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
+    //                             (EXU_ALU_sltu     && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_or  || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
+    //                             (EXU_ALU_or       && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
+    //                             (EXU_ALU_and      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
+    //                             (EXU_ALU_xor      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
+    //                             (EXU_ALU_sll      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_srl || EXU_ALU_sra || EXU_ALU_explicit)) ||
+    //                             (EXU_ALU_srl      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_sra || EXU_ALU_explicit)) ||
+    //                             (EXU_ALU_sra      && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_explicit)) ||
+    //                             (EXU_ALU_explicit && !(EXU_ALU_add || EXU_ALU_sub || EXU_ALU_slt || EXU_ALU_sltu || EXU_ALU_or || EXU_ALU_and || EXU_ALU_xor || EXU_ALU_sll || EXU_ALU_srl || EXU_ALU_sra));    
 
 endmodule
 
