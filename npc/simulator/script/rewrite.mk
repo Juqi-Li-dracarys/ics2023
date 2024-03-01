@@ -12,7 +12,6 @@ default: VCPU_TOP_ysyx23060136
 
 include VCPU_TOP_ysyx23060136.mk
 
-# CXXFLAGS += -MMD -O3 -g -std=c++14 -fno-exceptions -fPIE -Wno-unused-result
 CXXFLAGS += -MMD -O3 -g -std=c++14 -fno-exceptions -fPIE -Wall
 CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-11 --cxxflags)) -fPIC -DDEVICE -D__GUEST_ISA__=$(ISA)
 LDFLAGS += -O3 -rdynamic -shared -fPIC
