@@ -25,8 +25,8 @@ VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all -I$(VSRC_DIR)  \
 
 CINC_PATH 			= -CFLAGS -I$(CSRC_DIR)/include 
 CSRC 				= $(shell find $(CSRC_DIR) -name "*.cpp*")
-VSRC 				= $(shell find $(VSRC_DIR) -name "*.sv")
-VBIN 				=  $(OBJ_DIR)/$(addprefix V, $(basename $(notdir $(VERILOG_TOP))))
+VSRC 				= $(shell find $(VSRC_DIR) -name "*.sv" -o -name "*.v")
+VBIN 				= $(OBJ_DIR)/$(addprefix V, $(basename $(notdir $(VERILOG_TOP))))
 REWRITE 			= $(abspath ./script/rewrite.mk)
 
 
@@ -35,7 +35,8 @@ COLOR_GREEN 		= \033[1;32m
 COLOR_YELLOW 		= \033[33m
 COLOR_NONE  		= \033[0m
 
-
+# naive_cpu 中有不少未完善的代码
+# 2024.3 之后不再对其维护
 ifeq ($(CPU_TYPE), pipeline_cpu) 
 	VFLAGS          += -Wall
 endif
