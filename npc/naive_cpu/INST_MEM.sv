@@ -21,7 +21,7 @@ module INST_MEM #(parameter PC_RST = 32'h80000000) (
         if(rst)
             inst <= pmem_read(PC_RST);
         else
-            inst <= pmem_read(PC_RST);
+            inst <= pmem_read(pc_next);
     end
 
 endmodule
