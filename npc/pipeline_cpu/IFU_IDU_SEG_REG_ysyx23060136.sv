@@ -5,7 +5,7 @@
  * @Last Modified time: 2024-02-23 14:45:20
  */
 
- `include "TOP_DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx23060136.sv"
 
 /*
       IFU -> IDU_IFU_REG -> IFU

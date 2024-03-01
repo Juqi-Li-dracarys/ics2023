@@ -6,7 +6,7 @@
  */
 
 
-`include "EXU_DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx23060136.sv"
 
  
 // ALU of the CPU

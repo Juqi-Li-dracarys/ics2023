@@ -7,7 +7,7 @@
 
 
 
- `include "MEM_DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx23060136.sv"
 
 
  // FORWARD unit for CPU( Hazard and  latency handler )

@@ -6,7 +6,7 @@
  */
 
 
- `include "IFU_DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx23060136.sv"
 
 /* 
  We set SRAM as the slave module for CPU

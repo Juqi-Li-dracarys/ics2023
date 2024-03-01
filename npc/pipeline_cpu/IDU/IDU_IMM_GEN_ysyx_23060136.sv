@@ -5,7 +5,9 @@
  * @Last Modified time: 2024-02-23 12:19:22
  */
 
-`include "IDU_DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx23060136.sv"
+
+ /* verilator lint_off UNUSED */
 
 // imm and op module
 // ===========================================================================

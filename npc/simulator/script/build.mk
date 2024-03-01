@@ -15,7 +15,7 @@ override ARGS ?= --log=$(OBJ_DIR)/npc-log.txt
 override ARGS += $(ARGS_DIFF)
 
 $(VBIN): $(CSRC) $(VSRC)
-	@echo "$(COLOR_YELLOW)[VERILATOR]$(COLOR_NONE) $(notdir $(OBJ_DIR))/VCPU_TOP"
+	@echo "$(COLOR_YELLOW)[VERILATOR]$(COLOR_NONE) $(VBIN)"
 	@echo "$(COLOR_YELLOW)[GENERATE]$(COLOR_NONE) Creating System Verilog Model"
 	@$(VERILATOR) $(VFLAGS) $(VSRC) $(CSRC) $(CINC_PATH)
 	@echo "$(COLOR_YELLOW)[COMPILE]$(COLOR_NONE) Compiling C++ files"

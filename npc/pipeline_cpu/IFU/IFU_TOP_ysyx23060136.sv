@@ -5,7 +5,7 @@
  * @Last Modified time: 2024-02-21 15:57:14
  */
 
-`include "IFU_DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx23060136.sv"
 
 // IFU top module
 /*

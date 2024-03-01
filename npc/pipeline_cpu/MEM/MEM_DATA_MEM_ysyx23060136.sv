@@ -5,7 +5,9 @@
  * @Last Modified time: 2024-02-24 17:15:10 
  */
 
- `include "MEM_DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx23060136.sv"
+
+ /* verilator lint_off UNUSED */
 
 // interface for main memory
 

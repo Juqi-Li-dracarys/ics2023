@@ -8,7 +8,8 @@
 
 // csr file for RV32E
 
-`include "IDU_DEFINES_ysyx23060136.sv"
+ 
+ `include "DEFINES_ysyx23060136.sv"
 
 
 // ===========================================================================
