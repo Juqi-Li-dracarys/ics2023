@@ -12,16 +12,19 @@
 
 // ===========================================================================
 module IDU_GPR_FILE_ysyx_23060136 (
-        input             clk,                       // clk for write
-        input             rst,
-        input   [4 : 0]   IDU_rs1,
-        input   [4 : 0]   IDU_rs2,
+        input                               clk                        ,
+        input                               rst                        ,
+        input              [   4:0]         IDU_rs1                    ,
+        input              [   4:0]         IDU_rs2                    ,
         // rd is from WBU
-        input   [4 : 0]   WBU_rd,
-        input             RegWr,                     // write gpr reg enable
-        input   [31 : 0]  rf_busW,                   // write gpr data
-        output  [31 : 0]  IDU_rs1_data, 
-        output  [31 : 0]  IDU_rs2_data               // gpr read result
+        input              [   4:0]         WBU_rd                     ,
+        // write gpr reg enable
+        input                               RegWr                      ,
+        // write gpr data
+        input              [  31:0]         rf_busW                    ,
+        // gpr read result
+        output             [  31:0]         IDU_rs1_data               ,
+        output             [  31:0]         IDU_rs2_data               
     );
 
     // DIP-C in verilog

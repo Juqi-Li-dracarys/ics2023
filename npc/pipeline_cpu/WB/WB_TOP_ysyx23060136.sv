@@ -6,57 +6,70 @@
  */
 
 
+// Top module for write back
 // ===========================================================================
 module WB_TOP_ysyx23060136 (
-        input                               WB_commit                  ,
-        input              [  31:0]         WB_pc                      ,
-        input              [  31:0]         WB_inst                    ,
+        input                               WB_i_commit                  ,
+        input              [  31:0]         WB_i_pc                      ,
+        input              [  31:0]         WB_i_inst                    ,
 
-        input              [  31:0]         WB_ALU_ALUout              ,
-        input              [  31:0]         WB_ALU_CSR_out             ,
-        input              [  31:0]         WB_rdata                   ,
+        input              [  31:0]         WB_i_ALU_ALUout              ,
+        input              [  31:0]         WB_i_ALU_CSR_out             ,
+        input              [  31:0]         WB_i_rdata                   ,
 
-        input              [   4:0]         WB_rd                      ,
-        input              [   1:0]         WB_csr_rd                  ,
+        input              [   4:0]         WB_i_rd                      ,
+        input              [   1:0]         WB_i_csr_rd                  ,
 
-        input                               WB_write_gpr               ,
-        input                               WB_write_csr               ,
-        input                               WB_mem_to_reg              ,
+        input                               WB_i_write_gpr               ,
+        input                               WB_i_write_csr               ,
+        input                               WB_i_mem_to_reg              ,
 
-        input                               WB_system_halt             ,
-        input                               WB_op_valid                ,
-        input                               WB_ALU_valid               ,
+        input                               WB_i_system_halt             ,
+        input                               WB_i_op_valid                ,
+        input                               WB_i_ALU_valid               ,
         // ===========================================================================
         // write back to IDU GPR register file and CSR register file
-        output             [  31:0]         rf_busW                    ,
-        output             [  31:0]         csr_busW                   ,
-        output             [   4:0]         WBU_rd                     ,
-        output             [   1:0]         WBU_csr_rd                 ,
-        output                              RegWr                      ,
-        output                              CSRWr                      ,
+        output             [  31:0]         WB_o_rf_busW               ,
+        output             [  31:0]         WB_o_csr_busW              ,
+        output             [   4:0]         WB_o_rd                    ,
+        output             [   1:0]         WB_o_csr_rd                ,
+        output                              WB_o_RegWr                 ,
+        output                              WB_o_CSRWr                 ,
 
-        output                              WBU_commit                 ,
-        output                              WBU_system_halt            ,
-        output                              WBU_op_valid               ,
-        output                              WBU_ALU_valid              ,
+        // write data for FORWARD
+        output             [  31:0]         WB_o_rs1_data              ,
+        output             [  31:0]         WB_o_rs2_data              ,
+        output             [  31:0]         WB_o_csr_rs_data           ,
 
-        output             [  31:0]         WBU_pc                     ,
-        output             [  31:0]         WBU_inst                    
+        // system
+        output             [  31:0]         WB_o_pc                    ,
+        output             [  31:0]         WB_o_inst                  ,
+        output                              WB_o_commit                ,
+        output                              WB_o_system_halt           ,
+        output                              WB_o_op_valid              ,
+        output                              WB_o_ALU_valid             
 
     );
 
-    assign  rf_busW         =  WB_mem_to_reg ?  WB_rdata : WB_ALU_ALUout ;
-    assign  csr_busW        =  WB_ALU_CSR_out;
-    assign  WBU_rd          =  WB_rd;
-    assign  WBU_csr_rd      =  WB_csr_rd ;
-    assign  RegWr           =  WB_write_gpr;
-    assign  CSRWr           =  WB_write_csr;
-    assign  WBU_commit      =  WB_commit;
-    assign  WBU_system_halt =  WB_system_halt;
-    assign  WBU_op_valid    =  WB_op_valid;
-    assign  WBU_ALU_valid   =  WB_ALU_valid;
-    assign  WBU_pc          =  WB_pc;
-    assign  WBU_inst        =  WB_inst;
+    // write back bus for gpr
+    assign  WB_o_rf_busW        =    WB_i_mem_to_reg ?  WB_i_rdata : WB_i_ALU_ALUout ;
+    // write back bus for csr
+    assign  WB_o_csr_busW       =    WB_i_ALU_CSR_out;
+    assign  WB_o_rd             =    WB_i_rd;
+    assign  WB_o_csr_rd         =    WB_i_csr_rd ;
+    assign  WB_o_RegWr          =    WB_i_write_gpr;
+    assign  WB_o_CSRWr          =    WB_i_write_csr;
+    assign  WB_o_commit         =    WB_i_commit;
+    assign  WB_o_system_halt    =    WB_i_system_halt;
+    assign  WB_o_op_valid       =    WB_i_op_valid;
+    assign  WB_o_ALU_valid      =    WB_i_ALU_valid;
+    assign  WB_o_pc             =    WB_i_pc;
+    assign  WB_o_inst           =    WB_i_inst;
+
+    // signal for FORWARD
+    assign  WB_o_rs1_data       =    WB_o_rf_busW ; 
+    assign  WB_o_rs2_data       =    WB_o_rf_busW ;
+    assign  WB_o_csr_rs_data    =    WB_o_csr_busW;
 
 endmodule
 

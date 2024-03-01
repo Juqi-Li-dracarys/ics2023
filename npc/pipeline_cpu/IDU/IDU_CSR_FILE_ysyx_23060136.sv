@@ -13,13 +13,16 @@
 
 // ===========================================================================
 module IDU_CSR_FILE_ysyx_23060136 (
-    input                               clk                        ,// clk for write
+    input                               clk                        ,
     input                               rst                        ,
-    input              [   1:0]         IDU_csr_rs                 ,// read in IDU
-    input              [   1:0]         WBU_csr_rd                 ,// write IN WBU
-    input                               CSRWr                      ,// write enable
-    input              [  31:0]         csr_busW                   ,// write data
-    output             [  31:0]         IDU_csr_rs_data             // read result
+    input              [   1:0]         IDU_csr_rs                 ,
+    // write IN WBU
+    input              [   1:0]         WBU_csr_rd                 ,
+    // write enable
+    input                               CSRWr                      ,
+    // write data
+    input              [  31:0]         csr_busW                   ,
+    output             [  31:0]         IDU_csr_rs_data            
     );
 
 
@@ -43,11 +46,10 @@ module IDU_CSR_FILE_ysyx_23060136 (
     always_ff @(posedge clk) begin
         // should not write $0
         if(rst) begin
-            // mstatus
             csr_reg[`mstatus] <= 32'h1800;
             csr_reg[`mtvec]   <= 32'h0;
             csr_reg[`mepc]    <= 32'h0;
-            // 这里做了简化
+            // 这里做了简化，暂时存在 bug
             csr_reg[`mcause]  <= 32'hb;
         end
         else begin
