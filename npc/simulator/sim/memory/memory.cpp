@@ -33,36 +33,7 @@ uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 
-
-// DIP-C INTERFACE for naive cpu
-extern "C" int vaddr_ifetch(int addr, int len) {
-  return paddr_read(addr, len);
-}
-
-// To avoid misjudgement, read addr can be invalid
-extern "C" int vaddr_read(int addr, int len) {
-  if (in_pmem(addr)) {
-    return paddr_read(addr, len);
-  }
-  // if not in mem, then check mmio
-  else
-    return mmio_read(addr, len);
-}
-
-extern "C" void vaddr_write(int addr, int len, int data) {
-  if (in_pmem(addr)) {
-    paddr_write(addr, len, data);
-    return;
-  }
-  // if not in mem, then check mmio
-  else {
-    mmio_write(addr, len, data);
-    return;
-  }
-}
-
-
-// DIP-C INTERFACE for pipeline cpu
+// DIP-C interface for cpu
 extern "C" int pmem_read(int araddr) {
   if (in_pmem(araddr)) {
     return paddr_read(araddr, 4);
