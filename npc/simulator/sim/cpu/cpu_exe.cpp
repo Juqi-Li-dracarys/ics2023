@@ -93,26 +93,22 @@ static void trace_and_difftest(inst_log *_ptr, bool interrupt) {
 // execute n instructions
 void excute(uint64_t n) {
   while (n--) {
-    // if (dut->commit_wb) {
-    //   if(npc_cpu_uncache_pre){
-    //     difftest_sync();
-    //   }
-    //   // Lab3 TODO: use difftest_step function here to execute difftest
-    //   npc_cpu_uncache_pre = dut->uncache_read_wb;
-    // }
-    
-    // 注意：每条指令的计算在该 posedge，但读写执行却在下一个 posedge
-    // 保留即将执行的指令
-    log_ptr->pc = dut->pc_cur;
-    log_ptr->inst = dut->inst;
-    
-    do {
-      single_cycle();
-      if(dut->inst_commit) {
-        set_state();
-      }
+
+    // 保存即将执行的指令
+    if(dut->inst_commit) {
+      log_ptr->pc = dut->pc_cur;
+      log_ptr->inst = dut->inst;
     }
-    while(false);
+
+    // 一直运行，直到下一条指令到来
+    while(true) {
+      single_cycle();
+      if(dut->inst_commit)
+        break;
+    }
+    
+    // 保存下一条指令执行前的状态
+    set_state();
 
     // update the log after excute one inst
     g_nr_guest_inst++;
@@ -128,6 +124,7 @@ void excute(uint64_t n) {
       log_ptr->pc = dut->pc_cur;
       log_ptr->inst = dut->inst;
       g_nr_guest_inst++;
+      // 异常信号，直接跳过检查
       trace_and_difftest(log_ptr, true);
       break;
     }

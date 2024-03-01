@@ -27,7 +27,7 @@ CINC_PATH 			= -CFLAGS -I$(CSRC_DIR)/include
 CSRC 				= $(shell find $(CSRC_DIR) -name "*.cpp*")
 VSRC 				= $(shell find $(VSRC_DIR) -name "*.sv" -o -name "*.v")
 VBIN 				= $(OBJ_DIR)/$(addprefix V, $(basename $(notdir $(VERILOG_TOP))))
-REWRITE 			= $(abspath ./script/rewrite.mk)
+REWRITE 			= $(abspath $(WORK_DIR)/script/rewrite.mk)
 
 
 COLOR_RED   		= \033[1;31m
@@ -40,5 +40,6 @@ COLOR_NONE  		= \033[0m
 ifeq ($(CPU_TYPE), pipeline_cpu) 
 	VFLAGS          += -Wall
 endif
+
 
 include $(WORK_DIR)/script/build.mk
