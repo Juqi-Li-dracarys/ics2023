@@ -53,34 +53,29 @@ void single_cycle() {
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
 #endif
-  set_state();
 }
 
-// check if the program should end
+
+// check the sytem signal of cpu
 bool signal_detect() {
-  if(dut->inst_signal == 1) {
-    Log("HDL: %s, Inst Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
-    sim_state.state = SIM_ABORT;
-    dut->final();
-    return true;
-  }
-  else if(dut->reg_signal) {
-    Log("HDL: %s, Reg Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
-    sim_state.state = SIM_ABORT;
-    dut->final();
-    return true;
-  }
-  else if(dut->ALU_signal) {
-    Log("HDL: %s, ALU Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
-    sim_state.state = SIM_ABORT;
-    dut->final();
-    return true;
-  }
-  else if(dut->inst_signal == 2) {
+  if(dut->system_halt) {
     Log("HDL: %s, ebreak detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
     sim_state.state = SIM_END;
     dut->final();
     return true;
   }
-  else return false;
+  else if(!dut->op_valid) {
+    Log("HDL: %s, Inst Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
+    sim_state.state = SIM_ABORT;
+    dut->final();
+    return true;
+  }
+  else if(!dut->ALU_valid) {
+    Log("HDL: %s, ALU Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
+    sim_state.state = SIM_ABORT;
+    dut->final();
+    return true;
+  }
+  else
+    return false;
 }

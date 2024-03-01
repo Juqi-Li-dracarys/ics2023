@@ -33,11 +33,8 @@ uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 
-// 未定义 AXI 则用 dpi-c
-#ifndef AXI
 
-// read physical memory with read enable re, read addr raddr, read size (1 << mask), then return the value in rword
-
+// DIP-C INTERFACE for naive cpu
 extern "C" int vaddr_ifetch(int addr, int len) {
   return paddr_read(addr, len);
 }
@@ -64,67 +61,34 @@ extern "C" void vaddr_write(int addr, int len, int data) {
   }
 }
 
-#else
-uint32_t rstate = 0;
-uint32_t araddr = 0;
-uint32_t arlen = 0;
-uint32_t arsize = 0;
-uint32_t rcount = 0;
-void pmem_read(){
-  if(rstate == 0){
-    dut->rlast = 0;
-    dut->rvalid = 0;
-    if(dut->arvalid){
-      // Lab5 TODO: implement the read request
-    }
+
+// DIP-C INTERFACE for pipeline cpu
+extern "C" int pmem_read(int araddr) {
+  if (in_pmem(araddr)) {
+    return paddr_read(araddr, 4);
   }
-  else if(rstate == 1) {
-    // Lab5 TODO: implement the read data
+  // if not in mem, then check mmio
+  else
+    return mmio_read(araddr, 4);
+}
+
+extern "C" void pmem_write(int waddr, int wdata, char wmask) {
+  uint8_t data_len = 0;
+  while(wmask > 0) {
+    wmask >>= 1;
+    data_len++;
+  }
+  if (in_pmem(waddr)) {
+    paddr_write(waddr, data_len, wdata);
+    return;
+  }
+  // if not in mem, then check mmio
+  else {
+    mmio_write(waddr, data_len, wdata);
+    return;
   }
 }
-uint32_t awaddr = 0;
-uint32_t awlen = 0;
-uint32_t awsize = 0;
-uint32_t wstate = 0;
-uint32_t wcount = 0;
-void pmem_write(){
-  if(wstate == 0){
-    dut->bvalid = 0;
-    if(dut->awvalid == 1){
-      awaddr = dut->awaddr;
-      assert(awaddr >= 0x80000000);
-      awlen = dut->awlen;
-      awsize = 1 << dut->awsize;
-      wstate = 1;
-      dut->awready = 1;
-      wcount = 0;
-    }
-  }
-  else if(wstate == 1){
-    dut->awready = 0;
-    if(dut->wvalid){
-      uint32_t wdata = (dut->wdata) >> (8 * (awaddr % 4));
-      uint32_t byte_addr = awaddr + wcount * awsize;
-      uint32_t wstrb = dut->wstrb;
-      uint32_t wlen = 0;
-      while(wstrb){
-        wlen++;
-        wstrb &= (wstrb - 1);
-      }
-      in_pmem(awaddr) ? host_write(guest_to_host(byte_addr), wlen, wdata) : mmio_write(byte_addr, wlen, wdata);
-      dut->wready = 1;
-      wcount++;
-      wstate = dut->wlast ? 2 : 1;
-    }
-  }
-  else if(wstate == 2){
-    dut->wready = 0;
-    dut->awready = 0;
-    dut->bvalid = 1;
-    wstate = dut->bready ? 0 : 2;
-  }
-}
-#endif
+
 
 // give addr in host, return value
 word_t host_read(void *addr, int len) {

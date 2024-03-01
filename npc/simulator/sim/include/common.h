@@ -67,10 +67,10 @@ paddr_t host_to_guest(uint8_t *haddr);
 
 void init_sdb();
 
+// rtl
 void single_cycle();
-
 void reset(int n);
-
+void set_state();
 bool signal_detect();
 
 // device

@@ -12,9 +12,22 @@
 module CPU_TOP_ysyx23060136 (
         input                               clk                        ,
         input                               rst                        ,
-        output                              commit_valid               ,
-        output                              commit_inst
+        // 当 commit 被拉高时，说明当前指令有效，此时进行 diff test,并对异常信号进行检测
+        output                              inst_commit                ,
+        output             [  31:0]         pc_cur                     ,
+        output             [  31:0]         inst                       ,
+        
+        output                              system_halt                ,
+        output                              op_valid                   ,
+        output                              ALU_valid             
     );
+
+     assign     inst_commit   =            WB_o_commit             ;
+     assign     pc_cur        =            WB_o_pc                 ;
+     assign     inst          =            WB_o_inst               ;
+     assign     system_halt   =            WB_o_system_halt        ;
+     assign     op_valid      =            WB_o_op_valid           ;
+     assign     ALU_valid     =            WB_o_ALU_valid          ;
 
 
     // ===========================================================================
@@ -570,8 +583,6 @@ module CPU_TOP_ysyx23060136 (
     // ===========================================================================
     // MEM
 
-    logic                               WB_o_write_gpr               ;
-    logic                               WB_o_write_csr               ;
     logic              [  31:0]         WB_o_rs1_data                ;
     logic              [  31:0]         WB_o_rs2_data                ;
     logic              [  31:0]         WB_o_csr_rs_data             ;
@@ -592,7 +603,6 @@ module CPU_TOP_ysyx23060136 (
     logic                               MEM_o_op_valid            ;
     logic                               MEM_o_ALU_valid           ;
 
-    logic                               FORWARD_flushWB            ;
     logic              [  31:0]         FORWARD_rs1_data_EXU       ;
     logic              [  31:0]         FORWARD_rs2_data_EXU       ;
     logic              [  31:0]         FORWARD_csr_rs_data_EXU    ;
@@ -615,8 +625,8 @@ module CPU_TOP_ysyx23060136 (
 
                               .WB_o_rd                           (WB_o_rd                   ),
                               .WB_o_csr_rd                       (WB_o_csr_rd               ),
-                              .WB_o_write_gpr                    (WB_o_write_gpr            ),
-                              .WB_o_write_csr                    (WB_o_write_csr            ),
+                              .WB_o_write_gpr                    (WB_o_RegWr                ),
+                              .WB_o_write_csr                    (WB_o_CSRWr                ),
                               .WB_o_rs1_data                     (WB_o_rs1_data             ),
                               .WB_o_rs2_data                     (WB_o_rs2_data             ),
                               .WB_o_csr_rs_data                  (WB_o_csr_rs_data          ),
@@ -660,7 +670,7 @@ module CPU_TOP_ysyx23060136 (
                               .FORWARD_stallIF                   (FORWARD_stallIF           ),
                               .FORWARD_stallID                   (FORWARD_stallID           ),
                               .FORWARD_stallME                   (FORWARD_stallME           ),
-                              .FORWARD_flushWB                   (FORWARD_flushWB           ),
+                              .FORWARD_flushME                   (FORWARD_flushME           ),
                               .FORWARD_stallEX                   (FORWARD_stallEX           ),
                               .FORWARD_rs1_data_EXU              (FORWARD_rs1_data_EXU      ),
                               .FORWARD_rs2_data_EXU              (FORWARD_rs2_data_EXU      ),
@@ -680,7 +690,7 @@ module CPU_TOP_ysyx23060136 (
     // ===========================================================================
     // MEM -> WB
     logic                               FORWARD_flushME              ;
-    logic                               FORWARD_stallWB              ; 
+    logic                               FORWARD_stallWB    = `false  ; 
     logic                               WB_i_commit                  ;
     logic              [  31:0]         WB_i_pc                      ;
     logic              [  31:0]         WB_i_inst                    ;
@@ -734,14 +744,16 @@ module CPU_TOP_ysyx23060136 (
             );
 
 
-
-    logic                               WB_o_commit                 ;
-    logic                               WB_o_system_halt            ;
-    logic                               WB_o_op_valid               ;
-    logic                               WB_o_ALU_valid              ;
-    logic              [  31:0]         WB_o_pc                     ;
-    logic              [  31:0]         WB_o_inst                   ;
                                
+    // ===========================================================================
+    // WBU
+    logic                              WB_o_commit        ;
+    logic             [  31:0]         WB_o_pc            ;
+    logic             [  31:0]         WB_o_inst          ;
+    logic                              WB_o_system_halt   ;
+    logic                              WB_o_op_valid      ;
+    logic                              WB_o_ALU_valid     ;
+
 
     WB_TOP_ysyx23060136  WB_TOP_ysyx23060136_inst (
                              .WB_i_commit                         (WB_i_commit                 ),
