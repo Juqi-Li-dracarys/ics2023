@@ -14,8 +14,8 @@
 module IFU_INST_MEM_ysyx23060136(
       input                               clk                        ,
       input                               rst                        ,
-      input              [  31:0]         IFU_pc                     ,
-      output             [  31:0]         IFU_inst                   ,
+      input              [  31:0]         IFU_o_pc                   ,
+      output             [  31:0]         IFU_o_inst                 ,
       output                              inst_valid             
     );
 
@@ -23,14 +23,14 @@ module IFU_INST_MEM_ysyx23060136(
     //  sarm instance 
     // 当 pc 的值发生变化时，我们才考虑读取下一条指令
     logic                                     m_axi_arvalid  =  r_state_idle & pc_change;
-    logic        [31 : 0]                     m_axi_araddr   =  IFU_pc                      ;
+    logic        [31 : 0]                     m_axi_araddr   =  IFU_o_pc                      ;
     logic                                     m_axi_aready                                  ;
     logic                                     m_axi_rready   =  r_state_busy                ;
     logic        [31 : 0]                     m_axi_rdata                                   ;
     logic                                     m_axi_rvalid                                  ;
+    
     // we do not need response
     logic        [1 : 0]                      m_axi_rresp                                   ;
-
     // we do not need to write data from AXI
     logic                                     m_axi_awready              ;
     logic                                     m_axi_wready               ;
@@ -39,9 +39,9 @@ module IFU_INST_MEM_ysyx23060136(
 
     // 暂存当前 PC 值，当 PC 变化时，我们将新值视为有效值
     logic        [31 : 0]      temp_pc;
-    logic                      pc_change = (temp_pc != IFU_pc);
+    logic                      pc_change = (temp_pc != IFU_o_pc);
 
-    assign  IFU_inst        =  m_axi_rdata;
+    assign  IFU_o_inst        =  m_axi_rdata;
     // this signal is used for next phase of CPU 
     assign  inst_valid      =  r_state_idle & ~pc_change;
 
@@ -68,7 +68,7 @@ module IFU_INST_MEM_ysyx23060136(
             temp_pc <= `PC_RST;
         end
         else if(pc_change) begin
-            temp_pc <= IFU_pc;
+            temp_pc <= IFU_o_pc;
         end
     end
   

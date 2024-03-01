@@ -13,24 +13,23 @@
 module IFU_PC_COUNT_ysyx23060136 (
     input                               clk                        ,
     input                               rst                        ,
-    input                               PCSrc                      ,
-    input                               IFU_stall                  ,
-    input              [31 : 0]         branch_target              ,
-    output      logic  [31 : 0]         IFU_pc                     
+    input                               BRANCH_PCSrc               ,
+    input                               FORWARD_stallIF            ,
+    input              [31 : 0]         BRANCH_branch_target       ,
+    output      logic  [31 : 0]         IFU_o_pc                   
 );
 
-    logic [31 : 0]  pc_update;
-    logic [31 : 0]  pc_next;
 
-    assign pc_update = PCSrc ? branch_target : IFU_pc + 32'h4;
-    assign pc_next = IFU_stall ? IFU_pc : pc_update;
-    
+    // jump
+    logic      [31 : 0]     pc_update  =  BRANCH_PCSrc     ? BRANCH_branch_target : IFU_o_pc + 32'h4;;
+    logic      [31 : 0]     pc_next    =  FORWARD_stallIF  ? IFU_o_pc             : pc_update;
+
     always_ff @(posedge clk) begin
         if(rst) begin
-            IFU_pc        <= `PC_RST;
+            IFU_o_pc   <= `PC_RST;
         end
         else begin
-            IFU_pc        <= pc_next;
+            IFU_o_pc   <=  pc_next;
         end
     end
 

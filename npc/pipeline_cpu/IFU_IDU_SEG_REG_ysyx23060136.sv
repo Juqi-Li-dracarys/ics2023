@@ -20,25 +20,25 @@ module IFU_IDU_SEG_REG_ysyx23060136 (
         // FORWARD unit remote control
         input                               FORWARD_stallID            ,
         // IDU buffer
-        input              [  31:0]         IFU_pc                     ,
-        input              [  31:0]         IFU_inst                   ,
-        output      logic                   IDU_commit                 ,
-        output      logic  [31 : 0]         IDU_pc                     ,
-        output      logic  [31 : 0]         IDU_inst        
+        input              [  31:0]         IFU_o_pc                     ,
+        input              [  31:0]         IFU_o_inst                   ,
+        output      logic                   IDU_i_commit                 ,
+        output      logic  [31 : 0]         IDU_i_pc                     ,
+        output      logic  [31 : 0]         IDU_i_inst        
     );
 
     
     always_ff @(posedge clk) begin : update_pc
         if(rst || (BRANCH_flushIF & ~FORWARD_stallID)) begin
-            IDU_pc     <= `PC_RST;
-            IDU_inst   <= `NOP;
-            IDU_commit <= `false;
+            IDU_i_pc     <= `PC_RST;
+            IDU_i_inst   <= `NOP;
+            IDU_i_commit <= `false;
         end
         // 正常情况下，更新段寄存器
         else if(!FORWARD_stallID) begin
-            IDU_pc     <= IFU_pc;
-            IDU_inst   <= IFU_inst;
-            IDU_commit <= `true;
+            IDU_i_pc     <= IFU_o_pc;
+            IDU_i_inst   <= IFU_o_inst;
+            IDU_i_commit <= `true;
         end
     end
     

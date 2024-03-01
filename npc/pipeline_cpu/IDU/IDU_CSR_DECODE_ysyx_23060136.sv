@@ -16,7 +16,7 @@
     output             [   1:0]         IDU_csr_rs                 ,
     output             [   1:0]         IDU_csr_rd                  
  );
-        // CSR internal ctr
+    // CSR internal ctr
     logic    csr_ecall    = (IDU_csr_id     ==     12'd0);
     logic    csr_mret     = (IDU_csr_id     ==     12'd770);
     logic    csr_mtvec    = (IDU_csr_id     ==     12'd773);

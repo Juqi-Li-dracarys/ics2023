@@ -19,29 +19,28 @@ module IFU_TOP_ysyx23060136(
         // FORWARD stall instruction
         input                               FORWARD_stallIF            ,
         // jump target
-        input              [  31:0]         branch_target              ,
+        input              [  31:0]         BRANCH_branch_target       ,
         // jump signal from Branch
-        input                               PCSrc                      ,
-        // inst from memory(internal)
-        output             [  31:0]         IFU_inst                   ,
-        // pc from PC counter(internal)
-        output             [  31:0]         IFU_pc                     ,
+        input                               BRANCH_PCSrc               ,
+        // inst from memory
+        output             [  31:0]         IFU_o_inst                 ,
+        // pc from PC counter
+        output             [  31:0]         IFU_o_pc                   ,
         // output IFU_valid for FORWARD unit
-        output                              IFU_valid
+        // 当该信号为 true
+        output                              IFU_o_valid
     );
 
     // current inst is valid(from mem)
-    logic          inst_valid;
+    logic          inst_valid                ;
+    assign         IFU_o_valid = inst_valid  ;
 
-    // pc halt signal from FORWARD unit
-    logic          IFU_stall = FORWARD_stallIF;
-
-
+    
     IFU_INST_MEM_ysyx23060136  IFU_INST_MEM_ysyx23060136_inst (
                                    .clk                               (clk                       ),
                                    .rst                               (rst                       ),
-                                   .IFU_pc                            (IFU_pc                    ),
-                                   .IFU_inst                          (IFU_inst                  ),
+                                   .IFU_o_pc                          (IFU_o_pc                 ),
+                                   .IFU_o_inst                        (IFU_o_inst                ),
                                    .inst_valid                        (inst_valid                )
                                );
 
@@ -49,13 +48,11 @@ module IFU_TOP_ysyx23060136(
     IFU_PC_COUNT_ysyx23060136  PC_COUNT_ysyx23060136_inst (
                                    .clk                               (clk                       ),
                                    .rst                               (rst                       ),
-                                   .PCSrc                             (PCSrc                     ),
-                                   .IFU_stall                         (IFU_stall                 ),
-                                   .branch_target                     (branch_target             ),
-                                   .IFU_pc                            (IFU_pc                    )
+                                   .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
+                                   .FORWARD_stallIF                   (FORWARD_stallIF           ),
+                                   .BRANCH_branch_target              (BRANCH_branch_target      ),
+                                   .IFU_o_pc                          (IFU_o_pc                  )
                                );
-
-    assign IFU_valid = inst_valid;
 
 endmodule
 
