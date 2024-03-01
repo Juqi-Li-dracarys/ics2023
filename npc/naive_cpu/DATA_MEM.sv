@@ -26,27 +26,27 @@ module DATA_MEM (
     output  reg  [31 : 0]      DataOut
 );
 
-    import "DPI-C" function int  vaddr_read (input int addrs, input int len);
-    import "DPI-C" function void vaddr_write(input int addrs, input int len, input int data);
+    import "DPI-C" function int  pmem_read(input int araddr);
+    import "DPI-C" function void pmem_write(int waddr, int wdata, byte wmask);
     
     always_comb begin
         unique case(MemOp)
             3'b010: begin
-                DataOut = vaddr_read(addr, 32'h4);
+                DataOut = pmem_read(addr);
             end
             3'b001: begin
-                DataOut = vaddr_read(addr, 32'h2);
+                DataOut = pmem_read(addr) & 32'h0000_FFFF;
                 DataOut = DataOut | {{16{DataOut[15]}}, {16{1'b0}}};
             end
             3'b000: begin
-                DataOut = vaddr_read(addr, 32'h1);
+                DataOut = pmem_read(addr) & 32'h0000_00FF;
                 DataOut = DataOut | {{24{DataOut[7]}}, {8{1'b0}}};
             end
             3'b101: begin
-                DataOut = vaddr_read(addr, 32'h2);
+                DataOut = pmem_read(addr) & 32'h0000_FFFF;
             end
             3'b100: begin
-                DataOut = vaddr_read(addr, 32'h1);
+                DataOut = pmem_read(addr) & 32'h0000_00FF;
             end
             // should not reach here
             default: begin
@@ -60,17 +60,17 @@ module DATA_MEM (
         if(WrEn && !rst) begin
             unique case(MemOp)
                 3'b010: begin
-                    vaddr_write(addr, 32'h4, DataIn);
+                    pmem_write(addr, DataIn, 8'b0000_1111);
                 end
                 3'b001: begin
-                    vaddr_write(addr, 32'h2, DataIn);
+                    pmem_write(addr, DataIn, 8'b0000_0011);
                 end
                 3'b000: begin
-                    vaddr_write(addr, 32'h1, DataIn);
+                    pmem_write(addr, DataIn, 8'b0000_0001);
                 end
                 // should not reach here
                 default: begin
-                    vaddr_write(addr, 32'h0, DataIn);
+                    pmem_write(addr, DataIn, 8'b0000_0000);
                 end      
             endcase
         end

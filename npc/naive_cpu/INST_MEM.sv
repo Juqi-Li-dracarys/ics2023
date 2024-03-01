@@ -15,13 +15,13 @@ module INST_MEM #(parameter PC_RST = 32'h80000000) (
 );
 
     // DIP-C in verilog
-    import "DPI-C" function int vaddr_ifetch(input int addr, input int len);
+    import "DPI-C" function int  pmem_read(input int araddr);
 
     always_ff @(posedge clk) begin
         if(rst)
-            inst <= vaddr_ifetch(PC_RST, 32'h4);
+            inst <= pmem_read(PC_RST);
         else
-            inst <= vaddr_ifetch(pc_next, 32'h4);
+            inst <= pmem_read(PC_RST);
     end
 
 endmodule

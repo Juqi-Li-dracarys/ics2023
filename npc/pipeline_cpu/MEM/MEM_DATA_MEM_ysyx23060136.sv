@@ -26,8 +26,10 @@ module MEM_DATA_MEM_ysyx23060136 (
     // write mode
     input                               MEM_write_mem              ,
     input                               MEM_mem_byte               ,
+    // 带符号读
     input                               MEM_mem_half               ,
     input                               MEM_mem_word               ,
+    // 无符号
     input                               MEM_mem_byte_u             ,
     input                               MEM_mem_half_u             ,
 
@@ -95,9 +97,9 @@ module MEM_DATA_MEM_ysyx23060136 (
     logic  [31 : 0]     half_rdata   =   (m_axi_rdata & 32'h0000_FFFF);
     logic  [31 : 0]     word_rdata   =    m_axi_rdata;
 
-    assign  MEM_rdata   =   ({32{MEM_mem_byte_u}}) & byte_rdata  |
-                            ({32{MEM_mem_half_u}}) & half_rdata  |
-                            ({32{MEM_mem_word  }}) & word_rdata  |
+    assign  MEM_rdata   =   ({32{MEM_mem_byte_u}}) & byte_rdata                                        |
+                            ({32{MEM_mem_half_u}}) & half_rdata                                        |
+                            ({32{MEM_mem_word  }}) & word_rdata                                        |
                             ({32{MEM_mem_byte  }}) & (byte_rdata | {{24{byte_rdata[7]}},  {8{1'b0}}} ) |
                             ({32{MEM_mem_half  }}) & (half_rdata | {{16{half_rdata[15]}}, {16{1'b0}}}) ;
 
