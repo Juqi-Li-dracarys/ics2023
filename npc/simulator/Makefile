@@ -21,7 +21,7 @@ VSRC_INC            = $(foreach dir,$(shell find $(VSRC_DIR) -type d),-y $(dir))
 
 VERILOG_TOP 		= $(VSRC_DIR)/CPU_TOP_ysyx23060136.sv
 NEMUISO 			= $(NEMU_DIR)/build/riscv32-nemu-interpreter-so
-VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all -sv $(VSRC_INC) \
+VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all -sv $(VSRC_INC) -Wall \
 					  -Mdir $(OBJ_DIR) -DDIFF --top-module $(basename $(notdir $(VERILOG_TOP)))
 
 
@@ -37,10 +37,6 @@ COLOR_GREEN 		= \033[1;32m
 COLOR_YELLOW 		= \033[33m
 COLOR_NONE  		= \033[0m
 
-
-ifeq ($(CPU_TYPE), pipeline_cpu)
-	VFLAGS          += -Wall 
-endif
 
 include $(WORK_DIR)/script/build.mk
 

@@ -89,6 +89,8 @@ module IDU_DECODE_ysyx23060136(
 
 ) ;
 
+    // verilator lint_off UNUSED
+
     // ===========================================================================
     logic [6 : 0]  opcode      =   IDU_inst[6 : 0];
     assign         IDU_rd      =   IDU_inst[11 : 7];
@@ -128,6 +130,7 @@ module IDU_DECODE_ysyx23060136(
 
     logic func7_0000000 = (func7 == 7'b0000000);
     logic func7_0100000 = (func7 == 7'b0100000);
+
     logic func7_0000001 = (func7 == 7'b0000001);
     logic func7_0000101 = (func7 == 7'b0000101);
     logic func7_0001001 = (func7 == 7'b0001001);
@@ -152,6 +155,7 @@ module IDU_DECODE_ysyx23060136(
     logic func7_1110001 = (func7 == 7'b1110001);
     logic func7_1100001 = (func7 == 7'b1100001);
     logic func7_1101001 = (func7 == 7'b1101001);
+
 
 
 
