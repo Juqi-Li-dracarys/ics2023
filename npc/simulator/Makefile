@@ -16,8 +16,8 @@ OBJ_DIR   			= $(abspath $(WORK_DIR)/build)
 CSRC_DIR 			= $(abspath $(WORK_DIR)/sim)
 VSRC_DIR 			= $(abspath $(NPC_HOME)/$(CPU_TYPE))
 NEMU_DIR 			= $(abspath $(WORK_DIR)/nemu)
-VSRC_SUBDIR         = $(shell find $(NPC_HOME)/$(CPU_TYPE) -type -d)
-VSRC_INC            = $(foreach dir,$(VSRC_SUBDIR),-y $(dir))
+# 查找所有子目录
+VSRC_INC            = $(foreach dir,$(shell find $(VSRC_DIR) -type d),-y $(dir))
 
 VERILOG_TOP 		= $(VSRC_DIR)/CPU_TOP_ysyx23060136.sv
 NEMUISO 			= $(NEMU_DIR)/build/riscv32-nemu-interpreter-so
