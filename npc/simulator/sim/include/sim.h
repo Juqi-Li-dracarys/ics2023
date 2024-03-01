@@ -8,13 +8,13 @@
 
 // header of verilator
 #include "verilated_vcd_c.h"
-#include "VCPU_TOP.h"
+#include "VCPU_TOP_ysyx23060136.h"
 
 // dpi-c
-#include "VCPU_TOP__Dpi.h"
+#include "VCPU_TOP_ysyx23060136__Dpi.h"
 #include <verilated_dpi.h>
 
-extern VCPU_TOP *dut;
+extern VCPU_TOP_ysyx23060136 *dut;
 extern VerilatedVcdC *m_trace;
 extern VerilatedContext* contextp;
 

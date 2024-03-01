@@ -7,7 +7,7 @@
 
 // TOP module
 
-module CPU_TOP #(parameter PC_RST = 32'h80000000) (
+module CPU_TOP_ysyx23060136 #(parameter PC_RST = 32'h80000000) (
     input                      clk, rst,       // 时钟，高电平复位
     output     [31 : 0]        pc_cur, inst,   // 当前 PC，指令
 

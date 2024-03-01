@@ -17,9 +17,9 @@ CSRC_DIR 			= $(abspath $(WORK_DIR)/sim)
 VSRC_DIR 			= $(abspath $(NPC_HOME)/$(CPU_TYPE))
 NEMU_DIR 			= $(abspath $(WORK_DIR)/nemu)
 
-VERILOG_TOP 		= $(VSRC_DIR)/CPU_TOP.sv
+VERILOG_TOP 		= $(VSRC_DIR)/CPU_TOP_ysyx23060136.sv
 NEMUISO 			= $(NEMU_DIR)/build/riscv32-nemu-interpreter-so
-VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all -I$(VSRC_DIR)  \
+VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all -y $(VSRC_DIR) -sv \
 						-Mdir $(OBJ_DIR) -DDIFF --top-module $(basename $(notdir $(VERILOG_TOP)))
 
 
@@ -38,9 +38,8 @@ COLOR_NONE  		= \033[0m
 # naive_cpu 中有不少未完善的代码
 # 2024.3 之后不再对其维护
 ifeq ($(CPU_TYPE), pipeline_cpu) 
-	VFLAGS          += -Wall -y $(VSRC_DIR)/IFU - y $(VSRC_DIR)  -y  $(VSRC_DIR)/IDU  -y  $(VSRC_DIR)/EXU -y  \
-	                            $(VSRC_DIR)/MEM  -y $(VSRC_DIR)/WB
+	VFLAGS          += -Wall 
 endif
 
-
 include $(WORK_DIR)/script/build.mk
+

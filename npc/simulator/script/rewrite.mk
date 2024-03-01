@@ -6,10 +6,11 @@
 #  */
 
 # Makefile for compiling C++ files
+# 我们修改一部分编译选项，使其能够和 NEMU 类似的功能
 
-default: VCPU_TOP
+default: VCPU_TOP_ysyx23060136
 
-include VCPU_TOP.mk
+include VCPU_TOP_ysyx23060136.mk
 
 CXXFLAGS += -MMD -O3 -g -std=c++14 -fno-exceptions -fPIE -Wno-unused-result
 CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-11 --cxxflags)) -fPIC -DDEVICE -D__GUEST_ISA__=$(ISA)

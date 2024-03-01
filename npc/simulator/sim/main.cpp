@@ -9,22 +9,14 @@
 #include <debug.h>
 #include <common.h>
 #include <disasm.h>
-
-// header of verilator
-#include "verilated_vcd_c.h"
-#include "VCPU_TOP.h"
-
-// dpi-c
-#include "VCPU_TOP__Dpi.h"
-#include <verilated_dpi.h>
-
+#include <sim.h>
 
 //////////////////////////////////////////////////////
 // context ptr
 VerilatedContext* contextp = new VerilatedContext;
 
 // verilog instance
-VCPU_TOP *dut = new VCPU_TOP{contextp};
+VCPU_TOP_ysyx23060136 *dut = new VCPU_TOP_ysyx23060136{contextp};
 
 // wave tracer
 VerilatedVcdC *m_trace = new VerilatedVcdC;
