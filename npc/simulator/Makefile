@@ -16,11 +16,13 @@ OBJ_DIR   			= $(abspath $(WORK_DIR)/build)
 CSRC_DIR 			= $(abspath $(WORK_DIR)/sim)
 VSRC_DIR 			= $(abspath $(NPC_HOME)/$(CPU_TYPE))
 NEMU_DIR 			= $(abspath $(WORK_DIR)/nemu)
+VSRC_SUBDIR         = $(shell find $(NPC_HOME)/$(CPU_TYPE) -type -d)
+VSRC_INC            = $(foreach dir,$(VSRC_SUBDIR),-y $(dir))
 
 VERILOG_TOP 		= $(VSRC_DIR)/CPU_TOP_ysyx23060136.sv
 NEMUISO 			= $(NEMU_DIR)/build/riscv32-nemu-interpreter-so
-VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all -y $(VSRC_DIR) -sv \
-						-Mdir $(OBJ_DIR) -DDIFF --top-module $(basename $(notdir $(VERILOG_TOP)))
+VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all -sv $(VSRC_INC) \
+					  -Mdir $(OBJ_DIR) -DDIFF --top-module $(basename $(notdir $(VERILOG_TOP)))
 
 
 CINC_PATH 			= -CFLAGS -I$(CSRC_DIR)/include 
