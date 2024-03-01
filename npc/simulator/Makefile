@@ -35,9 +35,8 @@ COLOR_GREEN 		= \033[1;32m
 COLOR_YELLOW 		= \033[33m
 COLOR_NONE  		= \033[0m
 
-# naive_cpu 中有不少未完善的代码
-# 2024.3 之后不再对其维护
-ifeq ($(CPU_TYPE), pipeline_cpu) 
+
+ifeq ($(CPU_TYPE), pipeline_cpu)
 	VFLAGS          += -Wall 
 endif
 
