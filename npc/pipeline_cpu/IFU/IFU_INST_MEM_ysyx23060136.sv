@@ -9,7 +9,7 @@
 `include "DEFINES_ysyx23060136.sv"
 
 /* verilator lint_off UNUSED */
- 
+
 // interface for read-only sram
 // protocol: AXI-LITE
 // ===========================================================================
@@ -75,7 +75,7 @@ module IFU_INST_MEM_ysyx23060136(
     end
   
 
-    IFU_SRAM_ysyx23060136  IFU_SRAM_ysyx23060136_inst (
+    PUBLIC_SRAM_ysyx23060136  IFU_SRAM_ysyx23060136_inst (
                                .clk           (clk           ),
                                .rst           (rst           ),
                                .s_axi_arvalid (m_axi_arvalid ),
