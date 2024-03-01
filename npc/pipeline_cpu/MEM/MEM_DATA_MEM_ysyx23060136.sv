@@ -140,7 +140,7 @@ module MEM_DATA_MEM_ysyx23060136 (
     end
 
     // ===========================================================================
-    MEM_SRAM_ysyx23060136  MEM_SRAM_ysyx23060136_inst (
+    PUBLIC_SRAM_ysyx23060136 MEM_SRAM_ysyx23060136_inst (
     .clk                               (clk                       ),
     .rst                               (rst                       ),
     .s_axi_arvalid                     (m_axi_arvalid             ),
@@ -163,10 +163,6 @@ module MEM_DATA_MEM_ysyx23060136 (
   );
 
 
-
-
-
-    
 endmodule
 
 
