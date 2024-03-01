@@ -11,6 +11,7 @@
 // first stage decoder of CPU
 // Support ISA: riscv32-e
 
+/* verilator lint_off UNUSED */
 
 // ===========================================================================
 module IDU_DECODE_ysyx23060136(
@@ -89,7 +90,6 @@ module IDU_DECODE_ysyx23060136(
 
 ) ;
 
-    // verilator lint_off UNUSED
 
     // ===========================================================================
     logic [6 : 0]  opcode      =   IDU_inst[6 : 0];

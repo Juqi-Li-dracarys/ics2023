@@ -10,6 +10,9 @@
 
 // naive version
 
+ /* verilator lint_off UNUSED */
+ /* verilator lint_off UNUSEDSIGNAL */
+
 `define   I_type   3'b000
 `define   S_type   3'b010
 `define   B_type   3'b011
