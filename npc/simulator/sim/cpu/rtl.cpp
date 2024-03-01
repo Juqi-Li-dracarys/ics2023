@@ -39,7 +39,7 @@ void reset(int n) {
 }
 
 
-// just give a single posedge clk
+// give a single posedge clk
 void single_cycle() {
   dut->clk = 1;
   dut->eval();
