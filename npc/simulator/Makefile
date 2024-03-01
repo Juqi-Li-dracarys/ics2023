@@ -38,7 +38,8 @@ COLOR_NONE  		= \033[0m
 # naive_cpu 中有不少未完善的代码
 # 2024.3 之后不再对其维护
 ifeq ($(CPU_TYPE), pipeline_cpu) 
-	VFLAGS          += -Wall
+	VFLAGS          += -Wall -y $(VSRC_DIR)/IFU - y $(VSRC_DIR)  -y  $(VSRC_DIR)/IDU  -y  $(VSRC_DIR)/EXU -y  \
+	                            $(VSRC_DIR)/MEM  -y $(VSRC_DIR)/WB
 endif
 
 
