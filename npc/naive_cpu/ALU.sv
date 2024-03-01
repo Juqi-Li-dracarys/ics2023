@@ -35,6 +35,9 @@
 
 // `define   RV32M    1
 
+ /* verilator lint_off UNUSED */
+ /* verilator lint_off UNUSEDSIGNAL */
+
 module ALU (
     input       [31 : 0]    da,       // input signal A
     input       [31 : 0]    db,       // input signal B

@@ -5,6 +5,8 @@
  * @Last Modified time: 2024-01-14 09:16:56
  */
 
+ /* verilator lint_off UNUSED */
+ /* verilator lint_off UNUSEDSIGNAL */
 
 // 指令立即数提取
 `define   I_type   3'b000

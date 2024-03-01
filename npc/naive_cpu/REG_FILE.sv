@@ -9,6 +9,8 @@
 // 与 CSR 寄存器相关的控制逻辑
 // 全部放在这里
 
+ /* verilator lint_off UNUSED */
+ /* verilator lint_off UNUSEDSIGNAL */
 
 localparam   mstatus  =  2'h0; 
 localparam   mtvec    =  2'h1;
