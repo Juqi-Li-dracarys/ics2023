@@ -5,7 +5,7 @@
  * @Last Modified time: 2024-02-28 13:12:48
  */
 
- `include "TOP_DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx23060136.sv"
 
 /*
       IDU -> IDU_EXU_REG -> EXU

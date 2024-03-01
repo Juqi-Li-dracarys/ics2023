@@ -5,7 +5,7 @@
  * @Last Modified time: 2024-02-24 00:28:27
  */
 
-`include "IDU_DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx23060136.sv"
 
 // basic decode unit
 // first stage decoder of CPU

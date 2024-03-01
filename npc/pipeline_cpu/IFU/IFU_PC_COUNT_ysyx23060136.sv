@@ -5,7 +5,7 @@
  * @Last Modified time: 2024-02-18 20:57:27
  */
 
- `include "IFU_DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx23060136.sv"
 
 // PC counter of CPU
 // ===========================================================================

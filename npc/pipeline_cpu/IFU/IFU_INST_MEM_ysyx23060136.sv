@@ -6,8 +6,10 @@
  */
 
 
-`include "IFU_DEFINES_ysyx23060136.sv"
+`include "DEFINES_ysyx23060136.sv"
 
+/* verilator lint_off UNUSED */
+ 
 // interface for read-only sram
 // protocol: AXI-LITE
 // ===========================================================================
