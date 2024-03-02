@@ -188,6 +188,7 @@ static int cmd_e(char *args) {
   return 0;
 }
 
+
 // TASK6: Set up watching point
 static int cmd_w(char *args) {
   if (args == NULL) {
@@ -251,6 +252,24 @@ static int cmd_b(char *args) {
   return 0;
 }
 
+// TASK9: Excute the program in n clocks before the commit of next instruction
+static int cmd_clk(char *args) {
+  uint64_t exe_times = 1;
+  if (args == NULL) {
+    /* no argument given */
+     printf("Excute the program in n clocks before the commit of next instruction.\n");
+     cpu_exec_clk(exe_times); // Excute once
+  }
+  else {
+    sscanf(args, "%lu", &exe_times);
+    printf("Excute the program in n clocks before the commit of next instruction.\n");
+    cpu_exec_clk(exe_times);
+  }
+  return 0;
+}
+
+
+
 static int cmd_help(char *args);
 
 // The structure decide the next action in the gdb_loop, including the pointer of function
@@ -264,14 +283,15 @@ static struct {
   { "q", "Exit SIM", cmd_q },
 
   /* TODO: Add more commands */
-  { "si", "Excute the program in n steps", cmd_si },
+  { "si", "Excute the program in n instructions", cmd_si },
   { "info", "Print the information of reg or watching point or trace(1 ags must be given)", cmd_info },
   { "x", "Print the information of memory(2 ags must be given)", cmd_x },
   { "p", "Calculate the value of the expr", cmd_p },
   { "e", "Excute the examination progranm for calculation", cmd_e },
   { "w", "Set up watching point", cmd_w },
   { "d", "Delete watching point or break point", cmd_d },
-  { "b", "Set PC break point", cmd_b }
+  { "b", "Set PC break point", cmd_b },
+  { "clk", "Excute the program in n clocks before the commit of next instruction", cmd_clk }
 };
 
 #define NR_CMD ARRLEN(cmd_table)

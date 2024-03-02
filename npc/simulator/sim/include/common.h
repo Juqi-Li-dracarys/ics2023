@@ -88,6 +88,7 @@ bool test_break();
 // sdb
 void sdb_mainloop();
 void cpu_exec(unsigned int n);
+void cpu_exec_clk(unsigned int n);
 void isa_reg_display();
 word_t isa_reg_str2val(const char *s, bool *success);
 
