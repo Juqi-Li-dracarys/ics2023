@@ -171,10 +171,6 @@ void cpu_exec(unsigned int n) {
 void cpu_exec_clk(unsigned int n) {
   while (n-- > 0) {
     single_cycle();
-    // 如果执行结束，则需要提交并完成 diff-test,终止程序
-    if(dut->inst_commit) {
-      break;
-    }
   }
 }
 
