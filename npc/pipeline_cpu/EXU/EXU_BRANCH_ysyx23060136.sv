@@ -38,18 +38,18 @@ module EXU_BRANCH_ysyx23060136 (
         output                   BRANCH_flushID
     );
 
-    logic  [31 : 0]  adder_da  = ({32{EXU_pc_plus_imm}}  & EXU_pc)                 |
+    wire   [31 : 0]  adder_da  = ({32{EXU_pc_plus_imm}}  & EXU_pc)                 |
                                  ({32{EXU_rs1_plus_imm}} & EXU_HAZARD_rs1_data)    |
                                  ({32{EXU_csr_plus_imm}} & EXU_HAZARD_csr_rs_data) ;
 
-    assign   branch_target     = adder_da + EXU_imm;
+    assign   branch_target     =  adder_da + EXU_imm;
 
-    assign   PCSrc             = EXU_jump & ~((EXU_cmp_eq & ~EXU_ALU_Zero) | (EXU_cmp_neq & EXU_ALU_Zero)  |
-                                              (EXU_cmp_ge & EXU_ALU_Less)  | (EXU_cmp_lt  & ~EXU_ALU_Less));
+    assign   PCSrc             =  EXU_jump & ~((EXU_cmp_eq & ~EXU_ALU_Zero) | (EXU_cmp_neq & EXU_ALU_Zero)   |
+                                               (EXU_cmp_ge & EXU_ALU_Less)  | (EXU_cmp_lt  & ~EXU_ALU_Less)) ;
 
-    assign   BRANCH_flushID    = PCSrc;
+    assign   BRANCH_flushID    =  PCSrc;
 
-    assign   BRANCH_flushIF    = PCSrc;
+    assign   BRANCH_flushIF    =  PCSrc;
 
 endmodule
 

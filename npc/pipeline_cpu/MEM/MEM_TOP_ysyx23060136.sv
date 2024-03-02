@@ -109,14 +109,14 @@ module MEM_TOP_ysyx23060136 (
 
 
 
-    logic      [  31:0]            MEM_raddr          =  MEM_i_ALU_ALUout;
-    logic                          MEM_re             =  MEM_i_mem_to_reg;
-    logic      [  31:0]            MEM_waddr          =  MEM_i_ALU_ALUout;
-    logic      [  31:0]            MEM_wdata          =  MEM_i_rs2_data;
+    wire       [  31:0]            MEM_raddr          =  MEM_i_ALU_ALUout;
+    wire                           MEM_re             =  MEM_i_mem_to_reg;
+    wire       [  31:0]            MEM_waddr          =  MEM_i_ALU_ALUout;
+    wire       [  31:0]            MEM_wdata          =  MEM_i_rs2_data;
 
     // internal read/write ready
-    logic                          MEM_rvalid;
-    logic                          MEM_wready;
+    wire                           MEM_rvalid;
+    wire                           MEM_wready;
 
     assign                         MEM_o_commit       =   MEM_i_commit ;
     assign                         MEM_o_pc           =   MEM_i_pc     ;

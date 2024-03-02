@@ -30,9 +30,9 @@ module IDU_CSR_FILE_ysyx_23060136 (
     // mstatus mtvec mepc mcause
     logic  [31 : 0]   csr_reg      [0 : 3];
 
-    logic             w_e          [0 : 3];
-    logic             r_e          [0 : 3];
-    logic  [31 : 0]   data_out     [0 : 3] /*verilator split_var*/;
+    wire             w_e          [0 : 3];
+    wire             r_e          [0 : 3];
+    wire  [31 : 0]   data_out     [0 : 3] /*verilator split_var*/;
 
 
     // DIP-C in verilog

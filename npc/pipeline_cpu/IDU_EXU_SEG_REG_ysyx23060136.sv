@@ -213,7 +213,7 @@ module IDU_EXU_SEG_REG_ysyx23060136(
 
             // Reset system signals
             EXU_i_system_halt  <=  1'b0;
-            EXU_i_op_valid     <=  1'b1;
+            EXU_i_op_valid     <=  1'b0;
         end
         else if(~FORWARD_stallEX) begin
             EXU_i_pc           <=  IDU_o_pc  ;

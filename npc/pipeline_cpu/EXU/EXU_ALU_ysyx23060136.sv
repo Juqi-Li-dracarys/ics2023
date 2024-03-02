@@ -35,19 +35,19 @@ module EXU_ALU_ysyx23060136 (
 
 
     // Control bus
-    logic sub_add = (EXU_ALU_sub)|(EXU_ALU_slt)|(EXU_ALU_sltu); // sub_add = 1, subtract
-    logic US      = (EXU_ALU_sltu);                             // US = 1, unsigned
-    logic LR      = (EXU_ALU_sll);                              // LR = 1, left
-    logic AL      = (EXU_ALU_sra);                              // AL = 1, algorithm shif
+    wire  sub_add = (EXU_ALU_sub)|(EXU_ALU_slt)|(EXU_ALU_sltu); // sub_add = 1, subtract
+    wire  US      = (EXU_ALU_sltu);                             // US = 1, unsigned
+    wire  LR      = (EXU_ALU_sll);                              // LR = 1, left
+    wire  AL      = (EXU_ALU_sra);                              // AL = 1, algorithm shif
 
     
     // subtract db
-    logic  [31 : 0]   sub_db = {32{sub_add}} ^ EXU_ALU_db;
+    wire   [31 : 0]   sub_db = {32{sub_add}} ^ EXU_ALU_db;
 
     // adder
-    logic             add_carry;
-    logic             add_overflow;
-    logic  [31 : 0]   add_result;
+    wire              add_carry;
+    wire              add_overflow;
+    wire   [31 : 0]   add_result;
 
     assign {add_carry,add_result} = EXU_ALU_da + sub_db + {{31{1'b0}}, sub_add};
     assign add_overflow           = (EXU_ALU_da[31] == sub_db[31]) && (EXU_ALU_da[31] != add_result[31]);
@@ -56,7 +56,7 @@ module EXU_ALU_ysyx23060136 (
 
     
     // shifter
-    logic   [31 : 0]   result_shifter;
+    wire    [31 : 0]   result_shifter;
 
     EXU_ALU_SHIFT_ysyx23060136 shifter (
                                    .din(EXU_ALU_da),

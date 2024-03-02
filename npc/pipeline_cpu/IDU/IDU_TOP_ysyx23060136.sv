@@ -95,13 +95,13 @@ module IDU_TOP_ysyx23060136 (
 
 
     // internal signal
-    logic     [11 : 0]       IDU_csr_id;
-    logic                    op_R_type;
-    logic                    op_I_type;
-    logic                    op_B_type;
-    logic                    op_J_type;
-    logic                    op_U_type;
-    logic                    op_S_type;
+    wire      [11 : 0]       IDU_csr_id;
+    wire                     op_R_type;
+    wire                     op_I_type;
+    wire                     op_B_type;
+    wire                     op_J_type;
+    wire                     op_U_type;
+    wire                     op_S_type;
 
     // 直接传递
     assign                   IDU_o_pc       =        IDU_i_pc;

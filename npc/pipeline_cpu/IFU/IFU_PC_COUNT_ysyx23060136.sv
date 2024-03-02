@@ -21,8 +21,8 @@ module IFU_PC_COUNT_ysyx23060136 (
 
 
     // jump
-    logic      [31 : 0]     pc_update  =  BRANCH_PCSrc     ? BRANCH_branch_target : IFU_o_pc + 32'h4;;
-    logic      [31 : 0]     pc_next    =  FORWARD_stallIF  ? IFU_o_pc             : pc_update;
+    wire      [31 : 0]     pc_update  =  BRANCH_PCSrc     ? BRANCH_branch_target : IFU_o_pc + 32'h4;;
+    wire      [31 : 0]     pc_next    =  FORWARD_stallIF  ? IFU_o_pc             : pc_update;
 
     always_ff @(posedge clk) begin
         if(rst) begin
