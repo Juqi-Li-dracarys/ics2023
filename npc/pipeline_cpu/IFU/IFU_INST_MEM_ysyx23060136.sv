@@ -41,7 +41,7 @@ module IFU_INST_MEM_ysyx23060136(
 
     // 暂存当前 PC 值，当 PC 变化时，我们将新值视为有效值
     logic        [31 : 0]      temp_pc;
-    logic                      pc_change = (temp_pc != IFU_o_pc);
+    wire                       pc_change = (temp_pc != IFU_o_pc);
 
     assign  IFU_o_inst        =  m_axi_rdata;
     // this signal is used for next phase of CPU 
