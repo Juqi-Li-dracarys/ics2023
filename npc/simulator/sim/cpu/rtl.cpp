@@ -36,7 +36,6 @@ void reset(int n) {
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
 #endif
-  dut->eval();
   set_state();
 }
 
@@ -55,7 +54,6 @@ void single_cycle() {
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
 #endif
-  dut->eval();
 }
 
 
