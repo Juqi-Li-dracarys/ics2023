@@ -122,14 +122,14 @@ module EXU_TOP_ysyx23060136 (
     );
 
     // internal signal
-    logic       [31 : 0]      EXU_HAZARD_rs1_data;
-    logic       [31 : 0]      EXU_HAZARD_csr_rs_data;
+    wire        [31 : 0]      EXU_HAZARD_rs1_data;
+    wire        [31 : 0]      EXU_HAZARD_csr_rs_data;
 
-    logic       [31 : 0]      EXU_ALU_da;
-    logic       [31 : 0]      EXU_ALU_db;
+    wire        [31 : 0]      EXU_ALU_da;
+    wire        [31 : 0]      EXU_ALU_db;
 
-    logic                     EXU_ALU_Less;
-    logic                     EXU_ALU_Zero;
+    wire                      EXU_ALU_Less;
+    wire                      EXU_ALU_Zero;
 
     // transmit directly
     assign    EXU_o_commit       = EXU_i_commit;

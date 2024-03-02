@@ -37,13 +37,13 @@ module IDU_GPR_FILE_ysyx_23060136 (
 
     logic  [31 : 0]  gpr_reg      [15 : 0];
     // write enable
-    logic            w_e          [15 : 0];
+    wire             w_e          [15 : 0];
     // read enable
-    logic            r_e_1        [15 : 0];
-    logic            r_e_2        [15 : 0];
+    wire             r_e_1        [15 : 0];
+    wire             r_e_2        [15 : 0];
     // data_out(temp data)
-    logic  [31 : 0]  data_out_1   [15 : 0] /*verilator split_var*/;
-    logic  [31 : 0]  data_out_2   [15 : 0] /*verilator split_var*/; 
+    wire   [31 : 0]  data_out_1   [15 : 0] /*verilator split_var*/;
+    wire   [31 : 0]  data_out_2   [15 : 0] /*verilator split_var*/; 
     
     
     integer i;

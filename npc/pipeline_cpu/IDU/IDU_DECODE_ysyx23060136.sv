@@ -92,146 +92,146 @@ module IDU_DECODE_ysyx23060136(
 
 
     // ===========================================================================
-    logic [6 : 0]  opcode      =   IDU_inst[6 : 0];
+    wire  [6 : 0]  opcode      =   IDU_inst[6 : 0];
     assign         IDU_rd      =   IDU_inst[11 : 7];
-    logic [2 : 0]  func3       =   IDU_inst[14 : 12];
+    wire  [2 : 0]  func3       =   IDU_inst[14 : 12];
     assign         IDU_rs1     =   IDU_inst[19 : 15];
     assign         IDU_rs2     =   IDU_inst[24 : 20];
-    logic [6 : 0]  func7       =   IDU_inst[31 : 25];
+    wire  [6 : 0]  func7       =   IDU_inst[31 : 25];
     assign         IDU_csr_id  =   IDU_inst[31 : 20];
 
-    logic opcode_1_0_00  = (opcode[1 : 0] == 2'b00);
-    logic opcode_1_0_01  = (opcode[1 : 0] == 2'b01);
-    logic opcode_1_0_10  = (opcode[1 : 0] == 2'b10);
-    logic opcode_1_0_11  = (opcode[1 : 0] == 2'b11);
+    wire  opcode_1_0_00  = (opcode[1 : 0] == 2'b00);
+    wire  opcode_1_0_01  = (opcode[1 : 0] == 2'b01);
+    wire  opcode_1_0_10  = (opcode[1 : 0] == 2'b10);
+    wire  opcode_1_0_11  = (opcode[1 : 0] == 2'b11);
 
-    logic opcode_4_2_000 = (opcode[4 : 2] == 3'b000);
-    logic opcode_4_2_001 = (opcode[4 : 2] == 3'b001);
-    logic opcode_4_2_010 = (opcode[4 : 2] == 3'b010);
-    logic opcode_4_2_011 = (opcode[4 : 2] == 3'b011);
-    logic opcode_4_2_100 = (opcode[4 : 2] == 3'b100);
-    logic opcode_4_2_101 = (opcode[4 : 2] == 3'b101);
-    logic opcode_4_2_110 = (opcode[4 : 2] == 3'b110);
-    logic opcode_4_2_111 = (opcode[4 : 2] == 3'b111);
+    wire  opcode_4_2_000 = (opcode[4 : 2] == 3'b000);
+    wire  opcode_4_2_001 = (opcode[4 : 2] == 3'b001);
+    wire  opcode_4_2_010 = (opcode[4 : 2] == 3'b010);
+    wire  opcode_4_2_011 = (opcode[4 : 2] == 3'b011);
+    wire  opcode_4_2_100 = (opcode[4 : 2] == 3'b100);
+    wire  opcode_4_2_101 = (opcode[4 : 2] == 3'b101);
+    wire  opcode_4_2_110 = (opcode[4 : 2] == 3'b110);
+    wire  opcode_4_2_111 = (opcode[4 : 2] == 3'b111);
     
-    logic opcode_6_5_00  = (opcode[6 : 5] == 2'b00);
-    logic opcode_6_5_01  = (opcode[6 : 5] == 2'b01);
-    logic opcode_6_5_10  = (opcode[6 : 5] == 2'b10);
-    logic opcode_6_5_11  = (opcode[6 : 5] == 2'b11);
+    wire  opcode_6_5_00  = (opcode[6 : 5] == 2'b00);
+    wire  opcode_6_5_01  = (opcode[6 : 5] == 2'b01);
+    wire  opcode_6_5_10  = (opcode[6 : 5] == 2'b10);
+    wire  opcode_6_5_11  = (opcode[6 : 5] == 2'b11);
   
-    logic func3_000 = (func3 == 3'b000);
-    logic func3_001 = (func3 == 3'b001);
-    logic func3_010 = (func3 == 3'b010);
-    logic func3_011 = (func3 == 3'b011);
-    logic func3_100 = (func3 == 3'b100);
-    logic func3_101 = (func3 == 3'b101);
-    logic func3_110 = (func3 == 3'b110);
-    logic func3_111 = (func3 == 3'b111);
+    wire  func3_000 = (func3 == 3'b000);
+    wire  func3_001 = (func3 == 3'b001);
+    wire  func3_010 = (func3 == 3'b010);
+    wire  func3_011 = (func3 == 3'b011);
+    wire  func3_100 = (func3 == 3'b100);
+    wire  func3_101 = (func3 == 3'b101);
+    wire  func3_110 = (func3 == 3'b110);
+    wire  func3_111 = (func3 == 3'b111);
 
-    logic func7_0000000 = (func7 == 7'b0000000);
-    logic func7_0100000 = (func7 == 7'b0100000);
+    wire  func7_0000000 = (func7 == 7'b0000000);
+    wire  func7_0100000 = (func7 == 7'b0100000);
 
-    logic func7_0000001 = (func7 == 7'b0000001);
-    logic func7_0000101 = (func7 == 7'b0000101);
-    logic func7_0001001 = (func7 == 7'b0001001);
-    logic func7_0001101 = (func7 == 7'b0001101);
-    logic func7_0010101 = (func7 == 7'b0010101);
-    logic func7_0100001 = (func7 == 7'b0100001);
-    logic func7_0010001 = (func7 == 7'b0010001);
-    logic func7_0101101 = (func7 == 7'b0101101);
-    logic func7_1111111 = (func7 == 7'b1111111);
-    logic func7_0000100 = (func7 == 7'b0000100);
-    logic func7_0001000 = (func7 == 7'b0001000);
-    logic func7_0001100 = (func7 == 7'b0001100);
-    logic func7_0101100 = (func7 == 7'b0101100);
-    logic func7_0010000 = (func7 == 7'b0010000);
-    logic func7_0010100 = (func7 == 7'b0010100);
-    logic func7_1100000 = (func7 == 7'b1100000);
-    logic func7_1110000 = (func7 == 7'b1110000);
-    logic func7_1010000 = (func7 == 7'b1010000);
-    logic func7_1101000 = (func7 == 7'b1101000);
-    logic func7_1111000 = (func7 == 7'b1111000);
-    logic func7_1010001 = (func7 == 7'b1010001);
-    logic func7_1110001 = (func7 == 7'b1110001);
-    logic func7_1100001 = (func7 == 7'b1100001);
-    logic func7_1101001 = (func7 == 7'b1101001);
+    wire  func7_0000001 = (func7 == 7'b0000001);
+    wire  func7_0000101 = (func7 == 7'b0000101);
+    wire  func7_0001001 = (func7 == 7'b0001001);
+    wire  func7_0001101 = (func7 == 7'b0001101);
+    wire  func7_0010101 = (func7 == 7'b0010101);
+    wire  func7_0100001 = (func7 == 7'b0100001);
+    wire  func7_0010001 = (func7 == 7'b0010001);
+    wire  func7_0101101 = (func7 == 7'b0101101);
+    wire  func7_1111111 = (func7 == 7'b1111111);
+    wire  func7_0000100 = (func7 == 7'b0000100);
+    wire  func7_0001000 = (func7 == 7'b0001000);
+    wire  func7_0001100 = (func7 == 7'b0001100);
+    wire  func7_0101100 = (func7 == 7'b0101100);
+    wire  func7_0010000 = (func7 == 7'b0010000);
+    wire  func7_0010100 = (func7 == 7'b0010100);
+    wire  func7_1100000 = (func7 == 7'b1100000);
+    wire  func7_1110000 = (func7 == 7'b1110000);
+    wire  func7_1010000 = (func7 == 7'b1010000);
+    wire  func7_1101000 = (func7 == 7'b1101000);
+    wire  func7_1111000 = (func7 == 7'b1111000);
+    wire  func7_1010001 = (func7 == 7'b1010001);
+    wire  func7_1110001 = (func7 == 7'b1110001);
+    wire  func7_1100001 = (func7 == 7'b1100001);
+    wire  func7_1101001 = (func7 == 7'b1101001);
 
 
 
 
     // ===========================================================================
     // ALU IDU_Instructions are relative to imm(I type)
-    logic rv32_op_i   = opcode_6_5_00 & opcode_4_2_100 & opcode_1_0_11;
-    logic rv32_addi     =  rv32_op_i  &  func3_000;
-    logic rv32_slti     =  rv32_op_i  &  func3_010;
-    logic rv32_sltiu    =  rv32_op_i  &  func3_011;
-    logic rv32_xori     =  rv32_op_i  &  func3_100;
-    logic rv32_ori      =  rv32_op_i  &  func3_110;
-    logic rv32_andi     =  rv32_op_i  &  func3_111;
-    logic rv32_slli     =  rv32_op_i  &  func3_001 & (IDU_inst[31 : 26] == 6'b000000);
-    logic rv32_srli     =  rv32_op_i  &  func3_101 & (IDU_inst[31 : 26] == 6'b000000);
-    logic rv32_srai     =  rv32_op_i  &  func3_101 & (IDU_inst[31 : 26] == 6'b010000);
+    wire  rv32_op_i   = opcode_6_5_00 & opcode_4_2_100 & opcode_1_0_11;
+    wire  rv32_addi     =  rv32_op_i  &  func3_000;
+    wire  rv32_slti     =  rv32_op_i  &  func3_010;
+    wire  rv32_sltiu    =  rv32_op_i  &  func3_011;
+    wire  rv32_xori     =  rv32_op_i  &  func3_100;
+    wire  rv32_ori      =  rv32_op_i  &  func3_110;
+    wire  rv32_andi     =  rv32_op_i  &  func3_111;
+    wire  rv32_slli     =  rv32_op_i  &  func3_001 & (IDU_inst[31 : 26] == 6'b000000);
+    wire  rv32_srli     =  rv32_op_i  &  func3_101 & (IDU_inst[31 : 26] == 6'b000000);
+    wire  rv32_srai     =  rv32_op_i  &  func3_101 & (IDU_inst[31 : 26] == 6'b010000);
 
     
     // ===========================================================================
     // ALU IDU_Instructions are relative to register(R type)
-    logic rv32_op_r     =  opcode_6_5_01 & opcode_4_2_100 & opcode_1_0_11;
-    logic rv32_add      =  rv32_op_r  &  func3_000  &  func7_0000000;
-    logic rv32_sub      =  rv32_op_r  &  func3_000  &  func7_0100000;
-    logic rv32_sll      =  rv32_op_r  &  func3_001  &  func7_0000000;
-    logic rv32_slt      =  rv32_op_r  &  func3_010  &  func7_0000000;
-    logic rv32_sltu     =  rv32_op_r  &  func3_011  &  func7_0000000;
-    logic rv32_xor      =  rv32_op_r  &  func3_100  &  func7_0000000;
-    logic rv32_srl      =  rv32_op_r  &  func3_101  &  func7_0000000;
-    logic rv32_sra      =  rv32_op_r  &  func3_101  &  func7_0100000;
-    logic rv32_or       =  rv32_op_r  &  func3_110  &  func7_0000000;
-    logic rv32_and      =  rv32_op_r  &  func3_111  &  func7_0000000;
+    wire  rv32_op_r     =  opcode_6_5_01 & opcode_4_2_100 & opcode_1_0_11;
+    wire  rv32_add      =  rv32_op_r  &  func3_000  &  func7_0000000;
+    wire  rv32_sub      =  rv32_op_r  &  func3_000  &  func7_0100000;
+    wire  rv32_sll      =  rv32_op_r  &  func3_001  &  func7_0000000;
+    wire  rv32_slt      =  rv32_op_r  &  func3_010  &  func7_0000000;
+    wire  rv32_sltu     =  rv32_op_r  &  func3_011  &  func7_0000000;
+    wire  rv32_xor      =  rv32_op_r  &  func3_100  &  func7_0000000;
+    wire  rv32_srl      =  rv32_op_r  &  func3_101  &  func7_0000000;
+    wire  rv32_sra      =  rv32_op_r  &  func3_101  &  func7_0100000;
+    wire  rv32_or       =  rv32_op_r  &  func3_110  &  func7_0000000;
+    wire  rv32_and      =  rv32_op_r  &  func3_111  &  func7_0000000;
     
 
     // ===========================================================================
     // Load / Store IDU_Instructions
-    logic rv32_load     = opcode_6_5_00 & opcode_4_2_000 & opcode_1_0_11;
-    logic rv32_lb       = rv32_load   &  func3_000;
-    logic rv32_lh       = rv32_load   &  func3_001;
-    logic rv32_lw       = rv32_load   &  func3_010;
-    logic rv32_lbu      = rv32_load   &  func3_100;
-    logic rv32_lhu      = rv32_load   &  func3_101;
+    wire  rv32_load     = opcode_6_5_00 & opcode_4_2_000 & opcode_1_0_11;
+    wire  rv32_lb       = rv32_load   &  func3_000;
+    wire  rv32_lh       = rv32_load   &  func3_001;
+    wire  rv32_lw       = rv32_load   &  func3_010;
+    wire  rv32_lbu      = rv32_load   &  func3_100;
+    wire  rv32_lhu      = rv32_load   &  func3_101;
 
-    logic rv32_store    = opcode_6_5_01 & opcode_4_2_000 & opcode_1_0_11;
-    logic rv32_sb       = rv32_store  &  func3_000;
-    logic rv32_sh       = rv32_store  &  func3_001;
-    logic rv32_sw       = rv32_store  &  func3_010;
+    wire  rv32_store    = opcode_6_5_01 & opcode_4_2_000 & opcode_1_0_11;
+    wire  rv32_sb       = rv32_store  &  func3_000;
+    wire  rv32_sh       = rv32_store  &  func3_001;
+    wire  rv32_sw       = rv32_store  &  func3_010;
     
 
     // ===========================================================================
     // Branch IDU_Instructions
-    logic rv32_branch   = opcode_6_5_11 & opcode_4_2_000 & opcode_1_0_11;
-    logic rv32_beq      = rv32_branch  &  func3_000;
-    logic rv32_bne      = rv32_branch  &  func3_001;
-    logic rv32_blt      = rv32_branch  &  func3_100;
-    logic rv32_bge      = rv32_branch  &  func3_101;
-    logic rv32_bltu     = rv32_branch  &  func3_110;
-    logic rv32_bgeu     = rv32_branch  &  func3_111;
+    wire  rv32_branch   = opcode_6_5_11 & opcode_4_2_000 & opcode_1_0_11;
+    wire  rv32_beq      = rv32_branch  &  func3_000;
+    wire  rv32_bne      = rv32_branch  &  func3_001;
+    wire  rv32_blt      = rv32_branch  &  func3_100;
+    wire  rv32_bge      = rv32_branch  &  func3_101;
+    wire  rv32_bltu     = rv32_branch  &  func3_110;
+    wire  rv32_bgeu     = rv32_branch  &  func3_111;
 
 
     // ===========================================================================
     // System IDU_Instructions
-    logic  rv32_system   = opcode_6_5_11 & opcode_4_2_100 & opcode_1_0_11;
+    wire   rv32_system   = opcode_6_5_11 & opcode_4_2_100 & opcode_1_0_11;
     assign rv32_ecall    = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0000);
-    logic  rv32_ebreak   = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0001);
-    logic  rv32_mret     = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0011_0000_0010);
+    wire   rv32_ebreak   = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0000_0000_0001);
+    wire   rv32_mret     = rv32_system & func3_000 & (IDU_inst[31:20] == 12'b0011_0000_0010);
     assign rv32_csrrw    = rv32_system & func3_001;
     assign rv32_csrrs    = rv32_system & func3_010;
 
 
     // ===========================================================================
     // jump without condition
-    logic rv32_jalr     = opcode_6_5_11 & opcode_4_2_001 & opcode_1_0_11;
-    logic rv32_jal      = opcode_6_5_11 & opcode_4_2_011 & opcode_1_0_11;
+    wire  rv32_jalr     = opcode_6_5_11 & opcode_4_2_001 & opcode_1_0_11;
+    wire  rv32_jal      = opcode_6_5_11 & opcode_4_2_011 & opcode_1_0_11;
 
     // U type IDU_inst
-    logic rv32_auipc    = opcode_6_5_00 & opcode_4_2_101 & opcode_1_0_11;
-    logic rv32_lui      = opcode_6_5_01 & opcode_4_2_101 & opcode_1_0_11;
+    wire  rv32_auipc    = opcode_6_5_00 & opcode_4_2_101 & opcode_1_0_11;
+    wire  rv32_lui      = opcode_6_5_01 & opcode_4_2_101 & opcode_1_0_11;
 
 
     // ===========================================================================

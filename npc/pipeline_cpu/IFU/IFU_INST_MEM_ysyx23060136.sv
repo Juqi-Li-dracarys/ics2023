@@ -24,20 +24,20 @@ module IFU_INST_MEM_ysyx23060136(
 
     //  sarm instance 
     // 当 pc 的值发生变化时，我们才考虑读取下一条指令
-    logic                                     m_axi_arvalid  =  r_state_idle & pc_change    ;
-    logic        [31 : 0]                     m_axi_araddr   =  IFU_o_pc                    ;
-    logic                                     m_axi_aready                                  ;
-    logic                                     m_axi_rready   =  r_state_busy                ;
-    logic        [31 : 0]                     m_axi_rdata                                   ;
-    logic                                     m_axi_rvalid                                  ;
+    wire                                      m_axi_arvalid  =  r_state_idle & pc_change    ;
+    wire         [31 : 0]                     m_axi_araddr   =  IFU_o_pc                    ;
+    wire                                      m_axi_aready                                  ;
+    wire                                      m_axi_rready   =  r_state_busy                ;
+    wire         [31 : 0]                     m_axi_rdata                                   ;
+    wire                                      m_axi_rvalid                                  ;
     
     // we do not need response
-    logic        [1 : 0]                      m_axi_rresp                                   ;
+    wire         [1 : 0]                      m_axi_rresp                                   ;
     // we do not need to write data from AXI
-    logic                                     m_axi_awready              ;
-    logic                                     m_axi_wready               ;
-    logic        [1 : 0]                      m_axi_bresp                ;
-    logic                                     m_axi_bvalid               ;
+    wire                                      m_axi_awready              ;
+    wire                                      m_axi_wready               ;
+    wire         [1 : 0]                      m_axi_bresp                ;
+    wire                                      m_axi_bvalid               ;
 
     // 暂存当前 PC 值，当 PC 变化时，我们将新值视为有效值
     logic        [31 : 0]      temp_pc;
@@ -47,13 +47,13 @@ module IFU_INST_MEM_ysyx23060136(
     // this signal is used for next phase of CPU 
     assign  inst_valid        =  r_state_idle & ~pc_change;
 
-    logic          r_state_idle     =  (r_state == `idle);
-    logic          r_state_busy     =  (r_state == `busy);
+    wire          r_state_idle     =  (r_state == `idle);
+    wire          r_state_busy     =  (r_state == `busy);
 
     // read mater state machine
     logic        [1 : 0]       r_state;
     // 当 AXI lite 发生握手，将转移到下一个状态
-    logic        [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((m_axi_aready & m_axi_arvalid) ? `busy : `idle)) |
+    wire         [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((m_axi_aready & m_axi_arvalid) ? `busy : `idle)) |
                                                  ({2{r_state_busy}} & ((m_axi_rvalid & m_axi_rready)  ? `idle : `busy)) ;
 
     always_ff @(posedge clk) begin : state_machine

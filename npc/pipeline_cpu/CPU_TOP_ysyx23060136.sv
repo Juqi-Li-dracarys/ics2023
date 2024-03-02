@@ -32,12 +32,12 @@ module CPU_TOP_ysyx23060136 (
 
     // ===========================================================================
     // IFU
-    logic                                FORWARD_stallIF            ;
-    logic               [  31:0]         BRANCH_branch_target       ;
-    logic                                BRANCH_PCSrc               ;
-    logic               [  31:0]         IFU_o_inst                 ;
-    logic               [  31:0]         IFU_o_pc                   ;
-    logic                                IFU_o_valid                ;
+    wire                                 FORWARD_stallIF            ;
+    wire                [  31:0]         BRANCH_branch_target       ;
+    wire                                 BRANCH_PCSrc               ;
+    wire                [  31:0]         IFU_o_inst                 ;
+    wire                [  31:0]         IFU_o_pc                   ;
+    wire                                 IFU_o_valid                ;
 
     IFU_TOP_ysyx23060136  IFU_TOP_ysyx23060136_inst (
                               .clk                               (clk                       ),
@@ -53,11 +53,11 @@ module CPU_TOP_ysyx23060136 (
 
     // ===========================================================================
     // IFU -> IDU
-    logic                                BRANCH_flushIF             ;
-    logic                                FORWARD_stallID            ;
-    logic                                IDU_i_commit               ;
-    logic               [  31:0]         IDU_i_pc                   ;
-    logic               [  31:0]         IDU_i_inst                 ;
+    wire                                 BRANCH_flushIF             ;
+    wire                                 FORWARD_stallID            ;
+    wire                                 IDU_i_commit               ;
+    wire                [  31:0]         IDU_i_pc                   ;
+    wire                [  31:0]         IDU_i_inst                 ;
 
 
     IFU_IDU_SEG_REG_ysyx23060136  IFU_IDU_SEG_REG_ysyx23060136_inst (
@@ -76,66 +76,66 @@ module CPU_TOP_ysyx23060136 (
     
     // ===========================================================================
     // IDU
-    logic              [   4:0]         WB_o_rd                    ;
-    logic                               WB_o_RegWr                 ;
-    logic              [  31:0]         WB_o_rf_busW               ;
-    logic              [   1:0]         WB_o_csr_rd                ;
-    logic                               WB_o_CSRWr                 ;
-    logic              [  31:0]         WB_o_csr_busW              ;
+    wire               [   4:0]         WB_o_rd                    ;
+    wire                                WB_o_RegWr                 ;
+    wire               [  31:0]         WB_o_rf_busW               ;
+    wire               [   1:0]         WB_o_csr_rd                ;
+    wire                                WB_o_CSRWr                 ;
+    wire               [  31:0]         WB_o_csr_busW              ;
 
-    logic              [  31:0]         IDU_o_pc                 ;
-    logic              [  31:0]         IDU_o_inst               ;
-    logic                               IDU_o_commit             ;
-    logic              [   4:0]         IDU_o_rd                     ;
-    logic              [   4:0]         IDU_o_rs1                    ;
-    logic              [   4:0]         IDU_o_rs2                    ;
-    logic              [  31:0]         IDU_o_imm                    ;
-    logic              [  31:0]         IDU_o_rs1_data               ;
-    logic              [  31:0]         IDU_o_rs2_data               ;
-    logic              [   1:0]         IDU_o_csr_rd                 ;
-    logic              [   1:0]         IDU_o_csr_rs                 ;
-    logic              [  31:0]         IDU_o_csr_rs_data            ;
-    logic                               IDU_o_ALU_add                ;
-    logic                               IDU_o_ALU_sub                ;
-    logic                               IDU_o_ALU_slt                ;
-    logic                               IDU_o_ALU_sltu               ;
-    logic                               IDU_o_ALU_or                 ;
-    logic                               IDU_o_ALU_and                ;
-    logic                               IDU_o_ALU_xor                ;
-    logic                               IDU_o_ALU_sll                ;
-    logic                               IDU_o_ALU_srl                ;
-    logic                               IDU_o_ALU_sra                ;
-    logic                               IDU_o_ALU_explicit           ;
-    logic                               IDU_o_ALU_i1_rs1             ;
-    logic                               IDU_o_ALU_i1_pc              ;
-    logic                               IDU_o_ALU_i2_rs2             ;
-    logic                               IDU_o_ALU_i2_imm             ;
-    logic                               IDU_o_ALU_i2_4               ;
-    logic                               IDU_o_ALU_i2_csr             ;
-    logic                               IDU_o_jump                   ;
-    logic                               IDU_o_pc_plus_imm            ;
-    logic                               IDU_o_rs1_plus_imm           ;
-    logic                               IDU_o_csr_plus_imm           ;
-    logic                               IDU_o_cmp_eq                 ;
-    logic                               IDU_o_cmp_neq                ;
-    logic                               IDU_o_cmp_ge                 ;
-    logic                               IDU_o_cmp_lt                 ;
-    logic                               IDU_o_write_gpr              ;
-    logic                               IDU_o_write_csr              ;
+    wire               [  31:0]         IDU_o_pc                 ;
+    wire               [  31:0]         IDU_o_inst               ;
+    wire                                IDU_o_commit             ;
+    wire               [   4:0]         IDU_o_rd                     ;
+    wire               [   4:0]         IDU_o_rs1                    ;
+    wire               [   4:0]         IDU_o_rs2                    ;
+    wire               [  31:0]         IDU_o_imm                    ;
+    wire               [  31:0]         IDU_o_rs1_data               ;
+    wire               [  31:0]         IDU_o_rs2_data               ;
+    wire               [   1:0]         IDU_o_csr_rd                 ;
+    wire               [   1:0]         IDU_o_csr_rs                 ;
+    wire               [  31:0]         IDU_o_csr_rs_data            ;
+    wire                                IDU_o_ALU_add                ;
+    wire                                IDU_o_ALU_sub                ;
+    wire                                IDU_o_ALU_slt                ;
+    wire                                IDU_o_ALU_sltu               ;
+    wire                                IDU_o_ALU_or                 ;
+    wire                                IDU_o_ALU_and                ;
+    wire                                IDU_o_ALU_xor                ;
+    wire                                IDU_o_ALU_sll                ;
+    wire                                IDU_o_ALU_srl                ;
+    wire                                IDU_o_ALU_sra                ;
+    wire                                IDU_o_ALU_explicit           ;
+    wire                                IDU_o_ALU_i1_rs1             ;
+    wire                                IDU_o_ALU_i1_pc              ;
+    wire                                IDU_o_ALU_i2_rs2             ;
+    wire                                IDU_o_ALU_i2_imm             ;
+    wire                                IDU_o_ALU_i2_4               ;
+    wire                                IDU_o_ALU_i2_csr             ;
+    wire                                IDU_o_jump                   ;
+    wire                                IDU_o_pc_plus_imm            ;
+    wire                                IDU_o_rs1_plus_imm           ;
+    wire                                IDU_o_csr_plus_imm           ;
+    wire                                IDU_o_cmp_eq                 ;
+    wire                                IDU_o_cmp_neq                ;
+    wire                                IDU_o_cmp_ge                 ;
+    wire                                IDU_o_cmp_lt                 ;
+    wire                                IDU_o_write_gpr              ;
+    wire                                IDU_o_write_csr              ;
 
 
-    logic                               IDU_o_mem_to_reg             ;
-    logic                               IDU_o_rv32_csrrs             ;
-    logic                               IDU_o_rv32_csrrw             ;
-    logic                               IDU_o_rv32_ecall             ;
-    logic                               IDU_o_write_mem              ;
-    logic                               IDU_o_mem_byte               ;
-    logic                               IDU_o_mem_half               ;
-    logic                               IDU_o_mem_word               ;
-    logic                               IDU_o_mem_byte_u             ;
-    logic                               IDU_o_mem_half_u             ;
-    logic                               IDU_o_system_halt            ;
-    logic                               IDU_o_op_valid               ;
+    wire                                IDU_o_mem_to_reg             ;
+    wire                                IDU_o_rv32_csrrs             ;
+    wire                                IDU_o_rv32_csrrw             ;
+    wire                                IDU_o_rv32_ecall             ;
+    wire                                IDU_o_write_mem              ;
+    wire                                IDU_o_mem_byte               ;
+    wire                                IDU_o_mem_half               ;
+    wire                                IDU_o_mem_word               ;
+    wire                                IDU_o_mem_byte_u             ;
+    wire                                IDU_o_mem_half_u             ;
+    wire                                IDU_o_system_halt            ;
+    wire                                IDU_o_op_valid               ;
 
 
 
@@ -208,66 +208,66 @@ module CPU_TOP_ysyx23060136 (
 
     // ===========================================================================
     // IDU -> EXU
-    logic                               BRANCH_flushID               ;
-    logic                               FORWARD_stallEX              ;
-    logic              [  31:0]         FORWARD_rs1_data_SEG         ;
-    logic              [  31:0]         FORWARD_rs2_data_SEG         ;
-    logic              [  31:0]         FORWARD_csr_rs_data_SEG      ;
-    logic                               FORWARD_rs1_hazard_SEG       ;
-    logic                               FORWARD_rs2_hazard_SEG       ;
-    logic                               FORWARD_csr_rs_hazard_SEG    ;
-    logic              [  31:0]         EXU_i_pc                     ;
-    logic              [  31:0]         EXU_i_inst                   ;
-    logic                               EXU_i_commit                 ;
-    logic              [   4:0]         EXU_i_rd                     ;
-    logic              [   4:0]         EXU_i_rs1                    ;
-    logic              [   4:0]         EXU_i_rs2                    ;
-    logic              [  31:0]         EXU_i_imm                    ;
-    logic              [  31:0]         EXU_i_rs1_data               ;
-    logic              [  31:0]         EXU_i_rs2_data               ;
-    logic              [   1:0]         EXU_i_csr_rd                 ;
-    logic              [   1:0]         EXU_i_csr_rs                 ;
-    logic              [  31:0]         EXU_i_csr_rs_data            ;
+    wire                                BRANCH_flushID               ;
+    wire                                FORWARD_stallEX              ;
+    wire               [  31:0]         FORWARD_rs1_data_SEG         ;
+    wire               [  31:0]         FORWARD_rs2_data_SEG         ;
+    wire               [  31:0]         FORWARD_csr_rs_data_SEG      ;
+    wire                                FORWARD_rs1_hazard_SEG       ;
+    wire                                FORWARD_rs2_hazard_SEG       ;
+    wire                                FORWARD_csr_rs_hazard_SEG    ;
+    wire               [  31:0]         EXU_i_pc                     ;
+    wire               [  31:0]         EXU_i_inst                   ;
+    wire                                EXU_i_commit                 ;
+    wire               [   4:0]         EXU_i_rd                     ;
+    wire               [   4:0]         EXU_i_rs1                    ;
+    wire               [   4:0]         EXU_i_rs2                    ;
+    wire               [  31:0]         EXU_i_imm                    ;
+    wire               [  31:0]         EXU_i_rs1_data               ;
+    wire               [  31:0]         EXU_i_rs2_data               ;
+    wire               [   1:0]         EXU_i_csr_rd                 ;
+    wire               [   1:0]         EXU_i_csr_rs                 ;
+    wire               [  31:0]         EXU_i_csr_rs_data            ;
 
-    logic                               EXU_i_ALU_add                ;
-    logic                               EXU_i_ALU_sub                ;
-    logic                               EXU_i_ALU_slt                ;
-    logic                               EXU_i_ALU_sltu               ;
-    logic                               EXU_i_ALU_or                 ;
-    logic                               EXU_i_ALU_and                ;
-    logic                               EXU_i_ALU_xor                ;
-    logic                               EXU_i_ALU_sll                ;
-    logic                               EXU_i_ALU_srl                ;
-    logic                               EXU_i_ALU_sra                ;
-    logic                               EXU_i_ALU_explicit           ;
-    logic                               EXU_i_ALU_i1_rs1             ;
-    logic                               EXU_i_ALU_i1_pc              ;
-    logic                               EXU_i_ALU_i2_rs2             ;
-    logic                               EXU_i_ALU_i2_imm             ;
-    logic                               EXU_i_ALU_i2_4               ;
-    logic                               EXU_i_ALU_i2_csr             ;
-    logic                               EXU_i_jump                   ;
-    logic                               EXU_i_pc_plus_imm            ;
-    logic                               EXU_i_rs1_plus_imm           ;
-    logic                               EXU_i_csr_plus_imm           ;
-    logic                               EXU_i_cmp_eq                 ;
-    logic                               EXU_i_cmp_neq                ;
-    logic                               EXU_i_cmp_ge                 ;
-    logic                               EXU_i_cmp_lt                 ;
-    logic                               EXU_i_write_gpr              ;
-    logic                               EXU_i_write_csr              ;
-    logic                               EXU_i_mem_to_reg             ;
-    logic                               EXU_i_rv32_csrrs             ;
-    logic                               EXU_i_rv32_csrrw             ;
-    logic                               EXU_i_rv32_ecall             ;
-    logic                               EXU_i_write_mem              ;
-    logic                               EXU_i_mem_byte               ;
-    logic                               EXU_i_mem_half               ;
-    logic                               EXU_i_mem_word               ;
-    logic                               EXU_i_mem_byte_u             ;
-    logic                               EXU_i_mem_half_u             ;
-    logic                               EXU_i_system_halt            ;
-    logic                               EXU_i_op_valid               ;
+    wire                                EXU_i_ALU_add                ;
+    wire                                EXU_i_ALU_sub                ;
+    wire                                EXU_i_ALU_slt                ;
+    wire                                EXU_i_ALU_sltu               ;
+    wire                                EXU_i_ALU_or                 ;
+    wire                                EXU_i_ALU_and                ;
+    wire                                EXU_i_ALU_xor                ;
+    wire                                EXU_i_ALU_sll                ;
+    wire                                EXU_i_ALU_srl                ;
+    wire                                EXU_i_ALU_sra                ;
+    wire                                EXU_i_ALU_explicit           ;
+    wire                                EXU_i_ALU_i1_rs1             ;
+    wire                                EXU_i_ALU_i1_pc              ;
+    wire                                EXU_i_ALU_i2_rs2             ;
+    wire                                EXU_i_ALU_i2_imm             ;
+    wire                                EXU_i_ALU_i2_4               ;
+    wire                                EXU_i_ALU_i2_csr             ;
+    wire                                EXU_i_jump                   ;
+    wire                                EXU_i_pc_plus_imm            ;
+    wire                                EXU_i_rs1_plus_imm           ;
+    wire                                EXU_i_csr_plus_imm           ;
+    wire                                EXU_i_cmp_eq                 ;
+    wire                                EXU_i_cmp_neq                ;
+    wire                                EXU_i_cmp_ge                 ;
+    wire                                EXU_i_cmp_lt                 ;
+    wire                                EXU_i_write_gpr              ;
+    wire                                EXU_i_write_csr              ;
+    wire                                EXU_i_mem_to_reg             ;
+    wire                                EXU_i_rv32_csrrs             ;
+    wire                                EXU_i_rv32_csrrw             ;
+    wire                                EXU_i_rv32_ecall             ;
+    wire                                EXU_i_write_mem              ;
+    wire                                EXU_i_mem_byte               ;
+    wire                                EXU_i_mem_half               ;
+    wire                                EXU_i_mem_word               ;
+    wire                                EXU_i_mem_byte_u             ;
+    wire                                EXU_i_mem_half_u             ;
+    wire                                EXU_i_system_halt            ;
+    wire                                EXU_i_op_valid               ;
 
 
 
@@ -389,30 +389,30 @@ module CPU_TOP_ysyx23060136 (
 
     // ===========================================================================
     // EXU
-    logic              [  31:0]         EXU_o_pc                 ;
-    logic              [  31:0]         EXU_o_inst               ;
-    logic              [  31:0]         EXU_o_ALU_ALUout         ;
-    logic              [  31:0]         EXU_o_ALU_CSR_out        ;
-    logic                               EXU_o_commit             ;
-    logic                               EXU_o_ALU_valid          ;
-    logic              [   4:0]         EXU_o_rd                 ;
-    logic              [   4:0]         EXU_o_rs1                ;
-    logic              [   4:0]         EXU_o_rs2                ;
-    logic              [  31:0]         EXU_o_HAZARD_rs2_data    ;
-    logic              [   1:0]         EXU_o_csr_rd             ;
-    logic              [   1:0]         EXU_o_csr_rs             ;
-    logic                               EXU_o_write_gpr          ;
-    logic                               EXU_o_write_csr          ;
+    wire               [  31:0]         EXU_o_pc                 ;
+    wire               [  31:0]         EXU_o_inst               ;
+    wire               [  31:0]         EXU_o_ALU_ALUout         ;
+    wire               [  31:0]         EXU_o_ALU_CSR_out        ;
+    wire                                EXU_o_commit             ;
+    wire                                EXU_o_ALU_valid          ;
+    wire               [   4:0]         EXU_o_rd                 ;
+    wire               [   4:0]         EXU_o_rs1                ;
+    wire               [   4:0]         EXU_o_rs2                ;
+    wire               [  31:0]         EXU_o_HAZARD_rs2_data    ;
+    wire               [   1:0]         EXU_o_csr_rd             ;
+    wire               [   1:0]         EXU_o_csr_rs             ;
+    wire                                EXU_o_write_gpr          ;
+    wire                                EXU_o_write_csr          ;
 
-    logic                               EXU_o_mem_to_reg         ;
-    logic                               EXU_o_write_mem          ;
-    logic                               EXU_o_mem_byte           ;
-    logic                               EXU_o_mem_half           ;
-    logic                               EXU_o_mem_word           ;
-    logic                               EXU_o_mem_byte_u         ;
-    logic                               EXU_o_mem_half_u         ;
-    logic                               EXU_o_system_halt        ;
-    logic                               EXU_o_op_valid           ;
+    wire                                EXU_o_mem_to_reg         ;
+    wire                                EXU_o_write_mem          ;
+    wire                                EXU_o_mem_byte           ;
+    wire                                EXU_o_mem_half           ;
+    wire                                EXU_o_mem_word           ;
+    wire                                EXU_o_mem_byte_u         ;
+    wire                                EXU_o_mem_half_u         ;
+    wire                                EXU_o_system_halt        ;
+    wire                                EXU_o_op_valid           ;
 
 
 
@@ -507,28 +507,28 @@ module CPU_TOP_ysyx23060136 (
 
     // ===========================================================================
     // EXU -> MEM
-    logic                               FORWARD_flushEX    = `false  ;
-    logic                               FORWARD_stallME              ; 
-    logic                               MEM_i_commit                 ;
-    logic              [  31:0]         MEM_i_pc                     ;
-    logic              [  31:0]         MEM_i_inst                   ;
-    logic              [  31:0]         MEM_i_ALU_ALUout             ;
-    logic              [  31:0]         MEM_i_ALU_CSR_out            ;
-    logic              [   4:0]         MEM_i_rd                     ;
-    logic              [  31:0]         MEM_i_rs2_data               ;
-    logic              [   1:0]         MEM_i_csr_rd                 ;
-    logic                               MEM_i_write_gpr              ;
-    logic                               MEM_i_write_csr              ;
-    logic                               MEM_i_mem_to_reg             ;
-    logic                               MEM_i_write_mem              ;
-    logic                               MEM_i_mem_byte               ;
-    logic                               MEM_i_mem_half               ;
-    logic                               MEM_i_mem_word               ;
-    logic                               MEM_i_mem_byte_u             ;
-    logic                               MEM_i_mem_half_u             ;
-    logic                               MEM_i_system_halt            ;
-    logic                               MEM_i_op_valid               ;
-    logic                               MEM_i_ALU_valid              ;
+    wire                                FORWARD_flushEX    = `false  ;
+    wire                                FORWARD_stallME              ; 
+    wire                                MEM_i_commit                 ;
+    wire               [  31:0]         MEM_i_pc                     ;
+    wire               [  31:0]         MEM_i_inst                   ;
+    wire               [  31:0]         MEM_i_ALU_ALUout             ;
+    wire               [  31:0]         MEM_i_ALU_CSR_out            ;
+    wire               [   4:0]         MEM_i_rd                     ;
+    wire               [  31:0]         MEM_i_rs2_data               ;
+    wire               [   1:0]         MEM_i_csr_rd                 ;
+    wire                                MEM_i_write_gpr              ;
+    wire                                MEM_i_write_csr              ;
+    wire                                MEM_i_mem_to_reg             ;
+    wire                                MEM_i_write_mem              ;
+    wire                                MEM_i_mem_byte               ;
+    wire                                MEM_i_mem_half               ;
+    wire                                MEM_i_mem_word               ;
+    wire                                MEM_i_mem_byte_u             ;
+    wire                                MEM_i_mem_half_u             ;
+    wire                                MEM_i_system_halt            ;
+    wire                                MEM_i_op_valid               ;
+    wire                                MEM_i_ALU_valid              ;
 
 
     EXU_MEM_SEG_REG_ysyx23060136  EXU_MEM_SEG_REG_ysyx23060136_inst (
@@ -583,32 +583,32 @@ module CPU_TOP_ysyx23060136 (
     // ===========================================================================
     // MEM
 
-    logic              [  31:0]         WB_o_rs1_data                ;
-    logic              [  31:0]         WB_o_rs2_data                ;
-    logic              [  31:0]         WB_o_csr_rs_data             ;
+    wire               [  31:0]         WB_o_rs1_data                ;
+    wire               [  31:0]         WB_o_rs2_data                ;
+    wire               [  31:0]         WB_o_csr_rs_data             ;
 
   
-    logic                               MEM_o_commit              ;
-    logic              [  31:0]         MEM_o_pc                  ;
-    logic              [  31:0]         MEM_o_inst                ;
-    logic              [  31:0]         MEM_o_ALU_ALUout          ;
-    logic              [  31:0]         MEM_o_ALU_CSR_out         ;
-    logic              [  31:0]         MEM_o_rdata               ;
-    logic                               MEM_o_write_gpr           ;
-    logic                               MEM_o_write_csr           ;
-    logic                               MEM_o_mem_to_reg          ;
-    logic              [   4:0]         MEM_o_rd                  ;
-    logic              [   1:0]         MEM_o_csr_rd              ;
-    logic                               MEM_o_system_halt         ;
-    logic                               MEM_o_op_valid            ;
-    logic                               MEM_o_ALU_valid           ;
+    wire                                MEM_o_commit              ;
+    wire               [  31:0]         MEM_o_pc                  ;
+    wire               [  31:0]         MEM_o_inst                ;
+    wire               [  31:0]         MEM_o_ALU_ALUout          ;
+    wire               [  31:0]         MEM_o_ALU_CSR_out         ;
+    wire               [  31:0]         MEM_o_rdata               ;
+    wire                                MEM_o_write_gpr           ;
+    wire                                MEM_o_write_csr           ;
+    wire                                MEM_o_mem_to_reg          ;
+    wire               [   4:0]         MEM_o_rd                  ;
+    wire               [   1:0]         MEM_o_csr_rd              ;
+    wire                                MEM_o_system_halt         ;
+    wire                                MEM_o_op_valid            ;
+    wire                                MEM_o_ALU_valid           ;
 
-    logic              [  31:0]         FORWARD_rs1_data_EXU       ;
-    logic              [  31:0]         FORWARD_rs2_data_EXU       ;
-    logic              [  31:0]         FORWARD_csr_rs_data_EXU    ;
-    logic                               FORWARD_rs1_hazard_EXU     ;
-    logic                               FORWARD_rs2_hazard_EXU     ;
-    logic                               FORWARD_csr_rs_hazard_EXU  ;
+    wire               [  31:0]         FORWARD_rs1_data_EXU       ;
+    wire               [  31:0]         FORWARD_rs2_data_EXU       ;
+    wire               [  31:0]         FORWARD_csr_rs_data_EXU    ;
+    wire                                FORWARD_rs1_hazard_EXU     ;
+    wire                                FORWARD_rs2_hazard_EXU     ;
+    wire                                FORWARD_csr_rs_hazard_EXU  ;
 
                             
     MEM_TOP_ysyx23060136  MEM_TOP_ysyx23060136_inst (
@@ -689,22 +689,22 @@ module CPU_TOP_ysyx23060136 (
 
     // ===========================================================================
     // MEM -> WB
-    logic                               FORWARD_flushME              ;
-    logic                               FORWARD_stallWB    = `false  ; 
-    logic                               WB_i_commit                  ;
-    logic              [  31:0]         WB_i_pc                      ;
-    logic              [  31:0]         WB_i_inst                    ;
-    logic              [  31:0]         WB_i_ALU_ALUout              ;
-    logic              [  31:0]         WB_i_ALU_CSR_out             ;
-    logic              [  31:0]         WB_i_rdata                   ;
-    logic                               WB_i_mem_to_reg              ;
-    logic                               WB_i_system_halt             ;
-    logic                               WB_i_op_valid                ;
-    logic                               WB_i_ALU_valid               ;
-    logic                               WB_i_write_gpr               ;
-    logic                               WB_i_write_csr               ;
-    logic              [4 : 0]          WB_i_rd                      ;
-    logic              [1 : 0]          WB_i_csr_rd                  ;
+    wire                                FORWARD_flushME              ;
+    wire                                FORWARD_stallWB    = `false  ; 
+    wire                                WB_i_commit                  ;
+    wire               [  31:0]         WB_i_pc                      ;
+    wire               [  31:0]         WB_i_inst                    ;
+    wire               [  31:0]         WB_i_ALU_ALUout              ;
+    wire               [  31:0]         WB_i_ALU_CSR_out             ;
+    wire               [  31:0]         WB_i_rdata                   ;
+    wire                                WB_i_mem_to_reg              ;
+    wire                                WB_i_system_halt             ;
+    wire                                WB_i_op_valid                ;
+    wire                                WB_i_ALU_valid               ;
+    wire                                WB_i_write_gpr               ;
+    wire                                WB_i_write_csr               ;
+    wire               [4 : 0]          WB_i_rd                      ;
+    wire               [1 : 0]          WB_i_csr_rd                  ;
                         
 
     MEM_WB_SEG_REG_ysyx23060136  MEM_WB_SEG_REG_ysyx23060136_inst (
@@ -747,12 +747,12 @@ module CPU_TOP_ysyx23060136 (
                                
     // ===========================================================================
     // WBU
-    logic                              WB_o_commit        ;
-    logic             [  31:0]         WB_o_pc            ;
-    logic             [  31:0]         WB_o_inst          ;
-    logic                              WB_o_system_halt   ;
-    logic                              WB_o_op_valid      ;
-    logic                              WB_o_ALU_valid     ;
+    wire                               WB_o_commit        ;
+    wire              [  31:0]         WB_o_pc            ;
+    wire              [  31:0]         WB_o_inst          ;
+    wire                               WB_o_system_halt   ;
+    wire                               WB_o_op_valid      ;
+    wire                               WB_o_ALU_valid     ;
 
 
     WB_TOP_ysyx23060136  WB_TOP_ysyx23060136_inst (
