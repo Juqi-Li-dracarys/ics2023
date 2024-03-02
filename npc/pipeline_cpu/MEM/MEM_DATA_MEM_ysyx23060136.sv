@@ -15,9 +15,11 @@
 module MEM_DATA_MEM_ysyx23060136 (
     input                               clk                        ,
     input                               rst                        ,
+    input              [  31:0]         pc                         ,
 
     // read addr
     input              [  31:0]         MEM_raddr                  ,
+    // read enable
     input                               MEM_re                     ,
     output             [  31:0]         MEM_rdata                  ,
 
@@ -41,19 +43,19 @@ module MEM_DATA_MEM_ysyx23060136 (
 
     // ===========================================================================
     // read module signal
-    wire                                      m_axi_arvalid  =  r_state_idle & raddr_change           ;
-    wire         [31 : 0]                     m_axi_araddr   =  MEM_raddr                             ;
-    wire                                      m_axi_aready                                            ;
-    wire                                      m_axi_rready   =  r_state_busy                          ;
-    wire         [31 : 0]                     m_axi_rdata                                             ;
-    wire                                      m_axi_rvalid                                            ;
+    wire                                      m_axi_arvalid  =  r_state_idle & pc_change_r    ;
+    wire         [31 : 0]                     m_axi_araddr   =  MEM_raddr                     ;
+    wire                                      m_axi_aready                                    ;
+    wire                                      m_axi_rready   =  r_state_busy                  ;
+    wire         [31 : 0]                     m_axi_rdata                                     ;
+    wire                                      m_axi_rvalid                                    ;
     // we do not need response in reading
-    wire         [1 : 0]                      m_axi_rresp                                             ;
+    wire         [1 : 0]                      m_axi_rresp                                     ;
 
 
     // write module signal 
     wire         [  31:0]                     m_axi_awaddr   =  MEM_waddr                     ;
-    wire                                      m_axi_awvalid  =  MEM_write_mem  & w_state_idle ; 
+    wire                                      m_axi_awvalid  =  w_state_idle & pc_change_w    ; 
     wire                                      m_axi_awready                                   ;
     wire         [  31:0]                     m_axi_wdata    =  MEM_wdata                     ;
 
@@ -70,9 +72,14 @@ module MEM_DATA_MEM_ysyx23060136 (
 
     // ===========================================================================
 
-    // 暂存当前 raddr 值
-    logic        [31 : 0]      temp_raddr;
-    wire                       raddr_change = (temp_raddr != MEM_raddr) & MEM_re;
+    // 当存在读使能，且指令发生变化时，暂存当前 pc 值
+    logic        [31 : 0]      temp_pc_r;
+    wire                       pc_change_r    =  (temp_pc_r != pc) & MEM_re;
+    
+    // 当存在写使能，且指令发生变化时，暂存当前 pc 值
+    logic        [31 : 0]      temp_pc_w;
+    wire                       pc_change_w    =  (temp_pc_w != pc) & MEM_write_mem;
+
 
     // read mater state machine
     logic        [1 : 0]       r_state;
@@ -106,8 +113,8 @@ module MEM_DATA_MEM_ysyx23060136 (
                             ({32{MEM_mem_half  }}) & (half_rdata | {{16{half_rdata[15]}}, {16{1'b0}}}) ;
 
     // this signal is used for next phase of CPU 
-    assign  MEM_rvalid  =  r_state_idle & ~raddr_change;
-    assign  MEM_wready  =  w_state_idle & ~MEM_write_mem;
+    assign  MEM_rvalid  =  r_state_idle & ~pc_change_r;
+    assign  MEM_wready  =  w_state_idle & ~pc_change_w;
 
     // ===========================================================================
     always_ff @(posedge clk) begin : r_state_machine
@@ -119,12 +126,21 @@ module MEM_DATA_MEM_ysyx23060136 (
         end
     end
 
-    always_ff @(posedge clk) begin : temp_raddr_update
+    always_ff @(posedge clk) begin : temp_pc_r_update
         if(rst) begin
-            temp_raddr <= `PC_RST;
+            temp_pc_r <= `PC_RST;
         end
-        else if(raddr_change) begin
-            temp_raddr <= MEM_raddr;
+        else if(pc_change_r) begin
+            temp_pc_r <= pc;
+        end
+    end
+
+    always_ff @(posedge clk) begin : temp_pc_w_update
+        if(rst) begin
+            temp_pc_w <= `PC_RST;
+        end
+        else if(pc_change_w) begin
+            temp_pc_w <= pc;
         end
     end
 

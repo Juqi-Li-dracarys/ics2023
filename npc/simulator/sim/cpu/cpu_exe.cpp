@@ -89,7 +89,7 @@ static void trace_and_difftest(inst_log* _ptr, bool interrupt) {
   IFDEF(CONFIG_DIFFTEST, difftest_step(interrupt));
 }
 
-// 先跑一次，然后观察是否有指令完成执行
+// 先跑一次，然后一直运行，直到下一条指令到来
 void run_untile_commit() {
   while (true) {
     single_cycle();
@@ -102,21 +102,17 @@ void run_untile_commit() {
 void excute(uint64_t n) {
   while (n--) {
 
-    // 流水线还未完成复位,或者上一条指令尚未结束，继续跑
+    // 流水线还未完成复位,需要跑完第一条指令
+    // 以保证和 REF 同步
     if (!dut->inst_commit) {
       run_untile_commit();
     }
-    
-    // 记录即将执行的指令
+  
     log_ptr->pc = dut->pc_cur;
     log_ptr->inst = dut->inst;
-
-    // 一直运行，直到下一条指令到来
     run_untile_commit();
-
     // 保存下一条指令执行前的状态
     set_state();
-
     g_nr_guest_inst++;
     trace_and_difftest(log_ptr, false);
 
