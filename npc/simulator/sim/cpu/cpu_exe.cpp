@@ -103,9 +103,9 @@ void excute(uint64_t n) {
   while (n--) {
 
     // 流水线还未完成复位，继续跑
-    // if (!dut->inst_commit) {
-    //   run_untile_commit();
-    // }
+    if (!dut->inst_commit) {
+      run_untile_commit();
+    }
     
     // 记录即将执行的指令
     log_ptr->pc = dut->pc_cur;
