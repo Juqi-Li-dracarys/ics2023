@@ -54,8 +54,6 @@ typedef struct log{
 #ifdef CONFIG_ITRACE
   char buf [100];
 #endif
-  log(word_t pc_v, word_t inst_v) : pc(pc_v), inst(inst_v) {}
-  
 } inst_log;
 
 extern CPU_state sim_cpu;
