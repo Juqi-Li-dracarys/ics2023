@@ -41,7 +41,7 @@ gdb: $(VBIN) $(NEMUISO) $(IMG)
 	@gdb -s $(VBIN) --args $(VBIN) $(ARGS) $(IMG)
 
 wave: run
-	@gtkwave waveform.vcd
+	@gtkwave waveform.vcd $(WAVECONFIG)
 
 
 clean:
