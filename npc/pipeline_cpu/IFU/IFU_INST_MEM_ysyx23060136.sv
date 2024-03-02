@@ -24,8 +24,8 @@ module IFU_INST_MEM_ysyx23060136(
 
     //  sarm instance 
     // 当 pc 的值发生变化时，我们才考虑读取下一条指令
-    logic                                     m_axi_arvalid  =  r_state_idle & pc_change;
-    logic        [31 : 0]                     m_axi_araddr   =  IFU_o_pc                      ;
+    logic                                     m_axi_arvalid  =  r_state_idle & pc_change    ;
+    logic        [31 : 0]                     m_axi_araddr   =  IFU_o_pc                    ;
     logic                                     m_axi_aready                                  ;
     logic                                     m_axi_rready   =  r_state_busy                ;
     logic        [31 : 0]                     m_axi_rdata                                   ;
@@ -45,7 +45,7 @@ module IFU_INST_MEM_ysyx23060136(
 
     assign  IFU_o_inst        =  m_axi_rdata;
     // this signal is used for next phase of CPU 
-    assign  inst_valid      =  r_state_idle & ~pc_change;
+    assign  inst_valid        =  r_state_idle & ~pc_change;
 
     logic          r_state_idle     =  (r_state == `idle);
     logic          r_state_busy     =  (r_state == `busy);
