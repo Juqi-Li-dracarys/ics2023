@@ -67,7 +67,7 @@ module IFU_INST_MEM_ysyx23060136(
 
     always_ff @(posedge clk) begin : temp_pc_update
         if(rst) begin
-            temp_pc <= `PC_RST;
+            temp_pc <= 32'b0;
         end
         else if(pc_change) begin
             temp_pc <= IFU_o_pc;
