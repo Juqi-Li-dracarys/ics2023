@@ -29,7 +29,7 @@ static const char* regs[] = {
 };
 
 
-inst_log* log_ptr = new inst_log(0x80000000, 0x00000013);
+inst_log* log_ptr = new inst_log;
 
 // reg dpi-c
 uint32_t* cpu_gpr = NULL;
@@ -88,7 +88,6 @@ static void trace_and_difftest(inst_log* _ptr, bool interrupt) {
 #endif 
   IFDEF(CONFIG_DIFFTEST, difftest_step(interrupt));
 }
-
 
 // 先跑一次，然后观察是否有指令完成执行
 void run_untile_commit() {
