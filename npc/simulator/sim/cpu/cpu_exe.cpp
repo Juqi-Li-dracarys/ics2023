@@ -169,59 +169,12 @@ void cpu_exec(unsigned int n) {
 
 // execute n clock before the next instruction
 void cpu_exec_clk(unsigned int n) {
-
-  // 先记录当前正在执行的指令
-  log_ptr->pc = dut->pc_cur;
-  log_ptr->inst = dut->inst;
-
   while (n-- > 0) {
     single_cycle();
     // 如果执行结束，则需要提交并完成 diff-test,终止程序
     if(dut->inst_commit) {
-      // 保存下一条指令执行前的状态
-      set_state();
-      g_nr_guest_inst++;
-      trace_and_difftest(log_ptr, false);
-
-      IFDEF(CONFIG_DEVICE, device_update());
-
-      // 对于有异常的指令，会在下一次执行前终止程序
-      if (signal_detect()) {
-        // save the end state
-        sim_state.halt_pc = dut->pc_cur;
-        sim_state.halt_ret = cpu_gpr[10];
-        log_ptr->pc = dut->pc_cur;
-        log_ptr->inst = dut->inst;
-        g_nr_guest_inst++;
-        // 异常信号，直接跳过检查
-        trace_and_difftest(log_ptr, true);
-        break;
-      }
-      switch (sim_state.state) {
-        case SIM_RUNNING: sim_state.state = SIM_STOP; break;
-        case SIM_END: case SIM_ABORT:
-          Log("NPC simulator: %s at pc = " FMT_WORD,
-            (sim_state.state == SIM_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
-              (sim_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
-                ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
-            sim_state.halt_pc);
-          // fall through
-        case SIM_QUIT: statistic();
-      }
       break;
     }
-  }
-
-  switch (sim_state.state) {
-    case SIM_RUNNING: sim_state.state = SIM_STOP; break;
-    case SIM_END: case SIM_ABORT:
-      Log("NPC simulator: %s at pc = " FMT_WORD,
-        (sim_state.state == SIM_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
-          (sim_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
-            ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
-        sim_state.halt_pc);
-      // fall through
-    case SIM_QUIT: statistic();
   }
 }
 
