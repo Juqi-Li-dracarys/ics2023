@@ -36,7 +36,7 @@ int main(int argc, char** argv, char** env) {
     dut->trace(m_trace, 5);
     m_trace->open("waveform.vcd");
     // reset the whole circuit
-    reset(1);
+    reset(5);
     // start running
     sdb_mainloop();
     // close wave trace
