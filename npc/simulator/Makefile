@@ -31,7 +31,6 @@ VSRC 				= $(shell find $(VSRC_DIR) -name "*.sv" -o -name "*.v")
 VBIN 				= $(OBJ_DIR)/$(addprefix V, $(basename $(notdir $(VERILOG_TOP))))
 REWRITE 			= $(abspath $(WORK_DIR)/script/rewrite.mk)
 
-WAVECONFIG          = $(WORK_DIR)/waveconfig.gtkw
 
 COLOR_RED   		= \033[1;31m
 COLOR_GREEN 		= \033[1;32m
