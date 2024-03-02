@@ -236,10 +236,10 @@ module IDU_DECODE_ysyx23060136(
 
     // ===========================================================================
     // ALU calculating type
-    assign ALU_add       = rv32_add  | rv32_addi  | rv32_auipc;
+    assign ALU_add       = rv32_add  | rv32_addi  | rv32_auipc | rv32_load | rv32_store | rv32_jal  | rv32_jalr;
     assign ALU_sub       = rv32_sub;
-    assign ALU_slt       = rv32_slt  | rv32_slti  | rv32_beq  | rv32_bne | rv32_blt | rv32_bge;
-    assign ALU_sltu      = rv32_sltu | rv32_sltiu | rv32_bltu | rv32_bgeu;
+    assign ALU_slt       = rv32_slt  | rv32_slti  | rv32_beq   | rv32_bne  | rv32_blt   | rv32_bge;
+    assign ALU_sltu      = rv32_sltu | rv32_sltiu | rv32_bltu  | rv32_bgeu;
     assign ALU_xor       = rv32_xor  | rv32_xori;
     assign ALU_sll       = rv32_sll  | rv32_slli;
     assign ALU_srl       = rv32_srl  | rv32_srli;
@@ -250,7 +250,7 @@ module IDU_DECODE_ysyx23060136(
 
     // ===========================================================================
     // ALU input
-    assign ALU_i1_pc     = rv32_auipc | rv32_jal    | rv32_jal;
+    assign ALU_i1_pc     = rv32_auipc | rv32_jalr | rv32_jal;
     assign ALU_i1_rs1    = ~ALU_i1_pc;
 
     assign ALU_i2_rs2    = rv32_op_r  | rv32_branch;
