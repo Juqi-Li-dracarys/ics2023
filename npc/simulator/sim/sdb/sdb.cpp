@@ -252,17 +252,17 @@ static int cmd_b(char *args) {
   return 0;
 }
 
-// TASK9: Excute the program in n clocks before the commit of next instruction
+// TASK9: Excute the program in n clocks 
 static int cmd_clk(char *args) {
   uint64_t exe_times = 1;
   if (args == NULL) {
     /* no argument given */
-     printf("Excute the program in n clocks before the commit of next instruction.\n");
+     printf("Excute the program in %d clocks .\n", exe_times);
      cpu_exec_clk(exe_times); // Excute once
   }
   else {
     sscanf(args, "%lu", &exe_times);
-    printf("Excute the program in n clocks before the commit of next instruction.\n");
+    printf("Excute the program in %d clocks .\n", exe_times);
     cpu_exec_clk(exe_times);
   }
   return 0;
@@ -291,7 +291,7 @@ static struct {
   { "w", "Set up watching point", cmd_w },
   { "d", "Delete watching point or break point", cmd_d },
   { "b", "Set PC break point", cmd_b },
-  { "clk", "Excute the program in n clocks before the commit of next instruction", cmd_clk }
+  { "clk", "Excute the program in n clocks", cmd_clk }
 };
 
 #define NR_CMD ARRLEN(cmd_table)
