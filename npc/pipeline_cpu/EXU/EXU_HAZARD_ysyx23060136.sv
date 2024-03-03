@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-22 20:47:51 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-23 01:02:26
+ * @Last Modified time: 2024-03-03 21:58:21
  */
 
 
@@ -48,8 +48,10 @@ module EXU_HAZARD_ysyx23060136(
     assign EXU_HAZARD_rs2_data    = FORWARD_rs2_hazard_EXU    ? FORWARD_rs2_data_EXU    :    EXU_rs2_data;
     assign EXU_HAZARD_csr_rs_data = FORWARD_csr_rs_hazard_EXU ? FORWARD_csr_rs_data_EXU :    EXU_csr_rs_data;
 
+    
     assign EXU_ALU_da             = ({32{EXU_ALU_i1_rs1}} & (EXU_HAZARD_rs1_data))    |
                                     ({32{EXU_ALU_i1_pc}}  & (EXU_pc))                 ;
+                                    
     assign EXU_ALU_db             = ({32{EXU_ALU_i2_rs2}} & (EXU_HAZARD_rs2_data))    |
                                     ({32{EXU_ALU_i2_imm}} & (EXU_imm))                |
                                     ({32{EXU_ALU_i2_4}}   & (32'h4))                  |
