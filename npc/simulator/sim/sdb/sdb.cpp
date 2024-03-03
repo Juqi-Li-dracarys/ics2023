@@ -257,12 +257,12 @@ static int cmd_clk(char *args) {
   uint64_t exe_times = 1;
   if (args == NULL) {
     /* no argument given */
-     printf("Excute the program in %d clocks .\n", exe_times);
+     printf("Excute the program in %lu clocks .\n", exe_times);
      cpu_exec_clk(exe_times); // Excute once
   }
   else {
     sscanf(args, "%lu", &exe_times);
-    printf("Excute the program in %d clocks .\n", exe_times);
+    printf("Excute the program in %lu clocks .\n", exe_times);
     cpu_exec_clk(exe_times);
   }
   return 0;
