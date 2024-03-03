@@ -670,7 +670,7 @@ module CPU_TOP_ysyx23060136 (
                               .FORWARD_stallIF                   (FORWARD_stallIF           ),
                               .FORWARD_stallID                   (FORWARD_stallID           ),
                               .FORWARD_stallME                   (FORWARD_stallME           ),
-                              .FORWARD_flushME                   (FORWARD_flushME           ),
+                              .FORWARD_stallWB                   (FORWARD_stallWB           ),
                               .FORWARD_stallEX                   (FORWARD_stallEX           ),
                               .FORWARD_rs1_data_EXU              (FORWARD_rs1_data_EXU      ),
                               .FORWARD_rs2_data_EXU              (FORWARD_rs2_data_EXU      ),
@@ -689,8 +689,8 @@ module CPU_TOP_ysyx23060136 (
 
     // ===========================================================================
     // MEM -> WB
-    wire                                FORWARD_flushME              ;
-    wire                                FORWARD_stallWB    = `false  ; 
+    wire                                FORWARD_flushME    = `false  ;
+    wire                                FORWARD_stallWB              ;
     wire                                WB_i_commit                  ;
     wire               [  31:0]         WB_i_pc                      ;
     wire               [  31:0]         WB_i_inst                    ;
