@@ -8,8 +8,6 @@
 
 include $(NPC_HOME)/../Makefile
 
-CPU_ARCH            ?= naive_cpu
-
 WORK_DIR            = $(shell pwd)
 
 OBJ_DIR   			= $(abspath $(WORK_DIR)/build)
