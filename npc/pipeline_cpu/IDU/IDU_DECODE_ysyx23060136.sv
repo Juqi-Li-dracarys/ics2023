@@ -270,8 +270,8 @@ module IDU_DECODE_ysyx23060136(
     // ===========================================================================
     // jump signal
     assign jump          = rv32_jal  | rv32_jalr | op_B_type | rv32_ecall | rv32_mret;
-    assign pc_plus_imm   = rv32_jal;
-    assign rs1_plus_imm  = op_B_type | rv32_jalr;
+    assign pc_plus_imm   = rv32_jal  | op_B_type;
+    assign rs1_plus_imm  = rv32_jalr;
     assign csr_plus_imm  = rv32_mret | rv32_ecall;
     // for branch
     assign cmp_eq        = rv32_beq;
