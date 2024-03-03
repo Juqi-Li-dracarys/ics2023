@@ -8,13 +8,13 @@
 
 include $(NPC_HOME)/../Makefile
 
-CPU_TYPE            ?= naive_cpu
+CPU_ARCH            ?= naive_cpu
 
 WORK_DIR            = $(shell pwd)
 
 OBJ_DIR   			= $(abspath $(WORK_DIR)/build)
 CSRC_DIR 			= $(abspath $(WORK_DIR)/sim)
-VSRC_DIR 			= $(abspath $(NPC_HOME)/$(CPU_TYPE))
+VSRC_DIR 			= $(abspath $(NPC_HOME)/$(CPU_ARCH))
 NEMU_DIR 			= $(abspath $(WORK_DIR)/nemu)
 # 查找所有子目录
 VSRC_INC            = $(foreach dir,$(shell find $(VSRC_DIR) -type d),-y $(dir))
