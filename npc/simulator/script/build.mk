@@ -19,8 +19,8 @@ $(VBIN): $(CSRC) $(VSRC)
 	@echo "$(COLOR_YELLOW)[GENERATE]$(COLOR_NONE) Creating System Verilog Model"
 	@$(VERILATOR) $(VFLAGS) $(VSRC) $(CSRC) $(CINC_PATH)
 	@echo "$(COLOR_YELLOW)[COMPILE]$(COLOR_NONE) Compiling C++ files"
-	@echo $(ISA)
 	@$(MAKE) $(SILENT) -C $(OBJ_DIR) -f $(REWRITE)
+	@echo $(CPU_ARCH)
 
 $(NEMUISO):
 	@echo "$(COLOR_YELLOW)[Make DIFF]$(COLOR_NONE) $(notdir $(NEMU_DIR))/build/riscv32-nemu-interpreter-so"
