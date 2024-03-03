@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-28 18:04:31 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-29 00:08:48
+ * @Last Modified time: 2024-03-03 23:27:14
  */
 
 
@@ -74,36 +74,44 @@
     output                              FORWARD_csr_rs_hazard_SEG                
  );
    
+   // 判断是否是写寄存器 X0
+   wire       WB_rd_x0               =  (WB_o_rd    == 'b0);
+   wire       MEM_rd_x0              =  (MEM_i_rd   == 'b0);
+   
     // 三级消费者数据冒险
-    // 此时 WB 还未将数据写入寄存器，但读寄存器操作需要该数据(WM->IDU)
+    // 此时 WB 还未将数据写入寄存器，
+    // 但读寄存器操作需要该数据(WM->IDU)
     // 解决方法为数据前传到 ID_EX 段寄存器
-    wire     third_stage_hazard_rs1  =  (IDU_o_rs1 == WB_o_rd)        & WB_o_write_gpr;
-    wire     third_stage_hazard_rs2  =  (IDU_o_rs2 == WB_o_rd)        & WB_o_write_gpr;
-    wire     third_stage_hazard_csr  =  (IDU_o_csr_rs == WB_o_csr_rd) & WB_o_write_csr;
+    wire     third_stage_hazard_rs1  =  (IDU_o_rs1 == WB_o_rd)           & WB_o_write_gpr & ~WB_rd_x0;
+    wire     third_stage_hazard_rs2  =  (IDU_o_rs2 == WB_o_rd)           & WB_o_write_gpr & ~WB_rd_x0;
+    wire     third_stage_hazard_csr  =  (IDU_o_csr_rs == WB_o_csr_rd)    & WB_o_write_csr            ;
 
 
     // 二级消费者数据冒险
-    // 此时 WB 还未写入寄存器，但是 EXU 需要该寄存器数据来计算
+    // 此时 WB 还未写入寄存器
+    // 但是 EXU 需要该寄存器数据来计算
     // 解决方法为数据前传到 HAZARD
-    wire     second_stage_hazard_rs1 =  (EXU_o_rs1    == WB_o_rd)        & WB_o_write_gpr;  
-    wire     second_stage_hazard_rs2 =  (EXU_o_rs2    == WB_o_rd)        & WB_o_write_gpr; 
-    wire     second_stage_hazard_csr =  (EXU_o_csr_rs == WB_o_csr_rd)    & WB_o_write_csr;
+    wire     second_stage_hazard_rs1 =  (EXU_o_rs1    == WB_o_rd)        & WB_o_write_gpr & ~WB_rd_x0;  
+    wire     second_stage_hazard_rs2 =  (EXU_o_rs2    == WB_o_rd)        & WB_o_write_gpr & ~WB_rd_x0; 
+    wire     second_stage_hazard_csr =  (EXU_o_csr_rs == WB_o_csr_rd)    & WB_o_write_csr            ;
 
 
     // 一级消费者数据冒险
     //  MEM 阶段保存的 ALU_out 需要被前一级使用
-    // 我们的操作数据前传 EXU
-    wire     first_stage_hazard_rs1  =  (EXU_o_rs1    == MEM_i_rd)        & MEM_i_write_gpr  &  ~MEM_i_mem_to_reg;
-    wire     first_stage_hazard_rs2  =  (EXU_o_rs2    == MEM_i_rd)        & MEM_i_write_gpr  &  ~MEM_i_mem_to_reg;
-    wire     first_stage_hazard_csr  =  (EXU_o_csr_rs == MEM_i_csr_rd)    & MEM_i_write_csr  &  ~MEM_i_mem_to_reg;
+    // 该数据将在之后的 WB 写入寄存器
+    // 解决方法为我们将数据前传到 EXU
+    wire     first_stage_hazard_rs1  =  (EXU_o_rs1    == MEM_i_rd)        & MEM_i_write_gpr  &  ~MEM_i_mem_to_reg & ~MEM_rd_x0;
+    wire     first_stage_hazard_rs2  =  (EXU_o_rs2    == MEM_i_rd)        & MEM_i_write_gpr  &  ~MEM_i_mem_to_reg & ~MEM_rd_x0;
+    wire     first_stage_hazard_csr  =  (EXU_o_csr_rs == MEM_i_csr_rd)    & MEM_i_write_csr  &  ~MEM_i_mem_to_reg             ;
 
 
     // load use 数据冒险
     // SRAM 的数据需要被 EXU_rs_data 使用
+    // 该数据将在之后的 WB 写入寄存器
     // 考虑到 MEM 的读写自带数据延迟，我们的操作只是将数据前传
-    wire     load_use_hazard_rs1    =  (EXU_o_rs1    == MEM_i_rd)        & MEM_i_write_gpr  &  MEM_i_mem_to_reg;
-    wire     load_use_hazard_rs2    =  (EXU_o_rs2    == MEM_i_rd)        & MEM_i_write_gpr  &  MEM_i_mem_to_reg;
-    wire     load_use_hazard_csr    =  (EXU_o_csr_rs == MEM_i_csr_rd)    & MEM_i_write_csr  &  MEM_i_mem_to_reg;
+    wire     load_use_hazard_rs1    =  (EXU_o_rs1    == MEM_i_rd)         & MEM_i_write_gpr   &  MEM_i_mem_to_reg & ~MEM_rd_x0;
+    wire     load_use_hazard_rs2    =  (EXU_o_rs2    == MEM_i_rd)         & MEM_i_write_gpr   &  MEM_i_mem_to_reg & ~MEM_rd_x0;
+    wire     load_use_hazard_csr    =  (EXU_o_csr_rs == MEM_i_csr_rd)     & MEM_i_write_csr   &  MEM_i_mem_to_reg             ;
 
     
     // 流水段上所有的读写操作已经完成
