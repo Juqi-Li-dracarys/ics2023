@@ -42,7 +42,8 @@ static int cmd_c(char *args) {
 
 static int cmd_q(char *args) {
   // Change the flag of nemu_state
-  sim_state.state = SIM_QUIT;
+  if(sim_state.state != SIM_ABORT && sim_state.state != SIM_END)
+    sim_state.state = SIM_QUIT;
 #ifdef CONFIG_ITRACE
   destroy_ring_buffer(ring_head);
 #endif
