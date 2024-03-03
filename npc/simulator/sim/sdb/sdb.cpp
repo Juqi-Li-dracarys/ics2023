@@ -269,7 +269,6 @@ static int cmd_clk(char *args) {
 }
 
 
-
 static int cmd_help(char *args);
 
 // The structure decide the next action in the gdb_loop, including the pointer of function
