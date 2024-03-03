@@ -163,7 +163,7 @@ void cpu_exec(unsigned int n) {
   }
 }
 
-// execute n clock before the next instruction
+// execute n clock
 void cpu_exec_clk(unsigned int n) {
   while (n-- > 0) {
     single_cycle();
