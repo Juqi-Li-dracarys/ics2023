@@ -6,7 +6,7 @@
 #  */
 
 # Makefile for compiling C++ files
-# 我们修改一部分编译选项，使其能够和 NEMU 类似的功能
+# 我们修改一部分编译选项，使其能够和 NEMU 实现类似的功能
 
 default: VCPU_TOP_ysyx23060136
 
