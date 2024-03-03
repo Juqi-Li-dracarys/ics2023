@@ -14,11 +14,11 @@ module EXU_ALU_SHIFT_ysyx23060136 #(
         parameter shamt_width = 3'd5
     )
     (
-        input        [data_width-1 : 0]    din,    // The data designed to be shifted
-        input        [shamt_width-1 : 0]   shamt,  // The bit of this shifting
-        input                              LR,     // when LR=1, left_shift, else right_shift
-        input                              AL,     // when AL=1, algorithm_shift, else logic_shift
-        output logic [data_width-1 : 0]    dout    // Output data
+        input        [data_width-1 : 0]    din   ,     // The data designed to be shifted
+        input        [shamt_width-1 : 0]   shamt ,     // The bit of this shifting
+        input                              LR    ,     // when LR=1, left_shift, else right_shift
+        input                              AL    ,     // when AL=1, algorithm_shift, else logic_shift
+        output logic [data_width-1 : 0]    dout        // Output data
     );
 
     // One interpretation of algorithm shift

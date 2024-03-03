@@ -12,25 +12,25 @@
 // ALU of the CPU
 // ===========================================================================
 module EXU_ALU_ysyx23060136 (
-        input       [31 : 0]    EXU_ALU_da,       // input signal A
-        input       [31 : 0]    EXU_ALU_db,       // input signal B
+        input              [  31:0]         EXU_ALU_da                 ,// input signal A
+        input              [  31:0]         EXU_ALU_db                 ,// input signal B
 
-        input                   EXU_ALU_add,
-        input                   EXU_ALU_sub,
-        input                   EXU_ALU_slt,
-        input                   EXU_ALU_sltu,
-        input                   EXU_ALU_or,
-        input                   EXU_ALU_and,
-        input                   EXU_ALU_xor,
-        input                   EXU_ALU_sll,
-        input                   EXU_ALU_srl,
-        input                   EXU_ALU_sra,
-        input                   EXU_ALU_explicit,
+        input                               EXU_ALU_add                ,
+        input                               EXU_ALU_sub                ,
+        input                               EXU_ALU_slt                ,
+        input                               EXU_ALU_sltu               ,
+        input                               EXU_ALU_or                 ,
+        input                               EXU_ALU_and                ,
+        input                               EXU_ALU_xor                ,
+        input                               EXU_ALU_sll                ,
+        input                               EXU_ALU_srl                ,
+        input                               EXU_ALU_sra                ,
+        input                               EXU_ALU_explicit           ,
 
-        output                  EXU_ALU_Less,
-        output                  EXU_ALU_Zero,
-        output     [31 : 0]     EXU_ALU_ALUout,   // output of the result
-        output                  EXU_ALU_valid
+        output                              EXU_ALU_Less               ,
+        output                              EXU_ALU_Zero               ,
+        output             [  31:0]         EXU_ALU_ALUout             ,// output of the result
+        output                              EXU_ALU_valid               
     );
 
 
