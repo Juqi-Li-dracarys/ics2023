@@ -57,6 +57,8 @@ module IFU_INST_MEM_ysyx23060136(
     wire         [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((m_axi_aready & m_axi_arvalid) ? `busy : `idle)) |
                                                  ({2{r_state_busy}} & ((m_axi_rvalid & m_axi_rready)  ? `idle : `busy)) ;
 
+    // new pc 在被拉高后，会阻塞在第一阶段，直到握手完成
+    // 第二阶段清0
     wire                       next_new_pc    =  (r_state_idle &  (new_pc ? new_pc : pc_change)) | 
                                                  (r_state_busy &  `false                       ) ;
 
