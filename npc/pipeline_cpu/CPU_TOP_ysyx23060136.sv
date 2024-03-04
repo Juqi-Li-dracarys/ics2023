@@ -529,6 +529,8 @@ module CPU_TOP_ysyx23060136 (
     wire                                MEM_i_system_halt            ;
     wire                                MEM_i_op_valid               ;
     wire                                MEM_i_ALU_valid              ;
+    wire                                MEM_i_raddr_change           ;  
+    wire                                MEM_i_waddr_change           ;
 
 
     EXU_MEM_SEG_REG_ysyx23060136  EXU_MEM_SEG_REG_ysyx23060136_inst (
@@ -576,7 +578,9 @@ module CPU_TOP_ysyx23060136 (
                                       .MEM_i_mem_half_u                  (MEM_i_mem_half_u          ),
                                       .MEM_i_system_halt                 (MEM_i_system_halt         ),
                                       .MEM_i_op_valid                    (MEM_i_op_valid            ),
-                                      .MEM_i_ALU_valid                   (MEM_i_ALU_valid           )
+                                      .MEM_i_ALU_valid                   (MEM_i_ALU_valid           ),
+                                      .MEM_i_raddr_change                (MEM_i_raddr_change        ),
+                                      .MEM_i_waddr_change                (MEM_i_waddr_change        )       
                                   );
 
 
@@ -651,6 +655,8 @@ module CPU_TOP_ysyx23060136 (
                               .MEM_i_system_halt                 (MEM_i_system_halt         ),
                               .MEM_i_op_valid                    (MEM_i_op_valid            ),
                               .MEM_i_ALU_valid                   (MEM_i_ALU_valid           ),
+                              .MEM_i_raddr_change                (MEM_i_raddr_change        ),
+                              .MEM_i_waddr_change                (MEM_i_waddr_change        ),
 
                               .MEM_o_commit                      (MEM_o_commit              ),
                               .MEM_o_pc                          (MEM_o_pc                  ),

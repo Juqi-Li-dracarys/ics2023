@@ -33,6 +33,10 @@ module MEM_TOP_ysyx23060136 (
         input             [31 : 0]          WB_o_rs1_data                ,
         input             [31 : 0]          WB_o_rs2_data                ,
         input             [31 : 0]          WB_o_csr_rs_data             ,
+
+        // 更新读写逻辑的脉冲信号
+        input                               MEM_i_raddr_change           ,  
+        input                               MEM_i_waddr_change           ,
         // ===========================================================================
         // general signal
         input                               MEM_i_commit                 ,
@@ -111,7 +115,6 @@ module MEM_TOP_ysyx23060136 (
 
     wire       [  31:0]            MEM_raddr          =  MEM_i_ALU_ALUout;
     // read enable
-    wire                           MEM_re             =  MEM_i_mem_to_reg;
     wire       [  31:0]            MEM_waddr          =  MEM_i_ALU_ALUout;
     wire       [  31:0]            MEM_wdata          =  MEM_i_rs2_data;
 
@@ -140,7 +143,6 @@ module MEM_TOP_ysyx23060136 (
                                    .rst                               (rst                       ),
                                    .pc                                (MEM_i_pc                  ),
                                    .MEM_raddr                         (MEM_raddr                 ),
-                                   .MEM_re                            (MEM_re                    ),
                                    .MEM_rdata                         (MEM_o_rdata               ),
                                    .MEM_waddr                         (MEM_waddr                 ),
                                    .MEM_wdata                         (MEM_wdata                 ),
@@ -151,7 +153,9 @@ module MEM_TOP_ysyx23060136 (
                                    .MEM_mem_byte_u                    (MEM_i_mem_byte_u          ),
                                    .MEM_mem_half_u                    (MEM_i_mem_half_u          ),
                                    .MEM_rvalid                        (MEM_rvalid                ),
-                                   .MEM_wready                        (MEM_wready                )
+                                   .MEM_wready                        (MEM_wready                ),
+                                   .MEM_i_raddr_change                (MEM_i_raddr_change        ),
+                                   .MEM_i_waddr_change                (MEM_i_waddr_change        )
                                );
 
     MEM_FORWARD_ysyx23060136  MEM_FORWARD_ysyx23060136_inst (
