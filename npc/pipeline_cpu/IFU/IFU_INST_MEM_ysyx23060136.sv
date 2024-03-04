@@ -57,6 +57,10 @@ module IFU_INST_MEM_ysyx23060136(
     wire         [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((m_axi_aready & m_axi_arvalid) ? `busy : `idle)) |
                                                  ({2{r_state_busy}} & ((m_axi_rvalid & m_axi_rready)  ? `idle : `busy)) ;
 
+    wire                       next_new_pc    =  (r_state_idle &  (new_pc ? new_pc : pc_change)) | 
+                                                 (r_state_busy &  `false                       ) ;
+
+
     always_ff @(posedge clk) begin : state_machine
       if(rst) begin
           r_state <=  `idle;
@@ -71,7 +75,7 @@ module IFU_INST_MEM_ysyx23060136(
             new_pc  <= `false;
         end
         else begin
-            new_pc  <=  r_state_busy ? `false : pc_change;
+            new_pc  <=  next_new_pc;
         end
     end
   
