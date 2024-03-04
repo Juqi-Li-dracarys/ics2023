@@ -74,8 +74,12 @@ module EXU_MEM_SEG_REG_ysyx23060136 (
         // system
         output   logic                      MEM_i_system_halt            ,
         output   logic                      MEM_i_op_valid               ,
-        output   logic                      MEM_i_ALU_valid 
+        output   logic                      MEM_i_ALU_valid              ,
 
+        // MEM addr valid signal, 与前面的 PC 更新逻辑类似
+        // 当需要读/写MEM时，会给一个短脉冲
+        output   logic                      MEM_i_raddr_change           ,  
+        output   logic                      MEM_i_waddr_change                    
     );
 
     always_ff @(posedge clk) begin : update_data
@@ -130,6 +134,24 @@ module EXU_MEM_SEG_REG_ysyx23060136 (
             MEM_i_system_halt      <=  EXU_o_system_halt;                                  
             MEM_i_op_valid         <=  EXU_o_op_valid;                               
             MEM_i_ALU_valid        <=  EXU_o_ALU_valid;   
+        end
+    end
+
+    always_ff @(posedge clk) begin : update_MEM_i_raddr_change
+        if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
+            MEM_i_raddr_change <= `false;
+        end
+        else begin
+            MEM_i_raddr_change <= (~FORWARD_stallME & EXU_o_mem_to_reg);
+        end
+    end
+
+    always_ff @(posedge clk) begin : update_MEM_i_waddr_change
+        if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
+            MEM_i_waddr_change <= `false;
+        end
+        else begin
+            MEM_i_waddr_change <= (~FORWARD_stallME & EXU_o_write_mem);
         end
     end
     
