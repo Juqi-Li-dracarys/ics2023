@@ -31,16 +31,18 @@ module IFU_TOP_ysyx23060136(
         output                              IFU_o_valid
     );
 
-    // current inst is valid(from mem)
-    logic          inst_valid                ;
+    // current inst/pc is valid
+    wire           pc_change                  ;
+    wire           inst_valid                ;
     assign         IFU_o_valid = inst_valid  ;
 
     
     IFU_INST_MEM_ysyx23060136  IFU_INST_MEM_ysyx23060136_inst (
                                    .clk                               (clk                       ),
                                    .rst                               (rst                       ),
-                                   .IFU_o_pc                          (IFU_o_pc                 ),
+                                   .IFU_o_pc                          (IFU_o_pc                  ),
                                    .IFU_o_inst                        (IFU_o_inst                ),
+                                   .pc_change                         (pc_change                 ),
                                    .inst_valid                        (inst_valid                )
                                );
 
@@ -51,7 +53,8 @@ module IFU_TOP_ysyx23060136(
                                    .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
                                    .FORWARD_stallIF                   (FORWARD_stallIF           ),
                                    .BRANCH_branch_target              (BRANCH_branch_target      ),
-                                   .IFU_o_pc                          (IFU_o_pc                  )
+                                   .IFU_o_pc                          (IFU_o_pc                  ),
+                                   .pc_change                         (pc_change                 )
                                );
 
 endmodule
