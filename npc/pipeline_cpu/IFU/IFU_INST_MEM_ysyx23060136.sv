@@ -17,6 +17,7 @@ module IFU_INST_MEM_ysyx23060136(
       input                               clk                        ,
       input                               rst                        ,
       input              [  31:0]         IFU_o_pc                   ,
+      input                               pc_change                  ,
       output             [  31:0]         IFU_o_inst                 ,
       output                              inst_valid             
     );
@@ -24,7 +25,7 @@ module IFU_INST_MEM_ysyx23060136(
 
     //  sarm instance 
     // 当 pc 的值发生变化时，我们才考虑读取下一条指令
-    wire                                      m_axi_arvalid  =  r_state_idle & pc_change    ;
+    wire                                      m_axi_arvalid  =  r_state_idle & new_pc       ;
     wire         [31 : 0]                     m_axi_araddr   =  IFU_o_pc                    ;
     wire                                      m_axi_aready                                  ;
     wire                                      m_axi_rready   =  r_state_busy                ;
@@ -39,13 +40,13 @@ module IFU_INST_MEM_ysyx23060136(
     wire         [1 : 0]                      m_axi_bresp                ;
     wire                                      m_axi_bvalid               ;
 
-    // 暂存当前 PC 值，当 PC 变化时，我们将新值视为有效值
-    logic        [31 : 0]      temp_pc;
-    wire                       pc_change = (temp_pc != IFU_o_pc);
+    // 当 PC 变化时，pc_change 暂时拉高，下一个周期之后，pc_change 会保存在 new_pc 中
+    // 当状态机处于 busy 时， new_pc 会被自动清0
+    logic   new_pc ;  
 
     assign  IFU_o_inst        =  m_axi_rdata;
     // this signal is used for next phase of CPU 
-    assign  inst_valid        =  r_state_idle & ~pc_change;
+    assign  inst_valid        =  r_state_idle & ~pc_change & ~new_pc;
 
     wire          r_state_idle     =  (r_state == `idle);
     wire          r_state_busy     =  (r_state == `busy);
@@ -65,12 +66,12 @@ module IFU_INST_MEM_ysyx23060136(
       end
     end
 
-    always_ff @(posedge clk) begin : temp_pc_update
+    always_ff @(posedge clk) begin : new_pc_update
         if(rst) begin
-            temp_pc <= 32'b0;
+            new_pc  <= `false;
         end
-        else if(pc_change) begin
-            temp_pc <= IFU_o_pc;
+        else begin
+            new_pc  <=  r_state_busy ? `false : pc_change;
         end
     end
   
