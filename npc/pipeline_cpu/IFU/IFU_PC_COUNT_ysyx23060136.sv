@@ -17,7 +17,7 @@ module IFU_PC_COUNT_ysyx23060136 (
     input                               FORWARD_stallIF            ,
     input              [31 : 0]         BRANCH_branch_target       ,
     output      logic  [31 : 0]         IFU_o_pc                   ,
-    // for inst memory
+    // 当 PC 更新时会提供一个短脉冲
     output      logic                   pc_change                                   
 );
 
