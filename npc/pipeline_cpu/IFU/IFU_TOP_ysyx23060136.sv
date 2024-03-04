@@ -33,8 +33,8 @@ module IFU_TOP_ysyx23060136(
 
     // current inst/pc is valid
     wire           pc_change                  ;
-    wire           inst_valid                ;
-    assign         IFU_o_valid = inst_valid  ;
+    wire           inst_valid                 ;
+    assign         IFU_o_valid = inst_valid   ;
 
     
     IFU_INST_MEM_ysyx23060136  IFU_INST_MEM_ysyx23060136_inst (
