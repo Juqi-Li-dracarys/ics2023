@@ -66,8 +66,8 @@
 // # define CONFIG_MTRACE_COND 1
 // # define MTRACE_COND 1
 
-// watch/break point
-#define CONFIG_WBCHECK 1
+// // watch/break point
+// #define CONFIG_WBCHECK 1
 
 // wave record
 #define WAVE_RECORD 1
