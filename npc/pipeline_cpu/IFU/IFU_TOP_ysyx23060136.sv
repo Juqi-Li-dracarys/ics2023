@@ -28,7 +28,15 @@ module IFU_TOP_ysyx23060136(
         output             [  31:0]         IFU_o_pc                   ,
         // output IFU_valid for FORWARD unit
         // 当该信号为 true
-        output                              IFU_o_valid
+        output                              IFU_o_valid                ,
+
+        input              [  31:0]         ARBITER_IFU_inst           ,
+        input                               ARBITER_IFU_inst_valid     ,
+        input                               ARBITER_IFU_pc_ready       ,
+  
+        output             [  31:0]         ARBITER_IFU_pc             ,
+        output                              ARBITER_IFU_pc_valid       ,
+        output                              ARBITER_IFU_inst_ready     
     );
 
     // current inst/pc is valid
@@ -43,7 +51,16 @@ module IFU_TOP_ysyx23060136(
                                    .IFU_o_pc                          (IFU_o_pc                  ),
                                    .IFU_o_inst                        (IFU_o_inst                ),
                                    .pc_change                         (pc_change                 ),
-                                   .inst_valid                        (inst_valid                )
+                                   .inst_valid                        (inst_valid                ),
+
+                                            // arbiter interface 握手信号
+                                   .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
+                                   .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
+                                   .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
+
+                                   .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
+                                   .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
+                                   .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ) 
                                );
 
 

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-29 08:39:12 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-29 08:47:45
+ * @Last Modified time: 2024-03-04 17:48:14
  */
 
 `include "DEFINES_ysyx23060136.sv"
@@ -39,16 +39,31 @@ module CPU_TOP_ysyx23060136 (
     wire                [  31:0]         IFU_o_pc                   ;
     wire                                 IFU_o_valid                ;
 
+    wire                [  31:0]         ARBITER_IFU_inst           ;
+    wire                                 ARBITER_IFU_inst_valid     ;
+    wire                                 ARBITER_IFU_pc_ready       ;
+    wire                [  31:0]         ARBITER_IFU_pc             ;
+    wire                                 ARBITER_IFU_pc_valid       ;
+    wire                                 ARBITER_IFU_inst_ready     ;
+  
+
     IFU_TOP_ysyx23060136  IFU_TOP_ysyx23060136_inst (
-                              .clk                               (clk                       ),
-                              .rst                               (rst                       ),
-                              .FORWARD_stallIF                   (FORWARD_stallIF           ),
-                              .BRANCH_branch_target              (BRANCH_branch_target      ),
-                              .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
-                              .IFU_o_inst                        (IFU_o_inst                ),
-                              .IFU_o_pc                          (IFU_o_pc                  ),
-                              .IFU_o_valid                       (IFU_o_valid               )
-                          );
+                            .clk                               (clk                       ),
+                            .rst                               (rst                       ),
+                            .FORWARD_stallIF                   (FORWARD_stallIF           ),
+                            .BRANCH_branch_target              (BRANCH_branch_target      ),
+                            .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
+                            .IFU_o_inst                        (IFU_o_inst                ),
+                            .IFU_o_pc                          (IFU_o_pc                  ),
+                            .IFU_o_valid                       (IFU_o_valid               ),
+                            .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
+                            .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
+                            .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
+                            .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
+                            .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
+                            .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    )
+                        );
+
 
 
     // ===========================================================================
@@ -614,83 +629,115 @@ module CPU_TOP_ysyx23060136 (
     wire                                FORWARD_rs2_hazard_EXU     ;
     wire                                FORWARD_csr_rs_hazard_EXU  ;
 
+
+  
+    wire                                ARBITER_MEM_raddr_ready    ;
+    wire               [  31:0]         ARBITER_MEM_raddr          ;
+    wire                                ARBITER_MEM_raddr_valid    ;
+    wire               [  31:0]         ARBITER_MEM_rdata          ;
+    wire                                ARBITER_MEM_rdata_valid    ;
+    wire                                ARBITER_MEM_rdata_ready    ;
+    wire                                XBAR_MEM_waddr_ready       ;
+    wire               [  31:0]         XBAR_MEM_waddr             ;
+    wire               [   3:0]         XBAR_MEM_wstrb             ;
+    wire                                XBAR_MEM_waddr_valid       ;
+    wire                                XBAR_MEM_wdata_ready       ;
+    wire               [  31:0]         XBAR_MEM_wdata             ;
+    wire                                XBAR_MEM_wdata_valid       ;
+    wire               [   1:0]         XBAR_MEM_bresp             ;
+    wire                                XBAR_MEM_bvalid            ;
+    wire                                XBAR_MEM_bready            ;
+  
+
                             
     MEM_TOP_ysyx23060136  MEM_TOP_ysyx23060136_inst (
-                              .clk                               (clk                       ),
-                              .rst                               (rst                       ),
+                          .clk                               (clk                       ),
+                          .rst                               (rst                       ),
+                          .IFU_o_valid                       (IFU_o_valid               ),
+                          .IDU_o_rs1                         (IDU_o_rs1                 ),
+                          .IDU_o_rs2                         (IDU_o_rs2                 ),
+                          .IDU_o_csr_rs                      (IDU_o_csr_rs              ),
+                          .EXU_o_rs1                         (EXU_o_rs1                 ),
+                          .EXU_o_rs2                         (EXU_o_rs2                 ),
+                          .EXU_o_csr_rs                      (EXU_o_csr_rs              ),
+                          .WB_o_rd                           (WB_o_rd                   ),
+                          .WB_o_csr_rd                       (WB_o_csr_rd               ),
+                          .WB_o_write_gpr                    (WB_o_RegWr                ),
+                          .WB_o_write_csr                    (WB_o_CSRWr                ),
+                          .WB_o_rs1_data                     (WB_o_rs1_data             ),
+                          .WB_o_rs2_data                     (WB_o_rs2_data             ),
+                          .WB_o_csr_rs_data                  (WB_o_csr_rs_data          ),
+                          .MEM_i_raddr_change                (MEM_i_raddr_change        ),
+                          .MEM_i_waddr_change                (MEM_i_waddr_change        ),
+                          .MEM_i_commit                      (MEM_i_commit              ),
+                          .MEM_i_pc                          (MEM_i_pc                  ),
+                          .MEM_i_inst                        (MEM_i_inst                ),
+                          .MEM_i_ALU_ALUout                  (MEM_i_ALU_ALUout          ),
+                          .MEM_i_ALU_CSR_out                 (MEM_i_ALU_CSR_out         ),
+                          .MEM_i_rd                          (MEM_i_rd                  ),
+                          .MEM_i_rs2_data                    (MEM_i_rs2_data            ),
+                          .MEM_i_csr_rd                      (MEM_i_csr_rd              ),
+                          .MEM_i_write_gpr                   (MEM_i_write_gpr           ),
+                          .MEM_i_write_csr                   (MEM_i_write_csr           ),
+                          .MEM_i_mem_to_reg                  (MEM_i_mem_to_reg          ),
+                          .MEM_i_write_mem                   (MEM_i_write_mem           ),
+                          .MEM_i_mem_byte                    (MEM_i_mem_byte            ),
+                          .MEM_i_mem_half                    (MEM_i_mem_half            ),
+                          .MEM_i_mem_word                    (MEM_i_mem_word            ),
+                          .MEM_i_mem_byte_u                  (MEM_i_mem_byte_u          ),
+                          .MEM_i_mem_half_u                  (MEM_i_mem_half_u          ),
+                          .MEM_i_system_halt                 (MEM_i_system_halt         ),
+                          .MEM_i_op_valid                    (MEM_i_op_valid            ),
+                          .MEM_i_ALU_valid                   (MEM_i_ALU_valid           ),
+                          .MEM_o_commit                      (MEM_o_commit              ),
+                          .MEM_o_pc                          (MEM_o_pc                  ),
+                          .MEM_o_inst                        (MEM_o_inst                ),
+                          .MEM_o_ALU_ALUout                  (MEM_o_ALU_ALUout          ),
+                          .MEM_o_ALU_CSR_out                 (MEM_o_ALU_CSR_out         ),
+                          .MEM_o_rdata                       (MEM_o_rdata               ),
+                          .MEM_o_write_gpr                   (MEM_o_write_gpr           ),
+                          .MEM_o_write_csr                   (MEM_o_write_csr           ),
+                          .MEM_o_mem_to_reg                  (MEM_o_mem_to_reg          ),
+                          .MEM_o_rd                          (MEM_o_rd                  ),
+                          .MEM_o_csr_rd                      (MEM_o_csr_rd              ),
+                          .MEM_o_system_halt                 (MEM_o_system_halt         ),
+                          .MEM_o_op_valid                    (MEM_o_op_valid            ),
+                          .MEM_o_ALU_valid                   (MEM_o_ALU_valid           ),
+                          .FORWARD_stallIF                   (FORWARD_stallIF           ),
+                          .FORWARD_stallID                   (FORWARD_stallID           ),
+                          .FORWARD_stallME                   (FORWARD_stallME           ),
+                          .FORWARD_stallEX                   (FORWARD_stallEX           ),
+                          .FORWARD_stallWB                   (FORWARD_stallWB           ),
+                          .FORWARD_rs1_data_EXU              (FORWARD_rs1_data_EXU      ),
+                          .FORWARD_rs2_data_EXU              (FORWARD_rs2_data_EXU      ),
+                          .FORWARD_csr_rs_data_EXU           (FORWARD_csr_rs_data_EXU   ),
+                          .FORWARD_rs1_hazard_EXU            (FORWARD_rs1_hazard_EXU    ),
+                          .FORWARD_rs2_hazard_EXU            (FORWARD_rs2_hazard_EXU    ),
+                          .FORWARD_csr_rs_hazard_EXU         (FORWARD_csr_rs_hazard_EXU ),
+                          .FORWARD_rs1_data_SEG              (FORWARD_rs1_data_SEG      ),
+                          .FORWARD_rs2_data_SEG              (FORWARD_rs2_data_SEG      ),
+                          .FORWARD_csr_rs_data_SEG           (FORWARD_csr_rs_data_SEG   ),
+                          .FORWARD_rs1_hazard_SEG            (FORWARD_rs1_hazard_SEG    ),
+                          .FORWARD_rs2_hazard_SEG            (FORWARD_rs2_hazard_SEG    ),
+                          .FORWARD_csr_rs_hazard_SEG         (FORWARD_csr_rs_hazard_SEG ),
+                          .ARBITER_MEM_raddr_ready           (ARBITER_MEM_raddr_ready   ),
+                          .ARBITER_MEM_raddr                 (ARBITER_MEM_raddr         ),
+                          .ARBITER_MEM_raddr_valid           (ARBITER_MEM_raddr_valid   ),
+                          .ARBITER_MEM_rdata                 (ARBITER_MEM_rdata         ),
+                          .ARBITER_MEM_rdata_valid           (ARBITER_MEM_rdata_valid   ),
+                          .ARBITER_MEM_rdata_ready           (ARBITER_MEM_rdata_ready   ),
+                          .XBAR_MEM_waddr_ready              (XBAR_MEM_waddr_ready      ),
+                          .XBAR_MEM_waddr                    (XBAR_MEM_waddr            ),
+                          .XBAR_MEM_wstrb                    (XBAR_MEM_wstrb            ),
+                          .XBAR_MEM_waddr_valid              (XBAR_MEM_waddr_valid      ),
+                          .XBAR_MEM_wdata_ready              (XBAR_MEM_wdata_ready      ),
+                          .XBAR_MEM_wdata                    (XBAR_MEM_wdata            ),
+                          .XBAR_MEM_wdata_valid              (XBAR_MEM_wdata_valid      ),
+                          .XBAR_MEM_bresp                    (XBAR_MEM_bresp            ),
+                          .XBAR_MEM_bvalid                   (XBAR_MEM_bvalid           ),
+                          .XBAR_MEM_bready                   (XBAR_MEM_bready           )
+                      );
 
-                              .IFU_o_valid                       (IFU_o_valid               ),
-                              .IDU_o_rs1                         (IDU_o_rs1                 ),
-                              .IDU_o_rs2                         (IDU_o_rs2                 ),
-                              .IDU_o_csr_rs                      (IDU_o_csr_rs              ),
-                              .EXU_o_rs1                         (EXU_o_rs1                 ),
-                              .EXU_o_rs2                         (EXU_o_rs2                 ),
-                              .EXU_o_csr_rs                      (EXU_o_csr_rs              ),
-
-                              .WB_o_rd                           (WB_o_rd                   ),
-                              .WB_o_csr_rd                       (WB_o_csr_rd               ),
-                              .WB_o_write_gpr                    (WB_o_RegWr                ),
-                              .WB_o_write_csr                    (WB_o_CSRWr                ),
-                              .WB_o_rs1_data                     (WB_o_rs1_data             ),
-                              .WB_o_rs2_data                     (WB_o_rs2_data             ),
-                              .WB_o_csr_rs_data                  (WB_o_csr_rs_data          ),
-
-                              .MEM_i_commit                      (MEM_i_commit              ),
-                              .MEM_i_pc                          (MEM_i_pc                  ),
-                              .MEM_i_inst                        (MEM_i_inst                ),
-                              .MEM_i_ALU_ALUout                  (MEM_i_ALU_ALUout          ),
-                              .MEM_i_ALU_CSR_out                 (MEM_i_ALU_CSR_out         ),
-                              .MEM_i_rd                          (MEM_i_rd                  ),
-                              .MEM_i_rs2_data                    (MEM_i_rs2_data            ),
-                              .MEM_i_csr_rd                      (MEM_i_csr_rd              ),
-                              .MEM_i_write_gpr                   (MEM_i_write_gpr           ),
-                              .MEM_i_write_csr                   (MEM_i_write_csr           ),
-                              .MEM_i_mem_to_reg                  (MEM_i_mem_to_reg          ),
-                              .MEM_i_write_mem                   (MEM_i_write_mem           ),
-                              .MEM_i_mem_byte                    (MEM_i_mem_byte            ),
-                              .MEM_i_mem_half                    (MEM_i_mem_half            ),
-                              .MEM_i_mem_word                    (MEM_i_mem_word            ),
-                              .MEM_i_mem_byte_u                  (MEM_i_mem_byte_u          ),
-                              .MEM_i_mem_half_u                  (MEM_i_mem_half_u          ),
-                              .MEM_i_system_halt                 (MEM_i_system_halt         ),
-                              .MEM_i_op_valid                    (MEM_i_op_valid            ),
-                              .MEM_i_ALU_valid                   (MEM_i_ALU_valid           ),
-                              .MEM_i_raddr_change                (MEM_i_raddr_change        ),
-                              .MEM_i_waddr_change                (MEM_i_waddr_change        ),
-
-                              .MEM_o_commit                      (MEM_o_commit              ),
-                              .MEM_o_pc                          (MEM_o_pc                  ),
-                              .MEM_o_inst                        (MEM_o_inst                ),
-                              .MEM_o_ALU_ALUout                  (MEM_o_ALU_ALUout          ),
-                              .MEM_o_ALU_CSR_out                 (MEM_o_ALU_CSR_out         ),
-                              .MEM_o_rdata                       (MEM_o_rdata               ),
-                              .MEM_o_write_gpr                   (MEM_o_write_gpr           ),
-                              .MEM_o_write_csr                   (MEM_o_write_csr           ),
-                              .MEM_o_mem_to_reg                  (MEM_o_mem_to_reg          ),
-                              .MEM_o_rd                          (MEM_o_rd                  ),
-                              .MEM_o_csr_rd                      (MEM_o_csr_rd              ),
-                              .MEM_o_system_halt                 (MEM_o_system_halt         ),
-                              .MEM_o_op_valid                    (MEM_o_op_valid            ),
-                              .MEM_o_ALU_valid                   (MEM_o_ALU_valid           ),
-
-                              .FORWARD_stallIF                   (FORWARD_stallIF           ),
-                              .FORWARD_stallID                   (FORWARD_stallID           ),
-                              .FORWARD_stallME                   (FORWARD_stallME           ),
-                              .FORWARD_stallWB                   (FORWARD_stallWB           ),
-                              .FORWARD_stallEX                   (FORWARD_stallEX           ),
-                              .FORWARD_rs1_data_EXU              (FORWARD_rs1_data_EXU      ),
-                              .FORWARD_rs2_data_EXU              (FORWARD_rs2_data_EXU      ),
-                              .FORWARD_csr_rs_data_EXU           (FORWARD_csr_rs_data_EXU   ),
-                              .FORWARD_rs1_hazard_EXU            (FORWARD_rs1_hazard_EXU    ),
-                              .FORWARD_rs2_hazard_EXU            (FORWARD_rs2_hazard_EXU    ),
-                              .FORWARD_csr_rs_hazard_EXU         (FORWARD_csr_rs_hazard_EXU ),
-                              .FORWARD_rs1_data_SEG              (FORWARD_rs1_data_SEG      ),
-                              .FORWARD_rs2_data_SEG              (FORWARD_rs2_data_SEG      ),
-                              .FORWARD_csr_rs_data_SEG           (FORWARD_csr_rs_data_SEG   ),
-                              .FORWARD_rs1_hazard_SEG            (FORWARD_rs1_hazard_SEG    ),
-                              .FORWARD_rs2_hazard_SEG            (FORWARD_rs2_hazard_SEG    ),
-                              .FORWARD_csr_rs_hazard_SEG         (FORWARD_csr_rs_hazard_SEG )
-                          );
 
 
     // ===========================================================================
@@ -795,6 +842,138 @@ module CPU_TOP_ysyx23060136 (
                              .WB_o_pc                             (WB_o_pc                     ),
                              .WB_o_inst                           (WB_o_inst                   )
                          );
+
+
+
+    wire                   [  31:0]         ARBITER_MEM_raddr          ;
+    wire                                    ARBITER_MEM_raddr_valid    ;
+    wire                                    ARBITER_MEM_raddr_ready    ;
+    wire                   [  31:0]         ARBITER_MEM_rdata          ;
+    wire                                    ARBITER_MEM_rdata_valid    ;
+    wire                                    ARBITER_MEM_rdata_ready    ;
+    wire                   [  31:0]         ARBITER_XBAR_rdata         ;
+    wire                                    ARBITER_XBAR_rdata_ready   ;
+    wire                                    ARBITER_XBAR_rdata_valid   ;
+    wire                   [  31:0]         ARBITER_XBAR_raddr         ;
+    wire                                    ARBITER_XBAR_raddr_valid   ;
+    wire                                    ARBITER_XBAR_raddr_ready   ;
+                       
+    
+    PUBLIC_ARBITER_ysyx23060136  PUBLIC_ARBITER_ysyx23060136_inst (
+                                 .clk                               (clk                       ),
+                                 .rst                               (rst                       ),
+                                 .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
+                                 .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
+                                 .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ),
+                                 .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
+                                 .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
+                                 .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
+                                 .ARBITER_MEM_raddr                 (ARBITER_MEM_raddr         ),
+                                 .ARBITER_MEM_raddr_valid           (ARBITER_MEM_raddr_valid   ),
+                                 .ARBITER_MEM_raddr_ready           (ARBITER_MEM_raddr_ready   ),
+                                 .ARBITER_MEM_rdata                 (ARBITER_MEM_rdata         ),
+                                 .ARBITER_MEM_rdata_valid           (ARBITER_MEM_rdata_valid   ),
+                                 .ARBITER_MEM_rdata_ready           (ARBITER_MEM_rdata_ready   ),
+                                 .ARBITER_XBAR_rdata                (ARBITER_XBAR_rdata        ),
+                                 .ARBITER_XBAR_rdata_ready          (ARBITER_XBAR_rdata_ready  ),
+                                 .ARBITER_XBAR_rdata_valid          (ARBITER_XBAR_rdata_valid  ),
+                                 .ARBITER_XBAR_raddr                (ARBITER_XBAR_raddr        ),
+                                 .ARBITER_XBAR_raddr_valid          (ARBITER_XBAR_raddr_valid  ),
+                                 .ARBITER_XBAR_raddr_ready          (ARBITER_XBAR_raddr_ready  )
+                             );
+
+
+    wire                   [  31:0]         XBAR_MEM_waddr             ;
+    wire                   [   3:0]         XBAR_MEM_wstrb             ;
+    wire                                    XBAR_MEM_waddr_valid       ;
+    wire                                    XBAR_MEM_waddr_ready       ;
+    wire                   [  31:0]         XBAR_MEM_wdata             ;
+    wire                                    XBAR_MEM_wdata_valid       ;
+    wire                                    XBAR_MEM_wdata_ready       ;
+    wire                                    XBAR_MEM_bready            ;
+    wire                   [   1:0]         XBAR_MEM_bresp             ;
+    wire                                    XBAR_MEM_bvalid            ;
+    wire                                    XBAR_SRAM_aready           ;
+    wire                                    XBAR_SRAM_arvalid          ;
+    wire                   [  31:0]         XBAR_SRAM_araddr           ;
+    wire                   [  31:0]         XBAR_SRAM_rdata            ;
+    wire                                    XBAR_SRAM_rvalid           ;
+    wire                                    XBAR_SRAM_rready           ;
+    wire                   [   1:0]         XBAR_SRAM_rresp            ;
+    wire                                    XBAR_SRAM_awready          ;
+    wire                   [  31:0]         XBAR_SRAM_awaddr           ;
+    wire                                    XBAR_SRAM_awvalid          ;
+    wire                                    XBAR_SRAM_wready           ;
+    wire                   [  31:0]         XBAR_SRAM_wdata            ;
+    wire                   [   3:0]         XBAR_SRAM_wstrb            ;
+    wire                                    XBAR_SRAM_wvalid           ;
+    wire                   [   1:0]         XBAR_SRAM_bresp            ;
+    wire                                    XBAR_SRAM_bvalid           ;
+    wire                                    XBAR_SRAM_bready           ;
+                           
+
+        
+    PUBLIC_XBAR_ysyx23060136  PUBLIC_XBAR_ysyx23060136_inst (
+                              .clk                               (clk                       ),
+                              .rst                               (rst                       ),
+                              .ARBITER_XBAR_raddr                (ARBITER_XBAR_raddr        ),
+                              .ARBITER_XBAR_raddr_valid          (ARBITER_XBAR_raddr_valid  ),
+                              .ARBITER_XBAR_raddr_ready          (ARBITER_XBAR_raddr_ready  ),
+                              .ARBITER_XBAR_rdata_ready          (ARBITER_XBAR_rdata_ready  ),
+                              .ARBITER_XBAR_rdata                (ARBITER_XBAR_rdata        ),
+                              .ARBITER_XBAR_rdata_valid          (ARBITER_XBAR_rdata_valid  ),
+                              .XBAR_MEM_waddr                    (XBAR_MEM_waddr            ),
+                              .XBAR_MEM_wstrb                    (XBAR_MEM_wstrb            ),
+                              .XBAR_MEM_waddr_valid              (XBAR_MEM_waddr_valid      ),
+                              .XBAR_MEM_waddr_ready              (XBAR_MEM_waddr_ready      ),
+                              .XBAR_MEM_wdata                    (XBAR_MEM_wdata            ),
+                              .XBAR_MEM_wdata_valid              (XBAR_MEM_wdata_valid      ),
+                              .XBAR_MEM_wdata_ready              (XBAR_MEM_wdata_ready      ),
+                              .XBAR_MEM_bready                   (XBAR_MEM_bready           ),
+                              .XBAR_MEM_bresp                    (XBAR_MEM_bresp            ),
+                              .XBAR_MEM_bvalid                   (XBAR_MEM_bvalid           ),
+                              .XBAR_SRAM_aready                  (XBAR_SRAM_aready          ),
+                              .XBAR_SRAM_arvalid                 (XBAR_SRAM_arvalid         ),
+                              .XBAR_SRAM_araddr                  (XBAR_SRAM_araddr          ),
+                              .XBAR_SRAM_rdata                   (XBAR_SRAM_rdata           ),
+                              .XBAR_SRAM_rvalid                  (XBAR_SRAM_rvalid          ),
+                              .XBAR_SRAM_rready                  (XBAR_SRAM_rready          ),
+                              .XBAR_SRAM_rresp                   (XBAR_SRAM_rresp           ),
+                              .XBAR_SRAM_awready                 (XBAR_SRAM_awready         ),
+                              .XBAR_SRAM_awaddr                  (XBAR_SRAM_awaddr          ),
+                              .XBAR_SRAM_awvalid                 (XBAR_SRAM_awvalid         ),
+                              .XBAR_SRAM_wready                  (XBAR_SRAM_wready          ),
+                              .XBAR_SRAM_wdata                   (XBAR_SRAM_wdata           ),
+                              .XBAR_SRAM_wstrb                   (XBAR_SRAM_wstrb           ),
+                              .XBAR_SRAM_wvalid                  (XBAR_SRAM_wvalid          ),
+                              .XBAR_SRAM_bresp                   (XBAR_SRAM_bresp           ),
+                              .XBAR_SRAM_bvalid                  (XBAR_SRAM_bvalid          ),
+                              .XBAR_SRAM_bready                  (XBAR_SRAM_bready          )
+                          );
+
+
+    PUBLIC_SRAM_ysyx23060136  PUBLIC_SRAM_ysyx23060136_inst (
+                              .clk                               (clk                       ),
+                              .rst                               (rst                       ),
+                              .XBAR_SRAM_arvalid                 (XBAR_SRAM_arvalid         ),
+                              .XBAR_SRAM_araddr                  (XBAR_SRAM_araddr          ),
+                              .XBAR_SRAM_aready                  (XBAR_SRAM_aready          ),
+                              .XBAR_SRAM_rready                  (XBAR_SRAM_rready          ),
+                              .XBAR_SRAM_rdata                   (XBAR_SRAM_rdata           ),
+                              .XBAR_SRAM_rvalid                  (XBAR_SRAM_rvalid          ),
+                              .XBAR_SRAM_rresp                   (XBAR_SRAM_rresp           ),
+                              .XBAR_SRAM_awaddr                  (XBAR_SRAM_awaddr          ),
+                              .XBAR_SRAM_awvalid                 (XBAR_SRAM_awvalid         ),
+                              .XBAR_SRAM_awready                 (XBAR_SRAM_awready         ),
+                              .XBAR_SRAM_wdata                   (XBAR_SRAM_wdata           ),
+                              .XBAR_SRAM_wstrb                   (XBAR_SRAM_wstrb           ),
+                              .XBAR_SRAM_wvalid                  (XBAR_SRAM_wvalid          ),
+                              .XBAR_SRAM_wready                  (XBAR_SRAM_wready          ),
+                              .XBAR_SRAM_bresp                   (XBAR_SRAM_bresp           ),
+                              .XBAR_SRAM_bready                  (XBAR_SRAM_bready          ),
+                              .XBAR_SRAM_bvalid                  (XBAR_SRAM_bvalid          )
+                          );
+
 endmodule
 
 
