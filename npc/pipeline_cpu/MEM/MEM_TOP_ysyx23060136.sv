@@ -107,7 +107,32 @@ module MEM_TOP_ysyx23060136 (
         output            [31 : 0]          FORWARD_csr_rs_data_SEG    ,
         output                              FORWARD_rs1_hazard_SEG     ,
         output                              FORWARD_rs2_hazard_SEG     ,
-        output                              FORWARD_csr_rs_hazard_SEG  
+        output                              FORWARD_csr_rs_hazard_SEG  ,
+
+
+        // ===========================================================================
+        // interface for arbiter(read)
+        input                               ARBITER_MEM_raddr_ready     ,
+        output             [  31:0]         ARBITER_MEM_raddr           ,
+        output                              ARBITER_MEM_raddr_valid     ,
+
+        input              [  31:0]         ARBITER_MEM_rdata           ,
+        input                               ARBITER_MEM_rdata_valid     ,
+        output                              ARBITER_MEM_rdata_ready     ,
+        // ===========================================================================
+        // interface for xbar(write)
+        input                               XBAR_MEM_waddr_ready        ,
+        output             [  31:0]         XBAR_MEM_waddr              ,
+        output             [   3:0]         XBAR_MEM_wstrb              ,
+        output                              XBAR_MEM_waddr_valid        ,
+
+        input                               XBAR_MEM_wdata_ready        ,
+        output             [  31:0]         XBAR_MEM_wdata              ,
+        output                              XBAR_MEM_wdata_valid        ,
+
+        input              [   1:0]         XBAR_MEM_bresp              ,
+        input                               XBAR_MEM_bvalid             ,
+        output                              XBAR_MEM_bready             
 
     );
 
@@ -138,25 +163,42 @@ module MEM_TOP_ysyx23060136 (
     
 
 
-    MEM_DATA_MEM_ysyx23060136  MEM_DATA_MEM_ysyx23060136_inst (
-                                   .clk                               (clk                       ),
-                                   .rst                               (rst                       ),
-                                   .pc                                (MEM_i_pc                  ),
-                                   .MEM_raddr                         (MEM_raddr                 ),
-                                   .MEM_rdata                         (MEM_o_rdata               ),
-                                   .MEM_waddr                         (MEM_waddr                 ),
-                                   .MEM_wdata                         (MEM_wdata                 ),
-                                   .MEM_write_mem                     (MEM_i_write_mem           ),
-                                   .MEM_mem_byte                      (MEM_i_mem_byte            ),
-                                   .MEM_mem_half                      (MEM_i_mem_half            ),
-                                   .MEM_mem_word                      (MEM_i_mem_word            ),
-                                   .MEM_mem_byte_u                    (MEM_i_mem_byte_u          ),
-                                   .MEM_mem_half_u                    (MEM_i_mem_half_u          ),
-                                   .MEM_rvalid                        (MEM_rvalid                ),
-                                   .MEM_wready                        (MEM_wready                ),
-                                   .MEM_i_raddr_change                (MEM_i_raddr_change        ),
-                                   .MEM_i_waddr_change                (MEM_i_waddr_change        )
-                               );
+
+MEM_DATA_MEM_ysyx23060136  MEM_DATA_MEM_ysyx23060136_inst (
+                               .clk                               (clk                       ),
+                               .rst                               (rst                       ),
+                               .MEM_i_raddr_change                (MEM_i_raddr_change        ),
+                               .MEM_i_waddr_change                (MEM_i_waddr_change        ),
+                               .MEM_raddr                         (MEM_raddr                 ),
+                               .MEM_rdata                         (MEM_o_rdata               ),
+                               .MEM_waddr                         (MEM_waddr                 ),
+                               .MEM_wdata                         (MEM_wdata                 ),
+                               .MEM_write_mem                     (MEM_i_write_mem           ),
+                               .MEM_mem_byte                      (MEM_i_mem_byte            ),
+                               .MEM_mem_half                      (MEM_i_mem_half            ),
+                               .MEM_mem_word                      (MEM_i_mem_word            ),
+                               .MEM_mem_byte_u                    (MEM_i_mem_byte_u          ),
+                               .MEM_mem_half_u                    (MEM_i_mem_half_u          ),
+                               .ARBITER_MEM_raddr_ready           (ARBITER_MEM_raddr_ready   ),
+                               .ARBITER_MEM_raddr                 (ARBITER_MEM_raddr         ),
+                               .ARBITER_MEM_raddr_valid           (ARBITER_MEM_raddr_valid   ),
+                               .ARBITER_MEM_rdata                 (ARBITER_MEM_rdata         ),
+                               .ARBITER_MEM_rdata_valid           (ARBITER_MEM_rdata_valid   ),
+                               .ARBITER_MEM_rdata_ready           (ARBITER_MEM_rdata_ready   ),
+                               .XBAR_MEM_waddr_ready              (XBAR_MEM_waddr_ready      ),
+                               .XBAR_MEM_waddr                    (XBAR_MEM_waddr            ),
+                               .XBAR_MEM_wstrb                    (XBAR_MEM_wstrb            ),
+                               .XBAR_MEM_waddr_valid              (XBAR_MEM_waddr_valid      ),
+                               .XBAR_MEM_wdata_ready              (XBAR_MEM_wdata_ready      ),
+                               .XBAR_MEM_wdata                    (XBAR_MEM_wdata            ),
+                               .XBAR_MEM_wdata_valid              (XBAR_MEM_wdata_valid      ),
+                               .XBAR_MEM_bresp                    (XBAR_MEM_bresp            ),
+                               .XBAR_MEM_bvalid                   (XBAR_MEM_bvalid           ),
+                               .XBAR_MEM_bready                   (XBAR_MEM_bready           ),
+                               .MEM_rvalid                        (MEM_rvalid                ),
+                               .MEM_wready                        (MEM_wready                )
+                           );
+
 
     MEM_FORWARD_ysyx23060136  MEM_FORWARD_ysyx23060136_inst (
                                     .IFU_o_valid                       (IFU_o_valid               ),

@@ -1,52 +1,50 @@
 /*
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-26 00:41:18 
- * @Last Modified by:   Juqi Li @ NJU 
- * @Last Modified time: 2024-02-26 00:41:18 
+ * @Last Modified by: Juqi Li @ NJU
+ * @Last Modified time: 2024-03-04 21:46:01
  */
 
 
 `include "DEFINES_ysyx23060136.sv"
 
-/* verilator lint_off UNUSED */
 
-// interface for read-only sram
-// protocol: AXI-LITE
+// interface for read arbiter
+// protocol: AXI-lite
 // ===========================================================================
-module IFU_INST_MEM_ysyx23060136(
+module IFU_INST_MEM_ysyx23060136 (
+      // data from pc counter
       input                               clk                        ,
       input                               rst                        ,
+      
       input              [  31:0]         IFU_o_pc                   ,
       input                               pc_change                  ,
+      // arbiter interface 握手信号
+      input              [  31:0]         ARBITER_IFU_inst           ,
+      input                               ARBITER_IFU_inst_valid     ,
+      input                               ARBITER_IFU_pc_ready       ,
+
+      output             [  31:0]         ARBITER_IFU_pc             ,
+      output                              ARBITER_IFU_pc_valid       ,
+      output                              ARBITER_IFU_inst_ready     , 
+      // output for the next stage
       output             [  31:0]         IFU_o_inst                 ,
       output                              inst_valid             
     );
 
 
-    //  sarm instance 
-    // 当 pc 的值发生变化时，我们才考虑读取下一条指令
-    wire                                      m_axi_arvalid  =  r_state_idle & new_pc       ;
-    wire         [31 : 0]                     m_axi_araddr   =  IFU_o_pc                    ;
-    wire                                      m_axi_aready                                  ;
-    wire                                      m_axi_rready   =  r_state_busy                ;
-    wire         [31 : 0]                     m_axi_rdata                                   ;
-    wire                                      m_axi_rvalid                                  ;
-    
-    // we do not need response
-    wire         [1 : 0]                      m_axi_rresp                                   ;
-    // we do not need to write data from AXI
-    wire                                      m_axi_awready              ;
-    wire                                      m_axi_wready               ;
-    wire         [1 : 0]                      m_axi_bresp                ;
-    wire                                      m_axi_bvalid               ;
+    assign                       ARBITER_IFU_pc         =  IFU_o_pc                              ;
+    assign                       ARBITER_IFU_pc_valid   =  r_state_idle & new_pc                 ;
+    // 传输地址完成后，我们直接准备接受数据
+    assign                       ARBITER_IFU_inst_ready =  r_state_busy                          ; 
+    assign                       IFU_o_inst             =  ARBITER_IFU_inst                      ;
+    assign                       inst_valid             =  r_state_idle & ~pc_change & ~new_pc;  ;
+
 
     // 当 PC 变化时，pc_change 暂时拉高，下一个周期之后，pc_change 会保存在 new_pc 中
-    // 当状态机处于 busy 时， new_pc 会被自动清0
-    logic   new_pc ;  
+    // 当状态机处于 busy 时， new_pc 会被自动清0，否则一致保持true，作为读请求信号
 
-    assign  IFU_o_inst        =  m_axi_rdata;
-    // this signal is used for next phase of CPU 
-    assign  inst_valid        =  r_state_idle & ~pc_change & ~new_pc;
+    logic         new_pc ;  
 
     wire          r_state_idle     =  (r_state == `idle);
     wire          r_state_busy     =  (r_state == `busy);
@@ -54,8 +52,8 @@ module IFU_INST_MEM_ysyx23060136(
     // read mater state machine
     logic        [1 : 0]       r_state;
     // 当 AXI lite 发生握手，将转移到下一个状态
-    wire         [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((m_axi_aready & m_axi_arvalid) ? `busy : `idle)) |
-                                                 ({2{r_state_busy}} & ((m_axi_rvalid & m_axi_rready)  ? `idle : `busy)) ;
+    wire         [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((ARBITER_IFU_pc_ready   & ARBITER_IFU_pc_valid)    ? `busy : `idle)) |
+                                                 ({2{r_state_busy}} & ((ARBITER_IFU_inst_valid & ARBITER_IFU_inst_ready)  ? `idle : `busy)) ;
 
     // new pc 在被拉高后，会阻塞在第一阶段，直到握手完成
     // 第二阶段清0
@@ -81,32 +79,6 @@ module IFU_INST_MEM_ysyx23060136(
         end
     end
   
-
-    PUBLIC_SRAM_ysyx23060136  IFU_SRAM_ysyx23060136_inst (
-                               .clk           (clk           ),
-                               .rst           (rst           ),
-                               .s_axi_arvalid (m_axi_arvalid ),
-                               .s_axi_araddr  (m_axi_araddr  ),
-                               .s_axi_aready  (m_axi_aready  ),
-                               .s_axi_rready  (m_axi_rready  ),
-                               .s_axi_rdata   (m_axi_rdata   ),
-                               .s_axi_rvalid  (m_axi_rvalid  ),
-                               .s_axi_rresp   (m_axi_rresp   ),
-
-                               // we do not need to write data from AXI
-                               .s_axi_awaddr  (`false        ),
-                               .s_axi_awvalid (`false        ),
-                               .s_axi_awready (m_axi_awready ),
-                               .s_axi_wdata   (`false        ),
-                               .s_axi_wstrb   (`false        ),
-                               .s_axi_wvalid  (`false        ),
-                               .s_axi_wready  (m_axi_wready  ),
-                               .s_axi_bresp   (m_axi_bresp   ),
-                               .s_axi_bready  (`false        ),
-                               .s_axi_bvalid  (m_axi_bvalid  )
-                           );
-
-
 endmodule
 
 
