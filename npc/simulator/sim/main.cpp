@@ -29,6 +29,7 @@ CPU_state sim_cpu = {.pc = 0x80000000};
 extern SimState sim_state;
 
 int main(int argc, char** argv, char** env) {
+    Verilated::commandArgs(argc, argv);
     // simulation monitor
     init_monitor(argc, argv);
     // start wave trace
