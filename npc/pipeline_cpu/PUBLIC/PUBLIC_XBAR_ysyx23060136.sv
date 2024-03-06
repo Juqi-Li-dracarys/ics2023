@@ -7,7 +7,7 @@
 
  // naive xbar for AXI-lite
 
-  /* verilator lint_off UNUSED */
+/* verilator lint_off UNUSED */
 
  `include "DEFINES_ysyx23060136.sv"
 
