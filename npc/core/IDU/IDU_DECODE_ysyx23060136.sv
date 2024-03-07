@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU
  * @Date: 2024-02-18 20:50:42
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-24 00:28:27
+ * @Last Modified time: 2024-03-07 22:17:11
  */
 
  `include "DEFINES_ysyx23060136.sv"
@@ -10,7 +10,6 @@
 // basic decode unit
 // Support ISA: riscv32-e
 
-/* verilator lint_off UNUSED */
 
 // ===========================================================================
 module IDU_DECODE_ysyx23060136(

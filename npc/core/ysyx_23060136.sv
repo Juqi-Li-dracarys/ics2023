@@ -2,17 +2,17 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-07 20:07:19 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-07 20:20:19
+ * @Last Modified time: 2024-03-08 00:26:12
  */
 
 
 `include "DEFINES_ysyx23060136.sv"
 
-/* verilator lint_off UNUSED */
+// /* verilator lint_off UNUSED */
 
 // Top module of riscv32 core
 // ===========================================================================
-module ysyx23060136 (
+module ysyx_23060136 (
         // YSYX-SoC 标准总线接口，目前只考虑 Core 为 master
         input                              clock                       ,
         input                              reset                       ,
@@ -80,21 +80,21 @@ module ysyx23060136 (
         output            [  63:0]         io_slave_rdata              ,
         output                             io_slave_rlast              ,
         output            [   3:0]         io_slave_rid                
-        
+
     );
      
     
     // ===========================================================================
     // 仿真信号接口
-     wire             MEM_error_signal                                            ;
-     wire             ARBITER_error_signal                                        ;
-     wire             clk                    =            clock                   ;
-     wire             rst                    =            reset                   ;
-     // 当 commit 被拉高时，说明当前指令有效，此时进行 diff_test,并对异常信号进行检测
-     wire             inst_commit            =            WB_o_commit             ;
-     wire   [31 : 0]  pc_cur                 =            WB_o_pc                 ;
-     wire   [31 : 0]  inst                   =            WB_o_inst               ;
-     wire             system_halt            =            WB_o_system_halt        ;
+     wire            clk                                           =    clock                           ;
+     wire            rst                                           =    reset                           ;
+
+     wire            MEM_error_signal     /* verilator public */                                        ;
+     wire            ARBITER_error_signal /* verilator public */                                        ;
+     wire            inst_commit          /* verilator public */   =     WB_o_commit                    ;
+     wire   [31 : 0] pc_cur               /* verilator public */   =     WB_o_pc                        ;
+     wire   [31 : 0] inst                 /* verilator public */   =     WB_o_inst                      ;
+     wire            system_halt          /* verilator public */   =     WB_o_system_halt               ;
 
 
     // ===========================================================================

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:40 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 14:59:51
+ * @Last Modified time: 2024-03-08 00:30:39
  */
 
 #include <assert.h>
@@ -34,31 +34,13 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 
 
-// DIP-C interface for cpu
-extern "C" int pmem_read(int araddr) {
-  if (in_pmem(araddr)) {
-    return paddr_read(araddr, 4);
-  }
-  // if not in mem, then check mmio
-  else
-    return mmio_read(araddr, 4);
+// DIP-C interface for SoC
+extern "C" void flash_read(int addr, int *data) { 
+  assert(0); 
 }
 
-extern "C" void pmem_write(int waddr, int wdata, char wmask) {
-  uint8_t data_len = 0;
-  while(wmask > 0) {
-    wmask >>= 1;
-    data_len++;
-  }
-  if (in_pmem(waddr)) {
-    paddr_write(waddr, data_len, wdata);
-    return;
-  }
-  // if not in mem, then check mmio
-  else {
-    mmio_write(waddr, data_len, wdata);
-    return;
-  }
+extern "C" void mrom_read(int addr, int *data) { 
+  assert(0); 
 }
 
 
