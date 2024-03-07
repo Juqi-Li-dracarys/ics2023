@@ -1,1 +1,0 @@
-/home/dracacys/ics2023/npc/naive_cpu/vsrc/REG_FILE.sv
