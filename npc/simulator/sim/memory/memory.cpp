@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:40 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-08 00:30:39
+ * @Last Modified time: 2024-03-08 11:37:57
  */
 
 #include <assert.h>
@@ -41,9 +41,9 @@ extern "C" void flash_read(int addr, int *data) {
 
 extern "C" void mrom_read(int addr, int *data) {
   if((uint32_t)addr >= 0x20000000 && (uint32_t)addr < 0x20000fff)
-    *data = 0x00100073;
+    *data = pmem[addr-0x20000000];
   else
-    *data = 0x0;
+     assert(0);
 }
 
 
