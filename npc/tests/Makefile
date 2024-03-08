@@ -29,6 +29,9 @@ $(IMG):$(OBJ)
 run: $(IMG)
 	$(MAKE) -C $(SIMULATOR_HOME) IMG="$(IMG)" run
 
+wave: $(IMG)
+	$(MAKE) -C $(SIMULATOR_HOME) IMG="$(IMG)" wave
+
 clean:
 	rm -rf *.o *.d *.bin
 
