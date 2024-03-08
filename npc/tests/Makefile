@@ -6,6 +6,7 @@
 # */
 
 # Copy from AM_HOME makefile
+
 SIMULATOR_HOME = $(NPC_HOME)/simulator
 WORK_DIR      = $(shell pwd)
 CSCR          = $(shell find $(WORK_DIR) -name "*.c")
@@ -27,7 +28,6 @@ $(IMG):$(OBJ)
 
 run: $(IMG)
 	$(MAKE) -C $(SIMULATOR_HOME) IMG="$(IMG)" run
-
 
 clean:
 	rm -rf *.o *.d *.bin
