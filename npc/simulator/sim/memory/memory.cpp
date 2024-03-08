@@ -39,8 +39,11 @@ extern "C" void flash_read(int addr, int *data) {
   assert(0); 
 }
 
-extern "C" void mrom_read(int addr, int *data) { 
-  assert(0); 
+extern "C" void mrom_read(int addr, int *data) {
+  if((uint32_t)addr >= 0x20000000 && (uint32_t)addr < 0x20000fff)
+    *data = 0x00100073;
+  else
+    *data = 0x0;
 }
 
 
