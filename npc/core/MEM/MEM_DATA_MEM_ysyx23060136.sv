@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-24 17:15:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-08 15:02:07
+ * @Last Modified time: 2024-03-08 17:12:18
  */
 
  `include "DEFINES_ysyx23060136.sv"
@@ -14,7 +14,7 @@
 module MEM_DATA_MEM_ysyx23060136 (
     input                               clk                        ,
     input                               rst                        ,
-    // 每次地址更新时，会有一个短脉冲，这会作为读写请求的标志
+    // 每次地址更新时，段寄存器会有一个短脉冲，这会作为读写请求的标志
     input                               MEM_i_raddr_change         ,  
     input                               MEM_i_waddr_change         ,
     // read interface for cpu
@@ -79,7 +79,7 @@ module MEM_DATA_MEM_ysyx23060136 (
 
     // write module signal
     assign                              io_master_awvalid        =  w_state_idle & new_waddr           ;
-    assign                              io_master_wvalid         =  MEM_write_mem & w_state_busy       ;
+    assign                              io_master_wvalid         =  w_state_idle & new_waddr           ;
     assign                              io_master_wlast          =  io_master_wvalid                   ;
 
     assign                              io_master_awaddr         =  MEM_waddr                          ;
@@ -93,12 +93,12 @@ module MEM_DATA_MEM_ysyx23060136 (
                                                                     ({8{MEM_mem_half}}) & 8'b0000_0011 |
                                                                     ({8{MEM_mem_word}}) & 8'b0000_1111 ;
                                                                     
-    assign                              io_master_bready         =  w_state_done                       ;
+    assign                              io_master_bready         =  w_state_busy                       ;
 
-    // write config
+    // write configure
     assign                              io_master_awid           =  4'b0                               ;
     assign                              io_master_awlen          =  8'b0000_0000                       ;
-    assign                              io_master_awburst        =  2'b00                              ;
+    assign                              io_master_awburst        =  2'b01                              ;
 
 
 
@@ -123,16 +123,15 @@ module MEM_DATA_MEM_ysyx23060136 (
     wire         [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((ARBITER_MEM_raddr_ready & ARBITER_MEM_raddr_valid) ? `busy : `idle)) |
                                                  ({2{r_state_busy}} & ((ARBITER_MEM_rdata_ready & ARBITER_MEM_rdata_valid) ? `idle : `busy)) ;
 
-    
+    // ===========================================================================
     // write mater state machine
     logic        [1 : 0]       w_state;
     wire                       w_state_idle   =  (w_state == `idle);
     wire                       w_state_busy   =  (w_state == `busy);
-    wire                       w_state_done   =  (w_state == `done);
-     // 当 AXI lite 发生握手，将转移到下一个状态
-    wire         [1 : 0]       w_state_next   =  ({2{w_state_idle}} & ((io_master_awready & io_master_awvalid)  ?  `busy : `idle)) | 
-                                                 ({2{w_state_busy}} & ((io_master_wready  & io_master_wvalid)   ?  `done : `busy)) |
-                                                 ({2{w_state_done}} & ((io_master_bready  & io_master_bvalid)   ?  `idle : `done)) ;
+     // 当 AXI 发生同时握手，将转移到下一个状态
+    wire         [1 : 0]       w_state_next   =  ({2{w_state_idle}} & ((io_master_awready & io_master_awvalid & io_master_wready & io_master_wvalid) ?  `busy : `idle)) | 
+                                                 ({2{w_state_busy}} & ((io_master_bready  & io_master_bvalid)                                        ?  `idle : `busy)) ;
+    
  
     
     // 符号拓展
@@ -189,7 +188,7 @@ module MEM_DATA_MEM_ysyx23060136 (
         if(rst) begin
             MEM_error_signal <= `false;
         end
-        else if(w_state_next == `idle)begin
+        else if(io_master_bready & io_master_bvalid) begin
             MEM_error_signal <= (io_master_bresp != `OKAY) || (io_master_bid != io_master_awid);
         end
     end
