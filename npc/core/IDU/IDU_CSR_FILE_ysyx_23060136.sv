@@ -28,7 +28,7 @@ module IDU_CSR_FILE_ysyx_23060136 (
 
 
     // mstatus mtvec mepc mcause
-    logic  [31 : 0]   csr_reg      [0 : 3];
+    logic  [31 : 0]   csr_reg     [0 : 3];
 
     wire             w_e          [0 : 3];
     wire             r_e          [0 : 3];
