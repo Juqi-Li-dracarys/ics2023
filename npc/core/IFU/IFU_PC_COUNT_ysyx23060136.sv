@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU
  * @Date: 2024-02-15 22:21:15
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-18 20:57:27
+ * @Last Modified time: 2024-03-08 12:53:39
  */
 
  `include "DEFINES_ysyx23060136.sv"
@@ -37,7 +37,7 @@ module IFU_PC_COUNT_ysyx23060136 (
 
     always_ff @(posedge clk) begin : pc_change_update
         if(rst) begin
-            pc_change  <=  `false;
+            pc_change  <=  `true;
         end
         else begin
             pc_change  <= ~FORWARD_stallIF;
