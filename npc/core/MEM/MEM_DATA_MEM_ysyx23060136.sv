@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-24 17:15:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-08 14:25:03
+ * @Last Modified time: 2024-03-08 14:32:42
  */
 
  `include "DEFINES_ysyx23060136.sv"
@@ -84,10 +84,14 @@ module MEM_DATA_MEM_ysyx23060136 (
 
     assign                              io_master_awaddr         =  MEM_waddr                          ;
     assign                              io_master_wdata          =  {32'b0, MEM_wdata}                 ;
+
     assign                              io_master_awsize         =  ({3{MEM_mem_byte}}) & 3'b000       |
                                                                     ({3{MEM_mem_half}}) & 3'b001       |
                                                                     ({3{MEM_mem_word}}) & 3'b010       ;
 
+    assign                              io_master_wstrb          =  ({8{MEM_mem_byte}}) & 8'b0000_0001 |
+                                                                    ({8{MEM_mem_half}}) & 8'b0000_0011 |
+                                                                    ({8{MEM_mem_word}}) & 8'b0000_1111 ;
                                                                     
     assign                              io_master_bready         =  w_state_done                       ;
 
@@ -95,7 +99,6 @@ module MEM_DATA_MEM_ysyx23060136 (
     assign                              io_master_awid           =  4'b0                               ;
     assign                              io_master_awlen          =  8'b0000_0000                       ;
     assign                              io_master_awburst        =  2'b01                              ;
-    assign                              io_master_wstrb          =  8'hFF                              ;
 
 
 
