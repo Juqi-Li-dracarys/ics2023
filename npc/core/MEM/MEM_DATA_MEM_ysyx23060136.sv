@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-24 17:15:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-08 14:32:42
+ * @Last Modified time: 2024-03-08 15:02:07
  */
 
  `include "DEFINES_ysyx23060136.sv"
@@ -98,7 +98,7 @@ module MEM_DATA_MEM_ysyx23060136 (
     // write config
     assign                              io_master_awid           =  4'b0                               ;
     assign                              io_master_awlen          =  8'b0000_0000                       ;
-    assign                              io_master_awburst        =  2'b01                              ;
+    assign                              io_master_awburst        =  2'b00                              ;
 
 
 
