@@ -59,8 +59,8 @@
 #define CONFIG_ITRACE_COND 1
 #define ITRACE_COND  1
 
-// diff test
-#define CONFIG_DIFFTEST 1
+// // diff test
+// #define CONFIG_DIFFTEST 1
 
 // // Mtrace
 // # define CONFIG_MTRACE_COND 1
