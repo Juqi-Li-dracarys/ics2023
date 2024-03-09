@@ -1,33 +1,70 @@
+/*
+ * @Author: Juqi Li @ NJU 
+ * @Date: 2024-03-09 14:09:47 
+ * @Last Modified by: Juqi Li @ NJU
+ * @Last Modified time: 2024-03-09 17:31:13
+ */
+
 ENTRY(_start)
 PHDRS { text PT_LOAD; data PT_LOAD; }
 
+
+/*定义内存空间*/
+MEMORY {
+  mrom : ORIGIN = 0x20000000, LENGTH = 4K
+  sram : ORIGIN = 0x0f000000, LENGTH = 8K
+}
+
+REGION_ALIAS("REGION_TEXT", mrom);
+REGION_ALIAS("REGION_RODATA", mrom);
+REGION_ALIAS("REGION_DATA", sram);
+REGION_ALIAS("REGION_BSS", sram);
+
 SECTIONS {
-  /* _pmem_start and _entry_offset are defined in LDFLAGS */
-  . = _pmem_start + _entry_offset;
+
+  _sram_start=ORIGIN(sram)
+  _sram_size=LENGTH(sram)
+
+  /* 链接的起始位置 */
+  . = ORIGIN(mrom);
   .text : {
     *(entry)
     *(.text*)
-  } : text
-  etext = .;
-  _etext = .;
-  .rodata : {
+     etext = .;
+    _etext = .;
+  } > REGION_TEXT: text
+
+  .rodata AT (_etext) : {
     *(.rodata*)
-  }
-  .data : {
+    _rodata_end = .;
+  } > REGION_RODATA
+
+  .data AT (_rodata_end) : {
+   /*VMA*/
+     _data_start = .;
     *(.data)
-  } : data
-  edata = .;
-  _data = .;
+      edata = .;
+     _edata = .;
+  } > REGION_DATA: data
+  
+  /*LMA*/
+  _data_load_start = LOADADDR(.data);
+  _data_size = SIZEOF(.data);
+
+  /*未初始化不需要复制*/
   .bss : {
 	_bss_start = .;
     *(.bss*)
     *(.sbss*)
     *(.scommon)
-  }
-  _stack_top = ALIGN(0x1000);
-  . = _stack_top + 0x8000;
+  _bss_end = .;
+  } > REGION_BSS
+
+  /*stack and heap in sram*/
+  _stack_top = ALIGN(4);
+  . = _stack_top + 0x1000;
   _stack_pointer = .;
   end = .;
   _end = .;
-  _heap_start = ALIGN(0x1000);
+  _heap_start = ALIGN(4);
 }
