@@ -8,22 +8,17 @@
 #define UART_BASE  0x10000000
 #define UART_TX    0
 
-#define SRAM_BASE  0x0f000000
-#define SRAM_SIZE  0x00002000
+// 链接脚本的标记
+extern char _sram_start;
+extern char _sram_size;
+extern char _heap_start;
 
-#define MROM_BASE  0x20000000
-#define MROM_SIZE  0x00001000
+// SRAM 数据区
+extern char _data_start;
+extern char _data_load_start;
+extern char _data_size;
 
-
-extern char _pmem_start;
-
-#define PMEM_SIZE (128 * 1024 * 1024)
-#define PMEM_END  ((uintptr_t)&_pmem_start + PMEM_SIZE)
-
-#define NEMU_PADDR_SPACE \
-  RANGE(&_pmem_start, PMEM_END), \
-  RANGE(FB_ADDR, FB_ADDR + 0x200000), \
-  RANGE(MMIO_BASE, MMIO_BASE + 0x1000) /* serial, rtc, screen, keyboard */
+#define SRAM_END  ((uintptr_t)&_sram_start + (uintptr_t)&_sram_size)
 
 
 typedef uintptr_t PTE;

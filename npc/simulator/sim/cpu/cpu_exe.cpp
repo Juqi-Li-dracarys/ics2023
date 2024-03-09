@@ -2,14 +2,13 @@
  * @Author: Juqi Li @ NJU
  * @Date: 2024-01-17 09:39:10
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-08 00:11:01
+ * @Last Modified time: 2024-03-09 17:42:24
  */
 
 #include <bits/stdc++.h>
 #include <debug.h>
 #include <common.h>
 #include <disasm.h>
-#include <memory.h>
 #include <sim.h>
 #include <trace.h>
 
@@ -115,8 +114,6 @@ void excute(uint64_t n) {
     set_state();
     g_nr_guest_inst++;
     trace_and_difftest(log_ptr, false);
-
-    IFDEF(CONFIG_DEVICE, device_update());
 
     // 对于有异常的指令，会在下一次执行前终止程序
     if (signal_detect()) {

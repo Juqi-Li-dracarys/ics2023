@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 17:38:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-08 00:34:25
+ * @Last Modified time: 2024-03-09 15:27:38
  */
 
 #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
@@ -14,7 +14,7 @@
 #define CONFIG_RTC_MMIO 0xa0000040
 #define CONFIG_TARGET_NATIVE_ELF 1
 #define CONFIG_HAS_AUDIO 1
-#define CONFIG_MSIZE 0x8000000
+#define CONFIG_MROM_SIZE 0x00001000
 #define CONFIG_CC_O2 1
 #define CONFIG_DEVICE 1
 #define CONFIG_HAS_KEYBOARD 1
@@ -26,7 +26,7 @@
 #define CONFIG_HAS_VGA 1
 #define CONFIG_HAS_TIMER 1
 #define CONFIG_DISK_CTL_MMIO 0xa0000300
-#define CONFIG_MBASE 0x80000000
+#define CONFIG_MROM_BASE 0x20000000
 #define CONFIG_TIMER_GETTIMEOFDAY 1
 #define CONFIG_ENGINE_INTERPRETER 1
 #define CONFIG_CC_OPT "-O2"

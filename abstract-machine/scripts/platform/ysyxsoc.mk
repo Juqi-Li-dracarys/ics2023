@@ -5,6 +5,29 @@
 # * @Last Modified time: 2024-03-08 23:32:08 
 # */
 
+
+# The operation of eliminating the unused code and data from 
+# the final executable is directly performed by the linker.
+# In order to do this, it has to work with objects compiled 
+# with the following options: -ffunction-sections -fdata-sections.
+# These options are usable with C and Ada files. 
+# They will place respectively each function or data 
+# in a separate section in the resulting object file.
+# Once the objects and static libraries are created with these options, 
+# the linker can perform the dead code elimination. You can do this by 
+# setting the -Wl,–gc-sections option to gcc command or in the -largs section of gnatmake. 
+# This will perform a garbage collection of code and data never referenced.
+# If the linker performs a partial link (-r linker option),
+#  then you will need to provide the entry point using the -e / --entry linker option.
+# Note that objects compiled without the -ffunction-sections 
+# and -fdata-sections options can still be linked with the executable. 
+# However, no dead code elimination will be performed on those objects (they will be linked as is).
+# The GNAT static library is now compiled with -ffunction-sections and 
+# -fdata-sections on some platforms. This allows you to eliminate 
+# the unused code and data of the GNAT library from your executable.
+
+
+
 SIMULATOR_HOME = $(NPC_HOME)/simulator
 
 AM_SRCS := riscv/ysyxsoc/start.S \
@@ -16,8 +39,7 @@ AM_SRCS := riscv/ysyxsoc/start.S \
 
 CFLAGS    += -fdata-sections -ffunction-sections
 
-LDFLAGS   += -T $(AM_HOME)/scripts/linker.ld \
-						 --defsym=_pmem_start=0x80000000 --defsym=_entry_offset=0x0
+LDFLAGS   += -T $(AM_HOME)/scripts/linker.ld
 
 LDFLAGS   += --gc-sections -e _start
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
@@ -52,3 +74,4 @@ gdb: image
 test: image
 	@echo + Load "->" $(IMAGE).bin
 	$(MAKE) -C $(SIMULATOR_HOME) ARGS="$(NPC_FLAGS)" IMG="$(IMAGE).bin" test
+
