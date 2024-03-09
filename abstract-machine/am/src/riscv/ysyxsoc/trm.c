@@ -7,8 +7,21 @@
 
 #include <am.h>
 #include <ysyxsoc.h>
+#include <klib.h>
 
 int main(const char *args);
+
+// // 链接脚本的标记
+// extern char _sram_start;
+// extern char _sram_size;
+// // extern char _heap_start;
+
+// // SRAM 数据区
+// extern char _data_start;
+// extern char _data_load_start;
+// extern char _data_size;
+
+// #define SRAM_END  ((uintptr_t)&_sram_start + (uintptr_t)&_sram_size)
 
 Area heap = RANGE(&_heap_start, SRAM_END);
 

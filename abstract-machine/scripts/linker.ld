@@ -10,6 +10,7 @@ PHDRS { text PT_LOAD; data PT_LOAD; }
 
 
 /*定义内存空间*/
+/* ysyxsoc.h 中也有定义*/
 MEMORY {
   mrom : ORIGIN = 0x20000000, LENGTH = 4K
   sram : ORIGIN = 0x0f000000, LENGTH = 8K
@@ -21,31 +22,28 @@ REGION_ALIAS("REGION_DATA", sram);
 REGION_ALIAS("REGION_BSS", sram);
 
 SECTIONS {
-
-  _sram_start=ORIGIN(sram)
-  _sram_size=LENGTH(sram)
-
   /* 链接的起始位置 */
-  . = ORIGIN(mrom);
+  . = 0x20000000;
   .text : {
     *(entry)
     *(.text*)
      etext = .;
     _etext = .;
-  } > REGION_TEXT: text
+  } > REGION_TEXT  AT> mrom :text
 
-  .rodata AT (_etext) : {
+  .rodata : {
     *(.rodata*)
+    rodata_end = .;
     _rodata_end = .;
-  } > REGION_RODATA
+  } > REGION_RODATA AT> mrom
 
-  .data AT (_rodata_end) : {
+  .data : {
    /*VMA*/
      _data_start = .;
     *(.data)
       edata = .;
      _edata = .;
-  } > REGION_DATA: data
+  } > REGION_DATA  AT> mrom :data
   
   /*LMA*/
   _data_load_start = LOADADDR(.data);
@@ -58,13 +56,13 @@ SECTIONS {
     *(.sbss*)
     *(.scommon)
   _bss_end = .;
-  } > REGION_BSS
+  } > REGION_BSS  AT> mrom
 
   /*stack and heap in sram*/
   _stack_top = ALIGN(4);
   . = _stack_top + 0x1000;
   _stack_pointer = .;
-  end = .;
+   end = .;
   _end = .;
   _heap_start = ALIGN(4);
 }
