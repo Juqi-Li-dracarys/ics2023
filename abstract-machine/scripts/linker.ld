@@ -23,7 +23,7 @@ REGION_ALIAS("REGION_BSS", sram);
 
 SECTIONS {
   /* 链接的起始位置 */
-  . = 0x20000000;
+  . = ORIGIN(mrom);
   .text : {
     *(entry)
     *(.text*)
