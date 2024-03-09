@@ -1,5 +1,5 @@
-#ifndef YSYXSOC_H__
-#define YSYXSOC_H__
+#ifndef _YSYXSOC_H__
+#define _YSYXSOC_H__
 
 #include <klib-macros.h>
 #include "riscv/riscv.h"
@@ -18,7 +18,7 @@ extern char _data_start;
 extern char _data_load_start;
 extern char _data_size;
 
-#define SRAM_END  ((uintptr_t)&_sram_start + (uintptr_t)&_sram_size)
+#define SRAM_END  0x0f000000 + 0x00000020
 
 
 typedef uintptr_t PTE;
