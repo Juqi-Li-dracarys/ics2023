@@ -43,11 +43,13 @@ SECTIONS {
     *(.data)
       edata = .;
      _edata = .;
+     _data_end = .;
   } > REGION_DATA  AT> mrom :data
   
   /*LMA*/
   _data_load_start = LOADADDR(.data);
   _data_size = SIZEOF(.data);
+  _size = _data_end - _data_start;
 
   /*未初始化不需要复制*/
   .bss : {
