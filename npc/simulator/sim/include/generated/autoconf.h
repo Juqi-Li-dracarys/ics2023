@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 17:38:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 15:27:38
+ * @Last Modified time: 2024-03-09 17:46:09
  */
 
 #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
@@ -16,7 +16,7 @@
 #define CONFIG_HAS_AUDIO 1
 #define CONFIG_MROM_SIZE 0x00001000
 #define CONFIG_CC_O2 1
-#define CONFIG_DEVICE 1
+// #define CONFIG_DEVICE 1
 #define CONFIG_HAS_KEYBOARD 1
 #define CONFIG_MODE_SYSTEM 1
 #define CONFIG_MEM_RANDOM 1

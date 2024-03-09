@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 18:53:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 17:43:43
+ * @Last Modified time: 2024-03-09 17:45:23
  */
 
 #include <common.h>
@@ -323,7 +323,6 @@ static int cmd_help(char *args) {
 void sdb_set_batch_mode() {
   is_batch_mode = true;
 }
-
 
 
 void sdb_mainloop() {
