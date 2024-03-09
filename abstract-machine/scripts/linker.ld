@@ -40,7 +40,7 @@ SECTIONS {
   .data : {
    /*VMA*/
      _data_start = .;
-    *(.data)
+    *(.data*)
       edata = .;
      _edata = .;
      _data_end = .;
