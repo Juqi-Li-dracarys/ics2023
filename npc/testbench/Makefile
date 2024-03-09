@@ -23,7 +23,7 @@ CROSS_COMPILE = riscv64-linux-gnu
 	$(CROSS_COMPILE)-gcc $(CFLAGS) -c -o $@ $<
 
 $(IMG):$(OBJ)
-	$(CROSS_COMPILE)-objcopy -S --set-section-flags .bss=alloc,contents -O binary $< $@ 
+	$(CROSS_COMPILE)-objcopy  -O binary $< $@ 
 
 
 run: $(IMG)
