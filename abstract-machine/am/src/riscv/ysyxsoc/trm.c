@@ -41,7 +41,6 @@ void _trm_init() {
   // boot loader
   // printf("data_start: %p load_start: %p\n", &_data_start,  &_data_load_start);
   if (&_data_start != &_data_load_start) {
-    putch('h');
     memcpy(&_data_start, &_data_load_start, (size_t)&_data_size);
   }
   // entry
