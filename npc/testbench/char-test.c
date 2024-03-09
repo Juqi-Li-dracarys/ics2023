@@ -10,7 +10,7 @@
 #define UART_BASE  0x10000000
 #define UART_TX    0
 
-int x = 1;
+int x = 50;
 
 void _start() {
   *(volatile char *)(UART_BASE + UART_TX) = 'H' ;
@@ -22,7 +22,7 @@ void _start() {
   *(volatile char *)(UART_BASE + UART_TX) = 'S' ;
   *(volatile char *)(UART_BASE + UART_TX) = 'o' ;
   *(volatile char *)(UART_BASE + UART_TX) = 'C' ;
-  *(volatile char *)(UART_BASE + UART_TX) = '!' ;
+  *(volatile char *)(UART_BASE + UART_TX) = x ;
   *(volatile char *)(UART_BASE + UART_TX) = '\n' ;
   while (1);
 }
