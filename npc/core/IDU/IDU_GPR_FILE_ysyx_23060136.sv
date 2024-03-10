@@ -68,7 +68,7 @@ module IDU_GPR_FILE_ysyx_23060136 (
                 assign w_e[j] = 1'b0;
             end
             else begin
-                assign w_e[j] = RegWr & (WBU_rd == j) & 1'b0;
+                assign w_e[j] = RegWr & (WBU_rd == j);
             end
             assign r_e_1[j] = (IDU_rs1 == j);
             assign r_e_2[j] = (IDU_rs2 == j);

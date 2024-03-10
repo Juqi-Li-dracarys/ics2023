@@ -159,10 +159,8 @@ void difftest_step(bool interrupt) {
   }
   difftest_exec(1);
   difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-  // difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
   if(!interrupt) {
     checkregs(&ref_r, sim_cpu.pc);
-    // checkmem(ref_pmem, sim_cpu.pc);
   }
   if(is_skip_ref) {
     is_skip_ref = false;
