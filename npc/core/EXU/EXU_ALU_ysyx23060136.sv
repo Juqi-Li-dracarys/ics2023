@@ -56,7 +56,7 @@ module EXU_ALU_ysyx23060136 (
     wire              add_overflow;
     wire   [31 : 0]   add_result;
 
-    assign {add_carry,add_result} = EXU_ALU_da + sub_db + {{31{1'b0}}, sub_add};
+    assign {add_carry,add_result} = EXU_ALU_da - sub_db + {{31{1'b0}}, sub_add};
     assign add_overflow           = (EXU_ALU_da[31] == sub_db[31]) && (EXU_ALU_da[31] != add_result[31]);
     assign EXU_ALU_Zero           = (add_result == 32'b0);
     assign EXU_ALU_Less           = US ? add_carry ^ sub_add : add_overflow ^ add_result[31];
