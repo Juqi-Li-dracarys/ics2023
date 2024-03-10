@@ -25,6 +25,7 @@ SECTIONS {
   /* 链接的起始位置 */
   . = ORIGIN(mrom);
   .text : {
+    _stext = .;
     *(entry)
     *(.text*)
      etext = .;
@@ -32,7 +33,9 @@ SECTIONS {
   } > REGION_TEXT  AT> mrom :text
 
   .rodata : {
+    _rodata_start = .;
     *(.rodata*)
+    *(.srodata*)
     rodata_end = .;
     _rodata_end = .;
   } > REGION_RODATA AT> mrom
