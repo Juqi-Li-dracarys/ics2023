@@ -23,7 +23,7 @@ VerilatedVcdC *m_trace = new VerilatedVcdC;
 //////////////////////////////////////////////////////
 
 // state of our simulated cpu
-CPU_state sim_cpu = {.pc = 0x80000000};
+CPU_state sim_cpu = {.pc = RESET_VECTOR};
 
 // the runing state of simulator
 extern SimState sim_state;
