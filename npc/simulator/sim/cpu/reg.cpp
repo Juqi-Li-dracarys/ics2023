@@ -2,11 +2,12 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 15:48:16 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 21:20:00
+ * @Last Modified time: 2024-03-08 00:17:01
  */
 
 #include <common.h>
 #include <reg.h>
+#include <sim.h>
 
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
@@ -31,7 +32,7 @@ void isa_reg_display() {
 word_t isa_reg_str2val(const char* s, bool* success) {
     if (!strcmp(s, "pc")) {
         *success = true;
-        return dut->pc_cur;
+        return CPU->pc_cur;
     }
     for (int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32) + 4; i++) {
         if (strcmp(regs[i], s) == 0) {
