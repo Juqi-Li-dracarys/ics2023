@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <generated/autoconf.h>
 #include <macro.h>
+#include <memory.h>
 
 #define MAX_SIM_TIME 40000000
 
@@ -77,9 +78,9 @@ void init_device(const char *diskpath);
 
 // memory
 word_t paddr_read(paddr_t addr, int len);
+void paddr_write(paddr_t addr, int len, word_t data);
 word_t host_read(void *addr, int len);
-paddr_t host_to_guest(uint8_t *haddr);
-
+void host_write(void *addr, int len, word_t data);
 
 // halt
 bool test_break();

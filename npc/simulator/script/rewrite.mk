@@ -8,9 +8,9 @@
 # Makefile for compiling C++ files
 # 我们修改一部分编译选项，使其能够和 NEMU 实现类似的功能
 
-default: VysyxSoCFull
+default: VCPU_TOP_ysyx23060136
 
-include VysyxSoCFull.mk
+include VCPU_TOP_ysyx23060136.mk
 
 CXXFLAGS += -MMD -O3 -g -std=c++14 -fno-exceptions -fPIE -Wall
 CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-11 --cxxflags)) \
