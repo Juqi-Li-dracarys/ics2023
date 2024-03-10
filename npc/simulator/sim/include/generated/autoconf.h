@@ -14,6 +14,7 @@
 #define CONFIG_RTC_MMIO 0xa0000040
 #define CONFIG_TARGET_NATIVE_ELF 1
 #define CONFIG_HAS_AUDIO 1
+
 #define CONFIG_MROM_SIZE 0x00001000
 #define CONFIG_CC_O2 1
 // #define CONFIG_DEVICE 1
@@ -26,6 +27,7 @@
 #define CONFIG_HAS_VGA 1
 #define CONFIG_HAS_TIMER 1
 #define CONFIG_DISK_CTL_MMIO 0xa0000300
+
 #define CONFIG_MROM_BASE 0x20000000
 #define CONFIG_TIMER_GETTIMEOFDAY 1
 #define CONFIG_ENGINE_INTERPRETER 1
@@ -59,15 +61,15 @@
 #define CONFIG_ITRACE_COND 1
 #define ITRACE_COND  1
 
-// // diff test
-// #define CONFIG_DIFFTEST 1
+// diff test
+#define CONFIG_DIFFTEST 1
 
 // // Mtrace
 // # define CONFIG_MTRACE_COND 1
 // # define MTRACE_COND 1
 
-// // watch/break point
-// #define CONFIG_WBCHECK 1
+// watch/break point
+#define CONFIG_WBCHECK 1
 
 //wave record
 #define WAVE_RECORD 1
