@@ -41,6 +41,7 @@ SECTIONS {
    /*VMA*/
      _data_start = .;
     *(.data*)
+    *(.sdata*)
       edata = .;
      _edata = .;
      _data_end = .;
@@ -49,7 +50,6 @@ SECTIONS {
   /*LMA*/
   _data_load_start = LOADADDR(.data);
 
-  /*未初始化不需要复制*/
   .bss : {
 	_bss_start = .;
     *(.bss*)
