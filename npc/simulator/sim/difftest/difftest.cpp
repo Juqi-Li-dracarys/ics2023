@@ -33,7 +33,7 @@ static int skip_dut_nr_inst = 0;
 // skip in the next cycle
 static bool is_skip_next = false;
 
-
+#define CONFIG_DIFFTEST 
 #ifdef CONFIG_DIFFTEST 
 
 extern uint8_t mrom[CONFIG_MROM_SIZE];
@@ -86,7 +86,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   // copy register
   difftest_regcpy(&sim_cpu, DIFFTEST_TO_REF);
   // copy the memory, the registers, the pc to nemu, so our cpu and nemu can run with the same initial state
-  difftest_memcpy(CONFIG_MROM_BASE, guest_to_host(CONFIG_MBASE), CONFIG_MROM_SIZE, DIFFTEST_TO_REF);
+  difftest_memcpy(CONFIG_MROM_BASE, guest_to_host(CONFIG_MROM_BASE), CONFIG_MROM_SIZE, DIFFTEST_TO_REF);
 }
 
 // copy our registers to nemu
@@ -143,12 +143,12 @@ static void checkregs(CPU_state *ref, vaddr_t pc) {
   }
 }
 
-static void checkmem(uint8_t *ref_mrom, vaddr_t pc) {
-  if (!isa_difftest_checkmem(ref_mrom, pc)) {
-    sim_state.state = SIM_ABORT;
-    sim_state.halt_pc = pc;
-  }
-}
+// static void checkmem(uint8_t *ref_mrom, vaddr_t pc) {
+//   if (!isa_difftest_checkmem(ref_mrom, pc)) {
+//     sim_state.state = SIM_ABORT;
+//     sim_state.halt_pc = pc;
+//   }
+// }
 
 void difftest_step(bool interrupt) {
   CPU_state ref_r;
