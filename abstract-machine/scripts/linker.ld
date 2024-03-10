@@ -48,8 +48,6 @@ SECTIONS {
   
   /*LMA*/
   _data_load_start = LOADADDR(.data);
-  _data_size = SIZEOF(.data);
-  _size = _data_end - _data_start;
 
   /*未初始化不需要复制*/
   .bss : {
@@ -59,6 +57,8 @@ SECTIONS {
     *(.scommon)
   _bss_end = .;
   } > REGION_BSS  AT> mrom
+
+ _data_size = _bss_end - _data_start;
 
   /*stack and heap in sram*/
   _stack_top = ALIGN(4);
