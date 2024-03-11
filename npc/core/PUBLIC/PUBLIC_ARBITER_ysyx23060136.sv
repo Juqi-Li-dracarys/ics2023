@@ -113,7 +113,7 @@
             io_master_arsize  <=  'b0;
             guest_obj         <=  'b0;
         end
-        else if(IFU_a_handshake | MEM_a_handshake) begin
+        else if(a_state_next == `ready) begin
             io_master_araddr  <=   {32{IFU_a_handshake}} & ARBITER_IFU_pc    |
                                    {32{MEM_a_handshake}} & ARBITER_MEM_raddr ;
 

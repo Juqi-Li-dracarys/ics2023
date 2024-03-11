@@ -135,9 +135,11 @@ module MEM_DATA_MEM_ysyx23060136 (
  
     
     // 符号拓展
-    assign                     MEM_rdata      =  ({32{MEM_mem_byte_u | MEM_mem_half_u | MEM_mem_word}}) & ARBITER_MEM_rdata               | 
-                                                 ({32{MEM_mem_byte  }}) & (ARBITER_MEM_rdata | {{24{ARBITER_MEM_rdata[7]}},  {8{1'b0}}})  |
-                                                 ({32{MEM_mem_half  }}) & (ARBITER_MEM_rdata | {{16{ARBITER_MEM_rdata[15]}}, {16{1'b0}}}) ;
+    assign                     MEM_rdata      =  ({32{MEM_mem_byte_u}}) & ARBITER_MEM_rdata & 32'h0000_00FF                                                 |
+                                                 ({32{MEM_mem_half_u}}) & ARBITER_MEM_rdata & 32'h0000_FFFF                                                 |
+                                                 ({32{MEM_mem_word}})   & ARBITER_MEM_rdata & 32'hFFFF_FFFF                                                 |
+                                                 ({32{MEM_mem_byte  }}) & ((32'h0000_00FF & ARBITER_MEM_rdata) | {{24{ARBITER_MEM_rdata[7]}},  {8{1'b0}}})  |
+                                                 ({32{MEM_mem_half  }}) & ((32'h0000_FFFF & ARBITER_MEM_rdata) | {{16{ARBITER_MEM_rdata[15]}}, {16{1'b0}}}) ;
 
                             
     // this signal is used for next phase of CPU 
