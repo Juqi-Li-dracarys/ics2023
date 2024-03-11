@@ -98,7 +98,7 @@ module MEM_DATA_MEM_ysyx23060136 (
     // write configure
     assign                              io_master_awid           =  4'b0                               ;
     assign                              io_master_awlen          =  8'b0000_0000                       ;
-    assign                              io_master_awburst        =  2'b01                              ;
+    assign                              io_master_awburst        =  2'b00                              ;
 
 
 
