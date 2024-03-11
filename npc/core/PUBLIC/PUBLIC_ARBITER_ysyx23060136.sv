@@ -65,7 +65,7 @@
     // configure
     assign       io_master_arid            =  'b0                                                   ;
     assign       io_master_arlen           =  8'b0000_0000                                          ;
-    assign       io_master_arburst         =  2'b01                                                 ;
+    assign       io_master_arburst         =  2'b00                                                 ;
 
 
     // ===========================================================================
