@@ -55,8 +55,8 @@ NPC_FLAGS += -f $(IMAGE).elf
 image: $(IMAGE).elf
 	@$(OBJDUMP) -d $(IMAGE).elf > $(IMAGE).txt
 	@echo + OBJCOPY "->" $(IMAGE_REL).bin
-	@$(OBJCOPY) -S -O binary $(IMAGE).elf $(IMAGE).bin
-# @$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
+# @$(OBJCOPY) -S -O binary $(IMAGE).elf $(IMAGE).bin
+	@$(OBJCOPY) -S --set-section-flags .bss=contents -O binary $(IMAGE).elf $(IMAGE).bin
 
 # load the image on ysyxsoc simulator
 
