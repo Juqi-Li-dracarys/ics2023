@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 16:22:05
+ * @Last Modified time: 2024-03-12 21:17:49
  */
 
 #include <am.h>
@@ -22,7 +22,7 @@ Area heap = RANGE(&_heap_start, SRAM_END);
 static const char mainargs[] = MAINARGS;
 
 void putch(char ch) {
-  *(volatile char *)(UART_BASE + UART_TX) = ch ;
+  // *(volatile char *)(UART_BASE + UART_TX) = ch ;
 }
 
 void halt(int code) {
