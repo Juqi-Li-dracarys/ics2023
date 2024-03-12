@@ -9,6 +9,7 @@
 // 输出第一个字符
 #define UART_BASE  0x10000000
 #define UART_TX    0
+#define UART_TX_1  1
 
 
 void _start() {
@@ -23,6 +24,18 @@ void _start() {
   *(volatile char *)(UART_BASE + UART_TX) = 'C' ;
   *(volatile char *)(UART_BASE + UART_TX) = '!' ;
   *(volatile char *)(UART_BASE + UART_TX) = '\n';
+
+  *(volatile char *)(UART_BASE + UART_TX_1) = 'h' ;
+  *(volatile char *)(UART_BASE + UART_TX_1) = 'e' ;
+  *(volatile char *)(UART_BASE + UART_TX_1) = 'l' ;
+  *(volatile char *)(UART_BASE + UART_TX_1) = 'l' ;
+  *(volatile char *)(UART_BASE + UART_TX_1) = 'o' ;
+  *(volatile char *)(UART_BASE + UART_TX_1) = ',' ;
+  *(volatile char *)(UART_BASE + UART_TX_1) = 'S' ;
+  *(volatile char *)(UART_BASE + UART_TX_1) = 'o' ;
+  *(volatile char *)(UART_BASE + UART_TX_1) = 'C' ;
+  *(volatile char *)(UART_BASE + UART_TX_1) = '!' ;
+  *(volatile char *)(UART_BASE + UART_TX_1) = '\n';
 
    asm volatile(
     "mv a0, %0\n\t"
