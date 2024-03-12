@@ -30,7 +30,7 @@ module IFU_TOP_ysyx23060136(
         // 当该信号为 true
         output                              IFU_o_valid                ,
 
-        input              [  31:0]         ARBITER_IFU_inst           ,
+        input              [  63:0]         ARBITER_IFU_inst           ,
         input                               ARBITER_IFU_inst_valid     ,
         input                               ARBITER_IFU_pc_ready       ,
   
@@ -40,9 +40,9 @@ module IFU_TOP_ysyx23060136(
     );
 
     // current inst/pc is valid
-    wire           pc_change                  ;
-    wire           inst_valid                 ;
-    assign         IFU_o_valid = inst_valid   ;
+    wire           pc_change                            ;
+    wire           inst_valid                           ;
+    assign         IFU_o_valid  =          inst_valid   ;
 
     
     IFU_INST_MEM_ysyx23060136  IFU_INST_MEM_ysyx23060136_inst (
@@ -53,7 +53,6 @@ module IFU_TOP_ysyx23060136(
                                    .pc_change                         (pc_change                 ),
                                    .inst_valid                        (inst_valid                ),
 
-                                            // arbiter interface 握手信号
                                    .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
                                    .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
                                    .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),

@@ -106,7 +106,7 @@ module MEM_TOP_ysyx23060136 (
         output                              ARBITER_MEM_raddr_valid      ,
         output             [   2:0]         ARBITER_MEM_rsize            ,
 
-        input              [  31:0]         ARBITER_MEM_rdata            ,
+        input              [  63:0]         ARBITER_MEM_rdata            ,
         input                               ARBITER_MEM_rdata_valid      ,
         output                              ARBITER_MEM_rdata_ready      ,
         // ===========================================================================
@@ -166,7 +166,6 @@ module MEM_TOP_ysyx23060136 (
                                .MEM_rdata                         (MEM_o_rdata               ),
                                .MEM_waddr                         (MEM_waddr                 ),
                                .MEM_wdata                         (MEM_wdata                 ),
-                               .MEM_write_mem                     (MEM_i_write_mem           ),
                                .MEM_mem_byte                      (MEM_i_mem_byte            ),
                                .MEM_mem_half                      (MEM_i_mem_half            ),
                                .MEM_mem_word                      (MEM_i_mem_word            ),

@@ -8,7 +8,6 @@
 
 `include "DEFINES_ysyx23060136.sv"
 
-// /* verilator lint_off UNUSED */
 
 // Top module of riscv32 core
 // ===========================================================================
@@ -121,7 +120,7 @@ module ysyx_23060136 (
     wire                [  31:0]         IFU_o_pc                   ;
     wire                                 IFU_o_valid                ;
 
-    wire                [  31:0]         ARBITER_IFU_inst           ;
+    wire                [  63:0]         ARBITER_IFU_inst           ;
     wire                                 ARBITER_IFU_inst_valid     ;
     wire                                 ARBITER_IFU_pc_ready       ;
     wire                [  31:0]         ARBITER_IFU_pc             ;
@@ -697,7 +696,7 @@ module ysyx_23060136 (
     wire                                ARBITER_MEM_raddr_ready    ;
     wire               [  31:0]         ARBITER_MEM_raddr          ;
     wire                                ARBITER_MEM_raddr_valid    ;
-    wire               [  31:0]         ARBITER_MEM_rdata          ;
+    wire               [  63:0]         ARBITER_MEM_rdata          ;
     wire                                ARBITER_MEM_rdata_valid    ;
     wire                                ARBITER_MEM_rdata_ready    ;
     wire               [   2:0]         ARBITER_MEM_rsize          ;

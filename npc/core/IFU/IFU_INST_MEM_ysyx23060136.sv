@@ -26,7 +26,7 @@ module IFU_INST_MEM_ysyx23060136 (
       output             [  31:0]         ARBITER_IFU_pc             ,
       output                              ARBITER_IFU_pc_valid       ,
 
-      input              [  31:0]         ARBITER_IFU_inst           ,
+      input              [  63:0]         ARBITER_IFU_inst           ,
       input                               ARBITER_IFU_inst_valid     ,
       output                              ARBITER_IFU_inst_ready     ,
 
@@ -40,8 +40,9 @@ module IFU_INST_MEM_ysyx23060136 (
     assign                       ARBITER_IFU_pc         =  IFU_o_pc                              ;
     assign                       ARBITER_IFU_pc_valid   =  r_state_idle & new_pc                 ;
     // 传输地址完成后，我们直接准备接受数据
-    assign                       ARBITER_IFU_inst_ready =  r_state_busy                          ; 
-    assign                       IFU_o_inst             =  ARBITER_IFU_inst                      ;
+    assign                       ARBITER_IFU_inst_ready =  r_state_busy                          ;
+    // 目前使用 ROM 不需要考虑非对齐的问题
+    assign                       IFU_o_inst             =  ARBITER_IFU_inst [31 : 0]             ;
     assign                       inst_valid             =  r_state_idle & ~pc_change & ~new_pc;  ;
 
 

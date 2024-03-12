@@ -10,6 +10,9 @@
 
 // interface for main memory
 // protocol: Easy AXI-lite and full-AXI
+
+// 注意 64 位数据对齐的问题， bug 在 2023.3.11 修复
+
 // ===========================================================================
 module MEM_DATA_MEM_ysyx23060136 (
     input                               clk                        ,
@@ -23,7 +26,6 @@ module MEM_DATA_MEM_ysyx23060136 (
     // write interface for cpu
     input              [  31:0]         MEM_waddr                  ,
     input              [  31:0]         MEM_wdata                  ,
-    input                               MEM_write_mem              ,
     // write/read mode
     input                               MEM_mem_byte               ,
     input                               MEM_mem_half               ,
@@ -38,7 +40,7 @@ module MEM_DATA_MEM_ysyx23060136 (
     output             [   2:0]         ARBITER_MEM_rsize           ,
     output                              ARBITER_MEM_raddr_valid     ,
 
-    input              [  31:0]         ARBITER_MEM_rdata           ,
+    input              [  63:0]         ARBITER_MEM_rdata           ,
     input                               ARBITER_MEM_rdata_valid     ,
     output                              ARBITER_MEM_rdata_ready     ,
     // ===========================================================================
@@ -83,15 +85,17 @@ module MEM_DATA_MEM_ysyx23060136 (
     assign                              io_master_wlast          =  io_master_wvalid                   ;
 
     assign                              io_master_awaddr         =  MEM_waddr                          ;
-    assign                              io_master_wdata          =  {32'b0, MEM_wdata}                 ;
+    assign                              io_master_wdata          =  w_abstract                         ;
 
     assign                              io_master_awsize         =  ({3{MEM_mem_byte}}) & 3'b000       |
                                                                     ({3{MEM_mem_half}}) & 3'b001       |
                                                                     ({3{MEM_mem_word}}) & 3'b010       ;
 
-    assign                              io_master_wstrb          =  ({8{MEM_mem_byte}}) & 8'b0000_0001 |
-                                                                    ({8{MEM_mem_half}}) & 8'b0000_0011 |
-                                                                    ({8{MEM_mem_word}}) & 8'b0000_1111 ;
+
+    // 注意字节对齐问题
+    assign                              io_master_wstrb          =  ({8{MEM_mem_byte}}) & (8'b0000_0001 << io_master_awaddr[2 : 0]) |
+                                                                    ({8{MEM_mem_half}}) & (8'b0000_0011 << io_master_awaddr[2 : 0]) |
+                                                                    ({8{MEM_mem_word}}) & (8'b0000_1111 << io_master_awaddr[2 : 0]) ;
                                                                     
     assign                              io_master_bready         =  w_state_busy                       ;
 
@@ -132,15 +136,31 @@ module MEM_DATA_MEM_ysyx23060136 (
     wire         [1 : 0]       w_state_next   =  ({2{w_state_idle}} & ((io_master_awready & io_master_awvalid & io_master_wready & io_master_wvalid) ?  `busy : `idle)) | 
                                                  ({2{w_state_busy}} & ((io_master_bready  & io_master_bvalid)                                        ?  `idle : `busy)) ;
     
- 
     
-    // 符号拓展
-    assign                     MEM_rdata      =  ({32{MEM_mem_byte_u}}) & ARBITER_MEM_rdata & 32'h0000_00FF                                                 |
-                                                 ({32{MEM_mem_half_u}}) & ARBITER_MEM_rdata & 32'h0000_FFFF                                                 |
-                                                 ({32{MEM_mem_word}})   & ARBITER_MEM_rdata & 32'hFFFF_FFFF                                                 |
-                                                 ({32{MEM_mem_byte  }}) & ((32'h0000_00FF & ARBITER_MEM_rdata) | {{24{ARBITER_MEM_rdata[7]}},  {8{1'b0}}})  |
-                                                 ({32{MEM_mem_half  }}) & ((32'h0000_FFFF & ARBITER_MEM_rdata) | {{16{ARBITER_MEM_rdata[15]}}, {16{1'b0}}}) ;
+    // 我们要注意对齐的问题
+    // 这里进行地址映射的分类                                        
+    wire                       from_rom       =  (ARBITER_MEM_raddr >= 32'h2000_0000) && (ARBITER_MEM_raddr < 32'h2000_1000)                                       ;
+    
+    // 32 位转 64 位
+    wire     [63 : 0]          w_abstract     =  {32'b0, MEM_wdata} << ({io_master_awaddr[2 : 0], 3'b0})                                                           ;
+    wire     [63 : 0]          r_abstract     =  ARBITER_MEM_rdata >> ({ARBITER_MEM_raddr[2 : 0], 3'b0})                                                           ;
 
+
+    // 如果来自 ROM 则直接截取后拓展
+    wire     [31 : 0]          MROM_rdata     = ({32{MEM_mem_byte_u}}) & ARBITER_MEM_rdata[31 : 0] & 32'h0000_00FF                                                 |
+                                                ({32{MEM_mem_half_u}}) & ARBITER_MEM_rdata[31 : 0] & 32'h0000_FFFF                                                 |
+                                                ({32{MEM_mem_word}})   & ARBITER_MEM_rdata[31 : 0] & 32'hFFFF_FFFF                                                 |
+                                                ({32{MEM_mem_byte  }}) & ((32'h0000_00FF & ARBITER_MEM_rdata[31 : 0]) | {{24{ARBITER_MEM_rdata[7]}},  {8{1'b0}}})  |
+                                                ({32{MEM_mem_half  }}) & ((32'h0000_FFFF & ARBITER_MEM_rdata[31 : 0]) | {{16{ARBITER_MEM_rdata[15]}}, {16{1'b0}}}) ;
+
+    // 如果来自 SRAM 需要通过掩码来处理 AXI 64 位的对齐问题
+    wire     [31 : 0]          SRAM_rdata     = ({32{MEM_mem_byte_u}}) & r_abstract[31 : 0]        & 32'h0000_00FF                                                 |
+                                                ({32{MEM_mem_half_u}}) & r_abstract[31 : 0]        & 32'h0000_FFFF                                                 |
+                                                ({32{MEM_mem_word}})   & r_abstract[31 : 0]        & 32'hFFFF_FFFF                                                 |
+                                                ({32{MEM_mem_byte  }}) & ((32'h0000_00FF & r_abstract[31 : 0]) | {{24{r_abstract[7]}},  {8{1'b0}}})                |
+                                                ({32{MEM_mem_half  }}) & ((32'h0000_FFFF & r_abstract[31 : 0]) | {{16{r_abstract[15]}}, {16{1'b0}}})               ;
+
+    assign                     MEM_rdata      =  from_rom ? MROM_rdata : SRAM_rdata;
                             
     // this signal is used for next phase of CPU 
     assign                     MEM_rvalid     =   r_state_idle & ~MEM_i_raddr_change & ~new_raddr;
