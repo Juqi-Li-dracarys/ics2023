@@ -59,8 +59,8 @@ image: $(IMAGE).elf
 	@$(OBJCOPY) -S -O binary $(IMAGE).elf $(IMAGE).bin
 # @$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
 
-# load the image on ysyxsoc simulator
 
+# load the image on ysyxsoc simulator
 run: image
 	@echo + Load "->" $(IMAGE).bin
 	$(MAKE) -C $(SIMULATOR_HOME) ARGS="$(NPC_FLAGS)" IMG="$(IMAGE).bin" run
