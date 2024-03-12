@@ -53,7 +53,7 @@ SECTIONS {
   
   /*LMA*/
   _data_load_start = LOADADDR(.data);
-  _data_size = _data_end - _bss_start;
+  _data_size = _bss_start - _data_start;
 
   .bss : {
 	_bss_start = .;
