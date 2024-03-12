@@ -21,7 +21,8 @@
     output                             ARBITER_IFU_pc_ready        ,
 
     input                              ARBITER_IFU_inst_ready      ,
-    output    logic   [  31:0]         ARBITER_IFU_inst            ,
+    // IFU 始终保持对齐，不需要特殊操作
+    output    logic   [  63:0]         ARBITER_IFU_inst            ,
     output                             ARBITER_IFU_inst_valid      ,
      // ===========================================================================
     // arbiter-MEM interface   
@@ -30,7 +31,7 @@
     input                              ARBITER_MEM_raddr_valid     ,
     output                             ARBITER_MEM_raddr_ready     ,
 
-    output    logic   [  31:0]         ARBITER_MEM_rdata           ,
+    output    logic   [  63:0]         ARBITER_MEM_rdata           ,
     output                             ARBITER_MEM_rdata_valid     ,
     input                              ARBITER_MEM_rdata_ready     ,
     output    logic                    ARBITER_error_signal        ,
@@ -128,22 +129,22 @@
 
     always_ff @(posedge clk) begin : inst_trans_to_arbiter
         if(rst) begin
-            ARBITER_IFU_inst       <=  `NOP;
+            ARBITER_IFU_inst       <=  {32'b0,`NOP};
         end
         else if((a_state_next == `over) & guest_IFU & io_master_rlast)
             begin
-            ARBITER_IFU_inst       <=  io_master_rdata[31 : 0];
+            ARBITER_IFU_inst       <=  io_master_rdata;
         end
     end
 
     
     always_ff @(posedge clk) begin : rdata_trans_to_arbiter
         if(rst) begin
-            ARBITER_MEM_rdata  <=  32'b0;
+            ARBITER_MEM_rdata  <=  64'b0;
         end
         else if((a_state_next == `over) & guest_MEM & io_master_rlast)
             begin
-            ARBITER_MEM_rdata  <=  io_master_rdata[31 : 0];
+            ARBITER_MEM_rdata  <=  io_master_rdata;
         end
     end
 
