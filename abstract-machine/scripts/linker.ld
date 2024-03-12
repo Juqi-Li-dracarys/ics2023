@@ -19,7 +19,7 @@ MEMORY {
 REGION_ALIAS("REGION_TEXT", mrom);
 REGION_ALIAS("REGION_RODATA", mrom);
 REGION_ALIAS("REGION_DATA", sram);
-REGION_ALIAS("REGION_BSS", sram);
+REGION_ALIAS("REGION_BSS", mrom);
 
 SECTIONS {
   /* 链接的起始位置 */
@@ -49,6 +49,8 @@ SECTIONS {
      _edata = .;
      _data_end = .;
   } > REGION_DATA  AT> mrom :data
+
+   _data_size = _bss_start - _data_start;
   
   /*LMA*/
   _data_load_start = LOADADDR(.data);
@@ -60,8 +62,6 @@ SECTIONS {
     *(.scommon)
   _bss_end = .;
   } > REGION_BSS  AT> mrom
-
- _data_size = _bss_end - _data_start;
 
   /*stack and heap in sram*/
   _stack_top = ALIGN(4);
