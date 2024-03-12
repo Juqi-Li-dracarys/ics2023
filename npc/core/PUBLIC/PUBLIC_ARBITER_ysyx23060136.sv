@@ -114,7 +114,7 @@
             io_master_arsize  <=  'b0;
             guest_obj         <=  'b0;
         end
-        else if(a_state_next == `ready) begin
+        else if(a_state_idle & (a_state_next == `ready)) begin
             io_master_araddr  <=   {32{IFU_a_handshake}} & ARBITER_IFU_pc    |
                                    {32{MEM_a_handshake}} & ARBITER_MEM_raddr ;
 
@@ -131,7 +131,7 @@
         if(rst) begin
             ARBITER_IFU_inst       <=  {32'b0,`NOP};
         end
-        else if((a_state_next == `over) & guest_IFU & io_master_rlast)
+        else if(a_state_waiting & (a_state_next == `over) & guest_IFU & io_master_rlast)
             begin
             ARBITER_IFU_inst       <=  io_master_rdata;
         end
@@ -142,7 +142,7 @@
         if(rst) begin
             ARBITER_MEM_rdata  <=  64'b0;
         end
-        else if((a_state_next == `over) & guest_MEM & io_master_rlast)
+        else if(a_state_waiting & (a_state_next == `over) & guest_MEM & io_master_rlast)
             begin
             ARBITER_MEM_rdata  <=  io_master_rdata;
         end
@@ -152,7 +152,7 @@
         if(rst) begin
             ARBITER_error_signal   <=  `false;
         end
-        else if(a_state_next == `over)
+        else if(a_state_waiting & a_state_next == `over)
             begin
             ARBITER_error_signal   <=  (io_master_rresp != `OKAY) || (io_master_rid != io_master_arid);
         end
