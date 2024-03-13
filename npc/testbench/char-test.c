@@ -14,7 +14,7 @@
 
 
 void _start() {
-  char c = *(volatile char *)(FLASH_BASE + 1);
+  char c = *(volatile char *)(FLASH_BASE);
   *(volatile char *)(UART_BASE + UART_TX) = c;
   *(volatile char *)(UART_BASE + UART_TX) = '\n';
 
