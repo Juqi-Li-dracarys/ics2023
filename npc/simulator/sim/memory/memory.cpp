@@ -45,7 +45,7 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - mrom + CONFIG_MROM_BASE; 
 // DIP-C interface for SoC
 extern "C" void flash_read(int addr, int *data) { 
   if(in_flash(addr))
-    *data = *((uint32_t *)(addr - CONFIG_FLASH_BASE + flash));
+    *data = 'c';
   else
     *data = 0;
   return;
