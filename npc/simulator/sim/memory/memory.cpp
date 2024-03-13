@@ -18,7 +18,7 @@ extern inst_log *log_ptr;
 
 uint8_t mrom[CONFIG_MROM_SIZE];
 
-uint8_t flash [CONFIG_FLASH_SIZE] = {'a'};
+uint8_t flash [CONFIG_FLASH_SIZE];
 
 // check if the addr is valid
 static inline bool in_mrom(paddr_t addr) {
@@ -44,7 +44,7 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - mrom + CONFIG_MROM_BASE; 
 
 // DIP-C interface for SoC
 extern "C" void flash_read(int addr, int *data) { 
-    *data = *(uint32_t *)flash;
+    *data = *(uint32_t *)(flash + addr);
   return;
 }
 
@@ -80,5 +80,9 @@ word_t paddr_read(paddr_t addr, int len) {
   return r_data;
 }
 
+void init_mem() {
+  memset(flash, 'a', 20);
+  return;
+}
 
 
