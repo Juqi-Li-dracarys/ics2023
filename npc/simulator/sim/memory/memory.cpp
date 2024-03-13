@@ -47,7 +47,7 @@ extern "C" void flash_read(int addr, int *data) {
   if(in_flash(addr))
     *data = 'c';
   else
-    *data = 0;
+    *data = 'a';
   return;
 }
 
