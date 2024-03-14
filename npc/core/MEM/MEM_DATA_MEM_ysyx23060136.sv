@@ -137,30 +137,20 @@ module MEM_DATA_MEM_ysyx23060136 (
                                                  ({2{w_state_busy}} & ((io_master_bready  & io_master_bvalid)                                        ?  `idle : `busy)) ;
     
     
-    // 我们要注意对齐的问题
-    // 这里进行地址映射的分类                                        
-    wire                       from_rom       =  (ARBITER_MEM_raddr >= 32'h2000_0000) && (ARBITER_MEM_raddr < 32'h2000_1000)                                       ;
-    
-    // 32 位转 64 位
+    // 对齐问题                                    
+   
+    // 32 位 64 位互转（write / read）
     wire     [63 : 0]          w_abstract     =  {32'b0, MEM_wdata} << ({io_master_awaddr[2 : 0], 3'b0})                                                           ;
     wire     [63 : 0]          r_abstract     =  ARBITER_MEM_rdata >> ({ARBITER_MEM_raddr[2 : 0], 3'b0})                                                           ;
 
 
-    // 如果来自 ROM 则直接截取后拓展
-    wire     [31 : 0]          MROM_rdata     = ({32{MEM_mem_byte_u}}) & ARBITER_MEM_rdata[31 : 0] & 32'h0000_00FF                                                 |
-                                                ({32{MEM_mem_half_u}}) & ARBITER_MEM_rdata[31 : 0] & 32'h0000_FFFF                                                 |
-                                                ({32{MEM_mem_word}})   & ARBITER_MEM_rdata[31 : 0] & 32'hFFFF_FFFF                                                 |
-                                                ({32{MEM_mem_byte  }}) & ((32'h0000_00FF & ARBITER_MEM_rdata[31 : 0]) | {{24{ARBITER_MEM_rdata[7]}},  {8{1'b0}}})  |
-                                                ({32{MEM_mem_half  }}) & ((32'h0000_FFFF & ARBITER_MEM_rdata[31 : 0]) | {{16{ARBITER_MEM_rdata[15]}}, {16{1'b0}}}) ;
-
-    // 如果来自 SRAM 需要通过掩码来处理 AXI 64 位的对齐问题
-    wire     [31 : 0]          SRAM_rdata     = ({32{MEM_mem_byte_u}}) & r_abstract[31 : 0]        & 32'h0000_00FF                                                 |
-                                                ({32{MEM_mem_half_u}}) & r_abstract[31 : 0]        & 32'h0000_FFFF                                                 |
-                                                ({32{MEM_mem_word}})   & r_abstract[31 : 0]        & 32'hFFFF_FFFF                                                 |
+    // 处理 AXI 64 位的对齐问题
+    assign                     MEM_rdata      = ({32{MEM_mem_byte_u}}) & r_abstract[31 : 0]                    & 32'h0000_00FF                                     |
+                                                ({32{MEM_mem_half_u}}) & r_abstract[31 : 0]                    & 32'h0000_FFFF                                     |
+                                                ({32{MEM_mem_word}})   & r_abstract[31 : 0]                    & 32'hFFFF_FFFF                                     |
                                                 ({32{MEM_mem_byte  }}) & ((32'h0000_00FF & r_abstract[31 : 0]) | {{24{r_abstract[7]}},  {8{1'b0}}})                |
                                                 ({32{MEM_mem_half  }}) & ((32'h0000_FFFF & r_abstract[31 : 0]) | {{16{r_abstract[15]}}, {16{1'b0}}})               ;
 
-    assign                     MEM_rdata      =  from_rom ? MROM_rdata : SRAM_rdata;
                             
     // this signal is used for next phase of CPU 
     assign                     MEM_rvalid     =   r_state_idle & ~MEM_i_raddr_change & ~new_raddr;
