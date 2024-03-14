@@ -85,7 +85,7 @@ word_t paddr_read(paddr_t addr, int len) {
 }
 
 void init_mem() {
-  for(int i = 0; i < 10; i++) {
+  for(int i = 0; i < 100; i++) {
     flash[i] = i;
   }
   return;
