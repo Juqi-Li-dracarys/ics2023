@@ -42,15 +42,19 @@ uint8_t* guest_to_host(paddr_t paddr) { return mrom + paddr - CONFIG_MROM_BASE; 
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - mrom + CONFIG_MROM_BASE; }
 
 
+int bit_align_32(int addr) {
+  return addr & 0xFFFFFFFC;
+}
+
 // DIP-C interface for SoC
 extern "C" void flash_read(int addr, int *data) { 
-    *data = *(uint32_t *)(flash + addr);
+    *data = *(uint32_t *)(flash + bit_align_32(addr));
   return;
 }
 
 extern "C" void mrom_read(int addr, int *data) {
   if(in_mrom(addr))
-    *data = host_read(guest_to_host(addr), 4);
+    *data = host_read(guest_to_host(bit_align_32(addr)), 4);
   else
      out_of_bound(addr);
 }
