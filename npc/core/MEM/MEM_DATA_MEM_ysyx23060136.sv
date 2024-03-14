@@ -136,8 +136,6 @@ module MEM_DATA_MEM_ysyx23060136 (
     wire         [1 : 0]       w_state_next   =  ({2{w_state_idle}} & ((io_master_awready & io_master_awvalid & io_master_wready & io_master_wvalid) ?  `busy : `idle)) | 
                                                  ({2{w_state_busy}} & ((io_master_bready  & io_master_bvalid)                                        ?  `idle : `busy)) ;
     
-    
-    // 对齐问题                                    
    
     // 32 位 64 位互转（write / read）
     wire     [63 : 0]          w_abstract     =  {32'b0, MEM_wdata} << ({io_master_awaddr[2 : 0], 3'b0})                                                           ;
@@ -172,7 +170,7 @@ module MEM_DATA_MEM_ysyx23060136 (
             new_raddr <= `false;
         end
         else begin
-            new_raddr <= new_raddr_next;
+            new_raddr <=  new_raddr_next;
         end
     end
 

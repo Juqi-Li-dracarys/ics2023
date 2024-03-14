@@ -47,8 +47,10 @@ int bit_align_32(int addr) {
 }
 
 // DIP-C interface for SoC
+// 暂时不能对齐，因为读地址是 SPI，永远是对其的
+// 这就会导致错误
 extern "C" void flash_read(int addr, int *data) { 
-    *data = *(uint32_t *)(flash + bit_align_32(addr));
+    *data = *(uint32_t *)(flash + addr);
   return;
 }
 
