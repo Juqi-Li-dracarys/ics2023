@@ -81,7 +81,7 @@ word_t paddr_read(paddr_t addr, int len) {
 }
 
 void init_mem() {
-  memset(flash, 'a', 20);
+  memset(flash, 'a', 1);
   return;
 }
 
