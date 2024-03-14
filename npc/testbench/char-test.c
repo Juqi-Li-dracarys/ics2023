@@ -10,7 +10,6 @@
 #define UART_BASE  0x10000000
 #define FLASH_BASE 0x30000000
 #define UART_TX    0
-#define UART_TX_1  1
 
 
 void _start() {
