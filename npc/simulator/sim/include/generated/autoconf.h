@@ -55,13 +55,13 @@
 #define CONFIG_TRACE_END 10000
 
 
-// Trace
-#define CONFIG_TRACE 1
+// // Trace
+// #define CONFIG_TRACE 1
 
-// Itrace
-#define CONFIG_ITRACE 1
-#define CONFIG_ITRACE_COND 1
-#define ITRACE_COND  1
+// // Itrace
+// #define CONFIG_ITRACE 1
+// #define CONFIG_ITRACE_COND 1
+// #define ITRACE_COND  1
 
 // diff test
 // #define CONFIG_DIFFTEST 1
@@ -70,10 +70,10 @@
 // # define CONFIG_MTRACE_COND 1
 // # define MTRACE_COND 1
 
-// watch/break point
-#define CONFIG_WBCHECK 1
+// // watch/break point
+// #define CONFIG_WBCHECK 1
 
-//wave record
-#define WAVE_RECORD 1
+// //wave record
+// #define WAVE_RECORD 1
 
 
