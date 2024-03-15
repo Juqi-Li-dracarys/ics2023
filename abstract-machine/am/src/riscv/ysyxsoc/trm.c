@@ -39,7 +39,9 @@ void halt(int code) {
 static void display_author() {
     volatile uint32_t value;
     asm volatile ("csrr %0, mvendorid" : "=r" (value));
-    printf("%c%c%c%c", (char)(value >> 24), (char)(value >> 24), (char)(value >> 16), (char)(value >> 8), (char)(value));
+    printf("Author: %c%c%c%c", (char)(value >> 24), (char)(value >> 16), (char)(value >> 8), (char)(value));
+    asm volatile ("csrr %0, marchid" : "=r" (value));
+    printf("%d\n", value);
     return;
 }
 
