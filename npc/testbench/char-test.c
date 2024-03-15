@@ -13,20 +13,18 @@
 
 
 void _start() {
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(FLASH_BASE + 7);
-  *(volatile char *)(UART_BASE + UART_TX) = '\n';
 
-  // *(volatile char *)(UART_BASE + UART_TX) = 'h';
-  // *(volatile char *)(UART_BASE + UART_TX) = 'e' ;
-  // *(volatile char *)(UART_BASE + UART_TX) = 'l' ;
-  // *(volatile char *)(UART_BASE + UART_TX) = 'l' ;
-  // *(volatile char *)(UART_BASE + UART_TX) = 'o' ;
-  // *(volatile char *)(UART_BASE + UART_TX) = ',' ;
-  // *(volatile char *)(UART_BASE + UART_TX) = 'S' ;
-  // *(volatile char *)(UART_BASE + UART_TX) = 'o' ;
-  // *(volatile char *)(UART_BASE + UART_TX) = 'C' ;
-  // *(volatile char *)(UART_BASE + UART_TX) = '!' ;
-  // *(volatile char *)(UART_BASE + UART_TX) = '\n';
+  *(volatile char *)(UART_BASE + UART_TX) = 'h';
+  *(volatile char *)(UART_BASE + UART_TX) = 'e' ;
+  *(volatile char *)(UART_BASE + UART_TX) = 'l' ;
+  *(volatile char *)(UART_BASE + UART_TX) = 'l' ;
+  *(volatile char *)(UART_BASE + UART_TX) = 'o' ;
+  *(volatile char *)(UART_BASE + UART_TX) = ',' ;
+  *(volatile char *)(UART_BASE + UART_TX) = 'S' ;
+  *(volatile char *)(UART_BASE + UART_TX) = 'o' ;
+  *(volatile char *)(UART_BASE + UART_TX) = 'C' ;
+  *(volatile char *)(UART_BASE + UART_TX) = '!' ;
+  *(volatile char *)(UART_BASE + UART_TX) = '\n';
 
    asm volatile(
     "mv a0, %0\n\t"

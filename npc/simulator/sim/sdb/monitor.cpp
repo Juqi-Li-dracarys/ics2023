@@ -34,7 +34,7 @@ static const uint32_t img [] = {
 
 void init_isa() {
   // load built-in image size
-  memcpy(guest_to_host(CONFIG_MROM_BASE), img, sizeof(img));
+  memcpy(guest_to_host(CONFIG_FLASH_BASE), img, sizeof(img));
   sim_cpu.csr.mstatus = 0x1800;
   return ;
 }
@@ -62,7 +62,7 @@ static long load_img() {
   Log("The image is %s, size = %ld", img_file, size);
 
   fseek(fp, 0, SEEK_SET);
-  int ret = fread(guest_to_host(CONFIG_MROM_BASE), size, 1, fp);
+  int ret = fread(guest_to_host(CONFIG_FLASH_BASE), size, 1, fp);
   assert(ret == 1);
 
   fclose(fp);

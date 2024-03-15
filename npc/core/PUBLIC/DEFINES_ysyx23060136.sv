@@ -9,7 +9,7 @@
 `define  true     'b1
 `define  false    'b0
 
-`define  PC_RST    32'h20000000
+`define  PC_RST    32'h30000000
 `define  NOP       32'h00000013
 
 // AXI-lite machine state
