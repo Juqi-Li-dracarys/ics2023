@@ -35,8 +35,8 @@ static bool is_skip_next = false;
 
 #ifdef CONFIG_DIFFTEST 
 
-extern uint8_t mrom[CONFIG_MROM_SIZE];
-static uint8_t ref_mrom[CONFIG_MROM_SIZE];
+extern uint8_t flash[CONFIG_FLASH_SIZE];
+static uint8_t ref_flash[CONFIG_FLASH_SIZE];
 
 // this is used to let ref skip instructions which
 // can not produce consistent behavior with npc simulator
@@ -85,7 +85,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   // copy register
   difftest_regcpy(&sim_cpu, DIFFTEST_TO_REF);
   // copy the memory, the registers, the pc to nemu, so our cpu and nemu can run with the same initial state
-  difftest_memcpy(CONFIG_MROM_BASE, guest_to_host(CONFIG_MROM_BASE), CONFIG_MROM_SIZE, DIFFTEST_TO_REF);
+  difftest_memcpy(CONFIG_FLASH_BASE, guest_to_host(CONFIG_FLASH_BASE), CONFIG_FLASH_SIZE, DIFFTEST_TO_REF);
 }
 
 // copy our registers to nemu
