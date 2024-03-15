@@ -118,6 +118,8 @@ module MEM_DATA_MEM_ysyx23060136 (
     wire                       new_waddr_next =  (w_state_idle      & ( new_waddr    ? new_waddr : MEM_i_waddr_change)) |
                                                  (w_state_busy      & `false                                          ) ;
 
+    wire                       from_flash     =  (MEM_raddr >= `FLASH_BASE && MEM_raddr < `FLASH_END)                   ;
+    wire         [63 : 0]      swap_rdata     =  {ARBITER_MEM_rdata[39 : 32], ARBITER_MEM_rdata[47 : 40], ARBITER_MEM_rdata[55 : 48], ARBITER_MEM_rdata[63 : 56], ARBITER_MEM_rdata[7 : 0], ARBITER_MEM_rdata[15 : 8], ARBITER_MEM_rdata[23 : 16], ARBITER_MEM_rdata[31 : 24]};
 
     // read mater state machine
     logic        [1 : 0]       r_state;
@@ -139,7 +141,7 @@ module MEM_DATA_MEM_ysyx23060136 (
    
     // 32 位 64 位互转（write / read）
     wire     [63 : 0]          w_abstract     =  {32'b0, MEM_wdata} << ({io_master_awaddr[2 : 0], 3'b0})                                                           ;
-    wire     [63 : 0]          r_abstract     =  ARBITER_MEM_rdata >> ({ARBITER_MEM_raddr[2 : 0], 3'b0})                                                           ;
+    wire     [63 : 0]          r_abstract     =  (from_flash ? swap_rdata : ARBITER_MEM_rdata) >> ({ARBITER_MEM_raddr[2 : 0], 3'b0})                               ;
 
 
     // 处理 AXI 64 位的对齐问题
