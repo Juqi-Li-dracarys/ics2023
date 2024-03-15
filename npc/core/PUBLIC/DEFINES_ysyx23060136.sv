@@ -44,8 +44,8 @@
 `define  DEBUG    `b1
 
 
-`define   FLASH_BASE       'h30000000
-`define   FLASH_END        'h3fffffff
+`define  FLASH_BASE       'h30000000
+`define  FLASH_END        'h3fffffff
 
 
 
