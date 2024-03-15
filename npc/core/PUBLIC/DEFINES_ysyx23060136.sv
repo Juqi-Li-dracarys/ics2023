@@ -5,7 +5,9 @@
  * @Last Modified time: 2024-03-08 00:11:24
  */
 
-
+`define  FLASH_BASE     'h30000000
+`define  FLASH_END      'h3fffffff
+ 
 `define  true     'b1
 `define  false    'b0
 
@@ -42,10 +44,6 @@
 `define  DECERR   'b11
 
 `define  DEBUG    `b1
-
-
-`define  FLASH_BASE       'h30000000
-`define  FLASH_END        'h3fffffff
 
 
 
