@@ -12,8 +12,10 @@
 
 // load the state of your simulated cpu into sim_cpu
 void set_state() {
+  printf("ok2\n");
   sim_cpu.pc = CPU->pc_cur;
   memcpy(&sim_cpu.gpr[0], cpu_gpr, sizeof(uint32_t) * MUXDEF(CONFIG_RVE, 16, 32));
+  printf("ok3\n");
   memcpy(&sim_cpu.csr, cpu_csr, sizeof(uint32_t) * 4);
 }
 

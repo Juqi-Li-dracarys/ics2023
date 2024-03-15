@@ -48,9 +48,9 @@
 #define CONFIG_VGA_CTL_MMIO 0xa0000100
 #define CONFIG_PMEM_GARRAY 1
 #define CONFIG_FFB_ADDR 0xa2000000
+#define CONFIG_RVE 1
 
 // trace setting
-#define CONFIG_RVE 1
 #define CONFIG_TRACE_START 0
 #define CONFIG_TRACE_END 10000
 
