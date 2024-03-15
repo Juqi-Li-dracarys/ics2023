@@ -114,6 +114,7 @@ void excute(uint64_t n) {
     printf("ok4\n");
     g_nr_guest_inst++;
     trace_and_difftest(log_ptr, false);
+    printf("ok5\n");
     // 对于有异常的指令，会在下一次执行前终止程序
     if (signal_detect()) {
       // save the end state
