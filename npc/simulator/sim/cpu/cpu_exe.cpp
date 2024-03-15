@@ -100,7 +100,6 @@ void run_untile_commit() {
 // execute n instructions
 void excute(uint64_t n) {
   while (n--) {
-    printf("hello");
     // 流水线还未完成复位,需要跑完第一条指令
     // 以保证和 REF 同步
     if (!CPU->inst_commit) {
@@ -141,7 +140,7 @@ void cpu_exec(unsigned int n) {
       return;
     default: sim_state.state = SIM_RUNNING;
   }
-
+  printf("%d\n",n);
   uint64_t timer_start = get_time();
   excute(n);
   uint64_t timer_end = get_time();
