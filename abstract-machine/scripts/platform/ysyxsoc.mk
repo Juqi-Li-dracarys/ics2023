@@ -39,7 +39,7 @@ AM_SRCS := riscv/ysyxsoc/start.S \
 
 CFLAGS    += -fdata-sections -ffunction-sections
 
-LDFLAGS   += -T $(AM_HOME)/scripts/linker.ld
+LDFLAGS   += -T $(AM_HOME)/scripts/SoC_linker.ld
 
 LDFLAGS   += --gc-sections -e _start --print-map
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
