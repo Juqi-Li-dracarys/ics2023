@@ -17,12 +17,12 @@
 #include <memory/paddr.h>
 #include <isa.h>
 
-static uint8_t mrom[CONFIG_MROM_SIZE] = {};
+static uint8_t flash[CONFIG_FLASH_SIZE] = {};
 static uint8_t sram[CONFIG_SRAM_SIZE] = {};
 
 uint8_t* guest_to_host(paddr_t paddr) { 
-  if(in_mrom(paddr))
-    return mrom + paddr - CONFIG_MROM_MBASE;
+  if(in_flash(paddr))
+    return flash + paddr - CONFIG_FLASH_MBASE;
   else if(in_sram(paddr))
     return sram + paddr - CONFIG_SRAM_MBASE;
   else
@@ -40,9 +40,9 @@ static void pmem_write(paddr_t addr, int len, word_t data) {
 }
 
 void init_mem() {
-  uint32_t *p = (uint32_t *)mrom;
+  uint32_t *p = (uint32_t *)flash;
   int i;
-  for (i = 0; i < (int) (CONFIG_MROM_SIZE / sizeof(p[0])); i ++) {
+  for (i = 0; i < (int) (CONFIG_FLASH_SIZE / sizeof(p[0])); i ++) {
     p[i] = rand();
   }
 }
