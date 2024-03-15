@@ -30,7 +30,7 @@ module MEM_WB_SEG_REG_ysyx23060136 (
         input                               MEM_o_mem_to_reg           ,
 
         input             [4 : 0]           MEM_o_rd                   ,
-        input             [1 : 0]           MEM_o_csr_rd               ,
+        input             [2 : 0]           MEM_o_csr_rd               ,
         // system signal
         input                               MEM_o_system_halt          ,
         // ===========================================================================
@@ -47,7 +47,7 @@ module MEM_WB_SEG_REG_ysyx23060136 (
         output   logic                      WB_i_mem_to_reg              ,
 
         output   logic    [4 : 0]           WB_i_rd                      ,
-        output   logic    [1 : 0]           WB_i_csr_rd                  ,
+        output   logic    [2 : 0]           WB_i_csr_rd                  ,
 
         output   logic                      WB_i_system_halt             
 
@@ -67,7 +67,7 @@ module MEM_WB_SEG_REG_ysyx23060136 (
             WB_i_mem_to_reg     <=     1'b0;
 
             WB_i_rd             <=     5'b0;
-            WB_i_csr_rd         <=     2'b0;
+            WB_i_csr_rd         <=     3'b0;
             WB_i_system_halt    <=     1'b0;
         end
         else begin

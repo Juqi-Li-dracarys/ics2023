@@ -22,7 +22,7 @@ module IDU_TOP_ysyx23060136 (
         input              [   4:0]         WB_o_rd                      ,
         input                               WB_o_RegWr                   ,
         input              [  31:0]         WB_o_rf_busW                 ,
-        input              [   1:0]         WB_o_csr_rd                  ,
+        input              [   2:0]         WB_o_csr_rd                  ,
         input                               WB_o_CSRWr                   ,
         input              [  31:0]         WB_o_csr_busW                ,
         // ===========================================================================
@@ -39,8 +39,8 @@ module IDU_TOP_ysyx23060136 (
         output             [  31:0]         IDU_o_rs1_data               ,
         output             [  31:0]         IDU_o_rs2_data               ,
         // rd for WB, rs for forward
-        output             [   1:0]         IDU_o_csr_rd                 ,
-        output             [   1:0]         IDU_o_csr_rs                 ,
+        output             [   2:0]         IDU_o_csr_rd                 ,
+        output             [   2:0]         IDU_o_csr_rs                 ,
         output             [  31:0]         IDU_o_csr_rs_data            ,
         // ===========================================================================
         // ALU signal
