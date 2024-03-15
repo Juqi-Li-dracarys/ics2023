@@ -100,7 +100,7 @@ void run_untile_commit() {
 // execute n instructions
 void excute(uint64_t n) {
   while (n--) {
-
+    printf("hello");
     // 流水线还未完成复位,需要跑完第一条指令
     // 以保证和 REF 同步
     if (!CPU->inst_commit) {
