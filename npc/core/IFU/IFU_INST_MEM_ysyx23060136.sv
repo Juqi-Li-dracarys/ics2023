@@ -41,8 +41,12 @@ module IFU_INST_MEM_ysyx23060136 (
     assign                       ARBITER_IFU_pc_valid   =  r_state_idle & new_pc                 ;
     // 传输地址完成后，我们直接准备接受数据
     assign                       ARBITER_IFU_inst_ready =  r_state_busy                          ;
-    // 目前使用 ROM 不需要考虑非对齐的问题
-    assign                       IFU_o_inst             =  ARBITER_IFU_inst [31 : 0]             ;
+    
+    // 目前使用 FLASH 不需要考虑非对齐的问题
+    // 但需要反转
+    wire         [63 : 0]        swap_rdata             =  {ARBITER_IFU_inst[39 : 32], ARBITER_IFU_inst[47 : 40], ARBITER_IFU_inst[55 : 48], ARBITER_IFU_inst[63 : 56], ARBITER_IFU_inst[7 : 0], ARBITER_IFU_inst[15 : 8], ARBITER_IFU_inst[23 : 16], ARBITER_IFU_inst[31 : 24]};
+
+    assign                       IFU_o_inst             =  swap_rdata [31 : 0]                   ;
     assign                       inst_valid             =  r_state_idle & ~pc_change & ~new_pc;  ;
 
 
