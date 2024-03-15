@@ -106,15 +106,16 @@ void excute(uint64_t n) {
     if (!CPU->inst_commit) {
       run_untile_commit();
     }
-    printf("ok2\n");
     log_ptr->pc = CPU->pc_cur;
     log_ptr->inst = CPU->inst;
+    printf("ok2\n");
     run_untile_commit();
     // 保存下一条指令执行前的状态
+    printf("ok3\n");
     set_state();
     g_nr_guest_inst++;
     trace_and_difftest(log_ptr, false);
-
+    printf("ok4\n");
     // 对于有异常的指令，会在下一次执行前终止程序
     if (signal_detect()) {
       // save the end state
