@@ -36,12 +36,20 @@ void halt(int code) {
   while (1);
 }
 
+static void display_author() {
+    volatile uint32_t value;
+    asm volatile ("csrr %0, mvendorid" : "=r" (value));
+    printf("%p\n", value);
+    return;
+}
+
 
 void _trm_init() {
   // boot loader
   if (&_data_start != &_data_load_start) {
     memcpy(&_data_start, &_data_load_start, (size_t)&_data_size);
   }
+  display_author();
   // entry
   int ret = main(mainargs);
   halt(ret);
