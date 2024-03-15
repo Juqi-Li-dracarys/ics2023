@@ -102,10 +102,11 @@ void excute(uint64_t n) {
   while (n--) {
     // 流水线还未完成复位,需要跑完第一条指令
     // 以保证和 REF 同步
+    printf("ok1\n");
     if (!CPU->inst_commit) {
       run_untile_commit();
     }
-  
+    printf("ok2\n");
     log_ptr->pc = CPU->pc_cur;
     log_ptr->inst = CPU->inst;
     run_untile_commit();
@@ -140,11 +141,8 @@ void cpu_exec(unsigned int n) {
       return;
     default: sim_state.state = SIM_RUNNING;
   }
-  printf("%d\n",n);
   uint64_t timer_start = get_time();
-   printf("%d\n",n);
   excute(n);
-   printf("%d\n",n);
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
 
