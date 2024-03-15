@@ -55,7 +55,7 @@
 #define CONFIG_TRACE_END 10000
 
 
-// // Trace
+// Trace
 // #define CONFIG_TRACE 1
 
 // // Itrace
@@ -73,7 +73,7 @@
 // // watch/break point
 // #define CONFIG_WBCHECK 1
 
-// //wave record
-// #define WAVE_RECORD 1
+//wave record
+#define WAVE_RECORD 1
 
 
