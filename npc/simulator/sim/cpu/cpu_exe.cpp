@@ -102,20 +102,18 @@ void excute(uint64_t n) {
   while (n--) {
     // 流水线还未完成复位,需要跑完第一条指令
     // 以保证和 REF 同步
-    printf("ok1\n");
     if (!CPU->inst_commit) {
       run_untile_commit();
     }
     log_ptr->pc = CPU->pc_cur;
     log_ptr->inst = CPU->inst;
-    printf("ok2\n");
     run_untile_commit();
     // 保存下一条指令执行前的状态
-    printf("ok3\n");
+    printf("ok1\n");
     set_state();
+    printf("ok4\n");
     g_nr_guest_inst++;
     trace_and_difftest(log_ptr, false);
-    printf("ok4\n");
     // 对于有异常的指令，会在下一次执行前终止程序
     if (signal_detect()) {
       // save the end state
