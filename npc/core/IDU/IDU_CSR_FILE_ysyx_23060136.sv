@@ -82,7 +82,7 @@ module IDU_CSR_FILE_ysyx_23060136 (
         end
     endgenerate
 
-    assign IDU_csr_rs_data = data_out[3];
+    assign IDU_csr_rs_data = data_out[5];
 
 endmodule
 
