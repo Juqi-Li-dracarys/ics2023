@@ -48,6 +48,7 @@
 #define CONFIG_VGA_CTL_MMIO 0xa0000100
 #define CONFIG_PMEM_GARRAY 1
 #define CONFIG_FFB_ADDR 0xa2000000
+// USE RV32E
 #define CONFIG_RVE 1
 
 // trace setting
@@ -56,12 +57,12 @@
 
 
 // Trace
-// #define CONFIG_TRACE 1
+#define CONFIG_TRACE 1
 
-// // Itrace
-// #define CONFIG_ITRACE 1
-// #define CONFIG_ITRACE_COND 1
-// #define ITRACE_COND  1
+// Itrace
+#define CONFIG_ITRACE 1
+#define CONFIG_ITRACE_COND 1
+#define ITRACE_COND  1
 
 // diff test
 // #define CONFIG_DIFFTEST 1
@@ -70,8 +71,8 @@
 // # define CONFIG_MTRACE_COND 1
 // # define MTRACE_COND 1
 
-// // watch/break point
-// #define CONFIG_WBCHECK 1
+// watch/break point
+#define CONFIG_WBCHECK 1
 
 //wave record
 #define WAVE_RECORD 1
