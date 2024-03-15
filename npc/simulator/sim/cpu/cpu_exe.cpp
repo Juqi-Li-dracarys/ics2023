@@ -142,7 +142,9 @@ void cpu_exec(unsigned int n) {
   }
   printf("%d\n",n);
   uint64_t timer_start = get_time();
+   printf("%d\n",n);
   excute(n);
+   printf("%d\n",n);
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
 
