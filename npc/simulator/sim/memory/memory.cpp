@@ -42,10 +42,7 @@ inline int bit_align_32(int addr) {
 // DIP-C interface for SoC
 // 不要通过 SPI 寄存器间接访问 FLASH， 这可能会导致对齐错误
 extern "C" void flash_read(int addr, int *data) { 
-  if(in_flash(addr))
-    *data = host_read(guest_to_host(bit_align_32(addr)), 4);
-  else 
-    *data = 0;
+  *data = *(uint32_t *)(flash + bit_align_32(addr));
   return;
 }
 
