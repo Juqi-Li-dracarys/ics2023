@@ -45,7 +45,7 @@ extern "C" void flash_read(int addr, int *data) {
   if(in_flash(addr))
     *data = host_read(guest_to_host(bit_align_32(addr)), 4);
   else 
-    out_of_bound(addr);
+    *data = 0;
   return;
 }
 
