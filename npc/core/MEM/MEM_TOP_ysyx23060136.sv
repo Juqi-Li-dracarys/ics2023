@@ -18,15 +18,15 @@ module MEM_TOP_ysyx23060136 (
 
         input             [4 : 0]           IDU_o_rs1                    ,
         input             [4 : 0]           IDU_o_rs2                    ,
-        input             [1 : 0]           IDU_o_csr_rs                 ,
+        input             [2 : 0]           IDU_o_csr_rs                 ,
 
         input             [4 : 0]           EXU_o_rs1                    ,
         input             [4 : 0]           EXU_o_rs2                    ,
-        input             [1 : 0]           EXU_o_csr_rs                 ,
+        input             [2 : 0]           EXU_o_csr_rs                 ,
 
         // signal from WB to FORWARD in MEM
         input             [4 : 0]           WB_o_rd                      ,
-        input             [1 : 0]           WB_o_csr_rd                  ,
+        input             [2 : 0]           WB_o_csr_rd                  ,
         input                               WB_o_write_gpr               ,
         input                               WB_o_write_csr               ,
         input             [31 : 0]          WB_o_rs1_data                ,
@@ -47,7 +47,7 @@ module MEM_TOP_ysyx23060136 (
         input             [4 : 0]           MEM_i_rd                     ,
         input             [31 : 0]          MEM_i_rs2_data               ,
         // mem
-        input             [1 : 0]           MEM_i_csr_rd                 ,
+        input             [2 : 0]           MEM_i_csr_rd                 ,
         // mem
         input                               MEM_i_write_gpr              ,
         input                               MEM_i_write_csr              ,
@@ -76,7 +76,7 @@ module MEM_TOP_ysyx23060136 (
         output                              MEM_o_mem_to_reg             ,
 
         output            [4 : 0]           MEM_o_rd                     ,
-        output            [1 : 0]           MEM_o_csr_rd                 ,
+        output            [2 : 0]           MEM_o_csr_rd                 ,
         // system signal
         output                              MEM_o_system_halt            ,
         // ===========================================================================

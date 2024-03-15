@@ -20,7 +20,7 @@ module WB_TOP_ysyx23060136 (
         input              [  31:0]         WB_i_rdata                   ,
 
         input              [   4:0]         WB_i_rd                      ,
-        input              [   1:0]         WB_i_csr_rd                  ,
+        input              [   2:0]         WB_i_csr_rd                  ,
 
         input                               WB_i_write_gpr               ,
         input                               WB_i_write_csr               ,
@@ -32,7 +32,7 @@ module WB_TOP_ysyx23060136 (
         output             [  31:0]         WB_o_rf_busW               ,
         output             [  31:0]         WB_o_csr_busW              ,
         output             [   4:0]         WB_o_rd                    ,
-        output             [   1:0]         WB_o_csr_rd                ,
+        output             [   2:0]         WB_o_csr_rd                ,
         output                              WB_o_RegWr                 ,
         output                              WB_o_CSRWr                 ,
 

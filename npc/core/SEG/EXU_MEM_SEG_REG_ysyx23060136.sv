@@ -32,7 +32,7 @@ module EXU_MEM_SEG_REG_ysyx23060136 (
         input              [   4:0]         EXU_o_rd                 ,
         input              [  31:0]         EXU_o_HAZARD_rs2_data    ,
         // mem
-        input              [   1:0]         EXU_o_csr_rd             ,
+        input              [   2:0]         EXU_o_csr_rd             ,
         // mem
         input                               EXU_o_write_gpr          ,
         input                               EXU_o_write_csr          ,
@@ -57,7 +57,7 @@ module EXU_MEM_SEG_REG_ysyx23060136 (
         output   logic    [4 : 0]           MEM_i_rd                     ,
         output   logic    [31 : 0]          MEM_i_rs2_data               ,
         // mem
-        output   logic    [1 : 0]           MEM_i_csr_rd                 ,
+        output   logic    [2 : 0]           MEM_i_csr_rd                 ,
         // mem
         output   logic                      MEM_i_write_gpr              ,
         output   logic                      MEM_i_write_csr              ,
@@ -89,7 +89,7 @@ module EXU_MEM_SEG_REG_ysyx23060136 (
             MEM_i_rd               <=  5'b0; 
             MEM_i_rs2_data         <=  32'b0;                        
             // mem
-            MEM_i_csr_rd           <=  2'b0;                             
+            MEM_i_csr_rd           <=  3'b0;                             
             // mem
             MEM_i_write_gpr        <=  1'b0;                                
             MEM_i_write_csr        <=  1'b0;                                

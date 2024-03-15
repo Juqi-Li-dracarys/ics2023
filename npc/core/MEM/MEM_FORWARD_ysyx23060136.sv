@@ -22,16 +22,16 @@
     // forward siganl from IDU
     input              [   4:0]         IDU_o_rs1                  ,
     input              [   4:0]         IDU_o_rs2                  ,
-    input              [   1:0]         IDU_o_csr_rs               ,
+    input              [   2:0]         IDU_o_csr_rs               ,
     // forward signal from EXU
     input              [   4:0]         EXU_o_rs1                  ,
     input              [   4:0]         EXU_o_rs2                  ,
-    input              [   1:0]         EXU_o_csr_rs               ,
+    input              [   2:0]         EXU_o_csr_rs               ,
 
     // MEM 段的比较与前传数据
     input                               MEM_i_mem_to_reg           ,
     input              [   4:0]         MEM_i_rd                   ,
-    input              [   1:0]         MEM_i_csr_rd               ,
+    input              [   2:0]         MEM_i_csr_rd               ,
     input                               MEM_i_write_gpr            ,
     input                               MEM_i_write_csr            ,
     input              [  31:0]         MEM_o_rdata                ,
@@ -41,7 +41,7 @@
 
     // forward signal from WB
     input              [   4:0]         WB_o_rd                    ,
-    input              [   1:0]         WB_o_csr_rd                ,
+    input              [   2:0]         WB_o_csr_rd                ,
     input                               WB_o_write_gpr             ,
     input                               WB_o_write_csr             ,
 

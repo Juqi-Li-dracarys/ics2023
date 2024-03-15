@@ -175,7 +175,7 @@ module ysyx_23060136 (
     wire               [   4:0]         WB_o_rd                      ;
     wire                                WB_o_RegWr                   ;
     wire               [  31:0]         WB_o_rf_busW                 ;
-    wire               [   1:0]         WB_o_csr_rd                  ;
+    wire               [   2:0]         WB_o_csr_rd                  ;
     wire                                WB_o_CSRWr                   ;
     wire               [  31:0]         WB_o_csr_busW                ;
 
@@ -188,8 +188,8 @@ module ysyx_23060136 (
     wire               [  31:0]         IDU_o_imm                    ;
     wire               [  31:0]         IDU_o_rs1_data               ;
     wire               [  31:0]         IDU_o_rs2_data               ;
-    wire               [   1:0]         IDU_o_csr_rd                 ;
-    wire               [   1:0]         IDU_o_csr_rs                 ;
+    wire               [   2:0]         IDU_o_csr_rd                 ;
+    wire               [   2:0]         IDU_o_csr_rs                 ;
     wire               [  31:0]         IDU_o_csr_rs_data            ;
     wire                                IDU_o_ALU_add                ;
     wire                                IDU_o_ALU_sub                ;
@@ -319,8 +319,8 @@ module ysyx_23060136 (
     wire               [  31:0]         EXU_i_imm                    ;
     wire               [  31:0]         EXU_i_rs1_data               ;
     wire               [  31:0]         EXU_i_rs2_data               ;
-    wire               [   1:0]         EXU_i_csr_rd                 ;
-    wire               [   1:0]         EXU_i_csr_rs                 ;
+    wire               [   2:0]         EXU_i_csr_rd                 ;
+    wire               [   2:0]         EXU_i_csr_rs                 ;
     wire               [  31:0]         EXU_i_csr_rs_data            ;
 
     wire                                EXU_i_ALU_add                ;
@@ -489,8 +489,8 @@ module ysyx_23060136 (
     wire               [   4:0]         EXU_o_rs1                ;
     wire               [   4:0]         EXU_o_rs2                ;
     wire               [  31:0]         EXU_o_HAZARD_rs2_data    ;
-    wire               [   1:0]         EXU_o_csr_rd             ;
-    wire               [   1:0]         EXU_o_csr_rs             ;
+    wire               [   2:0]         EXU_o_csr_rd             ;
+    wire               [   2:0]         EXU_o_csr_rs             ;
     wire                                EXU_o_write_gpr          ;
     wire                                EXU_o_write_csr          ;
 
@@ -601,7 +601,7 @@ module ysyx_23060136 (
     wire               [  31:0]         MEM_i_ALU_CSR_out            ;
     wire               [   4:0]         MEM_i_rd                     ;
     wire               [  31:0]         MEM_i_rs2_data               ;
-    wire               [   1:0]         MEM_i_csr_rd                 ;
+    wire               [   2:0]         MEM_i_csr_rd                 ;
     wire                                MEM_i_write_gpr              ;
     wire                                MEM_i_write_csr              ;
     wire                                MEM_i_mem_to_reg             ;
@@ -681,7 +681,7 @@ module ysyx_23060136 (
     wire                                MEM_o_write_csr           ;
     wire                                MEM_o_mem_to_reg          ;
     wire               [   4:0]         MEM_o_rd                  ;
-    wire               [   1:0]         MEM_o_csr_rd              ;
+    wire               [   2:0]         MEM_o_csr_rd              ;
     wire                                MEM_o_system_halt         ;
 
     wire               [  31:0]         FORWARD_rs1_data_EXU       ;
@@ -812,7 +812,7 @@ MEM_TOP_ysyx23060136  MEM_TOP_ysyx23060136_inst (
     wire                                WB_i_write_gpr               ;
     wire                                WB_i_write_csr               ;
     wire               [4 : 0]          WB_i_rd                      ;
-    wire               [1 : 0]          WB_i_csr_rd                  ;
+    wire               [2 : 0]          WB_i_csr_rd                  ;
                         
 
     MEM_WB_SEG_REG_ysyx23060136  MEM_WB_SEG_REG_ysyx23060136_inst (

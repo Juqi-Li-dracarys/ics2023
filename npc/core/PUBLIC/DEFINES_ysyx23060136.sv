@@ -21,10 +21,12 @@
 `define  done     'h2
 
 // csr idx 
-`define  mstatus  'h0 
-`define  mtvec    'h1
-`define  mepc     'h2
-`define  mcause   'h3
+`define  mstatus   'h0 
+`define  mtvec     'h1
+`define  mepc      'h2
+`define  mcause    'h3
+`define  mvendorid 'h4
+`define  marchid   'h5
 
 
 // arbiter state machine(read)

@@ -29,8 +29,8 @@ module IDU_EXU_SEG_REG_ysyx23060136(
         input              [  31:0]         IDU_o_imm                  ,
         input              [  31:0]         IDU_o_rs1_data             ,
         input              [  31:0]         IDU_o_rs2_data             ,
-        input              [   1:0]         IDU_o_csr_rd               ,
-        input              [   1:0]         IDU_o_csr_rs               ,
+        input              [   2:0]         IDU_o_csr_rd               ,
+        input              [   2:0]         IDU_o_csr_rs               ,
         input              [  31:0]         IDU_o_csr_rs_data          ,
         // ===========================================================================
         // data from forward unit to deal with third stage hazard
@@ -51,8 +51,8 @@ module IDU_EXU_SEG_REG_ysyx23060136(
         output    logic    [31 : 0]         EXU_i_imm                  ,
         output    logic    [31 : 0]         EXU_i_rs1_data             ,
         output    logic    [31 : 0]         EXU_i_rs2_data             ,
-        output    logic    [1 : 0]          EXU_i_csr_rd               ,
-        output    logic    [1 : 0]          EXU_i_csr_rs               ,
+        output    logic    [2 : 0]          EXU_i_csr_rd               ,
+        output    logic    [2 : 0]          EXU_i_csr_rs               ,
         output    logic    [31 : 0]         EXU_i_csr_rs_data          ,
         // ===========================================================================
         // ALU signal(IDU_internal)
@@ -160,8 +160,8 @@ module IDU_EXU_SEG_REG_ysyx23060136(
             EXU_i_imm          <=  32'b0;
             EXU_i_rs1_data     <=  32'b0;
             EXU_i_rs2_data     <=  32'b0;
-            EXU_i_csr_rd       <=  2'b0;
-            EXU_i_csr_rs       <=  2'b0;
+            EXU_i_csr_rd       <=  3'b0;
+            EXU_i_csr_rs       <=  3'b0;
             EXU_i_csr_rs_data  <=  32'b0;
 
             EXU_i_ALU_add      <=  1'b0;

@@ -20,8 +20,8 @@ module EXU_TOP_ysyx23060136 (
         input              [  31:0]         EXU_i_imm                    ,
         input              [  31:0]         EXU_i_rs1_data               ,
         input              [  31:0]         EXU_i_rs2_data               ,
-        input              [   1:0]         EXU_i_csr_rd                 ,
-        input              [   1:0]         EXU_i_csr_rs                 ,
+        input              [   2:0]         EXU_i_csr_rd                 ,
+        input              [   2:0]         EXU_i_csr_rs                 ,
         input              [  31:0]         EXU_i_csr_rs_data            ,
         // ===========================================================================
         // ALU
@@ -98,9 +98,9 @@ module EXU_TOP_ysyx23060136 (
         output             [   4:0]         EXU_o_rs2                ,
         output             [  31:0]         EXU_o_HAZARD_rs2_data    ,
         // mem
-        output             [   1:0]         EXU_o_csr_rd             ,
+        output             [   2:0]         EXU_o_csr_rd             ,
         // forward unit
-        output             [   1:0]         EXU_o_csr_rs             ,
+        output             [   2:0]         EXU_o_csr_rs             ,
         // mem
         output                              EXU_o_write_gpr          ,
         output                              EXU_o_write_csr          ,
