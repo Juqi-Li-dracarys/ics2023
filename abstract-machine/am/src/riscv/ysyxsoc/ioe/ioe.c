@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-16 10:34:01 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-16 10:39:12
+ * @Last Modified time: 2024-03-16 10:47:50
  */
 
 #include <am.h>
@@ -34,3 +34,5 @@ bool ioe_init() {
 
 void ioe_read (int reg, void *buf) { ((handler_t)lut[reg])(buf); }
 void ioe_write(int reg, void *buf) { ((handler_t)lut[reg])(buf); }
+
+
