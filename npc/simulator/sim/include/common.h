@@ -7,7 +7,6 @@
 #include <assert.h>
 #include <generated/autoconf.h>
 #include <macro.h>
-#include <memory.h>
 
 #define MAX_SIM_TIME 40000000
 
@@ -62,6 +61,7 @@ enum { SIM_RUNNING, SIM_STOP, SIM_END, SIM_ABORT, SIM_QUIT };
 
 extern SimState sim_state;
 
+void init_mem();
 uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 
@@ -78,9 +78,9 @@ void init_device(const char *diskpath);
 
 // memory
 word_t paddr_read(paddr_t addr, int len);
-void paddr_write(paddr_t addr, int len, word_t data);
 word_t host_read(void *addr, int len);
-void host_write(void *addr, int len, word_t data);
+paddr_t host_to_guest(uint8_t *haddr);
+
 
 // halt
 bool test_break();

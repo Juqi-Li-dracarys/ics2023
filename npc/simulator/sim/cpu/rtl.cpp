@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 17:44:39 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 20:32:34
+ * @Last Modified time: 2024-03-16 13:59:29
  */
 
 #include <common.h>
@@ -12,15 +12,15 @@
 
 // load the state of your simulated cpu into sim_cpu
 void set_state() {
-  sim_cpu.pc = dut->pc_cur;
+  sim_cpu.pc = CPU->pc_cur;
   memcpy(&sim_cpu.gpr[0], cpu_gpr, sizeof(uint32_t) * MUXDEF(CONFIG_RVE, 16, 32));
   memcpy(&sim_cpu.csr, cpu_csr, sizeof(uint32_t) * 4);
 }
 
 // reset the cpu
 void reset(int n) {
-  dut->clk = 0;
-  dut->rst = 1;
+  dut->clock = 0;
+  dut->reset = 1;
   dut->eval();
 #ifdef WAVE_RECORD
   m_trace->dump(contextp->time()); // dump wave
@@ -29,8 +29,8 @@ void reset(int n) {
   while (n-- > 0) {
     single_cycle();
   }
-  dut->rst = 0;
-  dut->clk = 0;
+  dut->reset = 0;
+  dut->clock = 0;
   dut->eval();
 #ifdef WAVE_RECORD
   m_trace->dump(contextp->time()); // dump wave
@@ -40,15 +40,15 @@ void reset(int n) {
 }
 
 
-// give a single posedge clk
+// give a single posedge clock
 void single_cycle() {
-  dut->clk = 1;
+  dut->clock = 1;
   dut->eval();
 #ifdef WAVE_RECORD
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
 #endif
-  dut->clk = 0;
+  dut->clock = 0;
   dut->eval();
 #ifdef WAVE_RECORD
   m_trace->dump(contextp->time()); // dump wave
@@ -59,20 +59,14 @@ void single_cycle() {
 
 // check the sytem signal of cpu
 bool signal_detect() {
-  if(dut->system_halt) {
+  if(CPU->system_halt) {
     Log("HDL: %s, ebreak detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
     sim_state.state = SIM_END;
     dut->final();
     return true;
   }
-  else if(!dut->op_valid) {
-    Log("HDL: %s, Inst Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
-    sim_state.state = SIM_ABORT;
-    dut->final();
-    return true;
-  }
-  else if(!dut->ALU_valid) {
-    Log("HDL: %s, ALU Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
+  else if(CPU->MEM_error_signal || CPU->ARBITER_error_signal || CPU->IFU_error_signal) {
+    Log("HDL: %s, Memory access Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
     sim_state.state = SIM_ABORT;
     dut->final();
     return true;

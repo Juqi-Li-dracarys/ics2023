@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 18:53:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 11:01:28
+ * @Last Modified time: 2024-03-09 17:45:23
  */
 
 #include <common.h>
@@ -325,7 +325,6 @@ void sdb_set_batch_mode() {
 }
 
 
-
 void sdb_mainloop() {
 
   // The default value of is_batch_mode is equal to 0
@@ -351,11 +350,6 @@ void sdb_mainloop() {
     if (args >= str_end) {
       args = NULL; // No args
     }
-
-#ifdef CONFIG_DEVICE
-    extern void sdl_clear_event_queue();
-    sdl_clear_event_queue();
-#endif
 
     int i;
     for (i = 0; i < NR_CMD; i ++) {

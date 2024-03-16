@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 13:33:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-17 21:43:23
+ * @Last Modified time: 2024-03-07 22:42:33
  */
 
 #include <bits/stdc++.h>
@@ -16,14 +16,14 @@
 VerilatedContext* contextp = new VerilatedContext;
 
 // verilog instance
-VCPU_TOP_ysyx23060136 *dut = new VCPU_TOP_ysyx23060136{contextp};
+VysyxSoCFull *dut = new VysyxSoCFull{contextp};
 
 // wave tracer
 VerilatedVcdC *m_trace = new VerilatedVcdC;
 //////////////////////////////////////////////////////
 
 // state of our simulated cpu
-CPU_state sim_cpu = {.pc = 0x80000000};
+CPU_state sim_cpu = {.pc = RESET_VECTOR};
 
 // the runing state of simulator
 extern SimState sim_state;
@@ -37,7 +37,7 @@ int main(int argc, char** argv, char** env) {
     dut->trace(m_trace, 5);
     m_trace->open("waveform.vcd");
     // reset the whole circuit
-    reset(5);
+    reset(20);
     // start running
     sdb_mainloop();
     // close wave trace
