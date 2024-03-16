@@ -2,13 +2,14 @@
  * @Author: Juqi Li @ NJU
  * @Date: 2024-01-17 09:39:10
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 17:42:24
+ * @Last Modified time: 2024-01-18 14:11:45
  */
 
 #include <bits/stdc++.h>
 #include <debug.h>
 #include <common.h>
 #include <disasm.h>
+#include <memory.h>
 #include <sim.h>
 #include <trace.h>
 
@@ -92,7 +93,7 @@ static void trace_and_difftest(inst_log* _ptr, bool interrupt) {
 void run_untile_commit() {
   while (true) {
     single_cycle();
-    if (CPU->inst_commit)
+    if (dut->inst_commit)
       break;
   }
 }
@@ -100,25 +101,30 @@ void run_untile_commit() {
 // execute n instructions
 void excute(uint64_t n) {
   while (n--) {
+
     // 流水线还未完成复位,需要跑完第一条指令
     // 以保证和 REF 同步
-    if (!CPU->inst_commit) {
+    if (!dut->inst_commit) {
       run_untile_commit();
     }
-    log_ptr->pc = CPU->pc_cur;
-    log_ptr->inst = CPU->inst;
+  
+    log_ptr->pc = dut->pc_cur;
+    log_ptr->inst = dut->inst;
     run_untile_commit();
     // 保存下一条指令执行前的状态
     set_state();
     g_nr_guest_inst++;
     trace_and_difftest(log_ptr, false);
+
+    IFDEF(CONFIG_DEVICE, device_update());
+
     // 对于有异常的指令，会在下一次执行前终止程序
     if (signal_detect()) {
       // save the end state
-      sim_state.halt_pc = CPU->pc_cur;
+      sim_state.halt_pc = dut->pc_cur;
       sim_state.halt_ret = cpu_gpr[10];
-      log_ptr->pc = CPU->pc_cur;
-      log_ptr->inst = CPU->inst;
+      log_ptr->pc = dut->pc_cur;
+      log_ptr->inst = dut->inst;
       g_nr_guest_inst++;
       // 异常信号，直接跳过检查
       trace_and_difftest(log_ptr, true);
@@ -138,6 +144,7 @@ void cpu_exec(unsigned int n) {
       return;
     default: sim_state.state = SIM_RUNNING;
   }
+
   uint64_t timer_start = get_time();
   excute(n);
   uint64_t timer_end = get_time();
@@ -146,7 +153,7 @@ void cpu_exec(unsigned int n) {
   switch (sim_state.state) {
     case SIM_RUNNING: sim_state.state = SIM_STOP; break;
     case SIM_END: case SIM_ABORT:
-      Log("SoC simulator: %s at pc = " FMT_WORD,
+      Log("NPC simulator: %s at pc = " FMT_WORD,
         (sim_state.state == SIM_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
           (sim_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),

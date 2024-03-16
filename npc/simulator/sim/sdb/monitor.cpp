@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 16:33:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 17:40:31
+ * @Last Modified time: 2024-02-10 13:36:40
  */
 
 #include <common.h>
@@ -21,7 +21,7 @@ static void welcome() {
   printf("For help, type \"help\", as an EE rat @NJU, please always remember to RTFM:\n");
   printf("%s", isa_logo);
   Log("Build time: %s, %s", __TIME__, __DATE__);
-  printf("Welcome to %s %s SoC Simulator!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED),  ANSI_FMT(str(__CPU_ARCH__), ANSI_FG_YELLOW ANSI_BG_RED));
+  printf("Welcome to %s %s Simulator!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED),  ANSI_FMT(str(__CPU_ARCH__), ANSI_FG_YELLOW ANSI_BG_RED));
 }
 
 static const uint32_t img [] = {
@@ -34,7 +34,7 @@ static const uint32_t img [] = {
 
 void init_isa() {
   // load built-in image size
-  memcpy(guest_to_host(CONFIG_FLASH_BASE), img, sizeof(img));
+  memcpy(guest_to_host(CONFIG_MBASE), img, sizeof(img));
   sim_cpu.csr.mstatus = 0x1800;
   return ;
 }
@@ -62,7 +62,7 @@ static long load_img() {
   Log("The image is %s, size = %ld", img_file, size);
 
   fseek(fp, 0, SEEK_SET);
-  int ret = fread(guest_to_host(CONFIG_FLASH_BASE), size, 1, fp);
+  int ret = fread(guest_to_host(CONFIG_MBASE), size, 1, fp);
   assert(ret == 1);
 
   fclose(fp);
@@ -114,10 +114,11 @@ void init_monitor(int argc, char *argv[]) {
   /* Open the log file. */
   init_log(log_file);
 
-  init_mem();
-
   /* Open the elf file. */
   IFDEF(CONFIG_FTRACE, init_ftrace(elf_file));
+
+  /* Initialize devices. */
+  IFDEF(CONFIG_DEVICE, init_device(NULL));
 
   init_isa();
 

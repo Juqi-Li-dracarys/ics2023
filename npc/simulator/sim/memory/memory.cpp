@@ -1,55 +1,66 @@
 /*
  * @Author: Juqi Li @ NJU 
- * @Date: 2024-03-09 15:21:33 
+ * @Date: 2024-01-16 11:00:40 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 15:46:36
+ * @Last Modified time: 2024-01-18 14:59:51
  */
-
 
 #include <assert.h>
 #include <common.h>
+#include <sim.h>
 #include <debug.h>
 
 extern inst_log *log_ptr;
 
 // the physical memory of our simulator
-
-uint8_t flash [CONFIG_FLASH_SIZE];
+uint8_t pmem[CONFIG_MSIZE];
 
 // check if the addr is valid
-
-static inline bool in_flash(paddr_t addr) {
-    return (addr >= CONFIG_FLASH_BASE) && (addr < (paddr_t)CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE);
+static inline bool in_pmem(paddr_t addr) {
+    return (addr >= CONFIG_MBASE) && (addr < (paddr_t)CONFIG_MBASE + CONFIG_MSIZE);
 }
 
 // print a log when addr is out of bound
 static void out_of_bound(paddr_t addr) {
-  printf("address = " FMT_PADDR " is out of bound of rom [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD "\n",
-      addr, CONFIG_FLASH_BASE, CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE, addr);
+  printf("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD "\n",
+      addr, CONFIG_MBASE, CONFIG_MBASE + CONFIG_MSIZE, addr);
 }
 
 // map the addr in riscv code to the addr in our host
-uint8_t* guest_to_host(paddr_t paddr) { return flash + paddr - CONFIG_FLASH_BASE; }
+uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 
 // map the addr in our host to the addr in riscv code
-paddr_t host_to_guest(uint8_t *haddr) { return haddr - flash + CONFIG_FLASH_BASE; }
+paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
-// 32 bit 对齐
-inline int bit_align_32(int addr) {
-  return addr & 0xFFFFFFFC;
+
+
+// DIP-C interface for cpu
+extern "C" int pmem_read(int araddr) {
+  if (in_pmem(araddr)) {
+    return paddr_read(araddr, 4);
+  }
+  // if not in mem, then check mmio
+  else
+    return mmio_read(araddr, 4);
 }
 
-// DIP-C interface for SoC
-// 不要通过 SPI 寄存器间接访问 FLASH， 这可能会导致对齐错误
-extern "C" void flash_read(int addr, int *data) {
-  assert((uint32_t)addr < CONFIG_FLASH_SIZE);
-  *data = *(uint32_t *)(flash + bit_align_32(addr));
-  return;
+extern "C" void pmem_write(int waddr, int wdata, char wmask) {
+  uint8_t data_len = 0;
+  while(wmask > 0) {
+    wmask >>= 1;
+    data_len++;
+  }
+  if (in_pmem(waddr)) {
+    paddr_write(waddr, data_len, wdata);
+    return;
+  }
+  // if not in mem, then check mmio
+  else {
+    mmio_write(waddr, data_len, wdata);
+    return;
+  }
 }
 
-extern "C" void mrom_read(int addr, int *data) {
-  assert(0);
-}
 
 // give addr in host, return value
 word_t host_read(void *addr, int len) {
@@ -62,10 +73,21 @@ word_t host_read(void *addr, int len) {
   }
 }
 
+// give addr in host, write value
+void host_write(void *addr, int len, word_t data) {
+  switch (len) {
+    case 1: *(uint8_t  *)addr = data; return;
+    case 2: *(uint16_t *)addr = data; return;
+    case 4: *(uint32_t *)addr = data; return;
+    case 8: *(uint64_t *)addr = data; return;
+    default: assert(0);
+  }
+}
+
 // read with addr in riscv code, without mmio
 word_t paddr_read(paddr_t addr, int len) {
   word_t r_data;
-  if (in_flash(addr))  
+  if (in_pmem(addr))  
     r_data = host_read(guest_to_host(addr), len);
   else 
     out_of_bound(addr);
@@ -75,9 +97,13 @@ word_t paddr_read(paddr_t addr, int len) {
   return r_data;
 }
 
-void init_mem() {
-
-  return;
+// write with addr in riscv code, without mmio
+void paddr_write(paddr_t addr, int len, word_t data) {
+  #ifdef CONFIG_MTRACE_COND
+    if (MTRACE_COND) {log_write("MTRACE: 0x%08x\t write %d byte 0x%08x in mem: 0x%08x\n", log_ptr->pc, len, data, addr);}
+  #endif
+  if (in_pmem(addr)) { host_write(guest_to_host(addr), len, data); return; }
+  out_of_bound(addr);
 }
 
 

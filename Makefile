@@ -4,7 +4,6 @@ STUID_NJU = 211870293
 STUID_YSYX = ysyx23060136
 STUNAME = 李居奇
 GIT_NAME = mygit
-SOC_HOME = $(YSYX_HOME)/ysyxSoC
 
 # DO NOT modify the following code!!!
 # Fuck you, I gonna modify it.
@@ -57,9 +56,8 @@ submit:
 	git gc
 	git push $(GIT_NAME) --all
 # STUID=$(STUID) STUNAME=$(STUNAME) bash -c "$$(curl -s http://why.ink:8080/static/submit.sh)"
-	$(MAKE) -C $(SOC_HOME) submit
 
 _default:
 	@echo "Please run 'make' under subprojects."
 
-.PHONY: .git_commit .clean_index _default submit
+.PHONY: .git_commit .clean_index _default

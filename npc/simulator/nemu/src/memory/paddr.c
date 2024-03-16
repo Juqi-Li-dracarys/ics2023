@@ -17,17 +17,10 @@
 #include <memory/paddr.h>
 #include <isa.h>
 
-static uint8_t flash[CONFIG_FLASH_SIZE] = {};
-static uint8_t sram[CONFIG_SRAM_SIZE] = {};
+static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
-uint8_t* guest_to_host(paddr_t paddr) { 
-  if(in_flash(paddr))
-    return flash + paddr - CONFIG_FLASH_MBASE;
-  else if(in_sram(paddr))
-    return sram + paddr - CONFIG_SRAM_MBASE;
-  else
-    return 0;
-}
+uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
+paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t pmem_read(paddr_t addr, int len) {
   word_t ret = host_read(guest_to_host(addr), len);
@@ -36,22 +29,21 @@ static word_t pmem_read(paddr_t addr, int len) {
 
 static void pmem_write(paddr_t addr, int len, word_t data) {
   host_write(guest_to_host(addr), len, data);
-  return;
 }
 
 void init_mem() {
-  uint32_t *p = (uint32_t *)flash;
+  uint32_t *p = (uint32_t *)pmem;
   int i;
-  for (i = 0; i < (int) (CONFIG_FLASH_SIZE / sizeof(p[0])); i ++) {
+  for (i = 0; i < (int) (CONFIG_MSIZE / sizeof(p[0])); i ++) {
     p[i] = rand();
   }
 }
 
 word_t paddr_read(paddr_t addr, int len) {
-  return pmem_read(addr, len);
+  if (likely(in_pmem(addr))) return pmem_read(addr, len);
+  return 0;
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
-  pmem_write(addr, len, data); 
-  return;
+  if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
 }

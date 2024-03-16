@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 11:00:24 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 17:37:41
+ * @Last Modified time: 2024-01-18 23:13:08
  */
 
 #include <dlfcn.h>
@@ -35,8 +35,8 @@ static bool is_skip_next = false;
 
 #ifdef CONFIG_DIFFTEST 
 
-extern uint8_t flash[CONFIG_FLASH_SIZE];
-static uint8_t ref_flash[CONFIG_FLASH_SIZE];
+extern uint8_t pmem[];
+static uint8_t ref_pmem[CONFIG_MSIZE];
 
 // this is used to let ref skip instructions which
 // can not produce consistent behavior with npc simulator
@@ -85,7 +85,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   // copy register
   difftest_regcpy(&sim_cpu, DIFFTEST_TO_REF);
   // copy the memory, the registers, the pc to nemu, so our cpu and nemu can run with the same initial state
-  difftest_memcpy(CONFIG_FLASH_BASE, guest_to_host(CONFIG_FLASH_BASE), CONFIG_FLASH_SIZE, DIFFTEST_TO_REF);
+  difftest_memcpy(CONFIG_MBASE, guest_to_host(CONFIG_MBASE), CONFIG_MSIZE, DIFFTEST_TO_REF);
 }
 
 // copy our registers to nemu
@@ -118,19 +118,18 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   }
 }
 
-// // check mem， use it carefully
-// bool isa_difftest_checkmem(uint8_t *ref_mrom, vaddr_t pc) {
-//   for (int i = 0; i < CONFIG_MSIZE; i++){
-//     if (ref_mrom[i] != mrom[i]) {
-//       printf(ANSI_BG_RED "memory of NPC is different before executing instruction at pc = " FMT_WORD
-//         ", mem[%x] right = " FMT_WORD ", wrong = " FMT_WORD ", diff = " FMT_WORD ANSI_NONE "\n",
-//         sim_cpu.pc, i, ref_mrom[i], mrom[i], ref_mrom[i] ^ mrom[i]); 
-//       return false;
-//     }
-//   }
-//   return true;
-// }
-
+// check mem， use it carefully
+bool isa_difftest_checkmem(uint8_t *ref_m, vaddr_t pc) {
+  for (int i = 0; i < CONFIG_MSIZE; i++){
+    if (ref_m[i] != pmem[i]) {
+      printf(ANSI_BG_RED "memory of NPC is different before executing instruction at pc = " FMT_WORD
+        ", mem[%x] right = " FMT_WORD ", wrong = " FMT_WORD ", diff = " FMT_WORD ANSI_NONE "\n",
+        sim_cpu.pc, i, ref_m[i], pmem[i], ref_m[i] ^ pmem[i]); 
+      return false;
+    }
+  }
+  return true;
+}
 
 static void checkregs(CPU_state *ref, vaddr_t pc) {
   if (!isa_difftest_checkregs(ref, pc)) {
@@ -142,12 +141,12 @@ static void checkregs(CPU_state *ref, vaddr_t pc) {
   }
 }
 
-// static void checkmem(uint8_t *ref_mrom, vaddr_t pc) {
-//   if (!isa_difftest_checkmem(ref_mrom, pc)) {
-//     sim_state.state = SIM_ABORT;
-//     sim_state.halt_pc = pc;
-//   }
-// }
+static void checkmem(uint8_t *ref_m, vaddr_t pc) {
+  if (!isa_difftest_checkmem(ref_m, pc)) {
+    sim_state.state = SIM_ABORT;
+    sim_state.halt_pc = pc;
+  }
+}
 
 void difftest_step(bool interrupt) {
   CPU_state ref_r;
@@ -159,8 +158,10 @@ void difftest_step(bool interrupt) {
   }
   difftest_exec(1);
   difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
+  // difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
   if(!interrupt) {
     checkregs(&ref_r, sim_cpu.pc);
+    // checkmem(ref_pmem, sim_cpu.pc);
   }
   if(is_skip_ref) {
     is_skip_ref = false;
