@@ -2,11 +2,19 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-21 15:56:01 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-08 00:11:24
+ * @Last Modified time: 2024-03-16 15:05:42
  */
 
+// 地址空间规范
 `define  FLASH_BASE     'h30000000
 `define  FLASH_END      'h3fffffff
+`define  IFU_BASE       'h30000000
+`define  IFU_EDN        'h3fffffff
+`define  SRAM_BASE      'h0f000000
+`define  SRAM_END       'h0fffffff
+`define  CLINT_BASE     'h02000000
+`define  CLINT_END      'h0200ffff
+`define  MTIME_OFFSET   'h0000bff8
  
 `define  true     'b1
 `define  false    'b0
@@ -45,7 +53,8 @@
 `define  SLVERR   'b10
 `define  DECERR   'b11
 
-`define  DEBUG    `b1
+
+
 
 
 

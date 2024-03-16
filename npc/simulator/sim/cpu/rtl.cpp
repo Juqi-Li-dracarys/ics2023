@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 17:44:39 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-08 00:27:45
+ * @Last Modified time: 2024-03-16 13:59:29
  */
 
 #include <common.h>
@@ -65,7 +65,7 @@ bool signal_detect() {
     dut->final();
     return true;
   }
-  else if(CPU->MEM_error_signal || CPU->ARBITER_error_signal) {
+  else if(CPU->MEM_error_signal || CPU->ARBITER_error_signal || CPU->IFU_error_signal) {
     Log("HDL: %s, Memory access Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
     sim_state.state = SIM_ABORT;
     dut->final();

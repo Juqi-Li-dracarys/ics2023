@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-24 17:15:10 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-08 17:12:18
+ * @Last Modified time: 2024-03-16 14:47:17
  */
 
  `include "DEFINES_ysyx23060136.sv"
@@ -44,6 +44,18 @@ module MEM_DATA_MEM_ysyx23060136 (
     input                               ARBITER_MEM_rdata_valid     ,
     output                              ARBITER_MEM_rdata_ready     ,
     // ===========================================================================
+    // read interface for clint(AXI-lite)
+    input                               CLINT_MEM_raddr_ready       ,
+    output             [  31:0]         CLINT_MEM_raddr             ,
+    // 这里需要声明读取长度
+    output             [   2:0]         CLINT_MEM_rsize             ,
+    output                              CLINT_MEM_raddr_valid       ,
+
+    input              [  63:0]         CLINT_MEM_rdata             ,
+    input                               CLINT_MEM_rdata_valid       ,
+    output                              CLINT_MEM_rdata_ready       ,
+
+    // ===========================================================================
     // interface for AXI-full write BUS in SoC
     input                               io_master_awready            ,
     output                              io_master_awvalid            ,
@@ -69,27 +81,37 @@ module MEM_DATA_MEM_ysyx23060136 (
 );
 
     // ===========================================================================
-    // read module signal
-    assign                              ARBITER_MEM_raddr_valid  =  r_state_idle & new_raddr           ;
-    assign                              ARBITER_MEM_raddr        =  MEM_raddr                          ;
-    assign                              ARBITER_MEM_rdata_ready  =  r_state_busy                       ;
-    assign                              ARBITER_MEM_rsize        =  ({3{MEM_mem_byte_u}}) & 3'b000     |
-                                                                    ({3{MEM_mem_half_u}}) & 3'b001     |
-                                                                    ({3{MEM_mem_word  }}) & 3'b010     |
-                                                                    ({3{MEM_mem_byte  }}) & 3'b000     |
-                                                                    ({3{MEM_mem_half  }}) & 3'b001     ;
+    // read module signal(arbiter)
+
+    assign                              ARBITER_MEM_raddr_valid  =  r_state_idle & new_raddr & !from_clint   ;
+    assign                              ARBITER_MEM_raddr        =  MEM_raddr                                ;
+    assign                              ARBITER_MEM_rdata_ready  =  r_state_busy & !from_clint               ;
+    assign                              ARBITER_MEM_rsize        =  ({3{MEM_mem_byte_u}}) & 3'b000           |
+                                                                    ({3{MEM_mem_half_u}}) & 3'b001           |
+                                                                    ({3{MEM_mem_word  }}) & 3'b010           |
+                                                                    ({3{MEM_mem_byte  }}) & 3'b000           |
+                                                                    ({3{MEM_mem_half  }}) & 3'b001           ;
+
+    assign                              CLINT_MEM_raddr_valid    =  r_state_idle & new_raddr & from_clint    ;
+    assign                              CLINT_MEM_raddr          =  MEM_raddr                                ;
+    assign                              CLINT_MEM_rdata_ready    =  r_state_busy & from_clint                ;
+    assign                              CLINT_MEM_rsize          =  ({3{MEM_mem_byte_u}}) & 3'b000           |
+                                                                    ({3{MEM_mem_half_u}}) & 3'b001           |
+                                                                    ({3{MEM_mem_word  }}) & 3'b010           |
+                                                                    ({3{MEM_mem_byte  }}) & 3'b000           |
+                                                                    ({3{MEM_mem_half  }}) & 3'b001           ;
 
     // write module signal
-    assign                              io_master_awvalid        =  w_state_idle & new_waddr           ;
-    assign                              io_master_wvalid         =  w_state_idle & new_waddr           ;
-    assign                              io_master_wlast          =  io_master_wvalid                   ;
+    assign                              io_master_awvalid        =  w_state_idle & new_waddr                 ;
+    assign                              io_master_wvalid         =  w_state_idle & new_waddr                 ;
+    assign                              io_master_wlast          =  io_master_wvalid                         ;
 
-    assign                              io_master_awaddr         =  MEM_waddr                          ;
-    assign                              io_master_wdata          =  w_abstract                         ;
+    assign                              io_master_awaddr         =  MEM_waddr                                ;
+    assign                              io_master_wdata          =  w_abstract                               ;
 
-    assign                              io_master_awsize         =  ({3{MEM_mem_byte}}) & 3'b000       |
-                                                                    ({3{MEM_mem_half}}) & 3'b001       |
-                                                                    ({3{MEM_mem_word}}) & 3'b010       ;
+    assign                              io_master_awsize         =  ({3{MEM_mem_byte}}) & 3'b000             |
+                                                                    ({3{MEM_mem_half}}) & 3'b001             |
+                                                                    ({3{MEM_mem_word}}) & 3'b010             ;
 
 
     // 注意字节对齐问题
@@ -118,6 +140,8 @@ module MEM_DATA_MEM_ysyx23060136 (
     wire                       new_waddr_next =  (w_state_idle      & ( new_waddr    ? new_waddr : MEM_i_waddr_change)) |
                                                  (w_state_busy      & `false                                          ) ;
 
+    // data from flash need swapping
+    wire                       from_clint     =  (MEM_raddr >= `CLINT_BASE && MEM_raddr < `CLINT_END)                   ;
     wire                       from_flash     =  (MEM_raddr >= `FLASH_BASE && MEM_raddr < `FLASH_END)                   ;
     wire         [63 : 0]      swap_rdata     =  {ARBITER_MEM_rdata[39 : 32], ARBITER_MEM_rdata[47 : 40], ARBITER_MEM_rdata[55 : 48], ARBITER_MEM_rdata[63 : 56], ARBITER_MEM_rdata[7 : 0], ARBITER_MEM_rdata[15 : 8], ARBITER_MEM_rdata[23 : 16], ARBITER_MEM_rdata[31 : 24]};
 
@@ -125,23 +149,25 @@ module MEM_DATA_MEM_ysyx23060136 (
     logic        [1 : 0]       r_state;
     wire                       r_state_idle   =  (r_state == `idle);
     wire                       r_state_busy   =  (r_state == `busy);
+
     // 当 AXI lite 发生握手，将转移到下一个状态
-    wire         [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((ARBITER_MEM_raddr_ready & ARBITER_MEM_raddr_valid) ? `busy : `idle)) |
-                                                 ({2{r_state_busy}} & ((ARBITER_MEM_rdata_ready & ARBITER_MEM_rdata_valid) ? `idle : `busy)) ;
+    wire         [1 : 0]       r_state_next   =  ({2{r_state_idle}} & ((from_clint ? (CLINT_MEM_raddr_ready & CLINT_MEM_raddr_valid):(ARBITER_MEM_raddr_ready & ARBITER_MEM_raddr_valid)) ? `busy : `idle)) |
+                                                 ({2{r_state_busy}} & ((from_clint ? (CLINT_MEM_rdata_ready & CLINT_MEM_rdata_valid):(ARBITER_MEM_rdata_ready & ARBITER_MEM_rdata_valid)) ? `idle : `busy)) ;
 
     // ===========================================================================
     // write mater state machine
     logic        [1 : 0]       w_state;
     wire                       w_state_idle   =  (w_state == `idle);
     wire                       w_state_busy   =  (w_state == `busy);
+    
      // 当 AXI 发生同时握手，将转移到下一个状态
     wire         [1 : 0]       w_state_next   =  ({2{w_state_idle}} & ((io_master_awready & io_master_awvalid & io_master_wready & io_master_wvalid) ?  `busy : `idle)) | 
                                                  ({2{w_state_busy}} & ((io_master_bready  & io_master_bvalid)                                        ?  `idle : `busy)) ;
     
    
     // 32 位 64 位互转（write / read）
-    wire     [63 : 0]          w_abstract     =  {32'b0, MEM_wdata} << ({io_master_awaddr[2 : 0], 3'b0})                                                           ;
-    wire     [63 : 0]          r_abstract     =  (from_flash ? swap_rdata : ARBITER_MEM_rdata) >> ({ARBITER_MEM_raddr[2 : 0], 3'b0})                               ;
+    wire     [63 : 0]          w_abstract     =  {32'b0, MEM_wdata} << ({io_master_awaddr[2 : 0], 3'b0})                                                              ;
+    wire     [63 : 0]          r_abstract     =  (from_flash ? swap_rdata : (from_clint ? CLINT_MEM_rdata : ARBITER_MEM_rdata)) >> ({ARBITER_MEM_raddr[2 : 0], 3'b0}) ;
 
 
     // 处理 AXI 64 位的对齐问题
@@ -150,8 +176,7 @@ module MEM_DATA_MEM_ysyx23060136 (
                                                 ({32{MEM_mem_word}})   & r_abstract[31 : 0]                    & 32'hFFFF_FFFF                                     |
                                                 ({32{MEM_mem_byte  }}) & ((32'h0000_00FF & r_abstract[31 : 0]) | {{24{r_abstract[7]}},  {8{1'b0}}})                |
                                                 ({32{MEM_mem_half  }}) & ((32'h0000_FFFF & r_abstract[31 : 0]) | {{16{r_abstract[15]}}, {16{1'b0}}})               ;
-
-                            
+                    
     // this signal is used for next phase of CPU 
     assign                     MEM_rvalid     =   r_state_idle & ~MEM_i_raddr_change & ~new_raddr;
     assign                     MEM_wready     =   w_state_idle & ~MEM_i_waddr_change & ~new_waddr;

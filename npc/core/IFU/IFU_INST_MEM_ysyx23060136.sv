@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-26 00:41:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-07 20:11:41
+ * @Last Modified time: 2024-03-16 13:54:29
  */
 
 
@@ -32,13 +32,17 @@ module IFU_INST_MEM_ysyx23060136 (
 
       // output for the next stage
       output             [  31:0]         IFU_o_inst                 ,
-      // update seg reg signal
-      output                              inst_valid                                              
+      // update seg reg signal 
+      output                              inst_valid                 ,
+      output                              IFU_error_signal                                           
     );
-
+    
+    // PC 值非法检测
+    wire                         pc_legal               =  (IFU_o_pc >= `IFU_BASE) && (IFU_o_pc < `IFU_BASE);
 
     assign                       ARBITER_IFU_pc         =  IFU_o_pc                              ;
     assign                       ARBITER_IFU_pc_valid   =  r_state_idle & new_pc                 ;
+    assign                       IFU_error_signal       =  ARBITER_IFU_pc_valid & !pc_legal      ;
     // 传输地址完成后，我们直接准备接受数据
     assign                       ARBITER_IFU_inst_ready =  r_state_busy                          ;
     

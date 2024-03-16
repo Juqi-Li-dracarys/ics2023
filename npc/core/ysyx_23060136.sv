@@ -2,17 +2,17 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-07 20:07:19 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-15 11:13:22
+ * @Last Modified time: 2024-03-16 15:43:54
  */
 
 
 `include "DEFINES_ysyx23060136.sv"
 
 
-// Top module of riscv32 core
+// Top module of riscv32e core
 // ===========================================================================
 module ysyx_23060136 (
-        // YSYX-SoC 标准总线接口，目前只考虑 Core 为 master
+        // YSYX-SoC AXI 标准总线接口，目前只考虑 CPU core 为 master
         input                              clock                       ,
         input                              reset                       ,
         // 外部中断
@@ -48,8 +48,7 @@ module ysyx_23060136 (
         input                              io_master_bvalid            ,
         input             [   1:0]         io_master_bresp             ,
         input             [   3:0]         io_master_bid               ,
-        // AXI-full BUS on SoC(slave read)
-        
+        // AXI-full BUS on SoC(slave read, Not used now)
         output                             io_slave_awready            ,
         input                              io_slave_awvalid            ,
         input             [  31:0]         io_slave_awaddr             ,
@@ -87,7 +86,10 @@ module ysyx_23060136 (
     // 仿真信号接口
      wire            clk                                           =    clock                           ;
      wire            rst                                           =    reset                           ;
-
+    
+     // PC 地址错误
+     wire            IFU_error_signal     /* verilator public */                                        ;
+     // AXI 返回信息错误
      wire            MEM_error_signal     /* verilator public */                                        ;
      wire            ARBITER_error_signal /* verilator public */                                        ;
      wire            inst_commit          /* verilator public */   =     WB_o_commit                    ;
@@ -142,7 +144,8 @@ module ysyx_23060136 (
                             .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
                             .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
                             .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
-                            .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    )
+                            .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ),
+                            .IFU_error_signal                  (IFU_error_signal          ) 
                         );
 
 
@@ -700,6 +703,14 @@ module ysyx_23060136 (
     wire                                ARBITER_MEM_rdata_valid    ;
     wire                                ARBITER_MEM_rdata_ready    ;
     wire               [   2:0]         ARBITER_MEM_rsize          ;
+
+    wire                                CLINT_MEM_raddr_ready      ;
+    wire               [  31:0]         CLINT_MEM_raddr            ;
+    wire                                CLINT_MEM_raddr_valid      ;
+    wire               [  63:0]         CLINT_MEM_rdata            ;
+    wire                                CLINT_MEM_rdata_valid      ;
+    wire                                CLINT_MEM_rdata_ready      ;
+    wire               [   2:0]         CLINT_MEM_rsize            ;
   
 
                             
@@ -776,6 +787,14 @@ MEM_TOP_ysyx23060136  MEM_TOP_ysyx23060136_inst (
                           .ARBITER_MEM_rdata_valid           (ARBITER_MEM_rdata_valid   ),
                           .ARBITER_MEM_rdata_ready           (ARBITER_MEM_rdata_ready   ),
                           .ARBITER_MEM_rsize                 (ARBITER_MEM_rsize         ),
+
+                          .CLINT_MEM_raddr_ready             (CLINT_MEM_raddr_ready     ),
+                          .CLINT_MEM_raddr                   (CLINT_MEM_raddr           ),
+                          .CLINT_MEM_raddr_valid             (CLINT_MEM_raddr_valid     ),
+                          .CLINT_MEM_rdata                   (CLINT_MEM_rdata           ),
+                          .CLINT_MEM_rdata_valid             (CLINT_MEM_rdata_valid     ),
+                          .CLINT_MEM_rdata_ready             (CLINT_MEM_rdata_ready     ),
+                          .CLINT_MEM_rsize                   (CLINT_MEM_rsize           ),
                           .io_master_awready                 (io_master_awready         ),
                           .io_master_awvalid                 (io_master_awvalid         ),
                           .io_master_awaddr                  (io_master_awaddr          ),
@@ -890,36 +909,49 @@ MEM_TOP_ysyx23060136  MEM_TOP_ysyx23060136_inst (
 
 
     PUBLIC_ARBITER_ysyx23060136  PUBLIC_ARBITER_ysyx23060136_inst (
-                                .clk(clk),
-                                .rst(rst),
-                                .ARBITER_IFU_pc(ARBITER_IFU_pc),
-                                .ARBITER_IFU_pc_valid(ARBITER_IFU_pc_valid),
-                                .ARBITER_IFU_pc_ready(ARBITER_IFU_pc_ready),
-                                .ARBITER_IFU_inst_ready(ARBITER_IFU_inst_ready),
-                                .ARBITER_IFU_inst(ARBITER_IFU_inst),
-                                .ARBITER_IFU_inst_valid(ARBITER_IFU_inst_valid),
-                                .ARBITER_MEM_raddr(ARBITER_MEM_raddr),
-                                .ARBITER_MEM_rsize(ARBITER_MEM_rsize),
-                                .ARBITER_MEM_raddr_valid(ARBITER_MEM_raddr_valid),
-                                .ARBITER_MEM_raddr_ready(ARBITER_MEM_raddr_ready),
-                                .ARBITER_MEM_rdata(ARBITER_MEM_rdata),
-                                .ARBITER_MEM_rdata_valid(ARBITER_MEM_rdata_valid),
-                                .ARBITER_MEM_rdata_ready(ARBITER_MEM_rdata_ready),
-                                .ARBITER_error_signal(ARBITER_error_signal),
-                                .io_master_arready(io_master_arready),
-                                .io_master_arvalid(io_master_arvalid),
-                                .io_master_araddr(io_master_araddr),
-                                .io_master_arid(io_master_arid),
-                                .io_master_arlen(io_master_arlen),
-                                .io_master_arsize(io_master_arsize),
-                                .io_master_arburst(io_master_arburst),
-                                .io_master_rready(io_master_rready),
-                                .io_master_rvalid(io_master_rvalid),
-                                .io_master_rresp(io_master_rresp),
-                                .io_master_rdata(io_master_rdata),
-                                .io_master_rlast(io_master_rlast),
-                                .io_master_rid(io_master_rid)
-                              );
+                            .clk                               (clk                       ),
+                            .rst                               (rst                       ),
+                            .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
+                            .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
+                            .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
+                            .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ),
+                            .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
+                            .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
+                            .ARBITER_MEM_raddr                 (ARBITER_MEM_raddr         ),
+                            .ARBITER_MEM_rsize                 (ARBITER_MEM_rsize         ),
+                            .ARBITER_MEM_raddr_valid           (ARBITER_MEM_raddr_valid   ),
+                            .ARBITER_MEM_raddr_ready           (ARBITER_MEM_raddr_ready   ),
+                            .ARBITER_MEM_rdata                 (ARBITER_MEM_rdata         ),
+                            .ARBITER_MEM_rdata_valid           (ARBITER_MEM_rdata_valid   ),
+                            .ARBITER_MEM_rdata_ready           (ARBITER_MEM_rdata_ready   ),
+                            .ARBITER_error_signal              (ARBITER_error_signal      ),
+                            .io_master_arready                 (io_master_arready         ),
+                            .io_master_arvalid                 (io_master_arvalid         ),
+                            .io_master_araddr                  (io_master_araddr          ),
+                            .io_master_arid                    (io_master_arid            ),
+                            .io_master_arlen                   (io_master_arlen           ),
+                            .io_master_arsize                  (io_master_arsize          ),
+                            .io_master_arburst                 (io_master_arburst         ),
+                            .io_master_rready                  (io_master_rready          ),
+                            .io_master_rvalid                  (io_master_rvalid          ),
+                            .io_master_rresp                   (io_master_rresp           ),
+                            .io_master_rdata                   (io_master_rdata           ),
+                            .io_master_rlast                   (io_master_rlast           ),
+                            .io_master_rid                     (io_master_rid             ) 
+            );
+    
+
+    CLINT_ysyx23060136  CLINT_ysyx23060136_inst (
+                            .clk                               (clk                       ),
+                            .rst                               (rst                       ),
+                            .CLINT_MEM_raddr                   (CLINT_MEM_raddr           ),
+                            .CLINT_MEM_rsize                   (CLINT_MEM_rsize           ),
+                            .CLINT_MEM_raddr_valid             (CLINT_MEM_raddr_valid     ),
+                            .CLINT_MEM_raddr_ready             (CLINT_MEM_raddr_ready     ),
+                            .CLINT_MEM_rdata                   (CLINT_MEM_rdata           ),
+                            .CLINT_MEM_rdata_valid             (CLINT_MEM_rdata_valid     ),
+                            .CLINT_MEM_rdata_ready             (CLINT_MEM_rdata_ready     ) 
+             );
                            
 endmodule
 

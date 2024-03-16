@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU
  * @Date: 2024-02-13 14:39:12
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-21 15:57:14
+ * @Last Modified time: 2024-03-16 13:54:36
  */
 
  `include "DEFINES_ysyx23060136.sv"
@@ -36,7 +36,8 @@ module IFU_TOP_ysyx23060136(
   
         output             [  31:0]         ARBITER_IFU_pc             ,
         output                              ARBITER_IFU_pc_valid       ,
-        output                              ARBITER_IFU_inst_ready     
+        output                              ARBITER_IFU_inst_ready     ,
+        output                              IFU_error_signal
     );
 
     // current inst/pc is valid
@@ -59,7 +60,8 @@ module IFU_TOP_ysyx23060136(
 
                                    .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
                                    .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
-                                   .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ) 
+                                   .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ),
+                                   .IFU_error_signal                  (IFU_error_signal          ) 
                                );
 
 

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-16 10:33:54 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-16 10:44:12
+ * @Last Modified time: 2024-03-16 15:48:49
  */
 
 
@@ -14,9 +14,9 @@ void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-//   uint64_t us_lower = (uint64_t)inl(RTC_ADDR);
-//   uint64_t us_higher = (uint64_t)inl(RTC_ADDR + 4);
-//   uptime->us = us_lower | (us_higher << 32);
+  uint64_t us_lower = (uint64_t)inl(RTC_ADDR);
+  uint64_t us_higher = (uint64_t)inl(RTC_ADDR + 4);
+  uptime->us = us_lower | (us_higher << 32);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {

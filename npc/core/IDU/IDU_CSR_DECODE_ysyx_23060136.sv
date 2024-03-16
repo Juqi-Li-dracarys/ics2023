@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU
  * @Date: 2024-02-21 17:23:48
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-21 20:28:24
+ * @Last Modified time: 2024-03-16 15:10:07
  */
 
 
@@ -18,15 +18,15 @@
  );
  
     // CSR internal ctr
-    logic    csr_ecall         = (IDU_csr_id     ==     12'd0);
-    logic    csr_mret          = (IDU_csr_id     ==     12'd770);
-    logic    csr_mtvec         = (IDU_csr_id     ==     12'd773);
-    logic    csr_mstatus       = (IDU_csr_id     ==     12'd768);
-    logic    csr_mcause        = (IDU_csr_id     ==     12'd834);
-    logic    csr_mepc          = (IDU_csr_id     ==     12'd833);
+    wire     csr_ecall         = (IDU_csr_id     ==     12'd0)     ;
+    wire     csr_mret          = (IDU_csr_id     ==     12'd770)   ;
+    wire     csr_mtvec         = (IDU_csr_id     ==     12'd773)   ;
+    wire     csr_mstatus       = (IDU_csr_id     ==     12'd768)   ;
+    wire     csr_mcause        = (IDU_csr_id     ==     12'd834)   ;
+    wire     csr_mepc          = (IDU_csr_id     ==     12'd833)   ;
 
-    logic    csr_mvendorid     = (IDU_csr_id     ==     12'd3857);
-    logic    csr_marchid       = (IDU_csr_id     ==     12'd3858);
+    wire     csr_mvendorid     = (IDU_csr_id     ==     12'd3857)  ;
+    wire     csr_marchid       = (IDU_csr_id     ==     12'd3858)  ;
 
 
    

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-28 13:07:41 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-28 23:59:44
+ * @Last Modified time: 2024-03-16 14:49:31
  */
 
  `include "DEFINES_ysyx23060136.sv"
@@ -109,6 +109,15 @@ module MEM_TOP_ysyx23060136 (
         input              [  63:0]         ARBITER_MEM_rdata            ,
         input                               ARBITER_MEM_rdata_valid      ,
         output                              ARBITER_MEM_rdata_ready      ,
+
+        input                               CLINT_MEM_raddr_ready        ,
+        output             [  31:0]         CLINT_MEM_raddr              ,
+        output                              CLINT_MEM_raddr_valid        ,
+        output             [   2:0]         CLINT_MEM_rsize              ,
+
+        input              [  63:0]         CLINT_MEM_rdata              ,
+        input                               CLINT_MEM_rdata_valid        ,
+        output                              CLINT_MEM_rdata_ready        ,
         // ===========================================================================
         // interface for AXI-full(write)
         input                               io_master_awready            ,
@@ -171,6 +180,14 @@ module MEM_TOP_ysyx23060136 (
                                .MEM_mem_word                      (MEM_i_mem_word            ),
                                .MEM_mem_byte_u                    (MEM_i_mem_byte_u          ),
                                .MEM_mem_half_u                    (MEM_i_mem_half_u          ),
+                               .CLINT_MEM_raddr_ready             (CLINT_MEM_raddr_ready     ),    
+                               .CLINT_MEM_raddr                   (CLINT_MEM_raddr           ),    
+                               .CLINT_MEM_rsize                   (CLINT_MEM_rsize           ),    
+                               .CLINT_MEM_raddr_valid             (CLINT_MEM_raddr_valid     ),    
+                               .CLINT_MEM_rdata                   (CLINT_MEM_rdata           ),    
+                               .CLINT_MEM_rdata_valid             (CLINT_MEM_rdata_valid     ),    
+                               .CLINT_MEM_rdata_ready             (CLINT_MEM_rdata_ready     ),    
+
                                .ARBITER_MEM_raddr_ready           (ARBITER_MEM_raddr_ready   ),
                                .ARBITER_MEM_raddr                 (ARBITER_MEM_raddr         ),
                                .ARBITER_MEM_rsize                 (ARBITER_MEM_rsize         ),
