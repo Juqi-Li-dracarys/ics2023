@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-08 08:52:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 15:58:31
+ * @Last Modified time: 2024-03-17 17:31:43
  */
 
 
@@ -25,6 +25,8 @@ void _start() {
   *(volatile char *)(UART_BASE + UART_TX) = 'C' ;
   *(volatile char *)(UART_BASE + UART_TX) = '!' ;
   *(volatile char *)(UART_BASE + UART_TX) = '\n';
+
+  *(volatile char *)(0xa0000000)          = 'a';
 
    asm volatile(
     "mv a0, %0\n\t"
