@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-08 08:52:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-17 17:32:43
+ * @Last Modified time: 2024-03-17 17:38:46
  */
 
 
@@ -11,6 +11,7 @@
 #define FLASH_BASE 0x30000000
 #define UART_TX    0
 
+#define SDRAM_BASE 0xa0000000
 
 void _start() {
 
@@ -26,11 +27,9 @@ void _start() {
   *(volatile char *)(UART_BASE + UART_TX) = '!' ;
   *(volatile char *)(UART_BASE + UART_TX) = '\n';
 
-  *(volatile char *)(0xa0000000)          = 'a';
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(0xa0000000);
+  *(volatile char *)(SDRAM_BASE)          = 'A';
   
-
-   asm volatile(
+  asm volatile(
     "mv a0, %0\n\t"
     "ebreak"
     : 
