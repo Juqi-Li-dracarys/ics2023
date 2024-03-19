@@ -27,6 +27,7 @@ void _start() {
   *(volatile char *)(SDRAM_BASE + 9) = '!' ;
   *(volatile char *)(SDRAM_BASE + 10) = '\n';
 
+
   *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 0);
   *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 1);
   *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 2);
