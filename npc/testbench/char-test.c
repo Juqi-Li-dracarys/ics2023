@@ -15,7 +15,7 @@
 
 void _start() {
 
-  *(volatile char *)(SDRAM_BASE + 0) = 'h';
+  *(volatile char *)(SDRAM_BASE + 0) = 'h' ;
   *(volatile char *)(SDRAM_BASE + 1) = 'e' ;
   *(volatile char *)(SDRAM_BASE + 2) = 'l' ;
   *(volatile char *)(SDRAM_BASE + 3) = 'l' ;
