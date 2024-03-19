@@ -27,7 +27,7 @@ void _start() {
   *(volatile char *)(UART_BASE + UART_TX) = '!' ;
   *(volatile char *)(UART_BASE + UART_TX) = '\n';
 
-  *(volatile char *)(SDRAM_BASE)          = 'A';
+  *(volatile char *)(SDRAM_BASE)          = 'A' ;
   
   asm volatile(
     "mv a0, %0\n\t"
