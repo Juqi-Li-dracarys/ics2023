@@ -15,20 +15,30 @@
 
 void _start() {
 
-  *(volatile char *)(UART_BASE + UART_TX) = 'h';
-  *(volatile char *)(UART_BASE + UART_TX) = 'e' ;
-  *(volatile char *)(UART_BASE + UART_TX) = 'l' ;
-  *(volatile char *)(UART_BASE + UART_TX) = 'l' ;
-  *(volatile char *)(UART_BASE + UART_TX) = 'o' ;
-  *(volatile char *)(UART_BASE + UART_TX) = ',' ;
-  *(volatile char *)(UART_BASE + UART_TX) = 'S' ;
-  *(volatile char *)(UART_BASE + UART_TX) = 'o' ;
-  *(volatile char *)(UART_BASE + UART_TX) = 'C' ;
-  *(volatile char *)(UART_BASE + UART_TX) = '!' ;
-  *(volatile char *)(UART_BASE + UART_TX) = '\n';
+  *(volatile char *)(SDRAM_BASE + 0) = 'h';
+  *(volatile char *)(SDRAM_BASE + 1) = 'e' ;
+  *(volatile char *)(SDRAM_BASE + 2) = 'l' ;
+  *(volatile char *)(SDRAM_BASE + 3) = 'l' ;
+  *(volatile char *)(SDRAM_BASE + 4) = 'o' ;
+  *(volatile char *)(SDRAM_BASE + 5) = ',' ;
+  *(volatile char *)(SDRAM_BASE + 6) = 'S' ;
+  *(volatile char *)(SDRAM_BASE + 7) = 'o' ;
+  *(volatile char *)(SDRAM_BASE + 8) = 'C' ;
+  *(volatile char *)(SDRAM_BASE + 9) = '!' ;
+  *(volatile char *)(SDRAM_BASE + 10) = '\n';
 
-  *(volatile char *)(SDRAM_BASE + 14)     = 'A' ;
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 14);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 0);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 1);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 2);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 3);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 4);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 5);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 6);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 7);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 8);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 9);
+  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + 10);
+  
   
   asm volatile(
     "mv a0, %0\n\t"
