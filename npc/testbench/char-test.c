@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-08 08:52:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-20 11:32:59
+ * @Last Modified time: 2024-03-21 00:09:42
  */
 
 
@@ -12,7 +12,8 @@
 #define UART_TX    0
 
 #define SDRAM_BASE 0xa0000000
-#define TEST_START 0x0000FFF0
+// #define TEST_START 0x0000FFF0
+#define TEST_START 0x0
 #define TEST_END   0x00010000
 
 void _start() {
