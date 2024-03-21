@@ -2,11 +2,10 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 20:22:58
+ * @Last Modified time: 2024-03-21 20:24:08
  */
 
 ENTRY(_start)
-PHDRS { text PT_LOAD; data PT_LOAD; }
 
 
 /*定义内存空间*/
@@ -43,7 +42,7 @@ SECTIONS {
     *(.text*)
      etext = .;
     _etext = .;
-  } > REGION_TEXT  AT> flash :text
+  } > REGION_TEXT  AT> flash
 
   .rodata : {
     _rodata_start = .;
@@ -61,7 +60,7 @@ SECTIONS {
       edata = .;
      _edata = .;
      _data_end = .;
-  } > REGION_DATA  AT> flash :data
+  } > REGION_DATA  AT> flash
 
   
   /*LMA*/
