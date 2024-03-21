@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 19:26:29
+ * @Last Modified time: 2024-03-21 19:46:33
  */
 
 ENTRY(_start)
@@ -27,14 +27,8 @@ SECTIONS {
   /* 链接的起始位置 */
   . = ORIGIN(flash);
 
-  /*一级加载*/
-  .fsbt :{
-    /* _fsbt_start=.; */
-    *(entry)
-    *(_fsbt)
-    /* _fsbt_end=.; */
-  } > REGION_FSBT  AT> flash :text
-
+  /* 一级加载*/
+  
   .text : {
     _stext = .;
     /* _ssbt_start=.; */
@@ -77,7 +71,7 @@ SECTIONS {
   } > REGION_BSS  AT> flash
 
   /*stack and heap in sram*/
-  _stack_top = ALIGN(4);
+  _stack_top = ORIGIN(sram);
   . = _stack_top + 0x1000;
   _stack_pointer = .;
    end = .;
