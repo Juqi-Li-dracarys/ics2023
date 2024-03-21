@@ -19,13 +19,15 @@
 
 static uint8_t flash[CONFIG_FLASH_SIZE] = {};
 static uint8_t sram[CONFIG_SRAM_SIZE] = {};
+static uint8_t sdram[CONFIG_SDRAM_SIZE] = {};
 
 uint8_t* guest_to_host(paddr_t paddr) { 
   if(in_flash(paddr))
     return flash + paddr - CONFIG_FLASH_MBASE;
   else if(in_sram(paddr))
     return sram + paddr - CONFIG_SRAM_MBASE;
-  else
+  else if(in_sdram(paddr))
+    return sdram + paddr - CONFIG_SDRAM_MBASE;
     return 0;
 }
 

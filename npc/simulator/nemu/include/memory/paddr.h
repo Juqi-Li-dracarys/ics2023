@@ -26,11 +26,15 @@ uint8_t* guest_to_host(paddr_t paddr);
 paddr_t host_to_guest(uint8_t *haddr);
 
 static inline bool in_flash(paddr_t addr) {
-  return addr - CONFIG_FLASH_MBASE < CONFIG_FLASH_SIZE;
+  return (addr < CONFIG_FLASH_SIZE + CONFIG_FLASH_MBASE) && (addr >= CONFIG_FLASH_MBASE);
 }
 
 static inline bool in_sram(paddr_t addr) {
-  return addr - CONFIG_SRAM_MBASE < CONFIG_SRAM_SIZE;
+  return (addr < CONFIG_SRAM_MBASE + CONFIG_SRAM_SIZE) && (addr >= CONFIG_SRAM_MBASE);
+}
+
+static inline bool in_sdram(paddr_t addr) {
+  return (addr < CONFIG_SDRAM_MBASE + CONFIG_SDRAM_SIZE) && (addr >= CONFIG_SDRAM_MBASE);
 }
 
 word_t paddr_read(paddr_t addr, int len);
