@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 20:02:01
+ * @Last Modified time: 2024-03-21 20:03:27
  */
 
 ENTRY(_start)
@@ -17,7 +17,7 @@ MEMORY {
   sdram : ORIGIN = 0xa0000000, LENGTH = 128M
 }
 
-REGION_ALIAS("REGION_FSBT", flash);
+REGION_ALIAS("REGION_FSBT", sdram);
 REGION_ALIAS("REGION_TEXT", sdram);
 REGION_ALIAS("REGION_RODATA", sdram);
 REGION_ALIAS("REGION_DATA", sdram);
@@ -79,6 +79,6 @@ SECTIONS {
    _heap_start = ALIGN(4);
 
   _stack_top = ORIGIN(sram);
-  . = _stack_top + 0x1FFC;
+  . = _stack_top + 0x2000;
   _stack_pointer = .;
 }
