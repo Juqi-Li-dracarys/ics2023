@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 20:06:17
+ * @Last Modified time: 2024-03-21 20:18:35
  */
 
 ENTRY(_start)
@@ -18,10 +18,10 @@ MEMORY {
 }
 
 REGION_ALIAS("REGION_FSBT",   flash);
-REGION_ALIAS("REGION_TEXT",   sram);
-REGION_ALIAS("REGION_RODATA", sram);
-REGION_ALIAS("REGION_DATA",   sram);
-REGION_ALIAS("REGION_BSS",    sram);
+REGION_ALIAS("REGION_TEXT",   sdram);
+REGION_ALIAS("REGION_RODATA", sdram);
+REGION_ALIAS("REGION_DATA",   sdram);
+REGION_ALIAS("REGION_BSS",    sdram);
 
 SECTIONS {
   /* 链接的起始位置 */
