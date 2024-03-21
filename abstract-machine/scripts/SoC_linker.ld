@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 17:31:13
+ * @Last Modified time: 2024-03-21 19:26:29
  */
 
 ENTRY(_start)
@@ -17,17 +17,29 @@ MEMORY {
   sdram : ORIGIN = 0xa0000000, LENGTH = 128M
 }
 
-REGION_ALIAS("REGION_TEXT", flash);
-REGION_ALIAS("REGION_RODATA", flash);
-REGION_ALIAS("REGION_DATA", sram);
-REGION_ALIAS("REGION_BSS", sram);
+REGION_ALIAS("REGION_FSBT", flash);
+REGION_ALIAS("REGION_TEXT", sdram);
+REGION_ALIAS("REGION_RODATA", sdram);
+REGION_ALIAS("REGION_DATA", sdram);
+REGION_ALIAS("REGION_BSS", sdram);
 
 SECTIONS {
   /* 链接的起始位置 */
   . = ORIGIN(flash);
+
+  /*一级加载*/
+  .fsbt :{
+    /* _fsbt_start=.; */
+    *(entry)
+    *(_fsbt)
+    /* _fsbt_end=.; */
+  } > REGION_FSBT  AT> flash :text
+
   .text : {
     _stext = .;
-    *(entry)
+    /* _ssbt_start=.; */
+    *(_ssbt)
+     /* _ssbt_end=.; */
     *(.text*)
      etext = .;
     _etext = .;
