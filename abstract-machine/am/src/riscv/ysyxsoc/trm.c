@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-22 01:11:10
+ * @Last Modified time: 2024-03-22 01:14:53
  */
 
 #include <am.h>
@@ -37,6 +37,7 @@ void halt(int code) {
 }
 
 // 芯片固化信息
+// 开启 difftest 后需要注释
 static void chip_info() {
     // volatile uint32_t value;
     // asm volatile ("csrr %0, mvendorid" : "=r" (value));
@@ -46,6 +47,8 @@ static void chip_info() {
     return;
 }
 
+// 注意 Boot loader 不能调用库函数
+// 同时多个 section 的复制需要分开
 
 // 一级加载
 void fsbt() {
@@ -55,9 +58,10 @@ void fsbt() {
     for (size_t i = 0; i < (size_t)&_ssbt_size; i++) {
       dst[i] = src[i];
     }
-    // jump to sdram addr to excute ssbt
+    // jump to addr mapping sdram to excute ssbt
     ssbt();
 }
+
 
 // 二级加载
 void ssbt() {
@@ -79,11 +83,9 @@ void ssbt() {
     for (size_t i = 0; i < (size_t)&_data_size; i++) {
       dst[i] = src[i];
     }
-  
     // jump to the entry
     _trm_init();
 }
-
 
 // entry
 void _trm_init() {
