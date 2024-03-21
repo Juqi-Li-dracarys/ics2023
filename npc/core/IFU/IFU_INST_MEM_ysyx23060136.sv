@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-26 00:41:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-16 13:54:29
+ * @Last Modified time: 2024-03-21 22:16:44
  */
 
 
@@ -38,7 +38,8 @@ module IFU_INST_MEM_ysyx23060136 (
     );
     
     // PC 值非法检测
-    wire                         pc_legal               =  (IFU_o_pc >= `IFU_BASE) && (IFU_o_pc < `IFU_BASE);
+    wire                         pc_legal       =   1'b1                                                  ;
+    wire                         from_flash     =  (IFU_o_pc >= `FLASH_BASE && IFU_o_pc < `FLASH_END)     ;
 
     assign                       ARBITER_IFU_pc         =  IFU_o_pc                              ;
     assign                       ARBITER_IFU_pc_valid   =  r_state_idle & new_pc                 ;
@@ -48,7 +49,7 @@ module IFU_INST_MEM_ysyx23060136 (
     
     // 目前使用 FLASH 不需要考虑非对齐的问题
     // 但需要反转
-    wire         [63 : 0]        swap_rdata             =  {ARBITER_IFU_inst[39 : 32], ARBITER_IFU_inst[47 : 40], ARBITER_IFU_inst[55 : 48], ARBITER_IFU_inst[63 : 56], ARBITER_IFU_inst[7 : 0], ARBITER_IFU_inst[15 : 8], ARBITER_IFU_inst[23 : 16], ARBITER_IFU_inst[31 : 24]};
+    wire         [63 : 0]        swap_rdata             =  from_flash ? {ARBITER_IFU_inst[39 : 32], ARBITER_IFU_inst[47 : 40], ARBITER_IFU_inst[55 : 48], ARBITER_IFU_inst[63 : 56], ARBITER_IFU_inst[7 : 0], ARBITER_IFU_inst[15 : 8], ARBITER_IFU_inst[23 : 16], ARBITER_IFU_inst[31 : 24]} : ARBITER_IFU_inst;
 
     assign                       IFU_o_inst             =  swap_rdata [31 : 0]                   ;
     assign                       inst_valid             =  r_state_idle & ~pc_change & ~new_pc;  ;
