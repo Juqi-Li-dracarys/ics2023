@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 20:03:27
+ * @Last Modified time: 2024-03-21 20:03:52
  */
 
 ENTRY(_start)
@@ -17,11 +17,11 @@ MEMORY {
   sdram : ORIGIN = 0xa0000000, LENGTH = 128M
 }
 
-REGION_ALIAS("REGION_FSBT", sdram);
-REGION_ALIAS("REGION_TEXT", sdram);
+REGION_ALIAS("REGION_FSBT",   flash);
+REGION_ALIAS("REGION_TEXT",   sdram);
 REGION_ALIAS("REGION_RODATA", sdram);
-REGION_ALIAS("REGION_DATA", sdram);
-REGION_ALIAS("REGION_BSS", sdram);
+REGION_ALIAS("REGION_DATA",   sdram);
+REGION_ALIAS("REGION_BSS",    sdram);
 
 SECTIONS {
   /* 链接的起始位置 */
