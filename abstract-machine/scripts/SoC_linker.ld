@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 21:31:02
+ * @Last Modified time: 2024-03-22 01:05:55
  */
 
 ENTRY(_start)
@@ -41,12 +41,11 @@ SECTIONS {
      _ssbt_end = .;
   } > REGION_SSBT  AT> flash
 
- /* 二级加载*/
+ /* 二级加载 VMA*/
   _ssbt_load_start = LOADADDR(.ssbt);
-  _ssbt_size = _ssbt_end - _ssbt_start;
+  _ssbt_size = _text_start - _ssbt_start;
 
   .text : {
-    _code_start = .;
     _text_start = .;
     _stext = .;
     *(.text*)
@@ -54,7 +53,10 @@ SECTIONS {
     _etext = .;
   } > REGION_TEXT  AT> flash
 
-  
+  /* text VMA*/
+  _text_load_start = LOADADDR(.text);
+  _text_size = _rodata_start - _text_start;
+
   .rodata : {
     _rodata_start = .;
     *(.rodata*)
@@ -62,6 +64,10 @@ SECTIONS {
     rodata_end = .;
     _rodata_end = .;
   } > REGION_RODATA AT> flash
+
+  /*data VMA*/
+  _rodata_load_start = LOADADDR(.rodata);
+  _rodata_size = _data_start - _rodata_start;
 
   .data : {
      _data_start = .;
@@ -72,10 +78,9 @@ SECTIONS {
      _data_end = .;
   } > REGION_DATA  AT> flash
 
-
-  /*VMA*/
-  _code_load_start = LOADADDR(.text);
-  _code_size = _bss_start - _text_start;
+  /*data VMA*/
+  _data_load_start = LOADADDR(.data);
+  _data_size = _bss_start - _data_start;
 
   .bss : {
 	_bss_start = .;

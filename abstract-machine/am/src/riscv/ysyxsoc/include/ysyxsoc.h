@@ -12,14 +12,22 @@
 extern char _heap_start;
 
 
-// boot loader
+// 1st boot loader
 extern char  _ssbt_start;
 extern char  _ssbt_load_start;
 extern char  _ssbt_size;
 
-extern char  _code_start;
-extern char  _code_load_start;
-extern char  _code_size;
+extern char  _text_start;
+extern char  _text_load_start;
+extern char  _text_size;
+
+extern char  _rodata_start;
+extern char  _rodata_load_start;
+extern char  _rodata_size;
+
+extern char  _data_start;
+extern char  _data_load_start;
+extern char  _data_size;
 
 // 片内定时器
 #define  CLINT_BASE     0x02000000
