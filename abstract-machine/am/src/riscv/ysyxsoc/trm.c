@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 21:45:33
+ * @Last Modified time: 2024-03-21 23:28:44
  */
 
 #include <am.h>
@@ -38,11 +38,11 @@ void halt(int code) {
 
 // 芯片固化信息
 static void chip_info() {
-    volatile uint32_t value;
-    asm volatile ("csrr %0, mvendorid" : "=r" (value));
-    printf("Author: %c%c%c%c", (char)(value >> 24), (char)(value >> 16), (char)(value >> 8), (char)(value));
-    asm volatile ("csrr %0, marchid" : "=r" (value));
-    printf("%d\n", value);
+    // volatile uint32_t value;
+    // asm volatile ("csrr %0, mvendorid" : "=r" (value));
+    // printf("Author: %c%c%c%c", (char)(value >> 24), (char)(value >> 16), (char)(value >> 8), (char)(value));
+    // asm volatile ("csrr %0, marchid" : "=r" (value));
+    // printf("%d\n", value);
     return;
 }
 
