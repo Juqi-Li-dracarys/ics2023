@@ -12,8 +12,8 @@
 #define UART_TX    0
 
 #define SDRAM_BASE 0xa0000000
-// #define TEST_START 0x0000FFF0
-#define TEST_START 0x0
+#define TEST_START 0x0000FFF0
+// #define TEST_START 0x0
 #define TEST_END   0x00010000
 
 void _start() {
