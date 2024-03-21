@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-22 00:38:30
+ * @Last Modified time: 2024-03-22 01:11:10
  */
 
 #include <am.h>
@@ -62,11 +62,24 @@ void fsbt() {
 // 二级加载
 void ssbt() {
     // copy user's code
-    uint8_t *dst = (uint8_t *)(&_code_start);
-    uint8_t *src = (uint8_t *)(&_code_load_start); 
-    for (size_t i = 0; i < (size_t)&_code_size; i++) {
+    uint8_t *dst = (uint8_t *)(&_text_start);
+    uint8_t *src = (uint8_t *)(&_text_load_start); 
+    for (size_t i = 0; i < (size_t)&_text_size; i++) {
       dst[i] = src[i];
     }
+    // read only data 
+    dst = (uint8_t *)(&_rodata_start);
+    src = (uint8_t *)(&_rodata_load_start); 
+    for (size_t i = 0; i < (size_t)&_rodata_size; i++) {
+      dst[i] = src[i];
+    }
+    // data
+    dst = (uint8_t *)(&_data_start);
+    src = (uint8_t *)(&_data_load_start); 
+    for (size_t i = 0; i < (size_t)&_data_size; i++) {
+      dst[i] = src[i];
+    }
+  
     // jump to the entry
     _trm_init();
 }
