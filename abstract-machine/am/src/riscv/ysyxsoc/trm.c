@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 21:32:24
+ * @Last Modified time: 2024-03-21 21:42:08
  */
 
 #include <am.h>
@@ -50,7 +50,11 @@ static void chip_info() {
 // 一级加载
 void fsbt() {
     // copy ssbt code to sdram
-    memcpy(&_ssbt_start, &_ssbt_load_start, (size_t)&_ssbt_size);
+    uint8_t *dst = (uint8_t *)(&_ssbt_start);
+    uint8_t *src = (uint8_t *)(&_ssbt_load_start); 
+    for (size_t i = 0; i < (size_t)&_ssbt_size; i++) {
+      dst[i] = src[i];
+    }
     // jump to sdram addr to excute ssbt
     ssbt();
 }
