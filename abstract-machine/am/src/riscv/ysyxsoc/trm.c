@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-22 01:16:49
+ * @Last Modified time: 2024-03-22 01:17:26
  */
 
 #include <am.h>
@@ -90,7 +90,7 @@ void ssbt() {
 // entry
 void _trm_init() {
   chip_info();
-  printf("program load finish. heap:%p\n", heap.start);
+  printf("program load finish, heap:%p\n", heap.start);
   int ret = main(mainargs);
   halt(ret);
 }
