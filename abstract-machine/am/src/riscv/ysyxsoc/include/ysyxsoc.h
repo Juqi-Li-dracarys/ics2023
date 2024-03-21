@@ -11,25 +11,32 @@
 // 链接脚本的堆栈
 extern char _heap_start;
 
-// SRAM 数据区
-extern char _data_start;
-extern char _data_load_start;
-extern char _data_size;
 
+// boot loader
+extern char  _ssbt_start;
+extern char  _ssbt_load_start;
+extern char  _ssbt_size;
+
+extern char  _code_start;
+extern char  _code_load_start;
+extern char  _code_size;
+
+// 片内定时器
 #define  CLINT_BASE     0x02000000
 #define  MTIME_OFFSET   0x0000bff8
 #define  RTC_ADDR       CLINT_BASE + MTIME_OFFSET
 
-#define  SRAM_END       0x0f000000 + 0x00000020
-
 typedef uintptr_t PTE;
 
-#define PGSIZE    4096
+#define PGSIZE     4096
 
-void _trm_init();
+// end of heap
+#define SDRAM_END  0xa8000000
 
 // bootloader
 void fsbt()__attribute__((section("_fsbt")));
 void ssbt()__attribute__((section("_ssbt")));
+
+void _trm_init();
 
 #endif

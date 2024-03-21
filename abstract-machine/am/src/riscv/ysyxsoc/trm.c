@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 19:10:03
+ * @Last Modified time: 2024-03-21 21:32:24
  */
 
 #include <am.h>
@@ -12,7 +12,7 @@
 int main(const char *args);
 
 // 堆区
-Area heap = RANGE(&_heap_start, SRAM_END);
+Area heap = RANGE(&_heap_start, SDRAM_END);
 
 // Makefile 参数
 #ifndef MAINARGS
@@ -47,11 +47,25 @@ static void chip_info() {
 }
 
 
+// 一级加载
+void fsbt() {
+    // copy ssbt code to sdram
+    memcpy(&_ssbt_start, &_ssbt_load_start, (size_t)&_ssbt_size);
+    // jump to sdram addr to excute ssbt
+    ssbt();
+}
+
+// 二级加载
+void ssbt() {
+    // copy user's code
+    memcpy(&_code_start, &_code_load_start, (size_t)&_code_size);
+    // jump to the entry
+    _trm_init();
+}
+
+
+// entry
 void _trm_init() {
-  // boot loader
-  if (&_data_start != &_data_load_start) {
-    memcpy(&_data_start, &_data_load_start, (size_t)&_data_size);
-  }
   chip_info();
   printf("program load finish.\n");
   int ret = main(mainargs);
