@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-12 21:17:49
+ * @Last Modified time: 2024-03-21 19:10:03
  */
 
 #include <am.h>
@@ -11,10 +11,10 @@
 
 int main(const char *args);
 
-
+// 堆区
 Area heap = RANGE(&_heap_start, SRAM_END);
 
-// Makefile 参数传递
+// Makefile 参数
 #ifndef MAINARGS
 #define MAINARGS ""
 #endif
@@ -36,7 +36,8 @@ void halt(int code) {
   while (1);
 }
 
-static void display_author() {
+// 芯片固化信息
+static void chip_info() {
     volatile uint32_t value;
     asm volatile ("csrr %0, mvendorid" : "=r" (value));
     printf("Author: %c%c%c%c", (char)(value >> 24), (char)(value >> 16), (char)(value >> 8), (char)(value));
@@ -51,7 +52,8 @@ void _trm_init() {
   if (&_data_start != &_data_load_start) {
     memcpy(&_data_start, &_data_load_start, (size_t)&_data_size);
   }
-  display_author();
+  chip_info();
+  printf("program load finish.\n");
   int ret = main(mainargs);
   halt(ret);
 }

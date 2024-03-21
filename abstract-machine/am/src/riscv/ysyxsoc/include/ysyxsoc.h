@@ -26,4 +26,10 @@ typedef uintptr_t PTE;
 
 #define PGSIZE    4096
 
+void _trm_init();
+
+// bootloader
+void fsbt()__attribute__((section("_fsbt")));
+void ssbt()__attribute__((section("_ssbt")));
+
 #endif
