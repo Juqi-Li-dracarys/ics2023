@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 19:56:40
+ * @Last Modified time: 2024-03-21 20:02:01
  */
 
 ENTRY(_start)
@@ -79,8 +79,6 @@ SECTIONS {
    _heap_start = ALIGN(4);
 
   _stack_top = ORIGIN(sram);
-  . = _stack_top + 0x1000;
+  . = _stack_top + 0x1FFC;
   _stack_pointer = .;
-   end = .;
-  _end = .;
 }
