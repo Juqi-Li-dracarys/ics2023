@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 19:46:33
+ * @Last Modified time: 2024-03-21 19:49:13
  */
 
 ENTRY(_start)
@@ -31,9 +31,9 @@ SECTIONS {
   
   .text : {
     _stext = .;
-    /* _ssbt_start=.; */
+    _ssbt_start = .;
     *(_ssbt)
-     /* _ssbt_end=.; */
+     _ssbt_end = .;
     *(.text*)
      etext = .;
     _etext = .;
