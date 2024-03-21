@@ -28,7 +28,7 @@ uint8_t* guest_to_host(paddr_t paddr) {
     return sram + paddr - CONFIG_SRAM_MBASE;
   else if(in_sdram(paddr))
     return sdram + paddr - CONFIG_SDRAM_MBASE;
-    return 0;
+  return 0;
 }
 
 static word_t pmem_read(paddr_t addr, int len) {
