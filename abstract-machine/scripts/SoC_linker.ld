@@ -12,8 +12,9 @@ PHDRS { text PT_LOAD; data PT_LOAD; }
 /*定义内存空间*/
 /* ysyxsoc.h 中也有定义*/
 MEMORY {
-  flash : ORIGIN = 0x30000000, LENGTH = 128M
+  flash : ORIGIN = 0x30000000, LENGTH = 256M
   sram  : ORIGIN = 0x0f000000, LENGTH = 8K
+  sdram : ORIGIN = 0xa0000000, LENGTH = 128M
 }
 
 REGION_ALIAS("REGION_TEXT", flash);
