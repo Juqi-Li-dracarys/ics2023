@@ -90,10 +90,10 @@ SECTIONS {
   _bss_end = .;
   } > REGION_BSS  AT> flash
 
+  /*堆放入 sdram*/
    _heap_start = ALIGN(4);
 
-  /*堆栈全部放入 sram*/
+  /*栈放入 sram*/
   _stack_top = ORIGIN(sram);
-  . = _stack_top + 0x2000;
-  _stack_pointer = .;
+  _stack_pointer = _stack_top + 0x2000;
 }
