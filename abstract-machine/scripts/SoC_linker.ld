@@ -5,6 +5,10 @@
  * @Last Modified time: 2024-03-22 01:05:55
  */
 
+/*
+``2024.3.22 添加了对 RT-thread 特殊段的支持
+*/
+
 ENTRY(_start)
 
 /*定义内存空间*/
@@ -71,12 +75,10 @@ SECTIONS {
   _rodata_load_start = LOADADDR(.rodata);
   _rodata_size = _data_start - _rodata_start;
 
-
   .data : {
      _data_start = .;
     *(.data*)
     *(.sdata*)
-
     /* section information for finsh shell */
     __fsymtab_start = .;
     KEEP(*(FSymTab))
@@ -86,7 +88,6 @@ SECTIONS {
     KEEP(*(VSymTab))
     __vsymtab_end = .;
     . = ALIGN(8);
-  
     /* section information for initial. */
     . = ALIGN(8);
     __rt_init_start = .;
@@ -102,7 +103,7 @@ SECTIONS {
     *(__am_apps.sdata*)
     __am_apps_data_end = .;
     . = ALIGN(8);
-
+  /* end of this section */
       edata = .;
      _edata = .;
      _data_end = .;
@@ -113,19 +114,19 @@ SECTIONS {
   _data_size = _bss_start - _data_start;
 
   .bss : {
-	_bss_start = .;
+	  _bss_start = .;
     *(.bss*)
     *(.sbss*)
     *(.scommon)
-
+    /* section information for apps-bss. */
     . = ALIGN(8);
     __am_apps_bss_start = .;
     *(__am_apps.bss*)
     *(__am_apps.sbss*)
     *(__am_apps.scommon*)
     __am_apps_bss_end = .;
+    /* end of this section */
     . = ALIGN(8);
-    
   _bss_end = .;
   } > REGION_BSS  AT> flash
 
