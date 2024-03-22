@@ -74,7 +74,7 @@
 // // watch/break point
 // #define CONFIG_WBCHECK 1
 
-// wave record
-#define WAVE_RECORD 1
+// // wave record
+// #define WAVE_RECORD 1
 
 
