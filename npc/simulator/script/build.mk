@@ -14,10 +14,10 @@ BATCH_MODE = -b
 override ARGS ?= --log=$(OBJ_DIR)/npc-log.txt
 override ARGS += $(ARGS_DIFF)
 
-$(VBIN): $(CSRC) $(VSRC)
+$(VBIN): $(CSRC) $(VSRC) $(NVBOARD_ARCHIVE)
 	@echo "$(COLOR_YELLOW)[VERILATOR]$(COLOR_NONE) $(VBIN)"
 	@echo "$(COLOR_YELLOW)[GENERATE]$(COLOR_NONE) Creating System Verilog Model"
-	@$(VERILATOR) $(VFLAGS) $(VSRC) $(CSRC) $(CINC_PATH)
+	@$(VERILATOR) $(VFLAGS) $^ $(CINC_PATH)
 	@echo "$(COLOR_YELLOW)[COMPILE]$(COLOR_NONE) Compiling C++ files"
 	@$(MAKE) $(SILENT) -C $(OBJ_DIR) -f $(REWRITE)
 	@echo $(CPU_ARCH)
@@ -25,6 +25,11 @@ $(VBIN): $(CSRC) $(VSRC)
 $(NEMUISO):
 	@echo "$(COLOR_YELLOW)[Make DIFF]$(COLOR_NONE) $(notdir $(NEMU_DIR))/build/riscv32-nemu-interpreter-so"
 	@$(MAKE) -C $(NEMU_DIR)
+
+# constraint file
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	$(shell mkdir -p $(OBJ_DIR))
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 run: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))

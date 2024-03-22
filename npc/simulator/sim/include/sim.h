@@ -22,6 +22,10 @@ extern VysyxSoCFull *dut;
 extern VerilatedVcdC *m_trace;
 extern VerilatedContext* contextp;
 
+// nvboard api
+#include <nvboard.h>
+void nvboard_bind_all_pins(VysyxSoCFull *dut);
+
 // PATH to cpu core in C++ hierarchy
 #define CPU dut->ysyxSoCFull->asic->cpu->cpu
 

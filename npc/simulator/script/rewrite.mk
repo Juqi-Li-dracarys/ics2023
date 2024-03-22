@@ -17,5 +17,5 @@ CXXFLAGS += $(filter-out -D__STDC_FORMAT_MACROS, $(shell llvm-config-11 --cxxfla
 			-fPIC -DDEVICE -D__GUEST_ISA__=$(ISA) -D__CPU_ARCH__=$(CPU_ARCH)
 LDFLAGS += -O3 -rdynamic -shared -fPIC
 LIBS += $(shell llvm-config-11 --libs)
-LIBS += -lreadline -ldl -pie -lSDL2
+LIBS += -lreadline -ldl -pie -lSDL2 -lSDL2_image -lSDL2_ttf
 LINK := g++
