@@ -57,8 +57,6 @@ NPC_FLAGS += -f $(IMAGE).elf
 image: $(IMAGE).elf
 	@$(OBJDUMP) -d $(IMAGE).elf > $(IMAGE).txt
 	@echo + OBJCOPY "->" $(IMAGE_REL).bin
-# 这里埋个雷
-# @$(OBJCOPY) -S -O binary $(IMAGE).elf $(IMAGE).bin
 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
 
 
