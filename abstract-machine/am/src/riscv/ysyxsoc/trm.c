@@ -39,11 +39,11 @@ void halt(int code) {
 // 芯片固化信息
 // 开启 difftest 后需要注释
 static void chip_info() {
-    // volatile uint32_t value;
-    // asm volatile ("csrr %0, mvendorid" : "=r" (value));
-    // printf("Author: %c%c%c%c", (char)(value >> 24), (char)(value >> 16), (char)(value >> 8), (char)(value));
-    // asm volatile ("csrr %0, marchid" : "=r" (value));
-    // printf("%d\n", value);
+    volatile uint32_t value;
+    asm volatile ("csrr %0, mvendorid" : "=r" (value));
+    printf("Author: %c%c%c%c", (char)(value >> 24), (char)(value >> 16), (char)(value >> 8), (char)(value));
+    asm volatile ("csrr %0, marchid" : "=r" (value));
+    printf("%d\n", value);
     return;
 }
 
