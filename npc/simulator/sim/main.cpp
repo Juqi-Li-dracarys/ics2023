@@ -32,6 +32,8 @@ int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
     // simulation monitor
     init_monitor(argc, argv);
+    nvboard_bind_all_pins(dut);
+    nvboard_init();
     // start wave trace
     Verilated::traceEverOn(true);
     dut->trace(m_trace, 5);
@@ -42,6 +44,7 @@ int main(int argc, char** argv, char** env) {
     sdb_mainloop();
     // close wave trace
     m_trace->close();
+    nvboard_quit();
     delete dut;
     // close wave trace
     delete contextp;
