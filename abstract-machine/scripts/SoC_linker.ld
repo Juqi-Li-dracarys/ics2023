@@ -30,14 +30,14 @@ SECTIONS {
   .fsbt :{
     _fsbt_start = .;
     *(entry)
-    *(_fsbt)
+    KEEP(*(_fsbt))
     _fsbt_end = .;
   } > REGION_FSBT  AT> flash
   
   /* 二级加载*/
   .ssbt :{
     _ssbt_start = .;
-    *(_ssbt)
+    KEEP(*(_ssbt))
      _ssbt_end = .;
   } > REGION_SSBT  AT> flash
 
@@ -61,9 +61,6 @@ SECTIONS {
     _rodata_start = .;
     *(.rodata*)
     *(.srodata*)
-    *(FSymTab*)
-    *(VSymTab*)
-    *(.rti_fn*)
     *(.rela*)
     rodata_end = .;
     _rodata_end = .;
