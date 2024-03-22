@@ -61,6 +61,9 @@ SECTIONS {
     _rodata_start = .;
     *(.rodata*)
     *(.srodata*)
+    *(FSymTab)
+    *(VSymTab)
+    *(.rti_fn*)
     rodata_end = .;
     _rodata_end = .;
   } > REGION_RODATA AT> flash
