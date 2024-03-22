@@ -24,14 +24,9 @@ REGION_ALIAS("REGION_BSS",    sdram);
 
 SECTIONS {
   /* 链接的起始位置 */
+  . = ORIGIN(flash);
   
-  /* 一级加载*/
-  .fsbt :{
-    _fsbt_start = ORIGIN(flash);;
-    *(entry)
-    *(_fsbt)
-    _fsbt_end = .;
-  } > REGION_FSBT  AT> flash
+
   
   /* 二级加载*/
   .ssbt :{
