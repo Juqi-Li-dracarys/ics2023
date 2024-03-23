@@ -32,11 +32,11 @@ void _start() {
 
     // • Set the Divisor Latches, MSB first, LSB next.
     *(volatile char *)(UART_BASE + UART_DIV_M) =  0x00;
-    *(volatile char *)(UART_BASE + UART_DIV_L) =  0x03;
+    *(volatile char *)(UART_BASE + UART_DIV_L) =  0x02;
 
     // • Set bit 7 of LCR to ‘0’ to disable access to Divisor Latches. At this time the 
     // transmission engine starts working and data can be sent and received. 
-    *(volatile char *)(UART_BASE + UART_LCR) =  0x03;
+    *(volatile char *)(UART_BASE + UART_LCR)   =  0x03;
 
     // // • Set the FIFO trigger level. Generally, higher trigger level values produce less 
     // // interrupt to the system, so setting it to 14 bytes is recommended if the system 
@@ -55,17 +55,17 @@ void _start() {
     *(volatile char *)(UART_BASE) = '!' ;
     *(volatile char *)(UART_BASE) = '\n';
 
-    *(volatile char *)(UART_BASE) = 'h' ;
-    *(volatile char *)(UART_BASE) = 'e' ;
-    *(volatile char *)(UART_BASE) = 'l' ;
-    *(volatile char *)(UART_BASE) = 'l' ;
-    *(volatile char *)(UART_BASE) = 'o' ;
-    *(volatile char *)(UART_BASE) = ',' ;
-    *(volatile char *)(UART_BASE) = 'S' ;
-    *(volatile char *)(UART_BASE) = 'o' ;
-    *(volatile char *)(UART_BASE) = 'C' ;
-    *(volatile char *)(UART_BASE) = '!' ;
-    *(volatile char *)(UART_BASE) = '\n';
+    // *(volatile char *)(UART_BASE) = 'h' ;
+    // *(volatile char *)(UART_BASE) = 'e' ;
+    // *(volatile char *)(UART_BASE) = 'l' ;
+    // *(volatile char *)(UART_BASE) = 'l' ;
+    // *(volatile char *)(UART_BASE) = 'o' ;
+    // *(volatile char *)(UART_BASE) = ',' ;
+    // *(volatile char *)(UART_BASE) = 'S' ;
+    // *(volatile char *)(UART_BASE) = 'o' ;
+    // *(volatile char *)(UART_BASE) = 'C' ;
+    // *(volatile char *)(UART_BASE) = '!' ;
+    // *(volatile char *)(UART_BASE) = '\n';
 
     asm volatile(
         "mv a0, %0\n\t"
