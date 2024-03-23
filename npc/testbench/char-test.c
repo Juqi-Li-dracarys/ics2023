@@ -21,6 +21,7 @@
 #define TEST_START 0x0000FFF0
 #define TEST_END   0x00010000
 
+void main();
 
 void _start() {
 
@@ -53,19 +54,21 @@ void _start() {
     *(volatile char *)(UART_BASE) = 'C' ;
     *(volatile char *)(UART_BASE) = '!' ;
     *(volatile char *)(UART_BASE) = '\n';
-
-    asm volatile(
-        "mv a0, %0\n\t"
-        "ebreak"
-        : 
-        :"r"(0)
-    );
-    // shoud not reach here
-    while (1);
+    main();
 }
 
 void main() {
-    _start();
+    *(volatile char *)(UART_BASE) = 'h' ;
+    *(volatile char *)(UART_BASE) = 'e' ;
+    *(volatile char *)(UART_BASE) = 'l' ;
+    *(volatile char *)(UART_BASE) = 'l' ;
+    *(volatile char *)(UART_BASE) = 'o' ;
+    *(volatile char *)(UART_BASE) = ',' ;
+    *(volatile char *)(UART_BASE) = 'S' ;
+    *(volatile char *)(UART_BASE) = 'o' ;
+    *(volatile char *)(UART_BASE) = 'C' ;
+    *(volatile char *)(UART_BASE) = '!' ;
+    *(volatile char *)(UART_BASE) = '\n';
     asm volatile(
         "mv a0, %0\n\t"
         "ebreak"
