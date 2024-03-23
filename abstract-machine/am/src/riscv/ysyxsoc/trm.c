@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 15:29:41
+ * @Last Modified time: 2024-03-23 15:37:03
  */
 
 #include <am.h>
@@ -45,6 +45,7 @@ static void chip_info() {
     asm volatile ("csrr %0, marchid" : "=r" (value));
     printf("%d\n", value);
     *(volatile char *)(0x10002000 + 0x8) = 9 ;
+    *(volatile char *)(0x10002000 + 0x8) = 9 ;
     return;
 }
 
@@ -56,10 +57,6 @@ void fsbt() {
     // copy ssbt code to sdram
     uint8_t *dst = (uint8_t *)(&_ssbt_start);
     uint8_t *src = (uint8_t *)(&_ssbt_load_start);
-    char info [] =  "fsbt start, please wait...\n";
-    for(int i = 0; i < sizeof(info); i++) {
-        *(volatile char *)(UART_BASE + UART_TX) = info[i] ;
-    }
     *(volatile char *)(UART_BASE + UART_TX) = 'f' ;
     *(volatile char *)(UART_BASE + UART_TX) = 's' ;
     *(volatile char *)(UART_BASE + UART_TX) = 'b' ;

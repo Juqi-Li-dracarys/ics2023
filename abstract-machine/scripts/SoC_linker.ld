@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-22 01:05:55
+ * @Last Modified time: 2024-03-23 15:38:19
  */
 
 /*
@@ -135,7 +135,7 @@ SECTIONS {
 
   /*栈放入 sram*/
   _stack_top = ORIGIN(sram);
-  _stack_pointer = _stack_top + 0x2000;
+  _stack_pointer = _stack_top + LENGTH(sram);
 }
 
 
