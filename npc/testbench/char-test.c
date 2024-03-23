@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-08 08:52:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 00:09:42
+ * @Last Modified time: 2024-03-23 17:28:58
  */
 
 
@@ -18,32 +18,18 @@
 
 void _start() {
 
-  *(volatile char *)(SDRAM_BASE + TEST_START + 0) = 'h' ;
-  *(volatile char *)(SDRAM_BASE + TEST_START + 1) = 'e' ;
-  *(volatile char *)(SDRAM_BASE + TEST_START + 2) = 'l' ;
-  *(volatile char *)(SDRAM_BASE + TEST_START + 3) = 'l' ;
-  *(volatile char *)(SDRAM_BASE + TEST_START + 4) = 'o' ;
-  *(volatile char *)(SDRAM_BASE + TEST_START + 5) = ',' ;
-  *(volatile char *)(SDRAM_BASE + TEST_START + 6) = 'S' ;
-  *(volatile char *)(SDRAM_BASE + TEST_START + 7) = 'o' ;
-  *(volatile char *)(SDRAM_BASE + TEST_START + 8) = 'C' ;
-  *(volatile char *)(SDRAM_BASE + TEST_START + 9) = '!' ;
-  *(volatile char *)(SDRAM_BASE + TEST_START + 10) = '\n';
+  *(volatile char *)(UART_BASE) = 'h' ;
+  *(volatile char *)(UART_BASE) = 'e' ;
+  *(volatile char *)(UART_BASE) = 'l' ;
+  *(volatile char *)(UART_BASE) = 'l' ;
+  *(volatile char *)(UART_BASE) = 'o' ;
+  *(volatile char *)(UART_BASE) = ',' ;
+  *(volatile char *)(UART_BASE) = 'S' ;
+  *(volatile char *)(UART_BASE) = 'o' ;
+  *(volatile char *)(UART_BASE) = 'C' ;
+  *(volatile char *)(UART_BASE) = '!' ;
+  *(volatile char *)(UART_BASE) = '\n';
 
-
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 0);
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 1);
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 2);
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 3);
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 4);
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 5);
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 6);
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 7);
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 8);
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 9);
-  *(volatile char *)(UART_BASE + UART_TX) = *(volatile char *)(SDRAM_BASE + TEST_START + 10);
-  
-  
   asm volatile(
     "mv a0, %0\n\t"
     "ebreak"
