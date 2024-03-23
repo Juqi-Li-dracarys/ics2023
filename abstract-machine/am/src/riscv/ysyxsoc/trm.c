@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-22 01:17:26
+ * @Last Modified time: 2024-03-23 10:57:37
  */
 
 #include <am.h>
@@ -54,7 +54,18 @@ static void chip_info() {
 void fsbt() {
     // copy ssbt code to sdram
     uint8_t *dst = (uint8_t *)(&_ssbt_start);
-    uint8_t *src = (uint8_t *)(&_ssbt_load_start); 
+    uint8_t *src = (uint8_t *)(&_ssbt_load_start);
+    *(volatile char *)(UART_BASE + UART_TX) = 'f' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 's' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 'b' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 't' ;
+    *(volatile char *)(UART_BASE + UART_TX) = ' ' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 's' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 't' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 'a' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 'r' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 't' ;
+    *(volatile char *)(UART_BASE + UART_TX) = '\n' ;
     for (size_t i = 0; i < (size_t)&_ssbt_size; i++) {
       dst[i] = src[i];
     }
@@ -68,6 +79,17 @@ void ssbt() {
     // copy user's code
     uint8_t *dst = (uint8_t *)(&_text_start);
     uint8_t *src = (uint8_t *)(&_text_load_start); 
+    *(volatile char *)(UART_BASE + UART_TX) = 's' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 's' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 'b' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 't' ;
+    *(volatile char *)(UART_BASE + UART_TX) = ' ' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 's' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 't' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 'a' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 'r' ;
+    *(volatile char *)(UART_BASE + UART_TX) = 't' ;
+    *(volatile char *)(UART_BASE + UART_TX) = '\n' ;
     for (size_t i = 0; i < (size_t)&_text_size; i++) {
       dst[i] = src[i];
     }
