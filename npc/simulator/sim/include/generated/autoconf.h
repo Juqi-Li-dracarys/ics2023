@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 17:38:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-22 01:33:47
+ * @Last Modified time: 2024-03-23 10:49:55
  */
 
 #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
@@ -51,10 +51,6 @@
 // USE RV32E
 #define CONFIG_RVE 1
 
-// trace setting
-#define CONFIG_TRACE_START 0
-#define CONFIG_TRACE_END 10000
-
 
 // // Trace
 // #define CONFIG_TRACE 1
@@ -64,12 +60,12 @@
 #define CONFIG_ITRACE_COND 1
 #define ITRACE_COND  1
 
+// Itrace max record number setting
+#define CONFIG_TRACE_START 0
+#define CONFIG_TRACE_END 10000
+
 // // diff test
 // #define CONFIG_DIFFTEST 1
-
-// // Mtrace
-// # define CONFIG_MTRACE_COND 1
-// # define MTRACE_COND 1
 
 // // watch/break point
 // #define CONFIG_WBCHECK 1

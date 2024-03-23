@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 15:21:33 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-21 23:22:59
+ * @Last Modified time: 2024-03-23 10:44:05
  */
 
 
@@ -12,20 +12,19 @@
 
 extern inst_log *log_ptr;
 
-// the physical memory of our simulator
-
-uint8_t flash [CONFIG_FLASH_SIZE];
+// the physical memory of simulator(flash)
+static uint8_t flash [CONFIG_FLASH_SIZE];
 
 // check if the addr is valid
 
 static inline bool in_flash(paddr_t addr) {
-    return (addr >= CONFIG_FLASH_BASE) && (addr < (paddr_t)CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE);
+    return (addr < (paddr_t)CONFIG_FLASH_SIZE && addr >= 0);
 }
 
 // print a log when addr is out of bound
 static void out_of_bound(paddr_t addr) {
   printf("address = " FMT_PADDR " is out of bound of rom [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD "\n",
-      addr, CONFIG_FLASH_BASE, CONFIG_FLASH_BASE + CONFIG_FLASH_SIZE, addr);
+      addr, 0, CONFIG_FLASH_SIZE, addr);
 }
 
 // map the addr in riscv code to the addr in our host
@@ -43,11 +42,15 @@ inline int bit_align_32(int addr) {
 // 不要通过 SPI 寄存器间接访问 FLASH， 这可能会导致对齐错误
 extern "C" void flash_read(int addr, int *data) {
   assert((uint32_t)addr < CONFIG_FLASH_SIZE);
-  *data = *(uint32_t *)(flash + bit_align_32(addr));
+  if(in_flash)
+    *data = host_read(flash + bit_align_32(addr), 4);
+  else 
+    out_of_bound(addr);
   return;
 }
 
 extern "C" void mrom_read(int addr, int *data) {
+  // mrom has been removed from SoC
   assert(0);
 }
 
@@ -69,14 +72,11 @@ word_t paddr_read(paddr_t addr, int len) {
     r_data = host_read(guest_to_host(addr), len);
   else 
     out_of_bound(addr);
-#ifdef CONFIG_MTRACE_COND
-    if (MTRACE_COND) {log_write("MTRACE: 0x%08x\t read %d byte 0x%08x in mem: 0x%08x\n", log_ptr->pc, len, r_data, addr);}
-#endif
   return r_data;
 }
 
+// NOP
 void init_mem() {
-
   return;
 }
 
