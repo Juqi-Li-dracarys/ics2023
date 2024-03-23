@@ -63,3 +63,15 @@ void _start() {
     // shoud not reach here
     while (1);
 }
+
+void main() {
+    _start();
+    asm volatile(
+        "mv a0, %0\n\t"
+        "ebreak"
+        : 
+        :"r"(0)
+    );
+    // shoud not reach here
+    while (1);
+}
