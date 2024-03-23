@@ -32,8 +32,8 @@ void _start() {
     *(volatile char *)(UART_BASE + UART_LCR)   =  0x83;
 
     // • Set the Divisor Latches, MSB first, LSB next.
-    *(volatile char *)(UART_BASE + UART_DIV_M) =  0x0F;
-    *(volatile char *)(UART_BASE + UART_DIV_L) =  0xFF;
+    *(volatile char *)(UART_BASE + UART_DIV_M) =  0x00;
+    *(volatile char *)(UART_BASE + UART_DIV_L) =  0x08;
 
     // • Set bit 7 of LCR to ‘0’ to disable access to Divisor Latches. At this time the 
     // transmission engine starts working and data can be sent and received. 
