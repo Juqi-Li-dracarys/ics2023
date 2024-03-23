@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 15:41:21
+ * @Last Modified time: 2024-03-23 18:08:44
  */
 
 /*
@@ -33,7 +33,8 @@ SECTIONS {
   .fsbt :{
     _fsbt_start = .;
     *(entry)
-    KEEP(*(_fsbt))
+     KEEP(*(_device_init))
+     KEEP(*(_fsbt))
     _fsbt_end = .;
   } > REGION_FSBT  AT> flash
   
