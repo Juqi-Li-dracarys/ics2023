@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-08 08:52:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 17:29:45
+ * @Last Modified time: 2024-03-23 17:30:14
  */
 
 
@@ -31,16 +31,6 @@ void _start() {
   *(volatile char *)(UART_BASE) = '\n';
 
   *(volatile char *)(UART_BASE) = 'h' ;
-  *(volatile char *)(UART_BASE) = 'e' ;
-  *(volatile char *)(UART_BASE) = 'l' ;
-  *(volatile char *)(UART_BASE) = 'l' ;
-  *(volatile char *)(UART_BASE) = 'o' ;
-  *(volatile char *)(UART_BASE) = ',' ;
-  *(volatile char *)(UART_BASE) = 'S' ;
-  *(volatile char *)(UART_BASE) = 'o' ;
-  *(volatile char *)(UART_BASE) = 'C' ;
-  *(volatile char *)(UART_BASE) = '!' ;
-  *(volatile char *)(UART_BASE) = '\n';
 
   asm volatile(
     "mv a0, %0\n\t"
