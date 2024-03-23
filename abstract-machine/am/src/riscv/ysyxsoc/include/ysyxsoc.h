@@ -22,6 +22,9 @@
 // end of heap
 #define  SDRAM_END   0xa8000000
 
+// 闪烁间隔
+#define  NV_COUNT    10000
+
 //堆栈
 extern char _heap_start;
 
