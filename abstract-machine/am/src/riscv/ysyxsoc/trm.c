@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 14:59:47
+ * @Last Modified time: 2024-03-23 15:29:41
  */
 
 #include <am.h>
@@ -56,6 +56,10 @@ void fsbt() {
     // copy ssbt code to sdram
     uint8_t *dst = (uint8_t *)(&_ssbt_start);
     uint8_t *src = (uint8_t *)(&_ssbt_load_start);
+    char info [] =  "fsbt start, please wait...\n";
+    for(int i = 0; i < sizeof(info); i++) {
+        *(volatile char *)(UART_BASE + UART_TX) = info[i] ;
+    }
     *(volatile char *)(UART_BASE + UART_TX) = 'f' ;
     *(volatile char *)(UART_BASE + UART_TX) = 's' ;
     *(volatile char *)(UART_BASE + UART_TX) = 'b' ;
@@ -66,6 +70,9 @@ void fsbt() {
     *(volatile char *)(UART_BASE + UART_TX) = 'a' ;
     *(volatile char *)(UART_BASE + UART_TX) = 'r' ;
     *(volatile char *)(UART_BASE + UART_TX) = 't' ;
+    *(volatile char *)(UART_BASE + UART_TX) = '.' ;
+    *(volatile char *)(UART_BASE + UART_TX) = '.' ;
+    *(volatile char *)(UART_BASE + UART_TX) = '.' ;
     *(volatile char *)(UART_BASE + UART_TX) = '\n' ;
     for (size_t i = 0; i < (size_t)&_ssbt_size; i++) {
       dst[i] = src[i];
@@ -90,6 +97,9 @@ void ssbt() {
     *(volatile char *)(UART_BASE + UART_TX) = 'a' ;
     *(volatile char *)(UART_BASE + UART_TX) = 'r' ;
     *(volatile char *)(UART_BASE + UART_TX) = 't' ;
+    *(volatile char *)(UART_BASE + UART_TX) = '.' ;
+    *(volatile char *)(UART_BASE + UART_TX) = '.' ;
+    *(volatile char *)(UART_BASE + UART_TX) = '.' ;
     *(volatile char *)(UART_BASE + UART_TX) = '\n' ;
     for (size_t i = 0; i < (size_t)&_text_size; i++) {
       dst[i] = src[i];
