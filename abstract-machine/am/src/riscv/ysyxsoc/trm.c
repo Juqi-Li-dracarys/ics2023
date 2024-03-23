@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 16:33:55
+ * @Last Modified time: 2024-03-23 16:34:54
  */
 
 #include <am.h>
@@ -73,10 +73,10 @@ static void chip_info() {
     // LED twinkle
     for(i = 0; i < 4; i++) {
         *(volatile uint16_t *)(LED_BASE) = 0x0;
-        j = 10000;
+        j = 1000000;
         while (j-- > 0);
         *(volatile uint16_t *)(LED_BASE) = 0xFFFF;
-        j = 10000;
+        j = 1000000;
         while (j-- > 0);
     }
     return;
