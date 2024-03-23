@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 16:23:19
+ * @Last Modified time: 2024-03-23 16:24:11
  */
 
 #include <am.h>
@@ -96,7 +96,7 @@ void fsbt() {
       dst[i] = src[i];
     }
     // jump to addr mapping sdram to excute ssbt
-    *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) >> 4 | 0xF0; 
+    *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) >> 4 | 0xF000; 
     ssbt();
 }
 
@@ -124,7 +124,7 @@ void ssbt() {
       dst[i] = src[i];
     }
     // finish text load
-    *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) >> 4 | 0xF0; 
+    *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) >> 4 | 0xF000; 
     // read only data 
     dst = (uint8_t *)(&_rodata_start);
     src = (uint8_t *)(&_rodata_load_start); 
@@ -132,7 +132,7 @@ void ssbt() {
       dst[i] = src[i];
     }
     // finish rodara load
-    *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) >> 4 | 0xF0; 
+    *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) >> 4 | 0xF000; 
     // data
     dst = (uint8_t *)(&_data_start);
     src = (uint8_t *)(&_data_load_start); 
@@ -140,7 +140,7 @@ void ssbt() {
       dst[i] = src[i];
     }
     // finish data load
-     *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) >> 4 | 0xF0; 
+     *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) >> 4 | 0xF000; 
     // jump to the entry
     _trm_init();
 }
