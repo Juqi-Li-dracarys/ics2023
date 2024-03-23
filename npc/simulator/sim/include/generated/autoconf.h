@@ -52,8 +52,8 @@
 #define CONFIG_RVE 1
 
 
-// // Trace
-// #define CONFIG_TRACE 1
+// Trace
+#define CONFIG_TRACE 1
 
 // Itrace
 #define CONFIG_ITRACE 1
@@ -70,7 +70,7 @@
 // // watch/break point
 // #define CONFIG_WBCHECK 1
 
-// // wave record
-// #define WAVE_RECORD 1
+// wave record
+#define WAVE_RECORD 1
 
 
