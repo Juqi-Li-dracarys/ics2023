@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 16:58:23
+ * @Last Modified time: 2024-03-23 18:10:58
  */
 
 #include <am.h>
@@ -36,8 +36,8 @@ void halt(int code) {
   while (1);
 }
 
-// 转化学号到 16 进制
-uint32_t value_hex(uint32_t a) {
+// 学号转到 16 进制
+static uint32_t value_hex(uint32_t a) {
     // 如果a为0，直接返回0
     if (a == 0) {
         return 0;
@@ -82,8 +82,15 @@ static void bios() {
     return;
 }
 
+
 // 注意 Boot loader 不能调用库函数
 // 同时多个 section 的复制需要分开
+// SoC 设备初始化
+void device_init() {
+    // init uart
+    fsbt();
+}
+
 // 一级加载
 void fsbt() {
     *(volatile char *)(UART_BASE + UART_TX) = 'f' ;
@@ -110,7 +117,6 @@ void fsbt() {
     *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) >> 4 | 0xF000; 
     ssbt();
 }
-
 
 // 二级加载
 void ssbt() {
@@ -163,5 +169,6 @@ void _trm_init() {
   int ret = main(mainargs);
   halt(ret);
 }
+
 
 

@@ -53,6 +53,7 @@ typedef uintptr_t PTE;
 // bootloader
 void fsbt()__attribute__((section("_fsbt")));
 void ssbt()__attribute__((section("_ssbt")));
+void device_init() __attribute__((section("_device_init")));
 
 void _trm_init();
 
