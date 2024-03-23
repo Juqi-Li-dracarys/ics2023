@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 15:37:03
+ * @Last Modified time: 2024-03-23 16:10:28
  */
 
 #include <am.h>
@@ -36,16 +36,37 @@ void halt(int code) {
   while (1);
 }
 
+uint32_t value_hex(uint32_t a) {
+    // 如果a为0，直接返回0
+    if (a == 0) {
+        return 0;
+    }
+    uint32_t result = 0;
+    uint32_t multiplier = 1; // 用于乘以16的幂
+    // 逐位计算十六进制值
+    while (a > 0) {
+        result += (a % 10) * multiplier; // 取余数并乘以对应的16的幂
+        a /= 10; // 更新a，相当于除以16取整
+        multiplier *= 16; // 更新乘数，相当于乘以10
+    }
+    return result;
+}
+
 // 芯片固化信息
-// 开启 difftest 后需要注释
+// 开启 difftest 后需要注释本函数
 static void chip_info() {
     volatile uint32_t value;
+    uint32_t hex_value;
     asm volatile ("csrr %0, mvendorid" : "=r" (value));
-    printf("Author: %c%c%c%c", (char)(value >> 24), (char)(value >> 16), (char)(value >> 8), (char)(value));
+    printf("CREATOR: %c%c%c%c", (char)(value >> 24), (char)(value >> 16), (char)(value >> 8), (char)(value));
     asm volatile ("csrr %0, marchid" : "=r" (value));
     printf("%d\n", value);
-    *(volatile char *)(0x10002000 + 0x8) = 9 ;
-    *(volatile char *)(0x10002000 + 0x8) = 9 ;
+    // SEG display
+    hex_value = value_hex(value);
+    for(int i = 0; i < 4; i++) {
+        *(volatile char *)(SEG_BASE + i) = hex_value & 0xFF;
+        hex_value = hex_value >> 8;
+    }
     return;
 }
 

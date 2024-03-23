@@ -2,17 +2,16 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 14:09:47 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 15:38:19
+ * @Last Modified time: 2024-03-23 15:41:21
  */
 
 /*
-``2024.3.22 添加了对 RT-thread 特殊段的支持
+``2024.3.22 添加了对 RT-thread 段的支持
 */
 
 ENTRY(_start)
 
-/*定义内存空间*/
-/* ysyxsoc.h 中也有定义*/
+/* Map of SoC memory */
 MEMORY {
   flash : ORIGIN = 0x30000000, LENGTH = 256M
   sram  : ORIGIN = 0x0f000000, LENGTH = 8K
