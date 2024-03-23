@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 10:57:37
+ * @Last Modified time: 2024-03-23 14:59:47
  */
 
 #include <am.h>
@@ -44,6 +44,7 @@ static void chip_info() {
     printf("Author: %c%c%c%c", (char)(value >> 24), (char)(value >> 16), (char)(value >> 8), (char)(value));
     asm volatile ("csrr %0, marchid" : "=r" (value));
     printf("%d\n", value);
+    *(volatile char *)(0x10002000 + 0x8) = 9 ;
     return;
 }
 
