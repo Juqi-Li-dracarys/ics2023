@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 16:48:12
+ * @Last Modified time: 2024-03-23 16:52:53
  */
 
 #include <am.h>
@@ -55,7 +55,7 @@ uint32_t value_hex(uint32_t a) {
 
 // 芯片固化信息
 // 开启 difftest 后需要注释本函数
-static void chip_info() {
+static void bios() {
     volatile uint32_t i;
     volatile uint32_t j;
     volatile uint32_t value;
@@ -70,13 +70,13 @@ static void chip_info() {
         *(volatile char *)(SEG_BASE + i) = hex_value & 0xFF;
         hex_value = hex_value >> 8;
     }
-    // LED twinkle
-    while(*(volatile uint16_t *)(SWITCH_BASE) != 0x1) {
+    // LED twinkle will end with correct switch input
+    while(*(volatile uint16_t *)(SWITCH_BASE) != 0xFFFF) {
         *(volatile uint16_t *)(LED_BASE) = 0x0;
-        j = 10000;
+        j = NV_COUNT;
         while (j-- > 0);
         *(volatile uint16_t *)(LED_BASE) = 0xFFFF;
-        j = 10000;
+        j = NV_COUNT;
         while (j-- > 0);
     }
     return;
@@ -158,7 +158,7 @@ void ssbt() {
 
 // entry
 void _trm_init() {
-  chip_info();
+  bios();
   printf("program start running, heap:%p\n", heap.start);
   int ret = main(mainargs);
   halt(ret);
