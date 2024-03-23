@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 16:10:28
+ * @Last Modified time: 2024-03-23 16:21:51
  */
 
 #include <am.h>
@@ -36,6 +36,7 @@ void halt(int code) {
   while (1);
 }
 
+// 转化学号到 16 进制
 uint32_t value_hex(uint32_t a) {
     // 如果a为0，直接返回0
     if (a == 0) {
@@ -72,12 +73,8 @@ static void chip_info() {
 
 // 注意 Boot loader 不能调用库函数
 // 同时多个 section 的复制需要分开
-
 // 一级加载
 void fsbt() {
-    // copy ssbt code to sdram
-    uint8_t *dst = (uint8_t *)(&_ssbt_start);
-    uint8_t *src = (uint8_t *)(&_ssbt_load_start);
     *(volatile char *)(UART_BASE + UART_TX) = 'f' ;
     *(volatile char *)(UART_BASE + UART_TX) = 's' ;
     *(volatile char *)(UART_BASE + UART_TX) = 'b' ;
@@ -92,6 +89,9 @@ void fsbt() {
     *(volatile char *)(UART_BASE + UART_TX) = '.' ;
     *(volatile char *)(UART_BASE + UART_TX) = '.' ;
     *(volatile char *)(UART_BASE + UART_TX) = '\n' ;
+    // copy ssbt code to sdram
+    uint8_t *dst = (uint8_t *)(&_ssbt_start);
+    uint8_t *src = (uint8_t *)(&_ssbt_load_start);
     for (size_t i = 0; i < (size_t)&_ssbt_size; i++) {
       dst[i] = src[i];
     }
@@ -102,9 +102,6 @@ void fsbt() {
 
 // 二级加载
 void ssbt() {
-    // copy user's code
-    uint8_t *dst = (uint8_t *)(&_text_start);
-    uint8_t *src = (uint8_t *)(&_text_load_start); 
     *(volatile char *)(UART_BASE + UART_TX) = 's' ;
     *(volatile char *)(UART_BASE + UART_TX) = 's' ;
     *(volatile char *)(UART_BASE + UART_TX) = 'b' ;
@@ -119,21 +116,30 @@ void ssbt() {
     *(volatile char *)(UART_BASE + UART_TX) = '.' ;
     *(volatile char *)(UART_BASE + UART_TX) = '.' ;
     *(volatile char *)(UART_BASE + UART_TX) = '\n' ;
+    // text
+    uint8_t *dst = (uint8_t *)(&_text_start);
+    uint8_t *src = (uint8_t *)(&_text_load_start); 
     for (size_t i = 0; i < (size_t)&_text_size; i++) {
       dst[i] = src[i];
     }
+    // finish text load
+    *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) << 4 | 0xF; 
     // read only data 
     dst = (uint8_t *)(&_rodata_start);
     src = (uint8_t *)(&_rodata_load_start); 
     for (size_t i = 0; i < (size_t)&_rodata_size; i++) {
       dst[i] = src[i];
     }
+    // finish rodara load
+    *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) << 4 | 0xF; 
     // data
     dst = (uint8_t *)(&_data_start);
     src = (uint8_t *)(&_data_load_start); 
     for (size_t i = 0; i < (size_t)&_data_size; i++) {
       dst[i] = src[i];
     }
+    // finish data load
+     *(volatile uint16_t *)(LED_BASE) = *(volatile uint16_t *)(LED_BASE) << 4 | 0xF; 
     // jump to the entry
     _trm_init();
 }
@@ -141,7 +147,7 @@ void ssbt() {
 // entry
 void _trm_init() {
   chip_info();
-  printf("program load finish, heap:%p\n", heap.start);
+  printf("program start running, heap:%p\n", heap.start);
   int ret = main(mainargs);
   halt(ret);
 }
