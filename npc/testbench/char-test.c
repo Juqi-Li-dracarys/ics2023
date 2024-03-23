@@ -56,12 +56,10 @@ void _start() {
     *(volatile char *)(UART_BASE) = '\n';
     asm volatile(
         "lui a5,0x10000\n\t"
-        "li	a4,33\n\t"
+        "li	a4,65\n\t"
         "sb	a4,0(a5)\n\t"
-        "mv a0, %0\n\t"
+        "lui a0,0x0\n\t"
         "ebreak"
-        : 
-        :"r"(0)
     );
     // shoud not reach here
     while (1);
