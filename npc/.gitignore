@@ -3,6 +3,7 @@
 !*/
 !Makefile
 !*.mk
+!*.nxdc
 !*.[cSh]
 !*.v
 !*.sv
