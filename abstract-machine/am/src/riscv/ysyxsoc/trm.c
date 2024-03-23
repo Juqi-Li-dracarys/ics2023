@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 16:52:53
+ * @Last Modified time: 2024-03-23 16:56:22
  */
 
 #include <am.h>
@@ -71,7 +71,7 @@ static void bios() {
         hex_value = hex_value >> 8;
     }
     // LED twinkle will end with correct switch input
-    while(*(volatile uint16_t *)(SWITCH_BASE) != 0xFFFF) {
+    while(*(volatile uint16_t *)(SWITCH_BASE) != 0x2024) {
         *(volatile uint16_t *)(LED_BASE) = 0x0;
         j = NV_COUNT;
         while (j-- > 0);
