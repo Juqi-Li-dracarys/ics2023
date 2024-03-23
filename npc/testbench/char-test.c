@@ -24,23 +24,23 @@
 
 void _start() {
 
-    // init uart 目前只支持 8N1 的串口传输配置
+    // // init uart 目前只支持 8N1 的串口传输配置
 
-    // • Set the Line Control Register to the desired line control parameters. Set bit 7 to ‘1’ 
-    // to allow access to the Divisor Latches.(1000 0011)
-    *(volatile char *)(UART_BASE + UART_LCR) =  0x83;
+    // // • Set the Line Control Register to the desired line control parameters. Set bit 7 to ‘1’ 
+    // // to allow access to the Divisor Latches.(1000 0011)
+    // *(volatile char *)(UART_BASE + UART_LCR) =  0x83;
 
-    // • Set the Divisor Latches, MSB first, LSB next.
-    *(volatile char *)(UART_BASE + UART_DIV_M) =  0x00;
-    *(volatile char *)(UART_BASE + UART_DIV_L) =  0x08;
+    // // • Set the Divisor Latches, MSB first, LSB next.
+    // *(volatile char *)(UART_BASE + UART_DIV_M) =  0x00;
+    // *(volatile char *)(UART_BASE + UART_DIV_L) =  0x08;
 
-    // • Set bit 7 of LCR to ‘0’ to disable access to Divisor Latches. At this time the 
-    // transmission engine starts working and data can be sent and received. 
-    *(volatile char *)(UART_BASE + UART_LCR) =  0x03;
+    // // • Set bit 7 of LCR to ‘0’ to disable access to Divisor Latches. At this time the 
+    // // transmission engine starts working and data can be sent and received. 
+    // *(volatile char *)(UART_BASE + UART_LCR) =  0x03;
 
-    // • Set the FIFO trigger level. Generally, higher trigger level values produce less 
-    // interrupt to the system, so setting it to 14 bytes is recommended if the system 
-    // responds fast enough. 
+    // // • Set the FIFO trigger level. Generally, higher trigger level values produce less 
+    // // interrupt to the system, so setting it to 14 bytes is recommended if the system 
+    // // responds fast enough. 
 
     
     *(volatile char *)(UART_BASE) = 'h' ;
