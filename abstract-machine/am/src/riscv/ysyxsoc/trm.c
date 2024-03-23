@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 16:37:35
+ * @Last Modified time: 2024-03-23 16:39:00
  */
 
 #include <am.h>
@@ -56,8 +56,8 @@ uint32_t value_hex(uint32_t a) {
 // 芯片固化信息
 // 开启 difftest 后需要注释本函数
 static void chip_info() {
-    uint32_t i;
-    uint32_t j;
+    volatile uint32_t i;
+    volatile uint32_t j;
     volatile uint32_t value;
     uint32_t hex_value;
     asm volatile ("csrr %0, mvendorid" : "=r" (value));
@@ -73,10 +73,10 @@ static void chip_info() {
     // LED twinkle
     for(i = 0; i < 4; i++) {
         *(volatile uint16_t *)(LED_BASE) = 0x0;
-        j = 0xFFFFFFF;
+        j = 10000;
         while (j-- > 0);
         *(volatile uint16_t *)(LED_BASE) = 0xFFFF;
-        j = 1000000;
+        j = 10000;
         while (j-- > 0);
     }
     return;
