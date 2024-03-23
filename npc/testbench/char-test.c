@@ -42,19 +42,6 @@ void _start() {
     // // interrupt to the system, so setting it to 14 bytes is recommended if the system 
     // // responds fast enough. 
 
-    
-    *(volatile char *)(UART_BASE) = 'h' ;
-    *(volatile char *)(UART_BASE) = 'e' ;
-    *(volatile char *)(UART_BASE) = 'l' ;
-    *(volatile char *)(UART_BASE) = 'l' ;
-    *(volatile char *)(UART_BASE) = 'o' ;
-    *(volatile char *)(UART_BASE) = ',' ;
-    *(volatile char *)(UART_BASE) = 'S' ;
-    *(volatile char *)(UART_BASE) = 'o' ;
-    *(volatile char *)(UART_BASE) = 'C' ;
-    *(volatile char *)(UART_BASE) = '!' ;
-    *(volatile char *)(UART_BASE) = '\n';
-
     *(volatile char *)(UART_BASE) = 'h' ;
     *(volatile char *)(UART_BASE) = 'e' ;
     *(volatile char *)(UART_BASE) = 'l' ;
