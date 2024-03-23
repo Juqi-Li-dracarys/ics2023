@@ -55,6 +55,8 @@ void _start() {
     *(volatile char *)(UART_BASE) = '!' ;
     *(volatile char *)(UART_BASE) = '\n';
     asm volatile(
+        "li	a4,33\n\t"
+        "sb	a4,0(a5)\n\t"
         "mv a0, %0\n\t"
         "ebreak"
         : 
