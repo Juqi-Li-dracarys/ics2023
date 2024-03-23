@@ -33,6 +33,7 @@ void _start() {
   *(volatile char *)(UART_BASE) = 'h' ;
   *(volatile char *)(UART_BASE) = 'e' ;
   *(volatile char *)(UART_BASE) = 'l' ;
+   *(volatile char *)(UART_BASE) = 'l' ;
 
   asm volatile(
     "mv a0, %0\n\t"
