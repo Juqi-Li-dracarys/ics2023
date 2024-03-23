@@ -54,21 +54,6 @@ void _start() {
     *(volatile char *)(UART_BASE) = 'C' ;
     *(volatile char *)(UART_BASE) = '!' ;
     *(volatile char *)(UART_BASE) = '\n';
-    main();
-}
-
-void main() {
-    *(volatile char *)(UART_BASE) = 'h' ;
-    *(volatile char *)(UART_BASE) = 'e' ;
-    *(volatile char *)(UART_BASE) = 'l' ;
-    *(volatile char *)(UART_BASE) = 'l' ;
-    *(volatile char *)(UART_BASE) = 'o' ;
-    *(volatile char *)(UART_BASE) = ',' ;
-    *(volatile char *)(UART_BASE) = 'S' ;
-    *(volatile char *)(UART_BASE) = 'o' ;
-    *(volatile char *)(UART_BASE) = 'C' ;
-    *(volatile char *)(UART_BASE) = '!' ;
-    *(volatile char *)(UART_BASE) = '\n';
     asm volatile(
         "mv a0, %0\n\t"
         "ebreak"
@@ -78,3 +63,4 @@ void main() {
     // shoud not reach here
     while (1);
 }
+
