@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-08 08:52:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 17:30:14
+ * @Last Modified time: 2024-03-23 17:30:39
  */
 
 
@@ -30,6 +30,7 @@ void _start() {
   *(volatile char *)(UART_BASE) = '!' ;
   *(volatile char *)(UART_BASE) = '\n';
 
+  *(volatile char *)(UART_BASE) = 'h' ;
   *(volatile char *)(UART_BASE) = 'h' ;
 
   asm volatile(
