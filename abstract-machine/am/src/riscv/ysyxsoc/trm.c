@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-18 20:54:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 16:56:22
+ * @Last Modified time: 2024-03-23 16:58:23
  */
 
 #include <am.h>
@@ -53,7 +53,7 @@ uint32_t value_hex(uint32_t a) {
     return result;
 }
 
-// 芯片固化信息
+// 芯片固化信息与密码检验
 // 开启 difftest 后需要注释本函数
 static void bios() {
     volatile uint32_t i;
