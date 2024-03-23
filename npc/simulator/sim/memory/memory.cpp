@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-09 15:21:33 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 10:44:05
+ * @Last Modified time: 2024-03-23 10:52:06
  */
 
 
@@ -42,7 +42,7 @@ inline int bit_align_32(int addr) {
 // 不要通过 SPI 寄存器间接访问 FLASH， 这可能会导致对齐错误
 extern "C" void flash_read(int addr, int *data) {
   assert((uint32_t)addr < CONFIG_FLASH_SIZE);
-  if(in_flash)
+  if(in_flash(addr))
     *data = host_read(flash + bit_align_32(addr), 4);
   else 
     out_of_bound(addr);
