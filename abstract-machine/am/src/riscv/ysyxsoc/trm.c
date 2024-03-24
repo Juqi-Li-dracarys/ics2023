@@ -1,8 +1,8 @@
 /*
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-03-24 10:57:34 
- * @Last Modified by:   Juqi Li @ NJU 
- * @Last Modified time: 2024-03-24 10:57:34 
+ * @Last Modified by: Juqi Li @ NJU
+ * @Last Modified time: 2024-03-24 11:18:10
  */
 
 
@@ -79,7 +79,7 @@ static void bios() {
         hex_value = hex_value >> 8;
     }
     // LED twinkle will end with correct switch input
-    while(*(volatile uint16_t *)(SWITCH_BASE) != 0x2024) {
+    while(*(volatile uint16_t *)(SWITCH_BASE) != 0x8000) {
         *(volatile uint16_t *)(LED_BASE) = 0x0;
         j = LED_COUNT;
         while (j-- > 0);
