@@ -21,6 +21,8 @@
 #define  SWITCH_BASE GPIO_BASE + 0X4
 #define  SEG_BASE    GPIO_BASE + 0X8
 
+// PS2
+#define  PS2_BASE    0x10011000
 
 // 片内定时器
 #define  CLINT_BASE     0x02000000
