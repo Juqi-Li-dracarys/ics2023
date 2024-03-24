@@ -73,10 +73,10 @@ static void bios() {
     // LED twinkle will end with correct switch input
     while(*(volatile uint16_t *)(SWITCH_BASE) != 0x2024) {
         *(volatile uint16_t *)(LED_BASE) = 0x0;
-        j = NV_COUNT;
+        j = LED_COUNT;
         while (j-- > 0);
         *(volatile uint16_t *)(LED_BASE) = 0xFFFF;
-        j = NV_COUNT;
+        j = LED_COUNT;
         while (j-- > 0);
     }
     return;
@@ -88,6 +88,15 @@ static void bios() {
 // SoC 设备初始化
 void device_init() {
     // init uart
+    // • Set the Line Control Register to the desired line control parameters. Set bit 7 to ‘1’ 
+    // to allow access to the Divisor Latches.(1000 0011)
+    *(volatile char *)(UART_BASE + UART_LCR)   =  0x83;
+    // • Set the Divisor Latches, MSB first, LSB next.
+    *(volatile char *)(UART_BASE + UART_DIV_M) =  0x00;
+    *(volatile char *)(UART_BASE + UART_DIV_L) =  0x02;
+    // • Set bit 7 of LCR to ‘0’ to disable access to Divisor Latches. At this time the 
+    // transmission engine starts working and data can be sent and received. 
+    *(volatile char *)(UART_BASE + UART_LCR)   =  0x03;
     fsbt();
 }
 
