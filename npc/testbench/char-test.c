@@ -10,7 +10,6 @@
 #define UART_DIV_L   0
 #define UART_DIV_M   1
 #define UART_FCR     2
-// line control register
 #define UART_LCR     3
 #define UART_MCR     4
 #define UART_LSR     5

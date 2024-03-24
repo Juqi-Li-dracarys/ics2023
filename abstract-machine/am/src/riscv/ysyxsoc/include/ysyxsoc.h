@@ -5,14 +5,22 @@
 #include "riscv/riscv.h"
 
 // 串口
-#define  UART_BASE  0x10000000
-#define  UART_TX    0
+#define  UART_BASE    0x10000000
+#define  UART_TX      0
+#define  UART_RX      0
+#define  UART_DIV_L   0
+#define  UART_DIV_M   1
+#define  UART_FCR     2
+#define  UART_LCR     3
+#define  UART_MCR     4
+#define  UART_LSR     5
 
 // GPIO
 #define  GPIO_BASE   0x10002000
 #define  LED_BASE    GPIO_BASE
 #define  SWITCH_BASE GPIO_BASE + 0X4
 #define  SEG_BASE    GPIO_BASE + 0X8
+
 
 // 片内定时器
 #define  CLINT_BASE     0x02000000
@@ -22,8 +30,8 @@
 // end of heap
 #define  SDRAM_END   0xa8000000
 
-// 闪烁间隔
-#define  NV_COUNT    10000
+// LED闪烁间隔
+#define  LED_COUNT   10000
 
 //堆栈
 extern char _heap_start;
