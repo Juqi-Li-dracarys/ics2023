@@ -22,7 +22,12 @@ Area heap = RANGE(&_heap_start, SDRAM_END);
 static const char mainargs[] = MAINARGS;
 
 void putch(char ch) {
-  *(volatile char *)(UART_BASE + UART_TX) = ch ;
+    while (true) {
+       if(*(volatile char *)(UART_BASE + UART_LSR) & 0x20) {
+            *(volatile char *)(UART_BASE + UART_TX) = ch ;
+            return;
+       }
+    }
 }
 
 void halt(int code) {
