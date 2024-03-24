@@ -24,6 +24,14 @@
 // PS2
 #define  PS2_BASE    0x10011000
 
+// VGA
+#define  VGA_BASE    0x21000000
+#define  VGA_W       640
+#define  VGA_H       480
+
+
+
+
 // 片内定时器
 #define  CLINT_BASE     0x02000000
 #define  MTIME_OFFSET   0x0000bff8
