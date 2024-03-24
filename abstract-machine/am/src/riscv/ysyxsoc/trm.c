@@ -79,7 +79,7 @@ static void bios() {
         hex_value = hex_value >> 8;
     }
     // LED twinkle will end with correct switch input
-    while(*(volatile uint16_t *)(SWITCH_BASE) != 0x8000) {
+    while(*(volatile uint16_t *)(SWITCH_BASE) != 0x0001) {
         *(volatile uint16_t *)(LED_BASE) = 0x0;
         j = LED_COUNT;
         while (j-- > 0);
