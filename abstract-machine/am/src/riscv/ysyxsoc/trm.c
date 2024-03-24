@@ -23,6 +23,7 @@ static const char mainargs[] = MAINARGS;
 
 void putch(char ch) {
     while (true) {
+       // 轮奸状态寄存器
        if(*(volatile char *)(UART_BASE + UART_LSR) & 0x20) {
             *(volatile char *)(UART_BASE + UART_TX) = ch ;
             return;
