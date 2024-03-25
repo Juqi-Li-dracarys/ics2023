@@ -24,8 +24,6 @@ void main();
 
 void _start() {
 
-    volatile register int i = 100;
-
     // init uart 目前只支持 8N1 的串口传输配置
 
     // • Set the Line Control Register to the desired line control parameters. Set bit 7 to ‘1’ 
@@ -55,8 +53,6 @@ void _start() {
     *(volatile char *)(UART_BASE) = 'C' ;
     *(volatile char *)(UART_BASE) = '!' ;
     *(volatile char *)(UART_BASE) = '\n';
-
-    while (i-- > 0);
 
     asm volatile(
         "lui a0,0x0\n\t"
