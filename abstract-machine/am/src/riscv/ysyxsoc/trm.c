@@ -77,16 +77,16 @@ static void bios() {
         *(volatile char *)(SEG_BASE + i) = hex_value & 0xFF;
         hex_value = hex_value >> 8;
     }
-    // volatile uint32_t j;
+    volatile uint32_t j;
     // LED twinkle will end with correct switch input
-    // while(*(volatile uint16_t *)(SWITCH_BASE) != 0x0001) {
-    //     *(volatile uint16_t *)(LED_BASE) = 0x0;
-    //     j = LED_COUNT;
-    //     while (j-- > 0);
-    //     *(volatile uint16_t *)(LED_BASE) = 0xFFFF;
-    //     j = LED_COUNT;
-    //     while (j-- > 0);
-    // }
+    while(*(volatile uint16_t *)(SWITCH_BASE) != 0x0001) {
+        *(volatile uint16_t *)(LED_BASE) = 0x0;
+        j = LED_COUNT;
+        while (j-- > 0);
+        *(volatile uint16_t *)(LED_BASE) = 0xFFFF;
+        j = LED_COUNT;
+        while (j-- > 0);
+    }
     return;
 }
 
