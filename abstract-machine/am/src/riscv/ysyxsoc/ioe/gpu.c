@@ -20,7 +20,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
         .width   = VGA_W , .height    = VGA_H,
         .vmemsz  = VGA_W * VGA_H * sizeof(uint32_t)
   };
-  return;
+    return;   
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
