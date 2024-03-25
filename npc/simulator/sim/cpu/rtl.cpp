@@ -33,7 +33,6 @@ void reset(int n) {
   dut->reset = 0;
   dut->clock = 0;
   dut->eval();
-  nvboard_update();
 #ifdef WAVE_RECORD
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
@@ -53,7 +52,6 @@ void single_cycle() {
 #endif
   dut->clock = 0;
   dut->eval();
-  nvboard_update();
 #ifdef WAVE_RECORD
   m_trace->dump(contextp->time()); // dump wave
   contextp->timeInc(5);            // 推动仿真时间
