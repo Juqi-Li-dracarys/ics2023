@@ -41,7 +41,7 @@
 #define  SDRAM_END   0xa8000000
 
 // LED闪烁间隔
-#define  LED_COUNT   10000
+#define  LED_COUNT   1000
 
 //堆栈
 extern char _heap_start;
