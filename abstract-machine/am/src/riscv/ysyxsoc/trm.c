@@ -65,7 +65,7 @@ static uint32_t value_hex(uint32_t a) {
 // 开启 difftest 后需要注释本函数
 static void bios() {
     volatile uint32_t i;
-    volatile uint32_t j;
+    // volatile uint32_t j;
     volatile uint32_t value;
     uint32_t hex_value;
     asm volatile ("csrr %0, mvendorid" : "=r" (value));
@@ -79,14 +79,14 @@ static void bios() {
         hex_value = hex_value >> 8;
     }
     // LED twinkle will end with correct switch input
-    while(*(volatile uint16_t *)(SWITCH_BASE) != 0x0001) {
-        *(volatile uint16_t *)(LED_BASE) = 0x0;
-        j = LED_COUNT;
-        while (j-- > 0);
-        *(volatile uint16_t *)(LED_BASE) = 0xFFFF;
-        j = LED_COUNT;
-        while (j-- > 0);
-    }
+    // while(*(volatile uint16_t *)(SWITCH_BASE) != 0x0001) {
+    //     *(volatile uint16_t *)(LED_BASE) = 0x0;
+    //     j = LED_COUNT;
+    //     while (j-- > 0);
+    //     *(volatile uint16_t *)(LED_BASE) = 0xFFFF;
+    //     j = LED_COUNT;
+    //     while (j-- > 0);
+    // }
     return;
 }
 
