@@ -24,7 +24,7 @@ void main();
 
 void _start() {
 
-    register int i = 10000;
+    volatile register int i = 10000;
 
     // init uart 目前只支持 8N1 的串口传输配置
 
@@ -57,7 +57,7 @@ void _start() {
     *(volatile char *)(UART_BASE) = '\n';
 
     while (i-- > 0);
-    
+
     asm volatile(
         "lui a0,0x0\n\t"
         "ebreak"
