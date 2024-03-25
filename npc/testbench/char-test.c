@@ -24,7 +24,7 @@ void main();
 
 void _start() {
 
-    volatile register int i = 10000;
+    volatile register int i = 100;
 
     // init uart 目前只支持 8N1 的串口传输配置
 
