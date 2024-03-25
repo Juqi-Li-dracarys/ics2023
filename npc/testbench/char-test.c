@@ -24,6 +24,8 @@ void main();
 
 void _start() {
 
+    register int i = 10000;
+
     // init uart 目前只支持 8N1 的串口传输配置
 
     // • Set the Line Control Register to the desired line control parameters. Set bit 7 to ‘1’ 
@@ -53,52 +55,13 @@ void _start() {
     *(volatile char *)(UART_BASE) = 'C' ;
     *(volatile char *)(UART_BASE) = '!' ;
     *(volatile char *)(UART_BASE) = '\n';
+
+    while (i-- > 0);
+    
     asm volatile(
-        "lui a5,0x10000\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,65\n\t"
-        "sb	a4,0(a5)\n\t"
-        "li	a4,10\n\t"
-        "sb	a4,0(a5)\n\t"
         "lui a0,0x0\n\t"
-        // "ebreak"
+        "ebreak"
     );
     // shoud not reach here
-    while (1);
 }
 
