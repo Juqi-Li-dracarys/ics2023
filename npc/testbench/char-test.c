@@ -96,7 +96,7 @@ void _start() {
         "li	a4,10\n\t"
         "sb	a4,0(a5)\n\t"
         "lui a0,0x0\n\t"
-        "ebreak"
+        // "ebreak"
     );
     // shoud not reach here
     while (1);
