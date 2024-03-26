@@ -28,8 +28,7 @@
 #define  VGA_BASE    0x21000000
 #define  VGA_W       640
 #define  VGA_H       480
-
-
+#define  VGA_W_BIT   10
 
 
 // 片内定时器
