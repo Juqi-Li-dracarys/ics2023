@@ -72,9 +72,9 @@ void __am_switch(Context *c) {
 void map(AddrSpace *as, void *va, void *pa, int prot) {
   // just give priority and type a shit
   // 各个地址提取
-  uint32_t PPN = PA_PPN((uint32_t)pa);
-  uint32_t VPN_1 = VA_VPN_1((uint32_t)va);
-  uint32_t VPN_2 = VA_VPN_2((uint32_t)va);
+  uintptr_t PPN = PA_PPN((uintptr_t)pa);
+  uintptr_t VPN_1 = VA_VPN_1((uintptr_t)va);
+  uintptr_t VPN_2 = VA_VPN_2((uintptr_t)va);
   // 基地址
   PTE *VPN_1_BASE = as->ptr;
   PTE *VPN_2_BASE = NULL;
