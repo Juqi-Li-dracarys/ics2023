@@ -46,4 +46,7 @@ typedef uint16_t ioaddr_t;
 
 #include <debug.h>
 
+typedef __int128 int128_t;
+typedef unsigned __int128 uint128_t;
+
 #endif
