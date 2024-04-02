@@ -50,7 +50,7 @@ uint16_t ch2str(char *des_str, char c, int max_size) {
   else return 0;
 }
 
-uint16_t ptr2str(char *des_str, uint32_t num, int max_size) { 
+uint16_t ptr2str(char *des_str, uintptr_t num, int max_size) { 
   char temp [10] = {0};
   uint16_t offset = 0;
   temp[0] = '0';
@@ -116,7 +116,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
         case 'd': size_in = int2str(out, va_arg(ap, int), n - size_str - 1); fmt += 2; out += size_in; size_str += size_in; break;
         case 's': size_in = str2str(out, va_arg(ap, char *), n - size_str - 1); fmt += 2; out += size_in; size_str += size_in; break;
         case 'c': size_in = ch2str(out, (char)va_arg(ap, int), n - size_str - 1); fmt += 2; out += size_in; size_str += size_in; break;
-        case 'p': size_in = ptr2str(out, (uint32_t)va_arg(ap, void *), n - size_str - 1); fmt += 2; out += size_in; size_str += size_in; break;
+        case 'p': size_in = ptr2str(out, (uintptr_t)va_arg(ap, void *), n - size_str - 1); fmt += 2; out += size_in; size_str += size_in; break;
         default: *out = *fmt; out++; fmt++; size_str++; break;
       }
     }
