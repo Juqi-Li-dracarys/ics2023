@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-11 23:41:53 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-11 23:53:14
+ * @Last Modified time: 2024-04-02 15:26:30
  */
 
 // header of all tracer for other module
@@ -18,7 +18,7 @@ typedef struct watchpoint {
 
   /* TODO: Add more members if necessary */
   char expr [128]; // To store the expr
-  uint32_t result; // To store the latest result of expr
+  word_t result; // To store the latest result of expr
 } WP;
 
 void init_wp_pool();
@@ -26,7 +26,7 @@ void init_wp_pool();
 WP* new_wp();
 void print_wp(void);
 void delete_wp(unsigned int index);
-void set_bp(uint32_t pc_add);
+void set_bp(word_t pc_add);
 void delete_bp(void);
 bool check_wp(void);
 bool check_bp(Decode * s);

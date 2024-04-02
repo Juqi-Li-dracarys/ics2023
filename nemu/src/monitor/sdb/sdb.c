@@ -209,7 +209,7 @@ static int cmd_w(char *args) {
   else {
 #ifdef CONFIG_WBCHECK
     bool success;
-    unsigned int value = expr(args, &success);
+    word_t value = expr(args, &success);
     if(success != true) {
       return 0;
     }
@@ -235,7 +235,7 @@ static int cmd_d(char *args) {
   }
   else {
     unsigned int index;
-    sscanf(args, "%lu", &index);
+    sscanf(args, "%u", &index);
     delete_wp(index);
     return 0;
   }

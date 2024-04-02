@@ -2,22 +2,14 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-11 23:44:45 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-11 23:50:33
+ * @Last Modified time: 2024-04-02 15:27:29
  */
 
 // source code for wp bp
 
 #include "sdb.h"
 #include <cpu/decode.h>
-
-typedef struct watchpoint {
-  int NO;
-  struct watchpoint *next;
-
-  /* TODO: Add more members if necessary */
-  char expr [128]; // To store the expr
-  word_t result; // To store the latest result of expr
-} WP;
+#include <trace.h>
 
 #define NR_WP 32
 
