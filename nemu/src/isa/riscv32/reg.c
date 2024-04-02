@@ -14,7 +14,7 @@
 ***************************************************************************************/
 
 #include <isa.h>
-#include "local-include/reg.h"
+#include <reg.h>
 
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
@@ -28,8 +28,8 @@ const char *regs[] = {
 void isa_reg_display() {
   puts("ALL register in nemu:");
   for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32) + 5; i++) {
-    if(i < MUXDEF(CONFIG_RVE, 16, 32)) printf("%s:0X%08x ",regs[i], gpr(i));
-    else printf("%s:0X%08x ",regs[i], csr(i - MUXDEF(CONFIG_RVE, 16, 32)));
+    if(i < MUXDEF(CONFIG_RVE, 16, 32)) printf("%s:0X%016lx ",regs[i], gpr(i));
+    else printf("%s:0X%016lx ",regs[i], csr(i - MUXDEF(CONFIG_RVE, 16, 32)));
     if((i + 1) % 4 == 0)
     putchar('\n');
   }
