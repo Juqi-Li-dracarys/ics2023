@@ -130,14 +130,14 @@ static int cmd_x(char *args) {
       return 0;
     }
     // Parsing the value
-    uint32_t index, addr;
+    word_t index, addr;
     bool success;
-    sscanf(arg1, "%u", &index);
+    sscanf(arg1, "%lu", &index);
     addr = expr(arg2, &success);
     if(success == false) assert(0);
     puts("The information of memory is listed below:\n");
     for(uint16_t i = 0; i < index; i++) {
-      printf("Address: 0x%08x   Value: 0x%02x\n", addr + i, vaddr_read(addr + i, 1));
+      printf("Address: 0x%016lx   Value: 0x%02lx\n", addr + i, vaddr_read(addr + i, 1));
     }
   }
   return 0;
@@ -152,13 +152,13 @@ static int cmd_p(char *args) {
   }
   else {
     bool success;
-    uint32_t result = expr(args, &success);
+    word_t result = expr(args, &success);
     if (success == false) {
       printf("calculate fault."); 
       assert(0);
     }
     else {
-      printf("Done.\nthe result of expr in hex is: 0x%08x\nanswer in dec is %u\n", result, result);
+      printf("Done.\nthe result of expr in hex is: 0x%016lx\nanswer in dec is %lu\n", result, result);
       return 0;
     }
   }
@@ -182,11 +182,11 @@ static int cmd_e(char *args) {
   // read every line and store them in the result
   for (int i = 0; i < lineCount; i++) {
       if (fgets(line, sizeof(line), file)) {
-          uint32_t answer,result;
+          word_t answer,result;
           char str[10000];
-          if (sscanf(line, "%u %9999[^\n]", &answer, str) == 2) {
+          if (sscanf(line, "%lu %9999[^\n]", &answer, str) == 2) {
               result = expr(str, &success);  
-              printf("Line: %d   Result: %u   Answer: %u\n", i, result, answer);
+              printf("Line: %d   Result: %lu   Answer: %lu\n", i, result, answer);
               if (result != answer || success == 0) {
                 printf("Error: the answer is not correct.");
                 assert(0);
@@ -217,7 +217,7 @@ static int cmd_w(char *args) {
       WP* ptr = new_wp();
       strcpy(ptr->expr, args);
       ptr->result = value;
-      printf("Watching point %d: expr: %s, latest value: %u is created.\n", ptr->NO, ptr->expr, ptr->result);
+      printf("Watching point %d: expr: %s, latest value: %lu is created.\n", ptr->NO, ptr->expr, ptr->result);
       return 0;
     }
 #endif
@@ -235,7 +235,7 @@ static int cmd_d(char *args) {
   }
   else {
     unsigned int index;
-    sscanf(args, "%u", &index);
+    sscanf(args, "%lu", &index);
     delete_wp(index);
     return 0;
   }
