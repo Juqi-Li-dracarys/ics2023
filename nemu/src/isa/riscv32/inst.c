@@ -149,6 +149,8 @@ static int decode_exec(Decode *s) {
     INSTPAT("0000001 ????? ????? 001 ????? 0110011", mulh   ,RE, R(rd) = (word_t)((((int128_t)((int64_t)src1)) * ((int128_t)((int64_t)src2))) >> 64));
     INSTPAT("0100000 ????? ????? 101 ????? 0110011", sra    ,RE, R(rd) = (word_t)((int64_t)src1 >> BITS(src2, 5, 0)));//
     INSTPAT("0100000 ????? ????? 101 ????? 0111011", sraw   ,RE, R(rd) = SEXT((int32_t)src1 >> BITS(src2, 4, 0), 32));//
+    INSTPAT("0000000 ????? ????? 101 ????? 0110011", srl    ,RE, R(rd) = (src1 >> BITS(src2, 5, 0)));//
+    INSTPAT("0000000 ????? ????? 101 ????? 0111011", srlw   ,RE, R(rd) = SEXT((uint32_t)src1 >> BITS(src2, 4, 0), 32));//
     INSTPAT("0000001 ????? ????? 011 ????? 0110011", mulhu  ,RE, R(rd) = (word_t)((((uint128_t)src1) * ((uint128_t)src2)) >> 64));
     INSTPAT("0011000 00010 00000 000 00000 1110011", mret   ,RE, s->dnpc = CSR(_mepc); set_intr());
 
