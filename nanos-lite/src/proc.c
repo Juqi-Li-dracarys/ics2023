@@ -35,7 +35,7 @@ void init_proc() {
 
   // 从内核线程开始执行
   context_kload(&pcb[0], hello_fun, (void *)1L);
-  context_uload(&pcb[1], "/bin/hello", argv, envp);
+  context_uload(&pcb[1], "/bin/pal", argv, envp);
   yield();
 
   // Log("Jump to entry = %p", entry);
