@@ -46,7 +46,7 @@ Context* schedule(Context *prev) {
   // 保存当前上下文的栈顶指针
   current->cp = prev;
   // 切换到另外一个进程
-  current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
+  current = (current == &pcb[1] ? &pcb[0] : &pcb[1]);
   // 返回另一个进程的栈顶指针
   return current->cp;
 }
