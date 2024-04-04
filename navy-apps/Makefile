@@ -196,11 +196,19 @@ $(CLEAN_ALL):
 	-@$(MAKE) -s -C $@ clean
 .PHONY: clean-all $(CLEAN_ALL)
 
+
+
+##################################################################
+
 ### Build fsimg and ramdisk for Nanos-lite
 # APPS = nslider menu nterm bird pal
-APPS = 
+APPS = pal
 # TESTS = dummy hello file-test timer-test event-test bmp-test fixed-test eof-test
 TESTS = hello
+
+#################################################################
+
+
 
 ### Compile and all elfs from APPS and TESTS to bin
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
