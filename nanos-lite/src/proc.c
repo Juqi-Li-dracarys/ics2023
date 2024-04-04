@@ -14,12 +14,12 @@ void switch_boot_pcb() {
   current = &pcb_boot;
 }
 
-// 内核线程
+// kernel thread
 void hello_fun(void *arg) {
   int j = 1;
   while (1) {
     for (int volatile i = 0; i < 100000; i++);
-    Log("Hello World from kernel thread with arg '%p' for the %dth time!", (uintptr_t)arg, j);
+    printf("World from kernel thread with arg '%p' for the %dth time!", (uintptr_t)arg, j);
     j++;
     yield();
   }
@@ -45,8 +45,8 @@ void init_proc() {
 Context* schedule(Context *prev) {
   // 保存当前上下文的栈顶指针
   current->cp = prev;
-  // 切换到另外一个进程
+  // 切换到另外一个PCB
   current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
-  // 返回另一个进程的栈顶指针
+  // 返回另一个PCB的栈顶指针
   return current->cp;
 }
