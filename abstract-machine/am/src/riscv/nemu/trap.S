@@ -68,6 +68,9 @@ __am_asm_trap:
   jal __am_irq_handle
 
   # 根据handle返回值改变栈顶指针
+
+  # PAY attention! sp points to the Context in PCB
+  # instead of user space
   mv sp, a0
 
   # 恢复上下文，从这里开始有可能开始执行其他进程

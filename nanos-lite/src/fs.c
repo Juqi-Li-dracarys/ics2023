@@ -25,26 +25,29 @@ typedef struct {
 enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_EVENTS, FD_INFO, FD_FB, FD_QUIT};
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
-  panic("should read here, son of bitch.");
+  panic("should not read here, son of bitch.");
   return 0;
 }
 
 size_t invalid_write(const void *buf, size_t offset, size_t len) {
-  panic("should write here, son of bitch.");
+  panic("should not write here, son of bitch.");
   return 0;
 }
 
 /* This is the information about all files in disk. */
 // 我们假设所有虚拟设备的大小足够大
 static Finfo file_table[] __attribute__((used)) = {
-  [FD_STDIN]  = {"stdin", 0x80000000, 0, invalid_read, invalid_write},
-  [FD_STDOUT] = {"stdout", 0x80000000, 0, invalid_read, serial_write},
-  [FD_STDERR] = {"stderr", 0x80000000, 0, invalid_read, serial_write},
-  [FD_EVENTS] = {"/dev/events", 0x80000000, 0, events_read, invalid_write},
-  [FD_INFO]   = {"/proc/dispinfo", 0x80000000, 0, dispinfo_read, invalid_write},
-  [FD_FB]     = {"/dev/fb", 0x80000000, 0, invalid_read, fb_write},
-  [FD_QUIT]   = {"/bin/quit", 0x80000000, 0, invalid_read, invalid_write},
-#include "files.h"
+    // virtual device file
+    [FD_STDIN]  = {"stdin", 0x80000000, 0, invalid_read, invalid_write},
+    [FD_STDOUT] = {"stdout", 0x80000000, 0, invalid_read, serial_write},
+    [FD_STDERR] = {"stderr", 0x80000000, 0, invalid_read, serial_write},
+    [FD_EVENTS] = {"/dev/events", 0x80000000, 0, events_read, invalid_write},
+    [FD_INFO]   = {"/proc/dispinfo", 0x80000000, 0, dispinfo_read, invalid_write},
+    // frame buffer of VGA
+    [FD_FB]     = {"/dev/fb", 0x80000000, 0, invalid_read, fb_write},
+    [FD_QUIT]   = {"/bin/quit", 0x80000000, 0, invalid_read, invalid_write},
+    // application file
+    #include "files.h"
 };
 
 void init_fs() {

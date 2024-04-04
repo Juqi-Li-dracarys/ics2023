@@ -32,7 +32,9 @@ _start:
 #elif defined(__riscv)
 
   mv s0, zero
-  addi sp, a0, 0
+# set the correct sp to the user stack
+# Not the PCB stack
+  mv sp, a0
   jal call_main
 
 #elif defined(__ISA_LOONGARCH32R__)

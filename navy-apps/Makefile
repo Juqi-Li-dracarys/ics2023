@@ -198,7 +198,7 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 # APPS = nslider menu nterm bird pal
-APPS = pal
+APPS = 
 # TESTS = dummy hello file-test timer-test event-test bmp-test fixed-test eof-test
 TESTS = hello
 
