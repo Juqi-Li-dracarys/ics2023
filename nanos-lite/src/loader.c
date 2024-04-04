@@ -36,10 +36,13 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   uintptr_t entry_ = 0x0;
   Elf_Ehdr ehdr = {0};
   Elf_Phdr phdr = {0};
-  // can't open file
+
   if((fd = fs_open(filename, 0, 0)) == -1) {
     // 获取ELF头表
     Log("Warning: laoder fail to open file\n");
+    // can't open file
+    // we assume the file exits in the ranmdisk
+    // instead of the file list
     ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
     if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F') {
         Log("error file type.");
@@ -62,12 +65,12 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       }
     }
   }
-  // filename exist
   else {
     // 获取ELF头表
     lseek(fd, 0, SEEK_SET);
+    // filename exist
+    // read from the file system
     fs_read(fd, &ehdr, sizeof(Elf_Ehdr));
-    // ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
     if (ehdr.e_ident[0] != 0x7f || ehdr.e_ident[1] != 'E' || ehdr.e_ident[2] != 'L' || ehdr.e_ident[3] != 'F') {
         Log("error file type.");
         assert(0);
@@ -83,10 +86,8 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
     for(int i = 0; i < ehdr.e_phnum; i++) {
       lseek(fd, ehdr.e_phoff + ehdr.e_phentsize * i, SEEK_SET);
       fs_read(fd, &phdr, sizeof(Elf_Phdr));
-      // ramdisk_read(&phdr, ehdr.e_phoff + ehdr.e_phentsize * i, sizeof(Elf_Phdr));
       if(phdr.p_type == PT_LOAD) {
         Log("\nLOADING...offset:%p  virtaddr:%p  filesize:%p", phdr.p_offset, phdr.p_vaddr, phdr.p_filesz);
-        // ramdisk_read((void *)phdr.p_vaddr, phdr.p_offset, phdr.p_filesz);
         lseek(fd, phdr.p_offset, SEEK_SET);
         fs_read(fd, (void *)phdr.p_vaddr, phdr.p_filesz);
         memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz - phdr.p_filesz);
@@ -96,7 +97,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   return entry_;
 }
 
-// 批处理，单进程
+// batch process system entry
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
   Log("Jump to entry = %p", entry);
@@ -106,6 +107,7 @@ void naive_uload(PCB *pcb, const char *filename) {
 
 // 创建内核线程
 // 将上下文保存在 pcb.stack 中,运行时也用 PCB 栈
+// API for porc.c
 uintptr_t context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
   Area kernels_stack;
   kernels_stack.start = pcb->stack;
@@ -114,12 +116,50 @@ uintptr_t context_kload(PCB *pcb, void (*entry)(void *), void *arg) {
   return (uintptr_t)entry;
 }
 
+
+// |               |
+// +---------------+ <---- ustack.end
+// |  Unspecified  |
+// +---------------+
+// |               | <----------+
+// |    string     | <--------+ |
+// |     area      | <------+ | |
+// |               | <----+ | | |
+// |               | <--+ | | | |
+// +---------------+    | | | | |
+// |  Unspecified  |    | | | | |
+// +---------------+    | | | | |
+// |     NULL      |    | | | | |
+// +---------------+    | | | | |
+// |    ......     |    | | | | |
+// +---------------+    | | | | |
+// |    envp[1]    | ---+ | | | |
+// +---------------+      | | | |
+// |    envp[0]    | -----+ | | |
+// +---------------+        | | |
+// |     NULL      |        | | |
+// +---------------+        | | |
+// | argv[argc-1]  | -------+ | |
+// +---------------+          | |
+// |    ......     |          | |
+// +---------------+          | |
+// |    argv[1]    | ---------+ |
+// +---------------+            |
+// |    argv[0]    | -----------+
+// +---------------+
+// |      argc     |
+// +---------------+ <---- cp->GPRx
+// |               |
+
 // 创建用户进程
 // 将上下文保存在 pcb.stack 中,但运行时的栈要切换到用户栈
+// Note: user stack
 uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char *const envp[]) {
 
   Area kernel_stack;
+  // This fixed memory allocation stategy is suitable for single user process ONLY!!
   uintptr_t *user_stack = (uintptr_t *)heap.end;
+  uint8_t ptr_size = sizeof(uintptr_t);
   kernel_stack.start = pcb->stack;
   kernel_stack.end = pcb->stack + STACK_SIZE;
 
@@ -137,9 +177,9 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
   // create string area
   while(argv != NULL && argv[argc]) {
     size_t len = strlen(argv[argc]) + 1;
-    // 4 字节对齐
-    len = (len % 4 == 0) ? len : ((len / 4) + 1) * 4;
-    user_stack = user_stack - (len / 4);
+    // 字节对齐
+    len = (len % ptr_size == 0) ? len : ((len / ptr_size) + 1) * ptr_size;
+    user_stack = user_stack - (len / ptr_size);
     strcpy((char *)user_stack, argv[argc]);
     // 记录字符串开头
     argv_[argc] = (char *)user_stack;
@@ -148,9 +188,9 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
 
   while(envp != NULL && envp[envc]) {
     size_t len = strlen(envp[envc]) + 1;
-    // 4 字节对齐
-    len = (len % 4 == 0) ? len : ((len / 4) + 1) * 4;
-    user_stack = user_stack - (len / 4);
+    // 字节对齐
+    len = (len % ptr_size == 0) ? len : ((len / ptr_size) + 1) * ptr_size;
+    user_stack = user_stack - (len / ptr_size);
     strcpy((char *)user_stack, envp[envc]);
     // 记录字符串开头
     envp_[envc] = (char *)user_stack;
@@ -175,12 +215,15 @@ uintptr_t context_uload(PCB *pcb, const char *filename, char *const argv[], char
     user_stack[3 + argc + i] = (uintptr_t)envp_[i];
   }
 
+  // After the download of user stack
   // 将上下文压入内核栈
   // 当需要恢复此上下文时，先跳转到内核栈恢复上下文
   // 然后通过 start.s 启动文件修正栈指针到用户栈上面
   uintptr_t entry = loader(pcb, filename);
   pcb->cp = ucontext(NULL, kernel_stack, (void *)entry);
+  // record the user stack ptr
   pcb->cp->GPRx = (uintptr_t)user_stack;
+  // donot care the return
   return (uintptr_t)entry;
 }
 

@@ -14,6 +14,7 @@ endif
 ./src/resources.S: $(RAMDISK_FILE)
 	@touch $@
 
+# check the existence of APPS
 ifeq ($(HAS_NAVY),)
 files = $(RAMDISK_FILE) src/files.h src/syscall.h
 # create an empty file if it does not exist
@@ -24,7 +25,8 @@ ifeq ($(wildcard $(NAVY_HOME)/libs/libos/src/syscall.h),)
   $(error $$NAVY_HOME must be a Navy-apps repo)
 endif
 
-# update symbol link: ranmdisk and filetable
+# compile interface of APPS
+# update symbol link: ranmdisk and file table
 update:
 	$(MAKE) -s -C $(NAVY_HOME) ISA=$(ISA) ramdisk
 	@ln -sf $(NAVY_HOME)/build/ramdisk.img $(RAMDISK_FILE)

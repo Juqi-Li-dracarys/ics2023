@@ -27,7 +27,7 @@
 #define PA_PPN(addr)    ((addr >> 12) & 0x000FFFFF) // 提取物理地址的高 20 位，即物理页号
 
 // OFFSET of msatus
-#define MIE_OFFSET 3
+#define MIE_OFFSET  3
 #define MPIE_OFFSET 7
 
 // timer interrupt for riscv32， mcause value

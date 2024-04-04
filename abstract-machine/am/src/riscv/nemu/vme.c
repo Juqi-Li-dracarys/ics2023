@@ -90,12 +90,12 @@ void map(AddrSpace *as, void *va, void *pa, int prot) {
   return;
 }
 
-
 // 创建用户进程
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
   // 内核栈顶部存放 context
   Context *c = (Context *)(kstack.end) - 1;
   c->mepc = (uintptr_t)entry;
-  c->mstatus =  0x1800 | (1 << MPIE_OFFSET);
+  //c->mstatus =  0xa00001800 | (1 << MPIE_OFFSET);
+    c->mstatus =  0xa00001800;
   return c;
 }

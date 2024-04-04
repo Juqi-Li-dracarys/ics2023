@@ -46,6 +46,8 @@
 #endif
 
 // the end of bbs (initial)
+// 链接的时候ld会默认添加一个名为_end的符号
+
 extern char end;
 uintptr_t prog_break = &end;
 

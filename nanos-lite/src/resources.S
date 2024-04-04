@@ -1,3 +1,5 @@
+# the code place the ramdisk in the data section
+
 .section .data
 .global ramdisk_start, ramdisk_end
 ramdisk_start:

@@ -23,6 +23,7 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 // 5. 在 handler 函数中根据类型，执行对应操作
 // 6. 回到 __am_asm_trap，再次切换上下文
 
+// Event dispatch function
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
@@ -33,7 +34,7 @@ Context* __am_irq_handle(Context *c) {
     // 异常
     else if(c->mcause == 0xb) {
         switch (c->GPR1) {
-        case 0xffffffff: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
+        case -1: ev.event = EVENT_YIELD; c->mepc = c->mepc + 4; break;
         default: {
           if(c->GPR1 >= 0 && c->GPR1 <= 19) {
             ev.event = EVENT_SYSCALL;
@@ -76,7 +77,9 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   Context *c = (Context *)(kstack.end) - 1;
   c->mepc = (uintptr_t)entry;
   // 在恢复上下文时， MIE 位会为 1
-  c->mstatus = 0x1800 | (1 << MPIE_OFFSET);
+  // enbale the global hardware interrupt
+  // c->mstatus = 0xa00001800 | (1 << MPIE_OFFSET);
+  c->mstatus = 0xa00001800;
   c->GPR2 = (uintptr_t)arg;
   return c;
 }
