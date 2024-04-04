@@ -14,7 +14,6 @@ WORK_DIR            = $(shell pwd)
 OBJ_DIR   			= $(abspath $(WORK_DIR)/build)
 CSRC_DIR 			= $(abspath $(WORK_DIR)/sim)
 VSRC_DIR 		    = $(abspath $(NPC_HOME)/core)
-NEMU_DIR 			= $(abspath $(WORK_DIR)/nemu)
 
 # 查找所有子目录
 # 增加 SoC 外设文件
@@ -22,7 +21,7 @@ VERILOG_TOP 		= $(SOC_HOME)/generated/ysyxSoCFull.v
 VSRC_INC            = $(foreach dir,$(shell find $(VSRC_DIR) -type d),-y $(dir)) \
 					 -y $(SOC_HOME)/perip/uart16550/rtl -y $(SOC_HOME)/perip/spi/rtl -y $(SOC_HOME)/perip/sdram
 
-NEMUISO 			= $(NEMU_DIR)/build/riscv32-nemu-interpreter-so
+NEMUISO 			= $(NEMU_HOME)/build/riscv64-nemu-interpreter-so
 
 VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all $(VSRC_INC) --timescale "1ns/1ns"  \
 					   --no-timing -Mdir $(OBJ_DIR) -DDIFF --top-module $(basename $(notdir $(VERILOG_TOP)))
