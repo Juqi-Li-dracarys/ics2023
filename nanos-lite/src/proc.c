@@ -2,16 +2,18 @@
 
 #define MAX_NR_PROC 4
 
-// 其他进程
+// PCB
 static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
-// 初始进程
+
+// 初始PCB(empty)
 static PCB pcb_boot = {};
 
 // 当前进程指针
 PCB *current = NULL;
 
 void switch_boot_pcb() {
-  current = &pcb_boot;
+    // empty boot
+    current = &pcb_boot;
 }
 
 // kernel thread
@@ -37,9 +39,6 @@ void init_proc() {
   context_kload(&pcb[0], hello_fun, (void *)1L);
   context_uload(&pcb[1], "/bin/pal", argv, envp);
   yield();
-
-  // Log("Jump to entry = %p", entry);
-  // ((void(*)())entry) ();
 }
 
 Context* schedule(Context *prev) {

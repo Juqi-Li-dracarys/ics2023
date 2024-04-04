@@ -172,21 +172,12 @@ install: app
 	@cp $(APP) $(NAVY_HOME)/fsimg/bin/$(NAME)
 .PHONY: install
 
-### Run one app on the nanos-lite
-run_nanos: app
-	@echo + CP "->" copy the target to nanos.
-	@rm -f $(NAVY_HOME)/$(RAMDISK)
-	$(MAKE) -C $(NANOS_HOME) clean
-	@mkdir -p $(NANOS_DIR)
-	@cp -f $(APP) $(NANOS_DIR)/ramdisk.img
-	@echo + LD "->" load the target to nanos to run.
-	$(MAKE) -C $(NANOS_HOME) ARCH=$(NANOS_ARCH) $@
-.PHONY: run_nanos
 
 ### Clean a single project (remove `build/`)
 clean:
 	rm -rf Makefile.html $(WORK_DIR)/build/ build/
 .PHONY: clean
+
 
 ### Clean all sub-projects within depth 2 (and ignore errors)
 CLEAN_ALL = $(dir $(shell find . -mindepth 2 -maxdepth 3 -name Makefile))
