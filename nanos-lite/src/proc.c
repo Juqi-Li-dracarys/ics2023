@@ -19,7 +19,7 @@ void hello_fun(void *arg) {
   int j = 1;
   while (1) {
     for (int volatile i = 0; i < 100000; i++);
-    Log("Hello World from Nanos-lite with arg '%p' for the %dth time!", (uintptr_t)arg, j);
+    Log("Hello World from kernel thread with arg '%p' for the %dth time!", (uintptr_t)arg, j);
     j++;
     yield();
   }
@@ -46,7 +46,7 @@ Context* schedule(Context *prev) {
   // 保存当前上下文的栈顶指针
   current->cp = prev;
   // 切换到另外一个进程
-  current = (current == &pcb[1] ? &pcb[0] : &pcb[1]);
+  current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
   // 返回另一个进程的栈顶指针
   return current->cp;
 }
