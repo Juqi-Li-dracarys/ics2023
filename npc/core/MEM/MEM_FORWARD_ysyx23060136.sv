@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-28 18:04:31 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-03 23:27:14
+ * @Last Modified time: 2024-04-05 15:47:42
  */
 
 
@@ -80,7 +80,7 @@
    
     // 三级消费者数据冒险
     // 此时 WB 还未将数据写入寄存器，
-    // 但读寄存器操作需要该数据(WM->IDU)
+    // 但读寄存器操作需要该数据(WB->IDU)
     // 解决方法为数据前传到 ID_EX 段寄存器
     wire     third_stage_hazard_rs1  =  (IDU_o_rs1 == WB_o_rd)           & WB_o_write_gpr & ~WB_rd_x0;
     wire     third_stage_hazard_rs2  =  (IDU_o_rs2 == WB_o_rd)           & WB_o_write_gpr & ~WB_rd_x0;
@@ -90,7 +90,7 @@
     // 二级消费者数据冒险
     // 此时 WB 还未写入寄存器
     // 但是 EXU 需要该寄存器数据来计算
-    // 解决方法为数据前传到 HAZARD
+    // 解决方法为数据前传到 EXU_HAZARD
     wire     second_stage_hazard_rs1 =  (EXU_o_rs1    == WB_o_rd)        & WB_o_write_gpr & ~WB_rd_x0;  
     wire     second_stage_hazard_rs2 =  (EXU_o_rs2    == WB_o_rd)        & WB_o_write_gpr & ~WB_rd_x0; 
     wire     second_stage_hazard_csr =  (EXU_o_csr_rs == WB_o_csr_rd)    & WB_o_write_csr            ;
