@@ -126,8 +126,8 @@ endmenu
 
 menu "Testing and Debugging"
 
-
 config TRACE
+  depends on TARGET_NATIVE_ELF
   bool "Enable tracer"
   default y
 
@@ -184,7 +184,7 @@ config DTRACE_COND
 config WBCHECK
   depends on TARGET_NATIVE_ELF
   bool "check watchpoint and break point"
-  default y
+  default n
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
