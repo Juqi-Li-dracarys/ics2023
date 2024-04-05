@@ -7,7 +7,7 @@
 
 // printf sprintf 的最大输入不能超过该容量
 // 注意，不要开太大，小心爆栈
-#define str_buffer_size 2000
+#define str_buffer_size 1000
 
 const char hex_chars[] = "0123456789abcdef";
 
