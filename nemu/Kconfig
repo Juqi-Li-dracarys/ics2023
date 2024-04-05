@@ -182,6 +182,7 @@ config DTRACE_COND
   default "true"
 
 config WBCHECK
+  depends on TARGET_NATIVE_ELF
   bool "check watchpoint and break point"
   default y
 
