@@ -34,6 +34,8 @@ static bool g_print_step = false;
 void device_update();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+#ifndef CONFIG_TARGET_SHARE
+
   IFDEF(CONFIG_FTRACE, ftrace_process(_this));
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n\n", _this->logbuf); }
@@ -50,6 +52,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     nemu_state.state = NEMU_STOP;
   }
 #endif 
+
+#endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
@@ -88,7 +92,7 @@ static void execute(uint64_t n) {
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
-    IFNDEF(CONFIG_TARGET_SHARE,trace_and_difftest(&s, cpu.pc));
+    trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;
     IFNDEF(CONFIG_TARGET_SHARE,IFDEF(CONFIG_DEVICE, device_update()););
     // 查询时钟中断信号
