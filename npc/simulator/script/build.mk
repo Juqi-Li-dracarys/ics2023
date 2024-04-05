@@ -23,8 +23,8 @@ $(VBIN): $(CSRC) $(VSRC) $(NVBOARD_ARCHIVE)
 	@echo $(CPU_ARCH)
 
 $(NEMUISO):
-	@echo "$(COLOR_YELLOW)[Make DIFF]$(COLOR_NONE) $(notdir $(NEMU_DIR))/build/riscv32-nemu-interpreter-so"
-	@$(MAKE) -C $(NEMU_DIR)
+	@echo "$(COLOR_YELLOW)[Make DIFF]$(COLOR_NONE) $(notdir $(NEMU_DIR))/build/$(ISA)-nemu-interpreter-so"
+	@$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) app
 
 # constraint file
 $(SRC_AUTO_BIND): $(NXDC_FILES)
