@@ -20,10 +20,9 @@ $(VBIN): $(CSRC) $(VSRC) $(NVBOARD_ARCHIVE)
 	@$(VERILATOR) $(VFLAGS) $^ $(CINC_PATH)
 	@echo "$(COLOR_YELLOW)[COMPILE]$(COLOR_NONE) Compiling C++ files"
 	@$(MAKE) $(SILENT) -C $(OBJ_DIR) -f $(REWRITE)
-	@echo $(CPU_ARCH)
 
 $(NEMUISO):
-	@echo "$(COLOR_YELLOW)[Make DIFF]$(COLOR_NONE) $(notdir $(NEMU_DIR))/build/$(ISA)-nemu-interpreter-so"
+	@echo "$(COLOR_YELLOW)[Make DIFF]$(COLOR_NONE) $(notdir $(NEMU_HOME))/build/nemu-interpreter-so"
 	@$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) app
 
 # constraint file
