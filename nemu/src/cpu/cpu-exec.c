@@ -57,7 +57,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;
-#ifdef CONFIG_ITRACE
+#if defined (CONFIG_ITRACE) && !defined(CONFIG_TARGET_SHARE)
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf),"ITRACE: " FMT_WORD "\t", s->pc);
   int ilen = s->snpc - s->pc;
@@ -88,9 +88,9 @@ static void execute(uint64_t n) {
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
-    trace_and_difftest(&s, cpu.pc);
+    IFNDEF(CONFIG_TARGET_SHARE,trace_and_difftest(&s, cpu.pc));
     if (nemu_state.state != NEMU_RUNNING) break;
-    IFDEF(CONFIG_DEVICE, device_update());
+    IFNDEF(CONFIG_TARGET_SHARE,IFDEF(CONFIG_DEVICE, device_update()););
     // 查询时钟中断信号
     // word_t intr = isa_query_intr();
     // if (intr != INTR_EMPTY) {
@@ -129,17 +129,21 @@ void cpu_exec(uint64_t n) {
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
 
+
   switch (nemu_state.state) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break;
     // if nemu get ebreak or abortion, this log will be displyed
     case NEMU_END: case NEMU_ABORT:
+#ifndef CONFIG_TARGET_SHARE
       Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
+#endif
     // fall through
     case NEMU_QUIT: statistic();
   }
 }
+
 

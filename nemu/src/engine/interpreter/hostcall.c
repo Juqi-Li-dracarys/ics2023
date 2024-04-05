@@ -19,10 +19,12 @@
 #include <cpu/difftest.h>
 
 void set_nemu_state(int state, vaddr_t pc, int halt_ret) {
-  difftest_skip_ref();
   nemu_state.state = state;
   nemu_state.halt_pc = pc;
   nemu_state.halt_ret = halt_ret;
+  IFNDEF(CONFIG_TARGET_SHARE, difftest_skip_ref());
+  IFDEF(CONFIG_TARGET_SHARE, Log("signal detect, nemu stop"));
+  return;
 }
 
 __attribute__((noinline))
