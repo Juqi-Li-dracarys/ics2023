@@ -206,6 +206,7 @@ module ysyx_23060136_IDU_DECODE(
     wire  rv64_remw     =  rv64_op_r_32  &  func3_110  &  func7_0000001;
     wire  rv64_remuw    =  rv64_op_r_32  &  func3_111  &  func7_0000001;
 
+
     // ===========================================================================
     // Load / Store IDU_Instructions
     wire  rv64_load     = opcode_6_5_00 & opcode_4_2_000 & opcode_1_0_11;
@@ -259,41 +260,35 @@ module ysyx_23060136_IDU_DECODE(
     // ===========================================================================
     // ===========================================================================
     // ALU calculating type
-    assign ALU_add       = rv64_add   | rv64_addi  | rv64_auipc | rv64_load | rv64_store | rv64_jal  | rv64_jalr;
-    assign ALU_addw      = rv64_addiw | rv64_addw;
+    assign ALU_word_t    =  rv64_op_i_32 | rv64_op_r_32;
 
-    assign ALU_sub       = rv64_sub;
-    assign ALU_subw      = rv64_subw;
-
-    assign ALU_slt       = rv64_slt  | rv64_slti  | rv64_beq   | rv64_bne  | rv64_blt   | rv64_bge;
-    assign ALU_sltu      = rv64_sltu | rv64_sltiu | rv64_bltu  | rv64_bgeu;
-
-    assign ALU_or        = rv64_or   | rv64_ori ;
-    assign ALU_and       = rv64_and  | rv64_andi;
-    assign ALU_xor       = rv64_xor  | rv64_xori;
-
-    assign ALU_sll       = rv64_sll  | rv64_slli ;
-    assign ALU_sllw      = rv64_sllw | rv64_slliw;
-
-    assign ALU_srl       = rv64_srl  | rv64_srli;
-    assign ALU_srlw      = rv64_srlw | rv64_srliw;
-
-    assign ALU_sra       = rv64_sra  | rv64_srai ;
-    assign ALU_sraw      = rv64_sraw | rv64_sraiw;
+    assign ALU_add       = rv64_add   | rv64_addi  | rv64_auipc | rv64_load | rv64_store | rv64_jal  | rv64_jalr | rv64_addiw | rv64_addw;
+    assign ALU_sub       = rv64_sub   | rv64_subw;
+    assign ALU_slt       = rv64_slt   | rv64_slti  | rv64_beq   | rv64_bne  | rv64_blt   | rv64_bge;
+    assign ALU_sltu      = rv64_sltu  | rv64_sltiu | rv64_bltu  | rv64_bgeu;
+    assign ALU_or        = rv64_or    | rv64_ori ;
+    assign ALU_and       = rv64_and   | rv64_andi;
+    assign ALU_xor       = rv64_xor   | rv64_xori;
+    assign ALU_sll       = rv64_sll   | rv64_slli | rv64_sllw | rv64_slliw ;
+    assign ALU_srl       = rv64_srl   | rv64_srli | rv64_srlw | rv64_srliw;
+    assign ALU_sra       = rv64_sra   | rv64_srai | rv64_sraw | rv64_sraiw;
 
     // Multiplier ctrl
-    assign ALU_mul       = rv64_mul | rv64_mulw | rv64_mulh | rv64_mulhsu | rv64_mulhu ;
-    assign ALU_mul_w     = rv64_mulw;
+    assign ALU_mul       = rv64_mul  | rv64_mulw | rv64_mulh | rv64_mulhsu | rv64_mulhu ;
     assign ALU_mul_hi    = rv64_mulh | rv64_mulhsu | rv64_mulhu;
-    assign ALU_mul_lo    = rv64_mul | rv64_mulw;
+    assign ALU_mul_lo    = rv64_mul  | rv64_mulw;
     assign ALU_mul_u     = rv64_mulhu;
     assign ALU_mul_s     = rv64_mulh;
     assign ALU_mul_su    = rv64_mulhsu;
 
     // Divider ctrl
-    assign ALU_div       = rv64_div | rv64_divu | rv64_divw |rv64_divuw;
-    assign ALU_rem       = rv64_rem | rv64_remu | rv64_remw | rv64_remuw;
+    assign ALU_div       = rv64_div | rv64_divu | rv64_divw | rv64_divuw;
+    assign ALU_div_u     = 
+    assign ALU_div_s     =
 
+    assign ALU_rem       = rv64_rem | rv64_remu | rv64_remw | rv64_remuw;
+    assign ALU_rem_u     =
+    assign ALU_rem_s     =
     
     assign ALU_explicit  = rv64_lui  | rv64_csrrw | rv64_csrrs;
 
