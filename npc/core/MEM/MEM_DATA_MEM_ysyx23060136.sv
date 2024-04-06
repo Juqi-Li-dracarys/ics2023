@@ -5,7 +5,7 @@
  * @Last Modified time: 2024-03-16 14:47:17
  */
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 
 // interface for main memory
@@ -14,7 +14,7 @@
 // 注意 64 位数据对齐的问题， bug 在 2023.3.11 修复
 
 // ===========================================================================
-module MEM_DATA_MEM_ysyx23060136 (
+module MEM_DATA_MEM_ysyx_23060136 (
     input                               clk                        ,
     input                               rst                        ,
     // 每次地址更新时，段寄存器会有一个短脉冲，这会作为读写请求的标志

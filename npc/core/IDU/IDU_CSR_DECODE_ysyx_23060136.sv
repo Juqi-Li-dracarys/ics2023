@@ -6,7 +6,7 @@
  */
 
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 
  // CSR internal ctr

@@ -6,7 +6,7 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 // printf sprintf 的最大输入不能超过该容量
-// 注意，不要开太大，小心爆栈
+// 注意，不要开太大，RT-thread 爆栈!
 #define str_buffer_size 1500
 
 const char hex_chars[] = "0123456789abcdef";

@@ -5,12 +5,12 @@
  * @Last Modified time: 2024-03-03 21:35:51
  */
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
  
 // Top module for write back
 // ===========================================================================
-module WB_TOP_ysyx23060136 (
+module WB_TOP_ysyx_23060136 (
         input                               WB_i_commit                  ,
         input              [  31:0]         WB_i_pc                      ,
         input              [  31:0]         WB_i_inst                    ,

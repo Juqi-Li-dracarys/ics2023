@@ -5,11 +5,11 @@
  * @Last Modified time: 2024-02-28 23:52:43
  */
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 
 // ===========================================================================
-module EXU_TOP_ysyx23060136 (
+module EXU_TOP_ysyx_23060136 (
 
         input              [  31:0]         EXU_i_pc                     ,
         input              [  31:0]         EXU_i_inst                   ,
@@ -149,7 +149,7 @@ module EXU_TOP_ysyx23060136 (
 
     assign    EXU_o_system_halt  = EXU_i_system_halt;
 
-    EXU_HAZARD_ysyx23060136  EXU_HAZARD_ysyx23060136_inst (
+    EXU_HAZARD_ysyx_23060136  EXU_HAZARD_ysyx_23060136_inst (
                                  .EXU_rs1_data                      (EXU_i_rs1_data            ),
                                  .EXU_rs2_data                      (EXU_i_rs2_data            ),
                                  .EXU_csr_rs_data                   (EXU_i_csr_rs_data         ),
@@ -175,7 +175,7 @@ module EXU_TOP_ysyx23060136 (
                              );
 
 
-    EXU_ALU_ysyx23060136  EXU_ALU_ysyx23060136_inst (
+    EXU_ALU_ysyx_23060136  EXU_ALU_ysyx_23060136_inst (
                               .EXU_ALU_da                        (EXU_ALU_da                ),
                               .EXU_ALU_db                        (EXU_ALU_db                ),
                               .EXU_ALU_add                       (EXU_i_ALU_add             ),
@@ -203,7 +203,7 @@ module EXU_TOP_ysyx23060136 (
 
 
 
-    EXU_BRANCH_ysyx23060136  EXU_BRANCH_ysyx23060136_inst (
+    EXU_BRANCH_ysyx_23060136  EXU_BRANCH_ysyx_23060136_inst (
                                  .EXU_pc                            (EXU_i_pc                  ),
                                  .EXU_HAZARD_rs1_data               (EXU_HAZARD_rs1_data       ),
                                  .EXU_HAZARD_csr_rs_data            (EXU_HAZARD_csr_rs_data    ),

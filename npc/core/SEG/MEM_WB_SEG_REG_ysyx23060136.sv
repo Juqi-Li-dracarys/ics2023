@@ -6,11 +6,11 @@
  */
 
 
-`include "DEFINES_ysyx23060136.sv"
+`include "DEFINES_ysyx_23060136.sv"
 
 
 // ===========================================================================
-module MEM_WB_SEG_REG_ysyx23060136 (
+module MEM_WB_SEG_REG_ysyx_23060136 (
         input                               clk                        ,
         input                               rst                        ,
         // forward signal

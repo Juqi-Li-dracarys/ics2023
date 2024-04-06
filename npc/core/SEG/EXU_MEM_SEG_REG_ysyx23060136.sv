@@ -6,14 +6,14 @@
  */
 
 
-`include "DEFINES_ysyx23060136.sv"
+`include "DEFINES_ysyx_23060136.sv"
 
 /*
       EXU -> EXU_REG -> MEM
 */
 
 // ===========================================================================
-module EXU_MEM_SEG_REG_ysyx23060136 (
+module EXU_MEM_SEG_REG_ysyx_23060136 (
         input                               clk                        ,
         input                               rst                        ,
         // ===========================================================================

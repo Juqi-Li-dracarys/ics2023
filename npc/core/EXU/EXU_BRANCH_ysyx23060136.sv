@@ -5,11 +5,11 @@
  * @Last Modified time: 2024-02-24 01:46:02
  */
  
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 // Branch control
 // ===========================================================================
-module EXU_BRANCH_ysyx23060136 (
+module EXU_BRANCH_ysyx_23060136 (
         // data
         input              [  31:0]         EXU_pc                     ,
         input              [  31:0]         EXU_HAZARD_rs1_data        ,

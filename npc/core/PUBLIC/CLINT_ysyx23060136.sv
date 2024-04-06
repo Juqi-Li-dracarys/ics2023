@@ -6,13 +6,13 @@
  */
 
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 
  // CLINT module support time reading
  // protocol: easy  AXI-lite
  // ===========================================================================
- module CLINT_ysyx23060136 (
+ module CLINT_ysyx_23060136 (
     input                              clk                       ,
     input                              rst                       ,
     // ===========================================================================
