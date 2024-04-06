@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 22:03:38 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-05 22:07:18
+ * @Last Modified time: 2024-04-06 16:41:30
  */
 
 
@@ -12,16 +12,17 @@
 // Main Decode unit
 // Support ISA: RISCV64-IM
 // ===========================================================================
-module ysyx_23060136_IDU_DECODE(
-    input              [  `ysyx_23060136_INST_W-1:0]         IDU_inst                   ,
+module ysyx_23060136_IDU_DECODE (
+    input              [  `ysyx_23060136_INST_W-1:0]         IDU_inst   ,
     // ===========================================================================
     // reg addr
-    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rd                     ,
-    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rs1                    ,
-    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rs2                    ,
-    output             [  11:0]                             IDU_csr_id                 ,
+    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rd     ,
+    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rs1    ,
+    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rs2    ,
+    output             [  11:0]                              IDU_csr_id ,
     // ===========================================================================
     // ALU calculating type define
+    output                              ALU_word_t                 ,
     output                              ALU_add                    ,
     output                              ALU_sub                    ,
     // 带符号小于
@@ -36,6 +37,21 @@ module ysyx_23060136_IDU_DECODE(
     output                              ALU_sll                    ,
     output                              ALU_srl                    ,
     output                              ALU_sra                    ,
+
+    output                              ALU_mul                    ,
+    output                              ALU_mul_hi                 ,
+    output                              ALU_mul_lo                 ,
+    output                              ALU_mul_u                  ,
+    output                              ALU_mul_s                  ,
+    output                              ALU_mul_su                 ,
+
+    output                              ALU_div                    ,
+    output                              ALU_div_u                  ,
+    output                              ALU_div_s                  ,
+    output                              ALU_rem                    ,
+    output                              ALU_rem_u                  ,
+    output                              ALU_rem_s                  ,
+
     // 直接输出
     output                              ALU_explicit               ,
     // ===========================================================================
@@ -62,7 +78,7 @@ module ysyx_23060136_IDU_DECODE(
     output                              write_gpr                  ,
     output                              write_csr                  ,
     output                              mem_to_reg                 ,
-    // we wiil handle csr write date in the next stage
+    // we will handle csr in the ALU
     output                              rv64_csrrs                 ,
     output                              rv64_csrrw                 ,
     output                              rv64_ecall                 ,
@@ -72,8 +88,10 @@ module ysyx_23060136_IDU_DECODE(
     output                              mem_byte                   ,
     output                              mem_half                   ,
     output                              mem_word                   ,
+    output                              mem_dword                  ,
     output                              mem_byte_u                 ,
     output                              mem_half_u                 ,
+    output                              mem_word_u                 ,
     // ===========================================================================
     // halt
     output                              system_halt                ,
@@ -260,6 +278,7 @@ module ysyx_23060136_IDU_DECODE(
     // ===========================================================================
     // ===========================================================================
     // ALU calculating type
+
     assign ALU_word_t    =  rv64_op_i_32 | rv64_op_r_32;
 
     assign ALU_add       = rv64_add   | rv64_addi  | rv64_auipc | rv64_load | rv64_store | rv64_jal  | rv64_jalr | rv64_addiw | rv64_addw;
@@ -274,21 +293,21 @@ module ysyx_23060136_IDU_DECODE(
     assign ALU_sra       = rv64_sra   | rv64_srai | rv64_sraw | rv64_sraiw;
 
     // Multiplier ctrl
-    assign ALU_mul       = rv64_mul  | rv64_mulw | rv64_mulh | rv64_mulhsu | rv64_mulhu ;
-    assign ALU_mul_hi    = rv64_mulh | rv64_mulhsu | rv64_mulhu;
-    assign ALU_mul_lo    = rv64_mul  | rv64_mulw;
+    assign ALU_mul       = rv64_mul   | rv64_mulw   | rv64_mulh | rv64_mulhsu | rv64_mulhu ;
+    assign ALU_mul_hi    = rv64_mulh  | rv64_mulhsu | rv64_mulhu;
+    assign ALU_mul_lo    = rv64_mul   | rv64_mulw;
     assign ALU_mul_u     = rv64_mulhu;
     assign ALU_mul_s     = rv64_mulh;
     assign ALU_mul_su    = rv64_mulhsu;
 
     // Divider ctrl
-    assign ALU_div       = rv64_div | rv64_divu | rv64_divw | rv64_divuw;
-    assign ALU_div_u     = 
-    assign ALU_div_s     =
+    assign ALU_div       = rv64_div  | rv64_divu | rv64_divw | rv64_divuw;
+    assign ALU_div_u     = rv64_divu | rv64_divuw;
+    assign ALU_div_s     = rv64_div  | rv64_divw;
 
-    assign ALU_rem       = rv64_rem | rv64_remu | rv64_remw | rv64_remuw;
-    assign ALU_rem_u     =
-    assign ALU_rem_s     =
+    assign ALU_rem       = rv64_rem  | rv64_remu | rv64_remw | rv64_remuw;
+    assign ALU_rem_u     = rv64_remu | rv64_remuw;
+    assign ALU_rem_s     = rv64_rem  | rv64_remw;
     
     assign ALU_explicit  = rv64_lui  | rv64_csrrw | rv64_csrrs;
 
@@ -339,8 +358,11 @@ module ysyx_23060136_IDU_DECODE(
     assign mem_byte     = rv64_lb | rv64_sb;
     assign mem_half     = rv64_lh | rv64_sh;
     assign mem_word     = rv64_lw | rv64_sw;
-    assign mem_byte_u   = rv64_lbu;
-    assign mem_half_u   = rv64_lhu;
+    assign mem_dword    = rv64_ld | rv64_sd;
+
+    assign mem_byte_u   = rv64_lbu         ;
+    assign mem_half_u   = rv64_lhu         ;
+    assign mem_word_u   = rv64_lwu         ;
 
 
     // ===========================================================================

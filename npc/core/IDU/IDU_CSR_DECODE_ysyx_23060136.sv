@@ -2,11 +2,11 @@
  * @Author: Juqi Li @ NJU
  * @Date: 2024-02-21 17:23:48
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-16 15:10:07
+ * @Last Modified time: 2024-04-06 16:41:00
  */
 
 
- `include "DEFINES_ysyx_23060136.sv"
+ `include "ysyx_23060136_DEFINES.sv"
 
 
  // CSR internal ctr

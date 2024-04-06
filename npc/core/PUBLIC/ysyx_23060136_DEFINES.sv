@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 12:40:17 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-05 22:06:16
+ * @Last Modified time: 2024-04-06 17:00:18
  */
 
 // ===========================================================================
@@ -11,7 +11,11 @@
 `define  ysyx_23060136_BITS_W     64
 `define  ysyx_23060136_INST_W     32
 
+`define  ysyx_23060136_GPR_NUM    32
 `define  ysyx_23060136_GPR_W      5
+
+`define  ysyx_23060136_CSR_NUM    6
+`define  ysyx_23060136_CSR_W      3
 
 // NPC addr space specification
 `define  ysyx_23060136_MBASE      64'h80000000
