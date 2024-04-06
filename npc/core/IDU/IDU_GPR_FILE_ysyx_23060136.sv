@@ -8,7 +8,7 @@
 
 // gpr file for RV32E
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 // ===========================================================================
 module IDU_GPR_FILE_ysyx_23060136 (

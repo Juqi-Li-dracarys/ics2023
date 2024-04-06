@@ -7,12 +7,12 @@
 
 
 // module for handling hazard in EXU
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 
 // module for handling hazard in EXU and calculating ALU input
 // ===========================================================================
-module EXU_HAZARD_ysyx23060136(
+module EXU_HAZARD_ysyx_23060136(
         input              [  31:0]         EXU_rs1_data               ,
         input              [  31:0]         EXU_rs2_data               ,
         input              [  31:0]         EXU_csr_rs_data            ,

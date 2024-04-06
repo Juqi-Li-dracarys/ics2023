@@ -5,11 +5,11 @@
  * @Last Modified time: 2024-03-16 14:49:31
  */
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 // Top module for SoC memory write and read
 // ===========================================================================
-module MEM_TOP_ysyx23060136 (
+module MEM_TOP_ysyx_23060136 (
         input                               clk                        ,
         input                               rst                        ,
         // ===========================================================================
@@ -166,7 +166,7 @@ module MEM_TOP_ysyx23060136 (
 
 
 
-    MEM_DATA_MEM_ysyx23060136  MEM_DATA_MEM_ysyx23060136_inst (
+    MEM_DATA_MEM_ysyx_23060136  MEM_DATA_MEM_ysyx_23060136_inst (
                                .clk                               (clk                       ),
                                .rst                               (rst                       ),
                                .MEM_i_raddr_change                (MEM_i_raddr_change        ),
@@ -219,7 +219,7 @@ module MEM_TOP_ysyx23060136 (
     
 
 
-    MEM_FORWARD_ysyx23060136  MEM_FORWARD_ysyx23060136_inst (
+    MEM_FORWARD_ysyx_23060136  MEM_FORWARD_ysyx_23060136_inst (
                                     .IFU_o_valid                       (IFU_o_valid               ),
                                     .MEM_rvalid                        (MEM_rvalid                ),
                                     .MEM_wready                        (MEM_wready                ),

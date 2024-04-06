@@ -6,12 +6,12 @@
  */
 
  
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
  
  // Arbiter for IFU and MEM reading section 
  // ===========================================================================
- module PUBLIC_ARBITER_ysyx23060136 (
+ module PUBLIC_ARBITER_ysyx_23060136 (
     input                              clk                         ,
     input                              rst                         ,
     // ===========================================================================

@@ -5,11 +5,11 @@
  * @Last Modified time: 2024-02-23 10:52:09
  */
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 // 桶型移位器
 // ===========================================================================
-module EXU_ALU_SHIFT_ysyx23060136 #(
+module EXU_ALU_SHIFT_ysyx_23060136 #(
         parameter data_width = 6'd32,
         parameter shamt_width = 3'd5
     )

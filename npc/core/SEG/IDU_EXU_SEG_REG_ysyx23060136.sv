@@ -5,14 +5,14 @@
  * @Last Modified time: 2024-02-28 13:12:48
  */
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 /*
       IDU -> IDU_EXU_REG -> EXU
 */
 
 // ===========================================================================
-module IDU_EXU_SEG_REG_ysyx23060136(
+module IDU_EXU_SEG_REG_ysyx_23060136(
         input                               clk                        ,
         input                               rst                        ,
         // ===========================================================================

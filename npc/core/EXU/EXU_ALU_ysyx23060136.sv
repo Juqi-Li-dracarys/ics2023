@@ -6,12 +6,12 @@
  */
 
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
  
 // ALU of the CPU
 // ===========================================================================
-module EXU_ALU_ysyx23060136 (
+module EXU_ALU_ysyx_23060136 (
         input              [  31:0]         EXU_ALU_da                 ,// input signal A
         input              [  31:0]         EXU_ALU_db                 ,// input signal B
 
@@ -65,7 +65,7 @@ module EXU_ALU_ysyx23060136 (
     // shifter
     wire    [31 : 0]   result_shifter;
 
-    EXU_ALU_SHIFT_ysyx23060136 shifter (
+    EXU_ALU_SHIFT_ysyx_23060136 shifter (
                                    .din(EXU_ALU_da),
                                    .shamt(EXU_ALU_db[4 : 0]),
                                    .LR(LR),

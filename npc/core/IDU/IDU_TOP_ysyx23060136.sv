@@ -6,12 +6,12 @@
  */
 
 
- `include "DEFINES_ysyx23060136.sv"
+ `include "DEFINES_ysyx_23060136.sv"
 
 
 // top module of IDU
 // ===========================================================================
-module IDU_TOP_ysyx23060136 (
+module IDU_TOP_ysyx_23060136 (
         input                               clk                        ,
         input                               rst                        ,
         input              [  31:0]         IDU_i_pc                   ,
@@ -101,7 +101,7 @@ module IDU_TOP_ysyx23060136 (
     assign                   IDU_o_inst     =        IDU_i_inst;
     assign                   IDU_o_commit   =        IDU_i_commit;
 
-    IDU_DECODE_ysyx23060136  IDU_DECODE_ysyx23060136_inst (
+    IDU_DECODE_ysyx_23060136  IDU_DECODE_ysyx_23060136_inst (
                                  .IDU_inst                          (IDU_i_inst                  ),
                                  .IDU_rd                            (IDU_o_rd                    ),
                                  .IDU_rs1                           (IDU_o_rs1                   ),

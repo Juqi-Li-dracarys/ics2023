@@ -6,7 +6,7 @@
  */
 
 
-`include "DEFINES_ysyx23060136.sv"
+`include "DEFINES_ysyx_23060136.sv"
 
 
 // Top module of riscv32e core
@@ -130,7 +130,7 @@ module ysyx_23060136 (
     wire                                 ARBITER_IFU_inst_ready     ;
   
 
-    IFU_TOP_ysyx23060136  IFU_TOP_ysyx23060136_inst (
+    IFU_TOP_ysyx_23060136  IFU_TOP_ysyx_23060136_inst (
                             .clk                               (clk                       ),
                             .rst                               (rst                       ),
                             .FORWARD_stallIF                   (FORWARD_stallIF           ),
@@ -159,7 +159,7 @@ module ysyx_23060136 (
     wire                [  31:0]         IDU_i_inst                 ;
 
 
-    IFU_IDU_SEG_REG_ysyx23060136  IFU_IDU_SEG_REG_ysyx23060136_inst (
+    IFU_IDU_SEG_REG_ysyx_23060136  IFU_IDU_SEG_REG_ysyx_23060136_inst (
                                     .clk                               (clk                       ),
                                     .rst                               (rst                       ),
                                     .BRANCH_flushIF                    (BRANCH_flushIF            ),
@@ -237,7 +237,7 @@ module ysyx_23060136 (
 
 
 
-    IDU_TOP_ysyx23060136  IDU_TOP_ysyx23060136_inst (
+    IDU_TOP_ysyx_23060136  IDU_TOP_ysyx_23060136_inst (
                               .clk                               (clk                       ),
                               .rst                               (rst                       ),
                               .IDU_i_pc                          (IDU_i_pc                  ),
@@ -367,7 +367,7 @@ module ysyx_23060136 (
 
 
 
-    IDU_EXU_SEG_REG_ysyx23060136  IDU_EXU_SEG_REG_ysyx23060136_inst(
+    IDU_EXU_SEG_REG_ysyx_23060136  IDU_EXU_SEG_REG_ysyx_23060136_inst(
                                       .clk                               (clk                       ),
                                       .rst                               (rst                       ),
                                       .BRANCH_flushID                    (BRANCH_flushID            ),
@@ -507,7 +507,7 @@ module ysyx_23060136 (
     wire                                EXU_o_system_halt        ;
 
 
-    EXU_TOP_ysyx23060136  EXU_TOP_ysyx23060136_inst (
+    EXU_TOP_ysyx_23060136  EXU_TOP_ysyx_23060136_inst (
                               .EXU_i_pc                          (EXU_i_pc                  ),
                               .EXU_i_inst                        (EXU_i_inst                ),
                               .EXU_i_commit                      (EXU_i_commit              ),
@@ -619,7 +619,7 @@ module ysyx_23060136 (
     wire                                MEM_i_waddr_change           ;
 
 
-    EXU_MEM_SEG_REG_ysyx23060136  EXU_MEM_SEG_REG_ysyx23060136_inst (
+    EXU_MEM_SEG_REG_ysyx_23060136  EXU_MEM_SEG_REG_ysyx_23060136_inst (
                                       .clk                               (clk                       ),
                                       .rst                               (rst                       ),
                                       .FORWARD_flushEX                   (FORWARD_flushEX           ),
@@ -714,7 +714,7 @@ module ysyx_23060136 (
   
 
                             
-MEM_TOP_ysyx23060136  MEM_TOP_ysyx23060136_inst (
+MEM_TOP_ysyx_23060136  MEM_TOP_ysyx_23060136_inst (
                           .clk                               (clk                       ),
                           .rst                               (rst                       ),
                           .IFU_o_valid                       (IFU_o_valid               ),
@@ -834,7 +834,7 @@ MEM_TOP_ysyx23060136  MEM_TOP_ysyx23060136_inst (
     wire               [2 : 0]          WB_i_csr_rd                  ;
                         
 
-    MEM_WB_SEG_REG_ysyx23060136  MEM_WB_SEG_REG_ysyx23060136_inst (
+    MEM_WB_SEG_REG_ysyx_23060136  MEM_WB_SEG_REG_ysyx_23060136_inst (
                                      .clk                               (clk                        ),
                                      .rst                               (rst                        ),
                                      .FORWARD_flushME                   (FORWARD_flushME            ),
@@ -876,7 +876,7 @@ MEM_TOP_ysyx23060136  MEM_TOP_ysyx23060136_inst (
     wire                               WB_o_system_halt   ;
 
 
-    WB_TOP_ysyx23060136  WB_TOP_ysyx23060136_inst (
+    WB_TOP_ysyx_23060136  WB_TOP_ysyx_23060136_inst (
                              .WB_i_commit                         (WB_i_commit                 ),
                              .WB_i_pc                             (WB_i_pc                     ),
                              .WB_i_inst                           (WB_i_inst                   ),
@@ -908,7 +908,7 @@ MEM_TOP_ysyx23060136  MEM_TOP_ysyx23060136_inst (
                          );
 
 
-    PUBLIC_ARBITER_ysyx23060136  PUBLIC_ARBITER_ysyx23060136_inst (
+    PUBLIC_ARBITER_ysyx_23060136  PUBLIC_ARBITER_ysyx_23060136_inst (
                             .clk                               (clk                       ),
                             .rst                               (rst                       ),
                             .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
@@ -941,7 +941,7 @@ MEM_TOP_ysyx23060136  MEM_TOP_ysyx23060136_inst (
             );
     
 
-    CLINT_ysyx23060136  CLINT_ysyx23060136_inst (
+    CLINT_ysyx_23060136  CLINT_ysyx_23060136_inst (
                             .clk                               (clk                       ),
                             .rst                               (rst                       ),
                             .CLINT_MEM_raddr                   (CLINT_MEM_raddr           ),
