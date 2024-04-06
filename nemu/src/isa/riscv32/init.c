@@ -34,7 +34,7 @@ static void restart() {
   /* mstaus register is 0x1800. */
   // 注意这里关闭中断，否则操作系统初始化崩溃
   cpu.gpr[0] = 0;
-  cpu.csr[_mstatus] = 0xa00001800;
+  cpu.csr[_mstatus] = 0xa00001801;
 }
 
 void init_isa() {
