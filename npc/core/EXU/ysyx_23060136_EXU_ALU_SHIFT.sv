@@ -1,17 +1,20 @@
 /*
  * @Author: Juqi Li @ NJU 
- * @Date: 2024-02-23 09:19:32 
+ * @Date: 2024-04-06 23:41:28 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-23 10:52:09
+ * @Last Modified time: 2024-04-06 23:43:03
  */
 
- `include "DEFINES_ysyx_23060136.sv"
+
+
+ `include "ysyx_23060136_DEFINES.sv"
+
 
 // 桶型移位器
 // ===========================================================================
-module EXU_ALU_SHIFT_ysyx_23060136 #(
-        parameter data_width = 6'd32,
-        parameter shamt_width = 3'd5
+module ysyx_23060136_EXU_ALU_SHIFT #(
+        parameter data_width  = `ysyx_23060136_BITS_W ,
+        parameter shamt_width = `ysyx_23060136_BITS_S
     )
     (
         input        [data_width-1 : 0]    din   ,     // The data designed to be shifted

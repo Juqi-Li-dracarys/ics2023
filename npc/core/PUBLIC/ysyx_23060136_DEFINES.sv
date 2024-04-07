@@ -2,13 +2,16 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 12:40:17 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-06 17:00:18
+ * @Last Modified time: 2024-04-06 23:42:51
  */
 
 // ===========================================================================
  
 // width of CPU'bits and inst
 `define  ysyx_23060136_BITS_W     64
+// log(64)
+`define  ysyx_23060136_BITS_S     6
+
 `define  ysyx_23060136_INST_W     32
 
 `define  ysyx_23060136_GPR_NUM    32
@@ -35,7 +38,7 @@
 `define  ysyx_23060136_done      'h2
 
 // csr idx   
-`define  ysyx_23060136_mstatus   'h0 
+`define  ysyx_23060136_mstatus   'h0
 `define  ysyx_23060136_mtvec     'h1
 `define  ysyx_23060136_mepc      'h2
 `define  ysyx_23060136_mcause    'h3

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 22:03:38 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-06 16:41:30
+ * @Last Modified time: 2024-04-06 22:05:48
  */
 
 
@@ -13,89 +13,90 @@
 // Support ISA: RISCV64-IM
 // ===========================================================================
 module ysyx_23060136_IDU_DECODE (
-    input              [  `ysyx_23060136_INST_W-1:0]         IDU_inst   ,
+    input              [  `ysyx_23060136_INST_W-1:0]         IDU_inst                   ,
     // ===========================================================================
     // reg addr
-    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rd     ,
-    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rs1    ,
-    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rs2    ,
-    output             [  11:0]                              IDU_csr_id ,
+    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rd                     ,
+    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rs1                    ,
+    output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rs2                    ,
+    output             [  11:0]                              IDU_csr_id                 ,
     // ===========================================================================
     // ALU calculating type define
-    output                              ALU_word_t                 ,
-    output                              ALU_add                    ,
-    output                              ALU_sub                    ,
+    output                                                   ALU_word_t                 ,
+    output                                                   ALU_add                    ,
+    output                                                   ALU_sub                    ,
     // 带符号小于
-    output                              ALU_slt                    ,
+    output                                                   ALU_slt                    ,
     // 无符号小于
-    output                              ALU_sltu                   ,
+    output                                                   ALU_sltu                   ,
     // 与或异或运算
-    output                              ALU_or                     ,
-    output                              ALU_and                    ,
-    output                              ALU_xor                    ,
+    output                                                   ALU_or                     ,
+    output                                                   ALU_and                    ,
+    output                                                   ALU_xor                    ,
     // 移位运算
-    output                              ALU_sll                    ,
-    output                              ALU_srl                    ,
-    output                              ALU_sra                    ,
+    output                                                   ALU_sll                    ,
+    output                                                   ALU_srl                    ,
+    output                                                   ALU_sra                    ,
 
-    output                              ALU_mul                    ,
-    output                              ALU_mul_hi                 ,
-    output                              ALU_mul_lo                 ,
-    output                              ALU_mul_u                  ,
-    output                              ALU_mul_s                  ,
-    output                              ALU_mul_su                 ,
+    output                                                   ALU_mul                    ,
+    output                                                   ALU_mul_hi                 ,
+    output                                                   ALU_mul_lo                 ,
+    output                                                   ALU_mul_u                  ,
+    output                                                   ALU_mul_s                  ,
+    output                                                   ALU_mul_su                 ,
 
-    output                              ALU_div                    ,
-    output                              ALU_div_u                  ,
-    output                              ALU_div_s                  ,
-    output                              ALU_rem                    ,
-    output                              ALU_rem_u                  ,
-    output                              ALU_rem_s                  ,
+    output                                                   ALU_div                    ,
+    output                                                   ALU_div_u                  ,
+    output                                                   ALU_div_s                  ,
+    output                                                   ALU_rem                    ,
+    output                                                   ALU_rem_u                  ,
+    output                                                   ALU_rem_s                  ,
 
     // 直接输出
-    output                              ALU_explicit               ,
+    output                                                   ALU_explicit               ,
     // ===========================================================================
     // ALU input 1, input 2 type
-    output                              ALU_i1_rs1                 ,
-    output                              ALU_i1_pc                  ,
+    output                                                   ALU_i1_rs1                 ,
+    output                                                   ALU_i1_pc                  ,
 
-    output                              ALU_i2_rs2                 ,
-    output                              ALU_i2_imm                 ,
-    output                              ALU_i2_4                   ,
-    output                              ALU_i2_csr                 ,
+    output                                                   ALU_i2_rs2                 ,
+    output                                                   ALU_i2_imm                 ,
+    output                                                   ALU_i2_4                   ,
+    output                                                   ALU_i2_csr                 ,
     // ===========================================================================
     // jump
-    output                              jump                       ,
-    output                              pc_plus_imm                ,
-    output                              rs1_plus_imm               ,
-    output                              csr_plus_imm               ,
-    output                              cmp_eq                     ,
-    output                              cmp_neq                    ,
-    output                              cmp_ge                     ,
-    output                              cmp_lt                     ,
+    output                                                   jump                       ,
+    output                                                   pc_plus_imm                ,
+    output                                                   rs1_plus_imm               ,
+    output                                                   csr_plus_imm               ,
+    output                                                   cmp_eq                     ,
+    output                                                   cmp_neq                    ,
+    output                                                   cmp_ge                     ,
+    output                                                   cmp_lt                     ,
     // ===========================================================================
     // write/read register
-    output                              write_gpr                  ,
-    output                              write_csr                  ,
-    output                              mem_to_reg                 ,
+    output                                                   write_gpr                  ,
+    output                                                   write_csr_1                ,
+    output                                                   write_csr_2                ,
+    output                                                   mem_to_reg                 ,
     // we will handle csr in the ALU
-    output                              rv64_csrrs                 ,
-    output                              rv64_csrrw                 ,
-    output                              rv64_ecall                 ,
+    output                                                   rv64_csrrs                 ,
+    output                                                   rv64_csrrw                 ,
+    output                                                   rv64_ecall                 ,
     // ===========================================================================
     // write/read memory
-    output                              write_mem                  ,
-    output                              mem_byte                   ,
-    output                              mem_half                   ,
-    output                              mem_word                   ,
-    output                              mem_dword                  ,
-    output                              mem_byte_u                 ,
-    output                              mem_half_u                 ,
-    output                              mem_word_u                 ,
+    output                                                   write_mem                  ,
+    output                                                   mem_byte                   ,
+    output                                                   mem_half                   ,
+    output                                                   mem_word                   ,
+    output                                                   mem_dword                  ,
+    output                                                   mem_byte_u                 ,
+    output                                                   mem_half_u                 ,
+    output                                                   mem_word_u                 ,
     // ===========================================================================
     // halt
-    output                              system_halt                ,
-    output             [  31:0]         IDU_imm                                 
+    output                                                   system_halt                ,
+    output         [  `ysyx_23060136_BITS_W-1:0]             IDU_imm                                 
 
 ) ;
 
@@ -348,7 +349,8 @@ module ysyx_23060136_IDU_DECODE (
     // ===========================================================================
     // write register
     assign write_gpr    = ~(rv64_branch | rv64_store | rv64_mret | rv64_ecall | rv64_ebreak);
-    assign write_csr    = rv64_ecall | rv64_csrrs | rv64_csrrw;
+    assign write_csr_1  = rv64_ecall | rv64_csrrs | rv64_csrrw;
+    assign write_csr_2  = rv64_ecall;
     assign mem_to_reg   = rv64_load;
 
 
@@ -369,15 +371,16 @@ module ysyx_23060136_IDU_DECODE (
     // system halt
     assign system_halt  = rv64_ebreak;
 
-
+    
     // ===========================================================================
-    // imm
-    assign IDU_imm      = ({32{op_I_type}} & {{20{IDU_inst[31]}}, IDU_inst[31 : 20]})                                        |
-                          ({32{op_B_type}} & {{20{IDU_inst[31]}}, IDU_inst[7], IDU_inst[30 : 25], IDU_inst[11 : 8], 1'b0})   |
-                          ({32{op_S_type}} & {{20{IDU_inst[31]}}, IDU_inst[31 : 25], IDU_inst[11 : 7]})                      |
-                          ({32{op_U_type}} & {IDU_inst[31 : 12], 12'b0})                                                     |
-                          ({32{op_J_type}} & {{12{IDU_inst[31]}}, IDU_inst[19 : 12], IDU_inst[20], IDU_inst[30 : 21], 1'b0}) |
-                          ({32{op_R_type}} & 32'b0);
+    // imm generate
+
+    assign IDU_imm      = ({`ysyx_23060136_BITS_W{op_I_type}} & {{52{IDU_inst[31]}}, IDU_inst[31 : 20]})                                        |
+                          ({`ysyx_23060136_BITS_W{op_B_type}} & {{52{IDU_inst[31]}}, IDU_inst[7], IDU_inst[30 : 25], IDU_inst[11 : 8], 1'b0})   |
+                          ({`ysyx_23060136_BITS_W{op_S_type}} & {{52{IDU_inst[31]}}, IDU_inst[31 : 25], IDU_inst[11 : 7]})                      |
+                          ({`ysyx_23060136_BITS_W{op_U_type}} & {{32{IDU_inst[31]}}, IDU_inst[31 : 12], 12'b0})                                 |
+                          ({`ysyx_23060136_BITS_W{op_J_type}} & {{44{IDU_inst[31]}}, IDU_inst[19 : 12], IDU_inst[20], IDU_inst[30 : 21], 1'b0}) |
+                          ({`ysyx_23060136_BITS_W{op_R_type}} & `ysyx_23060136_BITS_W'b0)                                                       ;
 
 
 endmodule

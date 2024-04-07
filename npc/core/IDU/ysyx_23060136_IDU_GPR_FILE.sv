@@ -6,7 +6,7 @@
  */
 
 
-// GPR file for RV64IM
+// GPR file for RV64IM with 2 read channel
 
 
 `include "ysyx_23060136_DEFINES.sv"
