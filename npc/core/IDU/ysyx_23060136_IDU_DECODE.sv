@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 22:03:38 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-06 22:05:48
+ * @Last Modified time: 2024-04-07 14:04:24
  */
 
 
@@ -302,11 +302,11 @@ module ysyx_23060136_IDU_DECODE (
     assign ALU_mul_su    = rv64_mulhsu;
 
     // Divider ctrl
-    assign ALU_div       = rv64_div  | rv64_divu | rv64_divw | rv64_divuw;
-    assign ALU_div_u     = rv64_divu | rv64_divuw;
+    assign ALU_div       = rv64_div  | rv64_divu  | rv64_divw | rv64_divuw;
+    assign ALU_div_u     = rv64_divu | rv64_divuw ;
     assign ALU_div_s     = rv64_div  | rv64_divw;
 
-    assign ALU_rem       = rv64_rem  | rv64_remu | rv64_remw | rv64_remuw;
+    assign ALU_rem       = rv64_rem  | rv64_remu  | rv64_remw | rv64_remuw;
     assign ALU_rem_u     = rv64_remu | rv64_remuw;
     assign ALU_rem_s     = rv64_rem  | rv64_remw;
     
@@ -317,16 +317,16 @@ module ysyx_23060136_IDU_DECODE (
     assign ALU_i1_pc     = rv64_auipc | rv64_jalr | rv64_jal;
     assign ALU_i1_rs1    = ~ALU_i1_pc;
 
-    assign ALU_i2_rs2    = rv64_op_r  | rv64_branch;
-    assign ALU_i2_imm    = rv64_op_i  | rv64_auipc  | rv64_lui  | rv64_load | rv64_store;
+    assign ALU_i2_rs2    = rv64_op_r  | rv64_branch | rv64_op_r_32;
+    assign ALU_i2_imm    = rv64_op_i  | rv64_auipc  | rv64_lui  | rv64_load | rv64_store | rv64_op_i_32;
     assign ALU_i2_4      = rv64_jal   | rv64_jalr;
     assign ALU_i2_csr    = rv64_csrrw | rv64_csrrs;
 
 
     // ===========================================================================
     // op type define
-    wire  op_I_type     = rv64_op_i  | rv64_load | rv64_jalr | rv64_csrrw | rv64_csrrs | rv64_ecall | rv64_ebreak;
-    wire  op_R_type     = rv64_op_r  | rv64_mret;
+    wire  op_I_type     = rv64_op_i  | rv64_op_i_32 | rv64_load | rv64_jalr | rv64_csrrw | rv64_csrrs | rv64_ecall | rv64_ebreak;
+    wire  op_R_type     = rv64_op_r  | rv64_op_r_32 | rv64_mret;
     wire  op_B_type     = rv64_branch;
     wire  op_J_type     = rv64_jal;
     wire  op_U_type     = rv64_auipc | rv64_lui;

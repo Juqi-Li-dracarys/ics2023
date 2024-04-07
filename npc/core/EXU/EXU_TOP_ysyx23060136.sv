@@ -2,14 +2,14 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-02-24 01:41:27 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-28 23:52:43
+ * @Last Modified time: 2024-04-07 13:23:54
  */
 
- `include "DEFINES_ysyx_23060136.sv"
+ `include "ysyx_23060136_DEFINES.sv"
 
 
 // ===========================================================================
-module EXU_TOP_ysyx_23060136 (
+module ysyx_23060136_EXU_TOP (
 
         input              [  31:0]         EXU_i_pc                     ,
         input              [  31:0]         EXU_i_inst                   ,
