@@ -1,17 +1,18 @@
 /*
  * @Author: Juqi Li @ NJU 
- * @Date: 2024-02-23 01:05:22 
+ * @Date: 2024-04-07 14:07:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-02-23 12:20:59
+ * @Last Modified time: 2024-04-07 14:08:30
  */
 
 
- `include "DEFINES_ysyx_23060136.sv"
+ `include "ysyx_23060136_DEFINES.sv"
 
- 
 // ALU of the CPU
 // ===========================================================================
-module EXU_ALU_ysyx_23060136 (
+module ysyx_23060136_EXU_ALU (
+        input                               clk                        ,
+        input                               rst                        ,
         input              [  31:0]         EXU_ALU_da                 ,// input signal A
         input              [  31:0]         EXU_ALU_db                 ,// input signal B
 

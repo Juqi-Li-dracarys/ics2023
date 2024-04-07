@@ -21,7 +21,7 @@ void hello_fun(void *arg) {
   int j = 1;
   while (1) {
     for (int volatile i = 0; i < 100000; i++);
-    printf("Hellp from kernel thread with arg '%p' for the %dth time!\n", (uintptr_t)arg, j);
+    printf("\nHello from kernel thread with arg '%p' for the %dth time!\n", (uintptr_t)arg, j);
     j++;
     yield();
   }
