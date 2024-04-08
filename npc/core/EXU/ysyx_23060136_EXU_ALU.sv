@@ -48,10 +48,10 @@ module ysyx_23060136_EXU_ALU (
 
         input                                                    EXU_i_ALU_explicit           ,
 
-        output                                                   ALU_valid                    ,
+        output     logic                                         ALU_valid                    ,
         output                                                   EXU_ALU_Less                 ,
         output                                                   EXU_ALU_Zero                 ,
-        output             [  `ysyx_23060136_BITS_W-1:0]         EXU_ALU_ALUout               ,
+        output     logic        [  `ysyx_23060136_BITS_W-1:0]    EXU_ALU_ALUout               ,
 
         
         // interface for MUL/DIV
@@ -82,15 +82,16 @@ module ysyx_23060136_EXU_ALU (
         input              [  `ysyx_23060136_BITS_W-1:0]         EXU_pc                       ,
         input              [  `ysyx_23060136_BITS_W-1:0]         EXU_HAZARD_rs1_data          ,
         input              [  `ysyx_23060136_BITS_W-1:0]         EXU_HAZARD_csr_rs_data       ,
-        input                                                    EXU_rv32_csrrs               ,
-        input                                                    EXU_rv32_csrrw               ,
-        input                                                    EXU_rv32_ecall               ,
+        input                                                    EXU_rv64_csrrs               ,
+        input                                                    EXU_rv64_csrrw               ,
+        input                                                    EXU_rv64_ecall               ,
 
         output             [  `ysyx_23060136_BITS_W-1:0]         EXU_ALU_CSR_out             
     );
 
-    wire  [  `ysyx_23060136_BITS_W-1:0]  ALU_da_word_t = EXU_i_ALU_word_t ? {32'b0, EXU_ALU_da[31 : 0]} : EXU_ALU_da;
-    wire  [  `ysyx_23060136_BITS_W-1:0]  ALU_db_word_t = EXU_i_ALU_word_t ? {32'b0, EXU_ALU_da[31 : 0]} : EXU_ALU_da;
+    // word_t cut off
+    wire  [  `ysyx_23060136_BITS_W-1:0]  ALU_da_word_t = EXU_i_ALU_word_t ? {32'b0, EXU_ALU_da[31 : 0]} :  EXU_ALU_da;
+    wire  [  `ysyx_23060136_BITS_W-1:0]  ALU_db_word_t = EXU_i_ALU_word_t ? {32'b0, EXU_ALU_db[31 : 0]} : EXU_ALU_db;
 
     // Control bus
     wire  sub_add = (EXU_i_ALU_sub) | (EXU_i_ALU_slt) | (EXU_i_ALU_sltu);  // sub_add = 1, subtract
@@ -100,52 +101,80 @@ module ysyx_23060136_EXU_ALU (
 
     
     // subtract db
-    wire   [`ysyx_23060136_BITS_W-1 : 0]   sub_db = {32{sub_add}} ^ EXU_ALU_db;
+    wire   [`ysyx_23060136_BITS_W-1 : 0]   sub_db = {`ysyx_23060136_BITS_W{sub_add}} ^ ALU_db_word_t;
 
     // adder
-    wire              add_carry;
-    wire              add_overflow;
+    wire                                   add_carry;
+    wire                                   add_overflow;
     wire   [`ysyx_23060136_BITS_W-1 : 0]   add_result;
 
-    assign {add_carry,add_result} = EXU_ALU_da + sub_db + {{`ysyx_23060136_BITS_W-1{1'b0}}, sub_add};
-    assign add_overflow           = (EXU_ALU_da[`ysyx_23060136_BITS_W-1] == sub_db[`ysyx_23060136_BITS_W-1]) && (EXU_ALU_da[`ysyx_23060136_BITS_W-1] != add_result[`ysyx_23060136_BITS_W-1]);
-    assign EXU_ALU_Zero           = (add_result == 32'b0);
-    assign EXU_ALU_Less           = US ? add_carry ^ sub_add : add_overflow ^ add_result[`ysyx_23060136_BITS_W-1];
+    assign                                 {add_carry,add_result} =  ALU_da_word_t + sub_db + {{`ysyx_23060136_BITS_W-1{1'b0}}, sub_add};
+    assign                                 add_overflow           = ( ALU_da_word_t[`ysyx_23060136_BITS_W-1] == sub_db[`ysyx_23060136_BITS_W-1]) && ( ALU_da_word_t[`ysyx_23060136_BITS_W-1] != add_result[`ysyx_23060136_BITS_W-1]);
+    assign                                 EXU_ALU_Zero           = (add_result == `ysyx_23060136_BITS_W'b0);
+    assign                                 EXU_ALU_Less           = US ? add_carry ^ sub_add : add_overflow ^ add_result[`ysyx_23060136_BITS_W-1];
 
     
     // shifter
     wire    [`ysyx_23060136_BITS_W-1 : 0]   result_shifter;
 
-    EXU_ALU_SHIFT_ysyx_23060136 shifter (
-                                   .din(EXU_ALU_da),
-                                   .shamt(EXU_ALU_db[4 : 0]),
+    ysyx_23060136_EXU_SHIFT  shifter (
+                                   .din(ALU_da_word_t),
+                                   .shamt(ALU_db_word_t[5 : 0]),
                                    .LR(LR),
                                    .AL(AL),
                                    .dout(result_shifter)
                                );
 
                                
-    // ALU output control
-    assign EXU_ALU_ALUout =     ({32{EXU_ALU_add}}       & (add_result))                 |
-                                ({32{EXU_ALU_sub}}       & (add_result))                 |
+    // ALU result that does not require MUL OR DIV
+    wire [`ysyx_23060136_BITS_W-1 : 0]  EXU_ALU_FAST_CAL =      ({`ysyx_23060136_BITS_W{EXU_i_ALU_add}}       & (add_result))                 |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_sub}}       & (add_result))                 |
 
-                                ({32{EXU_ALU_slt}}       & ({{`ysyx_23060136_BITS_W-1{1'b0}}, EXU_ALU_Less})) |
-                                ({32{EXU_ALU_sltu}}      & ({{`ysyx_23060136_BITS_W-1{1'b0}}, EXU_ALU_Less})) |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_slt}}       & ({{`ysyx_23060136_BITS_W-1{1'b0}}, EXU_ALU_Less})) |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_sltu}}      & ({{`ysyx_23060136_BITS_W-1{1'b0}}, EXU_ALU_Less})) |
 
-                                ({32{EXU_ALU_or}}        & (EXU_ALU_da | EXU_ALU_db))    |
-                                ({32{EXU_ALU_and}}       & (EXU_ALU_da & EXU_ALU_db))    |
-                                ({32{EXU_ALU_xor}}       & (EXU_ALU_da ^ EXU_ALU_db))    |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_or}}        & ( ALU_da_word_t | ALU_db_word_t))    |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_and}}       & ( ALU_da_word_t & ALU_db_word_t))    |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_xor}}       & ( ALU_da_word_t ^ ALU_db_word_t))    |
 
-                                ({32{EXU_ALU_sll}}       & (result_shifter))             |
-                                ({32{EXU_ALU_srl}}       & (result_shifter))             |
-                                ({32{EXU_ALU_sra}}       & (result_shifter))             |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_sll}}       & (result_shifter))             |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_srl}}       & (result_shifter))             |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_sra}}       & (result_shifter))             |
 
-                                ({32{EXU_ALU_explicit}}  & (EXU_ALU_db))                 ;
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_explicit}}  & (ALU_db_word_t))                 ;
 
 
-    assign EXU_ALU_CSR_out  =  ({32{EXU_rv32_csrrs}}  & (EXU_HAZARD_rs1_data | EXU_HAZARD_csr_rs_data))  |
-                               ({32{EXU_rv32_csrrw}}  & (EXU_HAZARD_rs1_data))                           |
-                               ({32{EXU_rv32_ecall}}  & (EXU_pc))                                        ;
+    assign EXU_ALU_CSR_out                               =      ({`ysyx_23060136_BITS_W{EXU_rv64_csrrs}}  & (EXU_HAZARD_rs1_data | EXU_HAZARD_csr_rs_data))  |
+                                                                ({`ysyx_23060136_BITS_W{EXU_rv64_csrrw}}  & (EXU_HAZARD_rs1_data))                           |
+                                                                ({`ysyx_23060136_BITS_W{EXU_rv64_ecall}}  & (EXU_pc))                                        ;
+
+
+    // state machine of ALU
+    logic           state;
+    logic           next_state;
+
+    always_ff @(posedge clk) begin : blockName
+        if(rst) begin
+            state <=  `ysyx_23060136_idle;
+        end
+        else begin
+            state <=  next_state;
+        end
+    end
+
+    always_comb begin : next_state_cal
+        unique case(state)
+        `ysyx_23060136_idle: begin
+            // raise the request of div or mul
+            if(EXU_i_ALU_mul || EXU_i_ALU_div) begin
+                next_state = `ysyx_23060136_busy;
+            end
+            else begin
+                next_state = `ysyx_23060136_idle;
+            end
+        end 
+        endcase
+    end
 
 endmodule
 
