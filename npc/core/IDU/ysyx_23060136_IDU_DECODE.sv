@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 22:03:38 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-07 14:04:24
+ * @Last Modified time: 2024-04-07 17:27:04
  */
 
 
@@ -289,7 +289,7 @@ module ysyx_23060136_IDU_DECODE (
     assign ALU_or        = rv64_or    | rv64_ori ;
     assign ALU_and       = rv64_and   | rv64_andi;
     assign ALU_xor       = rv64_xor   | rv64_xori;
-    assign ALU_sll       = rv64_sll   | rv64_slli | rv64_sllw | rv64_slliw ;
+    assign ALU_sll       = rv64_sll   | rv64_slli | rv64_sllw | rv64_slliw;
     assign ALU_srl       = rv64_srl   | rv64_srli | rv64_srlw | rv64_srliw;
     assign ALU_sra       = rv64_sra   | rv64_srai | rv64_sraw | rv64_sraiw;
 

@@ -23,6 +23,7 @@ module  ysyx_23060136_EXU_HAZARD (
         input              [  `ysyx_23060136_BITS_W-1:0]         FORWARD_rs2_data_EXU1       ,
         input              [  `ysyx_23060136_BITS_W-1:0]         FORWARD_csr_rs_data_EXU1    ,
 
+        // hazard enable
         input                                                    FORWARD_rs1_hazard_EXU1     ,
         input                                                    FORWARD_rs2_hazard_EXU1     ,
         input                                                    FORWARD_csr_rs_hazard_EXU1  ,

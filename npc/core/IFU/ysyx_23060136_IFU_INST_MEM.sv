@@ -9,7 +9,7 @@
 `include "ysyx_23060136_DEFINES.sv"
 
 
-// Interface for arbiter
+// Interface for arbiter and cache
 // protocol: AXI-lite
 // ===========================================================================
 module ysyx_23060136_IFU_INST_MEM (
@@ -32,7 +32,7 @@ module ysyx_23060136_IFU_INST_MEM (
       output                                            ARBITER_IFU_inst_ready     ,
 
       // output for the next stage
-      output             [  `ysyx_23060136_INST_W-1:0]  IFU_o_inst                 ,
+      output   logic     [  `ysyx_23060136_INST_W-1:0]  IFU_o_inst                 ,
 
       output   logic                                    inst_valid                 ,
       output                                            IFU_error_signal                                           
@@ -45,9 +45,6 @@ module ysyx_23060136_IFU_INST_MEM (
     assign                       ARBITER_IFU_pc         =  IFU1_pc                                                   ;
     // 传输地址完成后，我们直接准备接受数据
     assign                       ARBITER_IFU_inst_ready =  r_state_busy                                              ;
-    // 对齐问题
-    assign                       IFU_o_inst             =  (BRANCH_flushIF & ~FORWARD_stallIF) ?  `ysyx_23060136_NOP :
-                                                            IFU1_pc[2]     ?  ARBITER_IFU_inst[63 : 32] : ARBITER_IFU_inst[31 : 0] ;
 
     wire                         r_state_idle           =  (r_state == `ysyx_23060136_idle)                          ;
     wire                         r_state_busy           =  (r_state == `ysyx_23060136_busy)                          ;
@@ -103,6 +100,16 @@ module ysyx_23060136_IFU_INST_MEM (
         end
         else if((r_state_next == `ysyx_23060136_idle && r_state_busy)) begin
             inst_valid <=  `ysyx_23060136_true;
+        end
+    end
+
+    // internal seg register
+    always_ff @(posedge clk) begin : inst_update
+        if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
+            IFU_o_inst <= `ysyx_23060136_NOP;
+        end
+        else if(~FORWARD_stallIF) begin
+            IFU_o_inst <= IFU1_pc[2]  ?  ARBITER_IFU_inst[63 : 32] : ARBITER_IFU_inst[31 : 0] ;
         end
     end
 
