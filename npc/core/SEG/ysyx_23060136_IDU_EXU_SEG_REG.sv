@@ -206,16 +206,16 @@ module ysyx_23060136_IDU_EXU_SEG_REG (
             EXU_i_inst         <=  `ysyx_23060136_NOP;
             // after reste or flush, commit is equal to 1
             EXU_i_commit       <=  `ysyx_23060136_false;
-            EXU_i_rd           <=  `ysyx_23060136_GPR_W'b0;
-            EXU_i_rs1          <=  `ysyx_23060136_GPR_W'b0;
-            EXU_i_rs2          <=  `ysyx_23060136_GPR_W'b0;
-            EXU_i_imm          <=  `ysyx_23060136_BITS_W'b0;
-            EXU_i_rs1_data     <=  `ysyx_23060136_BITS_W'b0;
-            EXU_i_rs2_data     <=  `ysyx_23060136_BITS_W'b0;
-            EXU_i_csr_rd_1     <=  `ysyx_23060136_CSR_W'b0;
-            EXU_i_csr_rd_2     <=  `ysyx_23060136_CSR_W'b0;
-            EXU_i_csr_rs       <=  `ysyx_23060136_CSR_W'b0;
-            EXU_i_csr_rs_data  <=  `ysyx_23060136_BITS_W'b0;
+            EXU_i_rd           <=  `ysyx_23060136_false;
+            EXU_i_rs1          <=  `ysyx_23060136_false;
+            EXU_i_rs2          <=  `ysyx_23060136_false;
+            EXU_i_imm          <=  `ysyx_23060136_false;
+            EXU_i_rs1_data     <=  `ysyx_23060136_false;
+            EXU_i_rs2_data     <=  `ysyx_23060136_false;
+            EXU_i_csr_rd_1     <=  `ysyx_23060136_false;
+            EXU_i_csr_rd_2     <=  `ysyx_23060136_false;
+            EXU_i_csr_rs       <=  `ysyx_23060136_false;
+            EXU_i_csr_rs_data  <=  `ysyx_23060136_false;
 
             EXU_i_ALU_add      <=  `ysyx_23060136_false;
             EXU_i_ALU_sub      <=  `ysyx_23060136_false;

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-06 23:41:28 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-06 23:43:03
+ * @Last Modified time: 2024-04-08 12:09:41
  */
 
 
@@ -12,7 +12,7 @@
 
 // 桶型移位器
 // ===========================================================================
-module ysyx_23060136_EXU_ALU_SHIFT #(
+module ysyx_23060136_EXU_SHIFT #(
         parameter data_width  = `ysyx_23060136_BITS_W ,
         parameter shamt_width = `ysyx_23060136_BITS_S
     )
