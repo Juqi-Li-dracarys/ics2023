@@ -19,7 +19,6 @@ module ysyx_23060136_EXU_DIV(
         input                                                  div_valid      ,      
         input                                                  divw	          ,      
         input                                                  div_signed     ,   
-        input                                                  flush	      , 
         output                                                 div_ready      ,  
         output                                                 div_out_valid  ,   
         output        [  `ysyx_23060136_BITS_W-1:0 ]           quotient       , 
