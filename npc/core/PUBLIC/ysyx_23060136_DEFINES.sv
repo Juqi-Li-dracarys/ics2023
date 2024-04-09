@@ -31,11 +31,20 @@
 `define  ysyx_23060136_NOP        32'h00000013
 
 
-// AXI-lite machine state
-`define  ysyx_23060136_idle      'h0
-`define  ysyx_23060136_busy      'h1
-// only for writing
+// AXI-lite machine state(arbiter)
+`define  ysyx_23060136_ready     'h1
+`define  ysyx_23060136_wait      'h2
+ // only for writing
 `define  ysyx_23060136_done      'h2
+
+ // state for ALU
+`define  ysyx_23060136_idle      'h0
+`define  ysyx_23060136_ready_mul 'h1
+`define  ysyx_23060136_ready_div 'h2
+`define  ysyx_23060136_wait_mul  'h3
+`define  ysyx_23060136_wait_div  'h4
+
+
 
 // csr idx   
 `define  ysyx_23060136_mstatus   'h0
@@ -49,8 +58,9 @@
 // arbiter state machine(read)
 `define  ysyx_23060136_idle      'h0
 `define  ysyx_23060136_ready     'h1
-`define  ysyx_23060136_waiting   'h2
-`define  ysyx_23060136_over      'h3
+`define  ysyx_23060136_wait      'h3
+`define  ysyx_23060136_over      'h2
+
 
 // arbiter handling guests
 `define  ysyx_23060136_G_IFU     'd0

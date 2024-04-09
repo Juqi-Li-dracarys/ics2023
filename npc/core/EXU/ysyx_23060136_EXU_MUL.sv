@@ -14,8 +14,7 @@
 module ysyx_23060136_EXU_MUL (
     input                                            clk           ,          
     input                                            rst	       ,          
-    input                                            mul_valid	   ,          
-    input                                            flush	       ,                    
+    input                                            mul_valid	   ,                           
     input                                            mulw	       ,                   
     input       [1 : 0]                              mul_signed	   ,          
     input       [  `ysyx_23060136_BITS_W-1:0 ]       multiplicand  ,                

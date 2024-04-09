@@ -24,7 +24,7 @@ module ysyx_23060136_IFU_INST_MEM (
 
       // arbiter interface 握手信号
       input                                             ARBITER_IFU_pc_ready       ,
-      output             [  `ysyx_23060136_BITS_W-1:0]  ARBITER_IFU_pc             ,
+      output   logic     [  `ysyx_23060136_BITS_W-1:0]  ARBITER_IFU_pc             ,
       output   logic                                    ARBITER_IFU_pc_valid       ,
 
       input              [  `ysyx_23060136_BITS_W-1:0]  ARBITER_IFU_inst           ,
@@ -42,34 +42,44 @@ module ysyx_23060136_IFU_INST_MEM (
     wire                         pc_legal               =  (IFU1_pc >= `ysyx_23060136_MBASE && IFU1_pc < `ysyx_23060136_MEND)  ; 
     assign                       IFU_error_signal       =  ARBITER_IFU_pc_valid & !pc_legal                          ;
     
-    assign                       ARBITER_IFU_pc         =  IFU1_pc                                                   ;
     // 传输地址完成后，我们直接准备接受数据
-    assign                       ARBITER_IFU_inst_ready =  r_state_busy                                              ;
-
+    assign                       ARBITER_IFU_inst_ready =  r_state_wait                                              ;
+    
     wire                         r_state_idle           =  (r_state == `ysyx_23060136_idle)                          ;
-    wire                         r_state_busy           =  (r_state == `ysyx_23060136_busy)                          ;
+    wire                         r_state_ready          =  (r_state == `ysyx_23060136_ready)                         ;
+    wire                         r_state_wait           =  (r_state == `ysyx_23060136_wait)                          ;
+
+    wire                         cache_hit              =  `ysyx_23060136_false;
 
     // state machine
-    logic                        r_state                                                                             ;
-    logic                        r_state_next                                                                        ;
+    logic       [1 : 0]          r_state                                                                             ;
+    logic       [1 : 0]          r_state_next                                                                        ;
 
     always_comb begin : r_state_trans
         // 当 AXI lite 发生握手，将转移到下一个状态
         unique case(r_state)
             `ysyx_23060136_idle: begin
-                if(ARBITER_IFU_pc_ready & ARBITER_IFU_pc_valid) begin
-                    r_state_next = `ysyx_23060136_busy;
+                if(!FORWARD_stallIF & !cache_hit) begin
+                    r_state_next = `ysyx_23060136_ready;
                 end
                 else begin
                     r_state_next = `ysyx_23060136_idle;
                 end
             end
-            `ysyx_23060136_busy: begin
+            `ysyx_23060136_ready: begin
+                if(ARBITER_IFU_pc_ready & ARBITER_IFU_pc_valid) begin
+                    r_state_next = `ysyx_23060136_wait;
+                end
+                else begin
+                    r_state_next = `ysyx_23060136_ready;
+                end
+            end
+            `ysyx_23060136_wait: begin
                 if(ARBITER_IFU_inst_valid & ARBITER_IFU_inst_ready) begin
                     r_state_next = `ysyx_23060136_idle;
                 end
                 else begin
-                    r_state_next = `ysyx_23060136_busy;
+                    r_state_next = `ysyx_23060136_wait;
                 end
             end
             default: r_state_next = `ysyx_23060136_idle;
@@ -77,7 +87,7 @@ module ysyx_23060136_IFU_INST_MEM (
     end
     
     always_ff @(posedge clk) begin : state_machine
-        if(rst) begin
+        if(rst || (BRANCH_flushIF & !FORWARD_stallIF)) begin
             r_state <=  `ysyx_23060136_idle;
         end
         else begin
@@ -86,29 +96,37 @@ module ysyx_23060136_IFU_INST_MEM (
     end
 
     always_ff @(posedge clk) begin : pc_valid
-        if(rst || (r_state_idle & !FORWARD_stallIF)) begin
-            ARBITER_IFU_pc_valid <= `ysyx_23060136_true;
+        if(rst || (r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
+            ARBITER_IFU_pc_valid <= `ysyx_23060136_true;       
         end
-        else if(r_state_next == `ysyx_23060136_busy) begin
+        else if((r_state_ready & r_state_next == `ysyx_23060136_wait)) begin
             ARBITER_IFU_pc_valid <=  `ysyx_23060136_false;
+        end 
+    end
+
+    always_ff @(posedge clk) begin : pc_update
+        if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
+            ARBITER_IFU_pc <= `ysyx_23060136_PC_RST;       
+        end
+        else if((r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
+            ARBITER_IFU_pc <=  IFU1_pc;
         end
     end
 
     always_ff @(posedge clk) begin : inst_valid_trans
-        if(rst || (r_state_idle & !FORWARD_stallIF)) begin
+        if(rst || (r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
             inst_valid <= `ysyx_23060136_false;
         end
-        else if((r_state_next == `ysyx_23060136_idle && r_state_busy)) begin
+        else if((r_state_next == `ysyx_23060136_idle & r_state_wait)) begin
             inst_valid <=  `ysyx_23060136_true;
         end
     end
 
-    // internal seg register
     always_ff @(posedge clk) begin : inst_update
         if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
             IFU_o_inst <= `ysyx_23060136_NOP;
         end
-        else if(~FORWARD_stallIF) begin
+        else if((r_state_next == `ysyx_23060136_idle & r_state_wait))begin
             IFU_o_inst <= IFU1_pc[2]  ?  ARBITER_IFU_inst[63 : 32] : ARBITER_IFU_inst[31 : 0] ;
         end
     end
