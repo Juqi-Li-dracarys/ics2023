@@ -32,10 +32,12 @@
 
 
 // AXI-lite machine state(arbiter)
+`define  ysyx_23060136_idle      'h0
 `define  ysyx_23060136_ready     'h1
 `define  ysyx_23060136_wait      'h2
  // only for writing
-`define  ysyx_23060136_done      'h2
+`define  ysyx_23060136_done      'h3
+
 
  // state for ALU
 `define  ysyx_23060136_idle      'h0
@@ -44,8 +46,7 @@
 `define  ysyx_23060136_wait_mul  'h3
 `define  ysyx_23060136_wait_div  'h4
 
-
-
+ 
 // csr idx   
 `define  ysyx_23060136_mstatus   'h0
 `define  ysyx_23060136_mtvec     'h1

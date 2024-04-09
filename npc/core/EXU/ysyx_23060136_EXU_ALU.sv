@@ -79,14 +79,14 @@ module ysyx_23060136_EXU_ALU (
 
         // CSR handler
         // ===========================================================================
-        input              [  `ysyx_23060136_BITS_W-1:0]         EXU_pc                       ,
-        input              [  `ysyx_23060136_BITS_W-1:0]         EXU_HAZARD_rs1_data          ,
-        input              [  `ysyx_23060136_BITS_W-1:0]         EXU_HAZARD_csr_rs_data       ,
-        input                                                    EXU_rv64_csrrs               ,
-        input                                                    EXU_rv64_csrrw               ,
-        input                                                    EXU_rv64_ecall               ,
+        input              [  `ysyx_23060136_BITS_W-1:0]        EXU_pc                       ,
+        input              [  `ysyx_23060136_BITS_W-1:0]        EXU_HAZARD_rs1_data          ,
+        input              [  `ysyx_23060136_BITS_W-1:0]        EXU_HAZARD_csr_rs_data       ,
+        input                                                   EXU_rv64_csrrs               ,
+        input                                                   EXU_rv64_csrrw               ,
+        input                                                   EXU_rv64_ecall               ,
 
-        output    logic    [  `ysyx_23060136_BITS_W-1:0]         EXU_ALU_CSR_out             
+        output    logic    [  `ysyx_23060136_BITS_W-1:0]        EXU_ALU_CSR_out             
     );
 
     // word_t cut off
@@ -147,10 +147,8 @@ module ysyx_23060136_EXU_ALU (
 
 
 
-
-
     // state machine of ALU
-    logic    [2 : 0]        state;
+    logic    [2 : 0]        state     ;
     logic    [2 : 0]        next_state;
 
     wire                    state_idle             =  (state == `ysyx_23060136_idle)                         ;
@@ -159,6 +157,10 @@ module ysyx_23060136_EXU_ALU (
     wire                    state_ready_wait_mul   =  (state == `ysyx_23060136_wait_mul)                     ;
     wire                    state_ready_wait_div   =  (state == `ysyx_23060136_wait_div)                     ;
 
+    // state record
+    logic                   is_mul_hi ; 
+    logic                   is_mul_lo ;
+    logic                   is_rem    ;
 
     always_ff @(posedge clk) begin : state_update
         if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
@@ -173,11 +175,11 @@ module ysyx_23060136_EXU_ALU (
     always_comb begin
         unique case(state)
             `ysyx_23060136_idle: begin
-                // raise the request of div or mul
+                // raise the request of mul
                 if(EXU_i_ALU_mul & !FORWARD_stallEX2) begin
                     next_state = `ysyx_23060136_ready_mul;
                 end
-                else if(EXU_i_ALU_div & !FORWARD_stallEX2) begin
+                else if((EXU_i_ALU_div | EXU_i_ALU_rem) & !FORWARD_stallEX2) begin
                     next_state = `ysyx_23060136_ready_div;
                 end
                 else begin
@@ -222,34 +224,34 @@ module ysyx_23060136_EXU_ALU (
 
     always_ff @(posedge clk) begin : seg_update
         if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
-            EXU_ALU_Less    <=  `ysyx_23060136_false;
-            EXU_ALU_Zero    <=  `ysyx_23060136_false;
-            EXU_ALU_CSR_out <=  `ysyx_23060136_false;
-
             mulw            <=  `ysyx_23060136_false;
             mul_signed      <=  `ysyx_23060136_false;
             multiplicand    <=  `ysyx_23060136_false;
             multiplier      <=  `ysyx_23060136_false;
 
+            is_mul_hi       <=  `ysyx_23060136_false;
+            is_mul_lo       <=  `ysyx_23060136_false;
+ 
             dividend        <=  `ysyx_23060136_false;                                     
             divisor	        <=  `ysyx_23060136_false;                                     
             divw	        <=  `ysyx_23060136_false;                                     
-            div_signed      <=  `ysyx_23060136_false;                                     
+            div_signed      <=  `ysyx_23060136_false;
+            is_rem          <=  `ysyx_23060136_false;                           
         end
         else if(~FORWARD_stallEX2) begin  
-            EXU_ALU_Less    <=   EXU_ALU_Less_COMB;
-            EXU_ALU_Zero    <=   EXU_ALU_Zero_COMB;
-            EXU_ALU_CSR_out <=   EXU_ALU_CSR_COMB;
-
             mulw            <=   EXU_i_ALU_word_t;
-            mul_signed      <=   (2'b00 & {2{EXU_i_ALU_mul}}) | (2'b10 & {2{EXU_i_ALU_mul_su}}) | (2'b11 & {2{EXU_i_ALU_mul_s}});
+            mul_signed      <=   (2'b00 & {2{EXU_i_ALU_mul_u}}) | (2'b10 & {2{EXU_i_ALU_mul_su}}) | (2'b11 & {2{EXU_i_ALU_mul_s}});
             multiplicand    <=   ALU_da_word_t;
             multiplier      <=   ALU_db_word_t;
+
+            is_mul_hi      <=    EXU_i_ALU_mul_hi;
+            is_mul_lo      <=    EXU_i_ALU_mul_lo;
 
             dividend        <=   ALU_da_word_t;
             divisor	        <=   ALU_db_word_t;    
             divw	        <=   EXU_i_ALU_word_t;                    
-            div_signed      <=   (EXU_i_ALU_div_s | EXU_i_ALU_rem_s) & (!EXU_i_ALU_div_u | !EXU_i_ALU_rem_u);                  
+            div_signed      <=   (EXU_i_ALU_div_s | EXU_i_ALU_rem_s) & (!EXU_i_ALU_div_u | !EXU_i_ALU_rem_u);
+            is_rem          <=   EXU_i_ALU_rem;
         end
     end
 
@@ -274,6 +276,39 @@ module ysyx_23060136_EXU_ALU (
         end
         else if((next_state == `ysyx_23060136_wait_div) & state_ready_div) begin
             div_valid <= `ysyx_23060136_false;
+        end
+    end
+
+    always_ff @(posedge clk) begin : update_output
+        if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
+            ALU_valid <= `ysyx_23060136_true;
+        end
+        else if(state_idle & (next_state == `ysyx_23060136_ready_div | next_state == `ysyx_23060136_ready_mul))begin
+            ALU_valid <= `ysyx_23060136_false;
+        end
+        else if((state_ready_wait_mul | state_ready_wait_div) & next_state == `ysyx_23060136_idle) begin
+            ALU_valid <= `ysyx_23060136_true;
+        end
+    end
+
+    always_ff @(posedge clk) begin : EXU_ALU_ALUout_update
+        if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
+            EXU_ALU_ALUout  <=  `ysyx_23060136_false;
+            EXU_ALU_Less    <=  `ysyx_23060136_false;
+            EXU_ALU_Zero    <=  `ysyx_23060136_false;
+            EXU_ALU_CSR_out <=  `ysyx_23060136_false;
+        end
+        else if(!FORWARD_stallEX2 & state_idle & next_state == `ysyx_23060136_idle) begin
+            EXU_ALU_ALUout  <=   EXU_ALU_COMB;
+            EXU_ALU_Less    <=   EXU_ALU_Less_COMB;
+            EXU_ALU_Zero    <=   EXU_ALU_Zero_COMB;
+            EXU_ALU_CSR_out <=   EXU_ALU_CSR_COMB;
+        end
+        else if(state_ready_wait_mul & next_state == `ysyx_23060136_idle) begin
+            EXU_ALU_ALUout  <=   (is_mul_hi & !is_mul_lo) ? result_hi : result_lo;
+        end
+        else if(state_ready_wait_div & next_state == `ysyx_23060136_idle) begin
+            EXU_ALU_ALUout  <=   is_rem ? remainder : quotient;
         end
     end
 

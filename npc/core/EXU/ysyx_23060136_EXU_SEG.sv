@@ -22,7 +22,15 @@ module ysyx_23060136_EXU_SEG (
     input                  [  `ysyx_23060136_INST_W-1 :0]         EXU1_inst                   ,
     input                                                         EXU1_commit                 ,
 
+    input                  [  `ysyx_23060136_GPR_W-1  :0]         EXU1_rd                     ,
+    input                  [  `ysyx_23060136_GPR_W-1  :0]         EXU1_rs1                    ,
+    input                  [  `ysyx_23060136_GPR_W-1  :0]         EXU1_rs2                    ,
+    input                  [  `ysyx_23060136_CSR_W-1:0  ]         EXU1_csr_rd_1               ,
+    input                  [  `ysyx_23060136_CSR_W-1:0  ]         EXU1_csr_rd_2               ,
+    input                  [  `ysyx_23060136_CSR_W-1:0  ]         EXU1_csr_rs                 ,
+
     input                  [  `ysyx_23060136_BITS_W -1:0]         EXU1_HAZARD_rs1_data        ,
+    input                  [  `ysyx_23060136_BITS_W -1:0]         EXU1_HAZARD_rs2_data        ,
     input                  [  `ysyx_23060136_BITS_W -1:0]         EXU1_HAZARD_csr_rs_data     ,
     input                  [  `ysyx_23060136_BITS_W -1:0]         EXU1_imm                    ,
 
@@ -61,7 +69,17 @@ module ysyx_23060136_EXU_SEG (
     output    logic        [  `ysyx_23060136_INST_W-1 :0]         EXU2_inst                   ,
     output    logic                                               EXU2_commit                 ,
 
+
+
+    output    logic        [  `ysyx_23060136_GPR_W-1  :0]         EXU2_rd                     ,
+    output    logic        [  `ysyx_23060136_GPR_W-1  :0]         EXU2_rs1                    ,
+    output    logic        [  `ysyx_23060136_GPR_W-1  :0]         EXU2_rs2                    ,
+    output    logic        [  `ysyx_23060136_CSR_W-1:0  ]         EXU2_csr_rd_1               ,
+    output    logic        [  `ysyx_23060136_CSR_W-1:0  ]         EXU2_csr_rd_2               ,
+    output    logic        [  `ysyx_23060136_CSR_W-1:0  ]         EXU2_csr_rs                 ,
+
     output    logic        [  `ysyx_23060136_BITS_W -1:0]         EXU2_HAZARD_rs1_data        ,
+    output    logic        [  `ysyx_23060136_BITS_W -1:0]         EXU2_HAZARD_rs2_data        ,
     output    logic        [  `ysyx_23060136_BITS_W -1:0]         EXU2_HAZARD_csr_rs_data     ,
     output    logic        [  `ysyx_23060136_BITS_W -1:0]         EXU2_imm                    ,
 
@@ -100,13 +118,22 @@ module ysyx_23060136_EXU_SEG (
         if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
             EXU2_pc                 <=   `ysyx_23060136_PC_RST;
             EXU2_inst               <=   `ysyx_23060136_NOP;       
-            EXU2_commit             <=   `ysyx_23060136_false;       
-            EXU2_HAZARD_rs1_data    <=   `ysyx_23060136_false;                     
+            EXU2_commit             <=   `ysyx_23060136_false;
+            
+            EXU2_rd                 <=    `ysyx_23060136_false;
+            EXU2_rs1                <=    `ysyx_23060136_false;
+            EXU2_rs2                <=    `ysyx_23060136_false;
+            EXU2_csr_rd_1           <=    `ysyx_23060136_false;
+            EXU2_csr_rd_2           <=    `ysyx_23060136_false;
+            EXU2_csr_rs             <=    `ysyx_23060136_false;
+            
+            EXU2_HAZARD_rs1_data    <=   `ysyx_23060136_false;
+            EXU2_HAZARD_rs2_data    <=   `ysyx_23060136_false;                   
             EXU2_HAZARD_csr_rs_data <=   `ysyx_23060136_false;                                     
             EXU2_imm                <=   `ysyx_23060136_false;       
             EXU2_jump               <=   `ysyx_23060136_false; 
             EXU2_pc_plus_imm        <=   `ysyx_23060136_false; 
-            EXU2_rs1_plus_imm       <=   `ysyx_23060136_false; 
+            EXU2_rs1_plus_imm       <=   `ysyx_23060136_false;
             EXU2_csr_plus_imm       <=   `ysyx_23060136_false; 
             EXU2_cmp_eq             <=   `ysyx_23060136_false; 
             EXU2_cmp_neq            <=   `ysyx_23060136_false; 
@@ -129,8 +156,18 @@ module ysyx_23060136_EXU_SEG (
         else if(!FORWARD_stallEX2) begin
             EXU2_pc                 <=     EXU1_pc                 ;                              
             EXU2_inst               <=     EXU1_inst               ;                              
-            EXU2_commit             <=     EXU1_commit             ;                              
-            EXU2_HAZARD_rs1_data    <=     EXU1_HAZARD_rs1_data    ;                              
+            EXU2_commit             <=     EXU1_commit             ; 
+            
+            EXU2_rd                 <=      EXU1_rd                ;                                      
+            EXU2_rs1                <=      EXU1_rs1               ;                                      
+            EXU2_rs2                <=      EXU1_rs2               ;                                      
+            EXU2_csr_rd_1           <=      EXU1_csr_rd_1          ;                                      
+            EXU2_csr_rd_2           <=      EXU1_csr_rd_2          ;                                      
+            EXU2_csr_rs             <=      EXU1_csr_rs            ;                                      
+            
+            
+            EXU2_HAZARD_rs1_data    <=     EXU1_HAZARD_rs1_data    ;
+            EXU2_HAZARD_rs2_data    <=     EXU1_HAZARD_rs2_data    ;                              
             EXU2_HAZARD_csr_rs_data <=     EXU1_HAZARD_csr_rs_data ;                              
             EXU2_imm                <=     EXU1_imm                ;                              
             EXU2_jump               <=     EXU1_jump               ;                              
