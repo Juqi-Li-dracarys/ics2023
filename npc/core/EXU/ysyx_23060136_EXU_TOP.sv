@@ -14,7 +14,7 @@
 module ysyx_23060136_EXU_TOP (
         input                                                     clk                          ,
         input                                                     rst                          ,
-        input                                                     FORWARD_stallEX1             ,
+        input                                                     FORWARD_stallEX2             ,
 
         input              [  `ysyx_23060136_BITS_W-1 :0]         EXU_i_pc                     ,
         input              [  `ysyx_23060136_INST_W-1 :0]         EXU_i_inst                   ,
@@ -93,12 +93,12 @@ module ysyx_23060136_EXU_TOP (
         input                                                     EXU_i_system_halt            ,
 
         // Forward to ALU input
-        input              [  `ysyx_23060136_BITS_W-1 :0]         FORWARD_rs1_data_EXU_1       ,
-        input              [  `ysyx_23060136_BITS_W-1 :0]         FORWARD_rs2_data_EXU_1       ,
-        input              [  `ysyx_23060136_BITS_W-1 :0]         FORWARD_csr_rs_data_EXU_1    ,
-        input                                                     FORWARD_rs1_hazard_EXU_1     ,
-        input                                                     FORWARD_rs2_hazard_EXU_1     ,
-        input                                                     FORWARD_csr_rs_hazard_EXU_1  ,
+        input              [  `ysyx_23060136_BITS_W-1 :0]         FORWARD_rs1_data_EXU1       ,
+        input              [  `ysyx_23060136_BITS_W-1 :0]         FORWARD_rs2_data_EXU1       ,
+        input              [  `ysyx_23060136_BITS_W-1 :0]         FORWARD_csr_rs_data_EXU1    ,
+        input                                                     FORWARD_rs1_hazard_EXU1     ,
+        input                                                     FORWARD_rs2_hazard_EXU1     ,
+        input                                                     FORWARD_csr_rs_hazard_EXU1  ,
         
         // ===========================================================================
         output             [  `ysyx_23060136_BITS_W-1 :0]         EXU_o_pc                   ,
@@ -140,116 +140,283 @@ module ysyx_23060136_EXU_TOP (
         output                                                    EXU_o_mem_half_u         ,
         output                                                    EXU_o_mem_word_u         ,
 
-        output                                                    EXU_o_system_halt        
+        output                                                    EXU_o_system_halt        ,
+        output                                                    EXU_o_valid                
 
     );
 
     // internal signal
-    wire        [`ysyx_23060136_BITS_W-1  : 0]      EXU_HAZARD_rs1_data;
-    wire        [`ysyx_23060136_BITS_W-1  : 0]      EXU_HAZARD_csr_rs_data;
+    wire        [`ysyx_23060136_BITS_W-1  : 0]      HAZARD_rs1_data_EXU1;
+    wire        [`ysyx_23060136_BITS_W-1  : 0]      HAZARD_rs2_data_EXU1;
+    wire        [`ysyx_23060136_BITS_W-1  : 0]      HAZARD_csr_rs_data_EXU1;
 
     wire        [`ysyx_23060136_BITS_W-1  : 0]      EXU_ALU_da;
     wire        [`ysyx_23060136_BITS_W-1  : 0]      EXU_ALU_db;
 
-    wire                      EXU_ALU_Less;
-    wire                      EXU_ALU_Zero;
-
-    // transmit directly
-    assign    EXU_o_commit       = EXU_i_commit;
-    assign    EXU_o_pc           = EXU_i_pc;
-    assign    EXU_o_inst         = EXU_i_inst;
-    assign    EXU_o_rd           = EXU_i_rd;
-    assign    EXU_o_rs1          = EXU_i_rs1;
-    assign    EXU_o_rs2          = EXU_i_rs2;
-    assign    EXU_o_csr_rd       = EXU_i_csr_rd;
-    assign    EXU_o_csr_rs       = EXU_i_csr_rs;
-    assign    EXU_o_write_gpr    = EXU_i_write_gpr;
-    assign    EXU_o_write_csr    = EXU_i_write_csr;
-    assign    EXU_o_mem_to_reg   = EXU_i_mem_to_reg;
-
-    assign    EXU_o_write_mem    = EXU_i_write_mem;
-    assign    EXU_o_mem_byte     = EXU_i_mem_byte;
-    assign    EXU_o_mem_half     = EXU_i_mem_half;
-    assign    EXU_o_mem_word     = EXU_i_mem_word;
-    assign    EXU_o_mem_byte_u   = EXU_i_mem_byte_u;
-    assign    EXU_o_mem_half_u   = EXU_i_mem_half_u;
-
-    assign    EXU_o_system_halt  = EXU_i_system_halt;
-
-    EXU_HAZARD_ysyx_23060136  EXU_HAZARD_ysyx_23060136_inst (
-                                 .EXU_rs1_data                      (EXU_i_rs1_data            ),
-                                 .EXU_rs2_data                      (EXU_i_rs2_data            ),
-                                 .EXU_csr_rs_data                   (EXU_i_csr_rs_data         ),
-                                 .EXU_pc                            (EXU_i_pc                  ),
-                                 .EXU_imm                           (EXU_i_imm                 ),
-                                 .FORWARD_rs1_data_EXU              (FORWARD_rs1_data_EXU      ),
-                                 .FORWARD_rs2_data_EXU              (FORWARD_rs2_data_EXU      ),
-                                 .FORWARD_csr_rs_data_EXU           (FORWARD_csr_rs_data_EXU   ),
-                                 .FORWARD_rs1_hazard_EXU            (FORWARD_rs1_hazard_EXU    ),
-                                 .FORWARD_rs2_hazard_EXU            (FORWARD_rs2_hazard_EXU    ),
-                                 .FORWARD_csr_rs_hazard_EXU         (FORWARD_csr_rs_hazard_EXU ),
-                                 .EXU_HAZARD_rs1_data               (EXU_HAZARD_rs1_data       ),
-                                 .EXU_HAZARD_rs2_data               (EXU_o_HAZARD_rs2_data     ),
-                                 .EXU_HAZARD_csr_rs_data            (EXU_HAZARD_csr_rs_data    ),
-                                 .EXU_ALU_i1_rs1                    (EXU_i_ALU_i1_rs1          ),
-                                 .EXU_ALU_i1_pc                     (EXU_i_ALU_i1_pc           ),
-                                 .EXU_ALU_i2_rs2                    (EXU_i_ALU_i2_rs2          ),
-                                 .EXU_ALU_i2_imm                    (EXU_i_ALU_i2_imm          ),
-                                 .EXU_ALU_i2_4                      (EXU_i_ALU_i2_4            ),
-                                 .EXU_ALU_i2_csr                    (EXU_i_ALU_i2_csr          ),
-                                 .EXU_ALU_da                        (EXU_ALU_da                ),
-                                 .EXU_ALU_db                        (EXU_ALU_db                )
-                             );
+    wire                                            EXU_ALU_Less;
+    wire                                            EXU_ALU_Zero;
 
 
-    EXU_ALU_ysyx_23060136  EXU_ALU_ysyx_23060136_inst (
-                              .EXU_ALU_da                        (EXU_ALU_da                ),
-                              .EXU_ALU_db                        (EXU_ALU_db                ),
-                              .EXU_ALU_add                       (EXU_i_ALU_add             ),
-                              .EXU_ALU_sub                       (EXU_i_ALU_sub             ),
-                              .EXU_ALU_slt                       (EXU_i_ALU_slt             ),
-                              .EXU_ALU_sltu                      (EXU_i_ALU_sltu            ),
-                              .EXU_ALU_or                        (EXU_i_ALU_or              ),
-                              .EXU_ALU_and                       (EXU_i_ALU_and             ),
-                              .EXU_ALU_xor                       (EXU_i_ALU_xor             ),
-                              .EXU_ALU_sll                       (EXU_i_ALU_sll             ),
-                              .EXU_ALU_srl                       (EXU_i_ALU_srl             ),
-                              .EXU_ALU_sra                       (EXU_i_ALU_sra             ),
-                              .EXU_ALU_explicit                  (EXU_i_ALU_explicit        ),
-                              .EXU_ALU_Less                      (EXU_ALU_Less              ),
-                              .EXU_ALU_Zero                      (EXU_ALU_Zero              ),
-                              .EXU_ALU_ALUout                    (EXU_o_ALU_ALUout          ),
-                              .EXU_pc                            (EXU_i_pc                  ),
-                              .EXU_HAZARD_rs1_data               (EXU_HAZARD_rs1_data       ),
-                              .EXU_HAZARD_csr_rs_data            (EXU_HAZARD_csr_rs_data    ),
-                              .EXU_rv32_csrrs                    (EXU_i_rv32_csrrs          ),
-                              .EXU_rv32_csrrw                    (EXU_i_rv32_csrrw          ),
-                              .EXU_rv32_ecall                    (EXU_i_rv32_ecall          ),
-                              .EXU_ALU_CSR_out                   (EXU_o_ALU_CSR_out         )
-                          );
+    wire                                            BRANCH_flushEX1;
+
+    wire        [`ysyx_23060136_BITS_W-1  : 0]      EXU2_HAZARD_rs1_data ;
+
+
+    ysyx_23060136_EXU_HAZARD  ysyx_23060136_EXU_HAZARD_inst (
+        .EXU1_rs1_data                     (EXU_i_rs1_data            ),
+        .EXU1_rs2_data                     (EXU_i_rs2_data            ),
+        .EXU1_csr_rs_data                  (EXU_i_csr_rs_data         ),
+        .EXU1_pc                           (EXU_i_pc                  ),
+        .EXU1_imm                          (EXU_i_imm                 ),
+        .FORWARD_rs1_data_EXU1             (FORWARD_rs1_data_EXU1     ),
+        .FORWARD_rs2_data_EXU1             (FORWARD_rs2_data_EXU1     ),
+        .FORWARD_csr_rs_data_EXU1          (FORWARD_csr_rs_data_EXU1  ),
+        .FORWARD_rs1_hazard_EXU1           (FORWARD_rs1_hazard_EXU1   ),
+        .FORWARD_rs2_hazard_EXU1           (FORWARD_rs2_hazard_EXU1   ),
+        .FORWARD_csr_rs_hazard_EXU1        (FORWARD_csr_rs_hazard_EXU1),
+        .HAZARD_rs1_data_EXU1              (HAZARD_rs1_data_EXU1      ),
+        .HAZARD_rs2_data_EXU1              (HAZARD_rs2_data_EXU1      ),
+        .HAZARD_csr_rs_data_EXU1           (HAZARD_csr_rs_data_EXU1   ),
+        .EXU1_ALU_i1_rs1                   (EXU_i_ALU_i1_rs1          ),
+        .EXU1_ALU_i1_pc                    (EXU_i_ALU_i1_pc           ),
+        .EXU1_ALU_i2_rs2                   (EXU_i_ALU_i2_rs2          ),
+        .EXU1_ALU_i2_imm                   (EXU_i_ALU_i2_imm          ),
+        .EXU1_ALU_i2_4                     (EXU_i_ALU_i2_4            ),
+        .EXU1_ALU_i2_csr                   (EXU_i_ALU_i2_csr          ),
+        .EXU1_ALU_da                       (EXU_ALU_da                ),
+        .EXU1_ALU_db                       (EXU_ALU_db                ) 
+  );
+
+
+  ysyx_23060136_EXU_ALU  ysyx_23060136_EXU_ALU_inst (
+    .clk                               (clk                       ),
+    .rst                               (rst                       ),
+    .BRANCH_flushEX1                   (BRANCH_flushEX1           ),
+    .FORWARD_stallEX2                  (FORWARD_stallEX2          ),
+    .EXU_ALU_da                        (EXU_ALU_da                ),
+    .EXU_ALU_db                        (EXU_ALU_db                ),
+    .EXU_i_ALU_word_t                  (EXU_i_ALU_word_t          ),
+    .EXU_i_ALU_add                     (EXU_i_ALU_add             ),
+    .EXU_i_ALU_sub                     (EXU_i_ALU_sub             ),
+    .EXU_i_ALU_slt                     (EXU_i_ALU_slt             ),
+    .EXU_i_ALU_sltu                    (EXU_i_ALU_sltu            ),
+    .EXU_i_ALU_or                      (EXU_i_ALU_or              ),
+    .EXU_i_ALU_and                     (EXU_i_ALU_and             ),
+    .EXU_i_ALU_xor                     (EXU_i_ALU_xor             ),
+    .EXU_i_ALU_sll                     (EXU_i_ALU_sll             ),
+    .EXU_i_ALU_srl                     (EXU_i_ALU_srl             ),
+    .EXU_i_ALU_sra                     (EXU_i_ALU_sra             ),
+    .EXU_i_ALU_mul                     (EXU_i_ALU_mul             ),
+    .EXU_i_ALU_mul_hi                  (EXU_i_ALU_mul_hi          ),
+    .EXU_i_ALU_mul_lo                  (EXU_i_ALU_mul_lo          ),
+    .EXU_i_ALU_mul_u                   (EXU_i_ALU_mul_u           ),
+    .EXU_i_ALU_mul_s                   (EXU_i_ALU_mul_s           ),
+    .EXU_i_ALU_mul_su                  (EXU_i_ALU_mul_su          ),
+    .EXU_i_ALU_div                     (EXU_i_ALU_div             ),
+    .EXU_i_ALU_div_u                   (EXU_i_ALU_div_u           ),
+    .EXU_i_ALU_div_s                   (EXU_i_ALU_div_s           ),
+    .EXU_i_ALU_rem                     (EXU_i_ALU_rem             ),
+    .EXU_i_ALU_rem_u                   (EXU_i_ALU_rem_u           ),
+    .EXU_i_ALU_rem_s                   (EXU_i_ALU_rem_s           ),
+    .EXU_i_ALU_explicit                (EXU_i_ALU_explicit        ),
+    .ALU_valid                         (EXU_o_valid               ),
+    .EXU_ALU_Less                      (EXU_ALU_Less              ),
+    .EXU_ALU_Zero                      (EXU_ALU_Zero              ),
+    .EXU_ALU_ALUout                    (EXU_o_ALU_ALUout          ),
+    .mul_valid                         (mul_valid                 ),
+    .mulw                              (mulw                      ),
+    .mul_signed                        (mul_signed                ),
+    .multiplicand                      (multiplicand              ),
+    .multiplier                        (multiplier                ),
+    .mul_ready                         (mul_ready                 ),
+    .mul_out_valid                     (mul_out_valid             ),
+    .result_hi                         (result_hi                 ),
+    .result_lo                         (result_lo                 ),
+    .div_valid                         (div_valid                 ),
+    .dividend                          (dividend                  ),
+    .divisor                           (divisor                   ),
+    .divw                              (divw                      ),
+    .div_signed                        (div_signed                ),
+    .div_ready                         (div_ready                 ),
+    .div_out_valid                     (div_out_valid             ),
+    .quotient                          (quotient                  ),
+    .remainder                         (remainder                 ),
+    .EXU_pc                            (EXU_i_pc                  ),
+    .EXU_HAZARD_rs1_data               (HAZARD_rs1_data_EXU1      ),
+    .EXU_HAZARD_csr_rs_data            (HAZARD_csr_rs_data_EXU1   ),
+    .EXU_rv64_csrrs                    (EXU_i_rv64_csrrs          ),
+    .EXU_rv64_csrrw                    (EXU_i_rv64_csrrw          ),
+    .EXU_rv64_ecall                    (EXU_i_rv64_ecall          ),
+    .EXU_ALU_CSR_out                   (EXU_o_ALU_CSR_out         ) 
+  );
+
+
+  ysyx_23060136_EXU_SEG  ysyx_23060136_EXU_SEG_inst (
+        .clk                               (clk                       ),
+        .rst                               (rst                       ),
+        .BRANCH_flushEX1                   (BRANCH_flushEX1           ),
+        .FORWARD_stallEX2                  (FORWARD_stallEX2          ),
+        .EXU1_pc                           (EXU_i_pc                   ),
+        .EXU1_inst                         (EXU_i_inst                 ),
+        .EXU1_commit                       (EXU_i_commit               ),
+        .EXU1_rd                           (EXU_i_rd                    ),
+        .EXU1_rs1                          (EXU_i_rs1                   ),
+        .EXU1_rs2                          (EXU_i_rs2                   ),
+        .EXU1_csr_rd_1                     (EXU_i_csr_rd_1              ),
+        .EXU1_csr_rd_2                     (EXU_i_csr_rd_2              ),
+        .EXU1_csr_rs                       (EXU_i_csr_rs                ),
+
+        .EXU1_HAZARD_rs1_data              (HAZARD_rs1_data_EXU1       ),
+        .EXU1_HAZARD_rs2_data              (HAZARD_rs2_data_EXU1       ),
+        .EXU1_HAZARD_csr_rs_data           (HAZARD_csr_rs_data_EXU1    ),
+        .EXU1_imm                          (EXU_i_imm                  ),
+        .EXU1_jump                         (EXU_i_jump                 ),
+        .EXU1_pc_plus_imm                  (EXU_i_pc_plus_imm          ),
+        .EXU1_rs1_plus_imm                 (EXU_i_rs1_plus_imm         ),
+        .EXU1_csr_plus_imm                 (EXU_i_csr_plus_imm         ),
+        .EXU1_cmp_eq                       (EXU_i_cmp_eq               ),
+        .EXU1_cmp_neq                      (EXU_i_cmp_neq              ),
+        .EXU1_cmp_ge                       (EXU_i_cmp_ge               ),
+        .EXU1_cmp_lt                       (EXU_i_cmp_lt               ),
+        .EXU1_write_gpr                    (EXU_i_write_gpr            ),
+        .EXU1_write_csr_1                  (EXU_i_write_csr_1          ),
+        .EXU1_write_csr_2                  (EXU_i_write_csr_2          ),
+        .EXU1_mem_to_reg                   (EXU_i_mem_to_reg           ),
+        .EXU1_write_mem                    (EXU_i_write_mem            ),
+        .EXU1_mem_byte                     (EXU_i_mem_byte             ),
+        .EXU1_mem_half                     (EXU_i_mem_half             ),
+        .EXU1_mem_word                     (EXU_i_mem_word             ),
+        .EXU1_mem_dword                    (EXU_i_mem_dword            ),
+        .EXU1_mem_byte_u                   (EXU_i_mem_byte_u           ),
+        .EXU1_mem_half_u                   (EXU_i_mem_half_u           ),
+        .EXU1_mem_word_u                   (EXU_i_mem_word_u           ),
+        .EXU1_system_halt                  (EXU_i_system_halt          ),
+
+        .EXU2_pc                           (EXU_o_pc                   ),
+        .EXU2_inst                         (EXU_o_inst                 ),
+        .EXU2_commit                       (EXU_o_commit               ),
+
+        .EXU2_rd                           (EXU_o_rd                    ), 
+        .EXU2_rs1                          (EXU_o_rs1                   ), 
+        .EXU2_rs2                          (EXU_o_rs2                   ), 
+        .EXU2_csr_rd_1                     (EXU_o_csr_rd_1              ), 
+        .EXU2_csr_rd_2                     (EXU_o_csr_rd_2              ), 
+        .EXU2_csr_rs                       (EXU_o_csr_rs                ), 
+
+        .EXU2_HAZARD_rs1_data              (EXU2_HAZARD_rs1_data       ),
+        .EXU2_HAZARD_rs2_data              (EXU_o_HAZARD_rs2_data      ),
+        .EXU2_HAZARD_csr_rs_data           (EXU2_HAZARD_csr_rs_data    ),
+        .EXU2_imm                          (EXU2_imm                   ),
+        .EXU2_jump                         (EXU2_jump                  ),
+        .EXU2_pc_plus_imm                  (EXU2_pc_plus_imm           ),
+        .EXU2_rs1_plus_imm                 (EXU2_rs1_plus_imm          ),
+        .EXU2_csr_plus_imm                 (EXU2_csr_plus_imm          ),
+        .EXU2_cmp_eq                       (EXU2_cmp_eq                ),
+        .EXU2_cmp_neq                      (EXU2_cmp_neq               ),
+        .EXU2_cmp_ge                       (EXU2_cmp_ge                ),
+        .EXU2_cmp_lt                       (EXU2_cmp_lt                ),
+        .EXU2_write_gpr                    (EXU_o_write_gpr            ),
+        .EXU2_write_csr_1                  (EXU_o_write_csr_1          ),
+        .EXU2_write_csr_2                  (EXU_o_write_csr_2          ),
+        .EXU2_mem_to_reg                   (EXU_o_mem_to_reg           ),
+        .EXU2_write_mem                    (EXU_o_write_mem            ),
+        .EXU2_mem_byte                     (EXU_o_mem_byte             ),
+        .EXU2_mem_half                     (EXU_o_mem_half             ),
+        .EXU2_mem_word                     (EXU_o_mem_word             ),
+        .EXU2_mem_dword                    (EXU_o_mem_dword            ),
+        .EXU2_mem_byte_u                   (EXU_o_mem_byte_u           ),
+        .EXU2_mem_half_u                   (EXU_o_mem_half_u           ),
+        .EXU2_mem_word_u                   (EXU_o_mem_word_u           ),
+        .EXU2_system_halt                  (EXU_o_system_halt          ) 
+  );
+
+    wire   [`ysyx_23060136_BITS_W-1  : 0]            EXU2_HAZARD_csr_rs_data  ;
+    wire   [`ysyx_23060136_BITS_W-1  : 0]            EXU2_imm                 ;
+    wire                                             EXU2_jump                ;
+    wire                                             EXU2_pc_plus_imm         ;
+    wire                                             EXU2_rs1_plus_imm        ;
+    wire                                             EXU2_csr_plus_imm        ;
+    wire                                             EXU2_cmp_eq              ;
+    wire                                             EXU2_cmp_neq             ;
+    wire                                             EXU2_cmp_ge              ;
+    wire                                             EXU2_cmp_lt              ;
+    
+
+    ysyx_23060136_EXU_BRANCH  ysyx_23060136_EXU_BRANCH_inst (
+        .EXU2_pc                           (EXU_o_pc                  ),
+        .EXU2_HAZARD_rs1_data              (EXU2_HAZARD_rs1_data      ),
+        .EXU2_HAZARD_csr_rs_data           (EXU2_HAZARD_csr_rs_data   ),
+        .EXU2_imm                          (EXU2_imm                  ),
+        .EXU2_ALU_Less                     (EXU_ALU_Less              ),
+        .EXU2_ALU_Zero                     (EXU_ALU_Zero              ),
+        .EXU2_jump                         (EXU2_jump                 ),
+        .EXU2_pc_plus_imm                  (EXU2_pc_plus_imm          ),
+        .EXU2_rs1_plus_imm                 (EXU2_rs1_plus_imm         ),
+        .EXU2_csr_plus_imm                 (EXU2_csr_plus_imm         ),
+        .EXU2_cmp_eq                       (EXU2_cmp_eq               ),
+        .EXU2_cmp_neq                      (EXU2_cmp_neq              ),
+        .EXU2_cmp_ge                       (EXU2_cmp_ge               ),
+        .EXU2_cmp_lt                       (EXU2_cmp_lt               ),
+        .branch_target                     (BRANCH_branch_target      ),
+        .PCSrc                             (BRANCH_PCSrc              ),
+        .BRANCH_flushIF                    (BRANCH_flushIF            ),
+        .BRANCH_flushID                    (BRANCH_flushID            ),
+        .BRANCH_flushEX1                   (BRANCH_flushEX1           ) 
+  );
+
+    wire                                    mul_valid         ; 
+    wire                                    mulw              ; 
+    wire  [1 : 0]                           mul_signed        ; 
+    wire  [`ysyx_23060136_BITS_W-1  : 0]    multiplicand      ; 
+    wire  [`ysyx_23060136_BITS_W-1  : 0]    multiplier        ; 
+    wire                                    mul_ready         ; 
+    wire                                    mul_out_valid     ; 
+    wire  [`ysyx_23060136_BITS_W-1  : 0]    result_hi         ; 
+    wire  [`ysyx_23060136_BITS_W-1  : 0]    result_lo         ; 
+
+
+  ysyx_23060136_EXU_MUL  ysyx_23060136_EXU_MUL_inst (
+        .clk                               (clk                       ),
+        .rst                               (rst                       ),
+        .mul_valid                         (mul_valid                 ),
+        .mulw                              (mulw                      ),
+        .mul_signed                        (mul_signed                ),
+        .multiplicand                      (multiplicand              ),
+        .multiplier                        (multiplier                ),
+        .mul_ready                         (mul_ready                 ),
+        .mul_out_valid                     (mul_out_valid             ),
+        .result_hi                         (result_hi                 ),
+        .result_lo                         (result_lo                 ) 
+  );
 
 
 
-    EXU_BRANCH_ysyx_23060136  EXU_BRANCH_ysyx_23060136_inst (
-                                 .EXU_pc                            (EXU_i_pc                  ),
-                                 .EXU_HAZARD_rs1_data               (EXU_HAZARD_rs1_data       ),
-                                 .EXU_HAZARD_csr_rs_data            (EXU_HAZARD_csr_rs_data    ),
-                                 .EXU_imm                           (EXU_i_imm                 ),
-                                 .EXU_ALU_Less                      (EXU_ALU_Less              ),
-                                 .EXU_ALU_Zero                      (EXU_ALU_Zero              ),
-                                 .EXU_jump                          (EXU_i_jump                ),
-                                 .EXU_pc_plus_imm                   (EXU_i_pc_plus_imm         ),
-                                 .EXU_rs1_plus_imm                  (EXU_i_rs1_plus_imm        ),
-                                 .EXU_csr_plus_imm                  (EXU_i_csr_plus_imm        ),
-                                 .EXU_cmp_eq                        (EXU_i_cmp_eq              ),
-                                 .EXU_cmp_neq                       (EXU_i_cmp_neq             ),
-                                 .EXU_cmp_ge                        (EXU_i_cmp_ge              ),
-                                 .EXU_cmp_lt                        (EXU_i_cmp_lt              ),
-                                 .branch_target                     (BRANCH_branch_target      ),
-                                 .PCSrc                             (BRANCH_PCSrc              ),
-                                 .BRANCH_flushIF                    (BRANCH_flushIF            ),
-                                 .BRANCH_flushID                    (BRANCH_flushID            )
-                             );
+     wire                                        div_valid      ; 
+     wire   [`ysyx_23060136_BITS_W-1  : 0]       dividend       ; 
+     wire   [`ysyx_23060136_BITS_W-1  : 0]       divisor        ; 
+     wire                                        divw           ; 
+     wire                                        div_signed     ; 
+     wire                                        div_ready      ; 
+     wire                                        div_out_valid  ; 
+     wire   [`ysyx_23060136_BITS_W-1  : 0]       quotient       ; 
+     wire   [`ysyx_23060136_BITS_W-1  : 0]       remainder      ; 
+
+
+
+  ysyx_23060136_EXU_DIV  ysyx_23060136_EXU_DIV_inst (
+        .clk                               (clk                       ),
+        .rst                               (rst                       ),
+        .dividend                          (dividend                  ),
+        .divisor                           (divisor                   ),
+        .div_valid                         (div_valid                 ),
+        .divw                              (divw                      ),
+        .div_signed                        (div_signed                ),
+        .div_ready                         (div_ready                 ),
+        .div_out_valid                     (div_out_valid             ),
+        .quotient                          (quotient                  ),
+        .remainder                         (remainder                 ) 
+  );
+
 
 
 endmodule
