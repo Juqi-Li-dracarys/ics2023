@@ -96,12 +96,15 @@ module ysyx_23060136_IFU_INST_MEM (
     end
 
     always_ff @(posedge clk) begin : pc_valid
-        if(rst || (r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
-            ARBITER_IFU_pc_valid <= `ysyx_23060136_true;       
+        if(rst || (BRANCH_flushIF & !FORWARD_stallIF)) begin
+            ARBITER_IFU_pc_valid <= `ysyx_23060136_false;       
         end
-        else if((r_state_ready & r_state_next == `ysyx_23060136_wait)) begin
-            ARBITER_IFU_pc_valid <=  `ysyx_23060136_false;
+        else if((r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
+            ARBITER_IFU_pc_valid <=  `ysyx_23060136_true;
         end 
+        else if((r_state_ready & r_state_next == `ysyx_23060136_wait)) begin
+            ARBITER_IFU_pc_valid <= `ysyx_23060136_false;  
+        end
     end
 
     always_ff @(posedge clk) begin : pc_update
@@ -114,11 +117,14 @@ module ysyx_23060136_IFU_INST_MEM (
     end
 
     always_ff @(posedge clk) begin : inst_valid_trans
-        if(rst || (r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
-            inst_valid <= `ysyx_23060136_false;
+        if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
+            inst_valid <= `ysyx_23060136_true;
+        end
+        else if((r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
+            inst_valid <=  `ysyx_23060136_false;
         end
         else if((r_state_next == `ysyx_23060136_idle & r_state_wait)) begin
-            inst_valid <=  `ysyx_23060136_true;
+            inst_valid <= `ysyx_23060136_true;
         end
     end
 
@@ -127,7 +133,7 @@ module ysyx_23060136_IFU_INST_MEM (
             IFU_o_inst <= `ysyx_23060136_NOP;
         end
         else if((r_state_next == `ysyx_23060136_idle & r_state_wait))begin
-            IFU_o_inst <= IFU1_pc[2]  ?  ARBITER_IFU_inst[63 : 32] : ARBITER_IFU_inst[31 : 0] ;
+            IFU_o_inst <= ARBITER_IFU_pc[2]  ?  ARBITER_IFU_inst[63 : 32] : ARBITER_IFU_inst[31 : 0] ;
         end
     end
 
