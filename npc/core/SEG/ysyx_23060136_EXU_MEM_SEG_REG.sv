@@ -1,82 +1,73 @@
 /*
  * @Author: Juqi Li @ NJU 
- * @Date: 2024-02-24 01:40:32 
+ * @Date: 2024-04-09 20:46:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-16 12:00:55
+ * @Last Modified time: 2024-04-09 21:44:29
  */
 
 
-`include "DEFINES_ysyx_23060136.sv"
+ `include "ysyx_23060136_DEFINES.sv"
 
+ 
 /*
       EXU -> EXU_REG -> MEM
 */
 
 // ===========================================================================
 module EXU_MEM_SEG_REG_ysyx_23060136 (
-        input                               clk                        ,
-        input                               rst                        ,
+        input                                                   clk                        ,
+        input                                                   rst                        ,
         // ===========================================================================
         // forward unit signal
-        input                               FORWARD_flushEX            ,
-        input                               FORWARD_stallME            ,
+        input                                                   FORWARD_flushEX            ,
+        input                                                   FORWARD_stallME            ,
         // ===========================================================================
         // general data
-        input                               EXU_o_commit             ,
-        input              [  31:0]         EXU_o_pc                 ,
-        input              [  31:0]         EXU_o_inst               ,
-        input              [  31:0]         EXU_o_ALU_ALUout         ,
-        input              [  31:0]         EXU_o_ALU_CSR_out        ,
+        input                                                    EXU_o_commit             ,
+        input              [  `ysyx_23060136_BITS_W-1:0]         EXU_o_pc                 ,
+        input              [  `ysyx_23060136_BITS_W-1:0]         EXU_o_inst               ,
+        input              [  `ysyx_23060136_BITS_W-1:0]         EXU_o_ALU_ALUout         ,
+        input              [  `ysyx_23060136_BITS_W-1:0]         EXU_o_ALU_CSR_out        ,
 
         // mem
-        input              [   4:0]         EXU_o_rd                 ,
-        input              [  31:0]         EXU_o_HAZARD_rs2_data    ,
+        input              [   `ysyx_23060136_GPR_W-1:0]         EXU_o_rd                 ,
+    
         // mem
-        input              [   2:0]         EXU_o_csr_rd             ,
+        input              [   `ysyx_23060136_CSR_W-1:0]         EXU_o_csr_rd_1           ,
+        input              [   `ysyx_23060136_CSR_W-1:0]         EXU_o_csr_rd_2           ,
         // mem
-        input                               EXU_o_write_gpr          ,
-        input                               EXU_o_write_csr          ,
-        input                               EXU_o_mem_to_reg         ,
-
-        input                               EXU_o_write_mem          ,
-        input                               EXU_o_mem_byte           ,
-        input                               EXU_o_mem_half           ,
-        input                               EXU_o_mem_word           ,
-        input                               EXU_o_mem_byte_u         ,
-        input                               EXU_o_mem_half_u         ,
-
-        input                               EXU_o_system_halt        ,
+        input                                                    EXU_o_write_gpr          ,
+        input                                                    EXU_o_write_csr_1        ,
+        input                                                    EXU_o_write_csr_2        ,
+        input                                                    EXU_o_mem_to_reg         ,
+        
+        input                                                    EXU_o_system_halt        ,
 
         // ===========================================================================
-        output   logic                      MEM_i_commit                 ,
-        output   logic    [31 : 0]          MEM_i_pc                     ,
-        output   logic    [31 : 0]          MEM_i_inst                   ,
-        output   logic    [31 : 0]          MEM_i_ALU_ALUout             ,
-        output   logic    [31 : 0]          MEM_i_ALU_CSR_out            ,
+        output   logic                                           MEM_i_commit                 ,
+        output   logic    [`ysyx_23060136_BITS_W-1 : 0]          MEM_i_pc                     ,
+        output   logic    [`ysyx_23060136_BITS_W-1 : 0]          MEM_i_inst                   ,
+        output   logic    [`ysyx_23060136_BITS_W-1 : 0]          MEM_i_ALU_ALUout             ,
+        output   logic    [`ysyx_23060136_BITS_W-1 : 0]          MEM_i_ALU_CSR_out            ,
 
-        output   logic    [4 : 0]           MEM_i_rd                     ,
-        output   logic    [31 : 0]          MEM_i_rs2_data               ,
+        output   logic    [`ysyx_23060136_GPR_W-1 : 0]           MEM_i_rd                     ,
+        output   logic    [`ysyx_23060136_BITS_W-1 : 0]          MEM_i_rs2_data               ,
         // mem
-        output   logic    [2 : 0]           MEM_i_csr_rd                 ,
+        output   logic    [`ysyx_23060136_CSR_W-1 : 0]           MEM_i_csr_rd                 ,
         // mem
-        output   logic                      MEM_i_write_gpr              ,
-        output   logic                      MEM_i_write_csr              ,
-        output   logic                      MEM_i_mem_to_reg             ,
+        output   logic                                           MEM_i_write_gpr              ,
+        output   logic                                           MEM_i_write_csr              ,
+        output   logic                                           MEM_i_mem_to_reg             ,
 
-        output   logic                      MEM_i_write_mem              ,
-        output   logic                      MEM_i_mem_byte               ,
-        output   logic                      MEM_i_mem_half               ,
-        output   logic                      MEM_i_mem_word               ,
-        output   logic                      MEM_i_mem_byte_u             ,
-        output   logic                      MEM_i_mem_half_u             ,
+        output   logic                                           MEM_i_write_mem              ,
+        output   logic                                           MEM_i_mem_byte               ,
+        output   logic                                           MEM_i_mem_half               ,
+        output   logic                                           MEM_i_mem_word               ,
+        output   logic                                           MEM_i_mem_byte_u             ,
+        output   logic                                           MEM_i_mem_half_u             ,
 
         // system
-        output   logic                      MEM_i_system_halt            ,
-
-        // MEM addr valid signal, 与前面的 PC 更新逻辑类似
-        // 当需要读/写MEM时，会给一个短脉冲
-        output   logic                      MEM_i_raddr_change           ,  
-        output   logic                      MEM_i_waddr_change                    
+        output   logic                                           MEM_i_system_halt                         
     );
 
     always_ff @(posedge clk) begin : update_data

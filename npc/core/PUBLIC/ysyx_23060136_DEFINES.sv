@@ -24,30 +24,13 @@
 `define  ysyx_23060136_MBASE      64'h80000000
 `define  ysyx_23060136_MEND       64'h88000000
 
-`define  ysyx_23060136_true      'b1
-`define  ysyx_23060136_false     'b0
+`define  ysyx_23060136_CLINT_BASE 64'h02000000
+`define  ysyx_23060136_CLINT_END  64'h0200ffff
 
 `define  ysyx_23060136_PC_RST     64'h80000000
 `define  ysyx_23060136_NOP        32'h00000013
 
-
-// AXI-lite machine state(arbiter)
-`define  ysyx_23060136_idle      'h0
-`define  ysyx_23060136_ready     'h1
-`define  ysyx_23060136_wait      'h2
- // only for writing
-`define  ysyx_23060136_done      'h3
-
-
- // state for ALU
-`define  ysyx_23060136_idle      'h0
-`define  ysyx_23060136_ready_mul 'h1
-`define  ysyx_23060136_ready_div 'h2
-`define  ysyx_23060136_wait_mul  'h3
-`define  ysyx_23060136_wait_div  'h4
-
- 
-// csr idx   
+ // csr idx   
 `define  ysyx_23060136_mstatus   'h0
 `define  ysyx_23060136_mtvec     'h1
 `define  ysyx_23060136_mepc      'h2
@@ -56,14 +39,35 @@
 `define  ysyx_23060136_marchid   'h5
 
 
+// ===========================================================================
+
+`define  ysyx_23060136_true      'b1
+`define  ysyx_23060136_false     'b0
+
+
+// AXI-lite machine state(arbiter)
+`define  ysyx_23060136_idle      'h0
+`define  ysyx_23060136_ready     'h1
+`define  ysyx_23060136_wait      'h2
+`define  ysyx_23060136_done      'h3
+ 
+
+
 // arbiter state machine(read)
 `define  ysyx_23060136_idle      'h0
 `define  ysyx_23060136_ready     'h1
-`define  ysyx_23060136_wait      'h3
-`define  ysyx_23060136_over      'h2
+`define  ysyx_23060136_wait      'h2
+`define  ysyx_23060136_over      'h3
 
 
 // arbiter handling guests
 `define  ysyx_23060136_G_IFU     'd0
 `define  ysyx_23060136_G_MEM     'd1
+
+
+ // response signal
+`define  ysyx_23060136_OKAY      'b00
+`define  ysyx_23060136_EXOKAY    'b01
+`define  ysyx_23060136_SLVERR    'b10
+`define  ysyx_23060136_DECERR    'b11
 

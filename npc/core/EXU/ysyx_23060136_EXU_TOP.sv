@@ -417,8 +417,6 @@ module ysyx_23060136_EXU_TOP (
         .remainder                         (remainder                 ) 
   );
 
-
-
 endmodule
 
 
