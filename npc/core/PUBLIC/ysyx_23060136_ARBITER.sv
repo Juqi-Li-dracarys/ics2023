@@ -148,8 +148,8 @@
             guest_obj         <=  `ysyx_23060136_false ;
         end
         else if(a_state_idle & (a_state_next == `ysyx_23060136_ready)) begin
-            io_master_araddr  <=   {32{IFU_a_handshake}} & ARBITER_IFU_pc[31 : 0]    |
-                                   {32{MEM_a_handshake}} & ARBITER_MEM_raddr[31 : 0] ;
+            io_master_araddr  <=   {32{IFU_a_handshake}} & {ARBITER_IFU_pc[31 : 3], {3{1'b0}}}   |
+                                   {32{MEM_a_handshake}} & {ARBITER_MEM_raddr[31 : 3], {3{1'b0}}} ;
 
             io_master_arsize  <=   {3{IFU_a_handshake}}  & 3'b010            |
                                    {3{MEM_a_handshake}}  & ARBITER_MEM_rsize ;
