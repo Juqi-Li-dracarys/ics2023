@@ -64,7 +64,7 @@ module ysyx_23060136_MEM_TOP (
         // general signal
         input                                                     MEM_i_commit                 ,
         input             [`ysyx_23060136_BITS_W -1 : 0]          MEM_i_pc                     ,
-        input             [`ysyx_23060136_BITS_W -1 : 0]          MEM_i_inst                   ,
+        input             [`ysyx_23060136_INST_W -1 : 0]          MEM_i_inst                   ,
         input             [`ysyx_23060136_BITS_W -1 : 0]          MEM_i_ALU_ALUout             ,
         input             [`ysyx_23060136_BITS_W -1 : 0]          MEM_i_ALU_CSR_out            ,
 
@@ -82,7 +82,7 @@ module ysyx_23060136_MEM_TOP (
 
         output                                                    MEM_o_commit                 ,
         output            [`ysyx_23060136_BITS_W -1 : 0]          MEM_o_pc                     ,
-        output            [`ysyx_23060136_BITS_W -1 : 0]          MEM_o_inst                   ,
+        output            [`ysyx_23060136_INST_W -1 : 0]          MEM_o_inst                   ,
 
         output            [`ysyx_23060136_BITS_W -1 : 0]          MEM_o_ALU_ALUout             ,
         output            [`ysyx_23060136_BITS_W -1 : 0]          MEM_o_ALU_CSR_out            ,

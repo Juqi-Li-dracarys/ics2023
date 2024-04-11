@@ -24,11 +24,8 @@ module ysyx_23060136_EXU_SEG (
     input                                                         EXU1_commit                 ,
 
     input                  [  `ysyx_23060136_GPR_W-1  :0]         EXU1_rd                     ,
-    input                  [  `ysyx_23060136_GPR_W-1  :0]         EXU1_rs1                    ,
-    input                  [  `ysyx_23060136_GPR_W-1  :0]         EXU1_rs2                    ,
     input                  [  `ysyx_23060136_CSR_W-1:0  ]         EXU1_csr_rd_1               ,
     input                  [  `ysyx_23060136_CSR_W-1:0  ]         EXU1_csr_rd_2               ,
-    input                  [  `ysyx_23060136_CSR_W-1:0  ]         EXU1_csr_rs                 ,
 
     input                  [  `ysyx_23060136_BITS_W -1:0]         EXU1_HAZARD_rs1_data        ,
     input                  [  `ysyx_23060136_BITS_W -1:0]         EXU1_HAZARD_rs2_data        ,
@@ -73,11 +70,8 @@ module ysyx_23060136_EXU_SEG (
 
 
     output    logic        [  `ysyx_23060136_GPR_W-1  :0]         EXU2_rd                     ,
-    output    logic        [  `ysyx_23060136_GPR_W-1  :0]         EXU2_rs1                    ,
-    output    logic        [  `ysyx_23060136_GPR_W-1  :0]         EXU2_rs2                    ,
     output    logic        [  `ysyx_23060136_CSR_W-1:0  ]         EXU2_csr_rd_1               ,
     output    logic        [  `ysyx_23060136_CSR_W-1:0  ]         EXU2_csr_rd_2               ,
-    output    logic        [  `ysyx_23060136_CSR_W-1:0  ]         EXU2_csr_rs                 ,
 
     output    logic        [  `ysyx_23060136_BITS_W -1:0]         EXU2_HAZARD_rs1_data        ,
     output    logic        [  `ysyx_23060136_BITS_W -1:0]         EXU2_HAZARD_rs2_data        ,
@@ -122,11 +116,8 @@ module ysyx_23060136_EXU_SEG (
             EXU2_commit             <=   `ysyx_23060136_false;
             
             EXU2_rd                 <=    `ysyx_23060136_false;
-            EXU2_rs1                <=    `ysyx_23060136_false;
-            EXU2_rs2                <=    `ysyx_23060136_false;
             EXU2_csr_rd_1           <=    `ysyx_23060136_false;
             EXU2_csr_rd_2           <=    `ysyx_23060136_false;
-            EXU2_csr_rs             <=    `ysyx_23060136_false;
             
             EXU2_HAZARD_rs1_data    <=   `ysyx_23060136_false;
             EXU2_HAZARD_rs2_data    <=   `ysyx_23060136_false;                   
@@ -159,13 +150,9 @@ module ysyx_23060136_EXU_SEG (
             EXU2_inst               <=     EXU1_inst               ;                              
             EXU2_commit             <=     EXU1_commit             ; 
             
-            EXU2_rd                 <=      EXU1_rd                ;                                      
-            EXU2_rs1                <=      EXU1_rs1               ;                                      
-            EXU2_rs2                <=      EXU1_rs2               ;                                      
+            EXU2_rd                 <=      EXU1_rd                ;                                                                          
             EXU2_csr_rd_1           <=      EXU1_csr_rd_1          ;                                      
-            EXU2_csr_rd_2           <=      EXU1_csr_rd_2          ;                                      
-            EXU2_csr_rs             <=      EXU1_csr_rs            ;                                      
-            
+            EXU2_csr_rd_2           <=      EXU1_csr_rd_2          ;                                                                           
             
             EXU2_HAZARD_rs1_data    <=     EXU1_HAZARD_rs1_data    ;
             EXU2_HAZARD_rs2_data    <=     EXU1_HAZARD_rs2_data    ;                              

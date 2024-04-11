@@ -2,12 +2,13 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-11 16:43:25 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-11 17:17:14
+ * @Last Modified time: 2024-04-11 21:42:39
  */
 
 
 
 `include "ysyx_23060136_DEFINES.sv"
+
 
 
 // Top module of RISCV-64IM core with 7 stage pipeline
@@ -49,6 +50,7 @@ module ysyx_23060136 (
         input                              io_master_bvalid            ,
         input             [   1:0]         io_master_bresp             ,
         input             [   3:0]         io_master_bid               ,
+
         // AXI-full BUS on SoC(slave read, Not used now)
         output                             io_slave_awready            ,
         input                              io_slave_awvalid            ,
@@ -170,7 +172,55 @@ module ysyx_23060136 (
      assign          io_slave_rlast          =     `ysyx_23060136_false    ;           
      assign          io_slave_rid            =     `ysyx_23060136_false    ;
      
+     assign          io_sram0_addr           =      `ysyx_23060136_false   ;
+     assign          io_sram0_cen            =      `ysyx_23060136_false   ;
+     assign          io_sram0_wen            =      `ysyx_23060136_false   ;
+     assign          io_sram0_wmask          =      `ysyx_23060136_false   ;
+     assign          io_sram0_wdata          =      `ysyx_23060136_false   ;
 
+     assign          io_sram1_addr           =      `ysyx_23060136_false   ;
+     assign          io_sram1_cen            =      `ysyx_23060136_false   ;
+     assign          io_sram1_wen            =      `ysyx_23060136_false   ;
+     assign          io_sram1_wmask          =      `ysyx_23060136_false   ;
+     assign          io_sram1_wdata          =      `ysyx_23060136_false   ;
+
+     assign          io_sram2_addr           =      `ysyx_23060136_false   ;
+     assign          io_sram2_cen            =      `ysyx_23060136_false   ;
+     assign          io_sram2_wen            =      `ysyx_23060136_false   ;
+     assign          io_sram2_wmask          =      `ysyx_23060136_false   ;
+     assign          io_sram2_wdata          =      `ysyx_23060136_false   ;
+
+     assign          io_sram3_addr           =      `ysyx_23060136_false   ;
+     assign          io_sram3_cen            =      `ysyx_23060136_false   ;
+     assign          io_sram3_wen            =      `ysyx_23060136_false   ;
+     assign          io_sram3_wmask          =      `ysyx_23060136_false   ;
+     assign          io_sram3_wdata          =      `ysyx_23060136_false   ;
+
+     assign          io_sram4_addr           =      `ysyx_23060136_false   ;
+     assign          io_sram4_cen            =      `ysyx_23060136_false   ;
+     assign          io_sram4_wen            =      `ysyx_23060136_false   ;
+     assign          io_sram4_wmask          =      `ysyx_23060136_false   ;
+     assign          io_sram4_wdata          =      `ysyx_23060136_false   ;
+
+     assign          io_sram5_addr           =      `ysyx_23060136_false   ;
+     assign          io_sram5_cen            =      `ysyx_23060136_false   ;
+     assign          io_sram5_wen            =      `ysyx_23060136_false   ;
+     assign          io_sram5_wmask          =      `ysyx_23060136_false   ;
+     assign          io_sram5_wdata          =      `ysyx_23060136_false   ;
+
+
+     assign          io_sram6_addr           =      `ysyx_23060136_false   ;
+     assign          io_sram6_cen            =      `ysyx_23060136_false   ;
+     assign          io_sram6_wen            =      `ysyx_23060136_false   ;
+     assign          io_sram6_wmask          =      `ysyx_23060136_false   ;
+     assign          io_sram6_wdata          =      `ysyx_23060136_false   ;
+
+
+     assign          io_sram7_addr           =      `ysyx_23060136_false   ;
+     assign          io_sram7_cen            =      `ysyx_23060136_false   ;
+     assign          io_sram7_wen            =      `ysyx_23060136_false   ;
+     assign          io_sram7_wmask          =      `ysyx_23060136_false   ;
+     assign          io_sram7_wdata          =      `ysyx_23060136_false   ;
 
 
     // ===========================================================================
@@ -432,45 +482,63 @@ module ysyx_23060136 (
     wire               [   `ysyx_23060136_CSR_W-1:0]         EXU_i_csr_rs                 ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         EXU_i_csr_rs_data            ;
 
-    wire                                EXU_i_ALU_add                ;
-    wire                                EXU_i_ALU_sub                ;
-    wire                                EXU_i_ALU_slt                ;
-    wire                                EXU_i_ALU_sltu               ;
-    wire                                EXU_i_ALU_or                 ;
-    wire                                EXU_i_ALU_and                ;
-    wire                                EXU_i_ALU_xor                ;
-    wire                                EXU_i_ALU_sll                ;
-    wire                                EXU_i_ALU_srl                ;
-    wire                                EXU_i_ALU_sra                ;
-    wire                                EXU_i_ALU_explicit           ;
-    wire                                EXU_i_ALU_i1_rs1             ;
-    wire                                EXU_i_ALU_i1_pc              ;
-    wire                                EXU_i_ALU_i2_rs2             ;
-    wire                                EXU_i_ALU_i2_imm             ;
-    wire                                EXU_i_ALU_i2_4               ;
-    wire                                EXU_i_ALU_i2_csr             ;
-    wire                                EXU_i_jump                   ;
-    wire                                EXU_i_pc_plus_imm            ;
-    wire                                EXU_i_rs1_plus_imm           ;
-    wire                                EXU_i_csr_plus_imm           ;
-    wire                                EXU_i_cmp_eq                 ;
-    wire                                EXU_i_cmp_neq                ;
-    wire                                EXU_i_cmp_ge                 ;
-    wire                                EXU_i_cmp_lt                 ;
-    wire                                EXU_i_write_gpr              ;
-    wire                                EXU_i_write_csr_1            ;
-    wire                                EXU_i_write_csr_2            ;
-    wire                                EXU_i_mem_to_reg             ;
-    wire                                EXU_i_rv64_csrrs             ;
-    wire                                EXU_i_rv64_csrrw             ;
-    wire                                EXU_i_rv64_ecall             ;
-    wire                                EXU_i_write_mem              ;
-    wire                                EXU_i_mem_byte               ;
-    wire                                EXU_i_mem_half               ;
-    wire                                EXU_i_mem_word               ;
-    wire                                EXU_i_mem_byte_u             ;
-    wire                                EXU_i_mem_half_u             ;
-    wire                                EXU_i_system_halt            ;
+    wire                                                     EXU_i_ALU_word_t             ;
+    wire                                                     EXU_i_ALU_add                ;
+    wire                                                     EXU_i_ALU_sub                ;
+    wire                                                     EXU_i_ALU_slt                ;
+    wire                                                     EXU_i_ALU_sltu               ;
+    wire                                                     EXU_i_ALU_or                 ;
+    wire                                                     EXU_i_ALU_and                ;
+    wire                                                     EXU_i_ALU_xor                ;
+    wire                                                     EXU_i_ALU_sll                ;
+    wire                                                     EXU_i_ALU_srl                ;
+    wire                                                     EXU_i_ALU_sra                ;
+
+    wire                                                     EXU_i_ALU_mul                ;   
+    wire                                                     EXU_i_ALU_mul_hi             ;   
+    wire                                                     EXU_i_ALU_mul_lo             ;   
+    wire                                                     EXU_i_ALU_mul_u              ;   
+    wire                                                     EXU_i_ALU_mul_s              ;   
+    wire                                                     EXU_i_ALU_mul_su             ;   
+    wire                                                     EXU_i_ALU_div                ;   
+    wire                                                     EXU_i_ALU_div_u              ;   
+    wire                                                     EXU_i_ALU_div_s              ;   
+    wire                                                     EXU_i_ALU_rem                ;   
+    wire                                                     EXU_i_ALU_rem_u              ;   
+    wire                                                     EXU_i_ALU_rem_s              ;   
+
+    wire                                                     EXU_i_ALU_explicit           ;
+    wire                                                     EXU_i_ALU_i1_rs1             ;
+    wire                                                     EXU_i_ALU_i1_pc              ;
+    wire                                                     EXU_i_ALU_i2_rs2             ;
+    wire                                                     EXU_i_ALU_i2_imm             ;
+    wire                                                     EXU_i_ALU_i2_4               ;
+    wire                                                     EXU_i_ALU_i2_csr             ;
+
+    wire                                                     EXU_i_jump                   ;
+    wire                                                     EXU_i_pc_plus_imm            ;
+    wire                                                     EXU_i_rs1_plus_imm           ;
+    wire                                                     EXU_i_csr_plus_imm           ;
+    wire                                                     EXU_i_cmp_eq                 ;
+    wire                                                     EXU_i_cmp_neq                ;
+    wire                                                     EXU_i_cmp_ge                 ;
+    wire                                                     EXU_i_cmp_lt                 ;
+    wire                                                     EXU_i_write_gpr              ;
+    wire                                                     EXU_i_write_csr_1            ;
+    wire                                                     EXU_i_write_csr_2            ;
+    wire                                                     EXU_i_mem_to_reg             ;
+    wire                                                     EXU_i_rv64_csrrs             ;
+    wire                                                     EXU_i_rv64_csrrw             ;
+    wire                                                     EXU_i_rv64_ecall             ;
+    wire                                                     EXU_i_write_mem              ;
+    wire                                                     EXU_i_mem_byte               ;
+    wire                                                     EXU_i_mem_half               ;
+    wire                                                     EXU_i_mem_word               ;
+    wire                                                     EXU_i_mem_dword              ;
+    wire                                                     EXU_i_mem_byte_u             ;
+    wire                                                     EXU_i_mem_half_u             ;
+    wire                                                     EXU_i_mem_word_u             ;
+    wire                                                     EXU_i_system_halt            ;
 
 
 
@@ -626,18 +694,17 @@ module ysyx_23060136 (
     // ===========================================================================
     // EXU
     wire               [  `ysyx_23060136_BITS_W-1:0]         EXU_o_pc                 ;
-    wire               [  `ysyx_23060136_BITS_W-1:0]         EXU_o_inst               ;
+    wire               [  `ysyx_23060136_INST_W-1:0]         EXU_o_inst               ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         EXU_o_ALU_ALUout         ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         EXU_o_ALU_CSR_out        ;
     wire                                                     EXU_o_commit             ;
     wire               [    `ysyx_23060136_GPR_W-1:0]        EXU_o_rd                 ;
-    wire               [    `ysyx_23060136_GPR_W-1:0]        EXU_o_rs1                ;
-    wire               [    `ysyx_23060136_GPR_W-1:0]        EXU_o_rs2                ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         EXU_o_HAZARD_rs2_data    ;
-    wire               [   `ysyx_23060136_CSR_W-1:0]         EXU_o_csr_rd             ;
-    wire               [   `ysyx_23060136_CSR_W-1:0]         EXU_o_csr_rs             ;
+    wire               [   `ysyx_23060136_CSR_W-1:0]         EXU_o_csr_rd_1           ;
+    wire               [   `ysyx_23060136_CSR_W-1:0]         EXU_o_csr_rd_2           ;
     wire                                                     EXU_o_write_gpr          ;
-    wire                                                     EXU_o_write_csr          ;
+    wire                                                     EXU_o_write_csr_1        ;
+    wire                                                     EXU_o_write_csr_2        ;
 
     wire                                                     EXU_o_mem_to_reg         ;
     wire                                                     EXU_o_write_mem          ;
@@ -646,7 +713,13 @@ module ysyx_23060136 (
     wire                                                     EXU_o_mem_word           ;
     wire                                                     EXU_o_mem_byte_u         ;
     wire                                                     EXU_o_mem_half_u         ;
+    wire                                                     EXU_o_mem_dword          ;
+    wire                                                     EXU_o_mem_word_u         ;
+    wire                                                     EXU_o_valid              ;
     wire                                                     EXU_o_system_halt        ;
+
+    wire                                                     FORWARD_stallEX2         ;
+    wire                                                     FORWARD_flushEX1         ;
 
 
     ysyx_23060136_EXU_TOP  ysyx_23060136_EXU_TOP_inst (
@@ -658,14 +731,11 @@ module ysyx_23060136 (
         .EXU_i_inst                        (EXU_i_inst                ),
         .EXU_i_commit                      (EXU_i_commit              ),
         .EXU_i_rd                          (EXU_i_rd                  ),
-        .EXU_i_rs1                         (EXU_i_rs1                 ),
-        .EXU_i_rs2                         (EXU_i_rs2                 ),
         .EXU_i_imm                         (EXU_i_imm                 ),
         .EXU_i_rs1_data                    (EXU_i_rs1_data            ),
         .EXU_i_rs2_data                    (EXU_i_rs2_data            ),
         .EXU_i_csr_rd_1                    (EXU_i_csr_rd_1            ),
         .EXU_i_csr_rd_2                    (EXU_i_csr_rd_2            ),
-        .EXU_i_csr_rs                      (EXU_i_csr_rs              ),
         .EXU_i_csr_rs_data                 (EXU_i_csr_rs_data         ),
         .EXU_i_ALU_word_t                  (EXU_i_ALU_word_t          ),
         .EXU_i_ALU_add                     (EXU_i_ALU_add             ),
@@ -721,12 +791,12 @@ module ysyx_23060136 (
         .EXU_i_mem_half_u                  (EXU_i_mem_half_u          ),
         .EXU_i_mem_word_u                  (EXU_i_mem_word_u          ),
         .EXU_i_system_halt                 (EXU_i_system_halt         ),
-        .FORWARD_rs1_data_EXU1             (FORWARD_rs1_data_EXU1     ),
-        .FORWARD_rs2_data_EXU1             (FORWARD_rs2_data_EXU1     ),
-        .FORWARD_csr_rs_data_EXU1          (FORWARD_csr_rs_data_EXU1  ),
-        .FORWARD_rs1_hazard_EXU1           (FORWARD_rs1_hazard_EXU1   ),
-        .FORWARD_rs2_hazard_EXU1           (FORWARD_rs2_hazard_EXU1   ),
-        .FORWARD_csr_rs_hazard_EXU1        (FORWARD_csr_rs_hazard_EXU1),
+        .FORWARD_rs1_data_EXU1             (FORWARD_rs1_data_EXU      ),
+        .FORWARD_rs2_data_EXU1             (FORWARD_rs2_data_EXU      ),
+        .FORWARD_csr_rs_data_EXU1          (FORWARD_csr_rs_data_EXU   ),
+        .FORWARD_rs1_hazard_EXU1           (FORWARD_rs1_hazard_EXU    ),
+        .FORWARD_rs2_hazard_EXU1           (FORWARD_rs2_hazard_EXU    ),
+        .FORWARD_csr_rs_hazard_EXU1        (FORWARD_csr_rs_hazard_EXU ),
         .EXU_o_pc                          (EXU_o_pc                  ),
         .EXU_o_inst                        (EXU_o_inst                ),
         .EXU_o_ALU_ALUout                  (EXU_o_ALU_ALUout          ),
@@ -737,12 +807,9 @@ module ysyx_23060136 (
         .BRANCH_flushIF                    (BRANCH_flushIF            ),
         .BRANCH_flushID                    (BRANCH_flushID            ),
         .EXU_o_rd                          (EXU_o_rd                  ),
-        .EXU_o_rs1                         (EXU_o_rs1                 ),
-        .EXU_o_rs2                         (EXU_o_rs2                 ),
         .EXU_o_HAZARD_rs2_data             (EXU_o_HAZARD_rs2_data     ),
         .EXU_o_csr_rd_1                    (EXU_o_csr_rd_1            ),
         .EXU_o_csr_rd_2                    (EXU_o_csr_rd_2            ),
-        .EXU_o_csr_rs                      (EXU_o_csr_rs              ),
         .EXU_o_write_gpr                   (EXU_o_write_gpr           ),
         .EXU_o_write_csr_1                 (EXU_o_write_csr_1         ),
         .EXU_o_write_csr_2                 (EXU_o_write_csr_2         ),
@@ -762,28 +829,22 @@ module ysyx_23060136 (
 
     // ===========================================================================
     // EXU -> MEM
-    wire                                FORWARD_flushEX    = `ysyx_23060136_false  ;
-    wire                                FORWARD_stallME              ; 
-    wire                                MEM_i_commit                 ;
-    wire               [  31:0]         MEM_i_pc                     ;
-    wire               [  31:0]         MEM_i_inst                   ;
-    wire               [  31:0]         MEM_i_ALU_ALUout             ;
-    wire               [  31:0]         MEM_i_ALU_CSR_out            ;
+    wire                                                      FORWARD_flushEX    = `ysyx_23060136_false  ;
+    wire                                                      FORWARD_stallME              ; 
+    wire                                                      MEM_i_commit                 ;
+    wire               [  `ysyx_23060136_BITS_W -1:0]         MEM_i_pc                     ;
+    wire               [  `ysyx_23060136_INST_W -1:0]         MEM_i_inst                   ;
+    wire               [  `ysyx_23060136_BITS_W -1:0]         MEM_i_ALU_ALUout             ;
+    wire               [  `ysyx_23060136_BITS_W -1:0]         MEM_i_ALU_CSR_out            ;
     wire               [    `ysyx_23060136_GPR_W-1:0]         MEM_i_rd                     ;
-    wire               [  31:0]         MEM_i_rs2_data               ;
-    wire               [   2:0]         MEM_i_csr_rd                 ;
-    wire                                MEM_i_write_gpr              ;
-    wire                                MEM_i_write_csr              ;
-    wire                                MEM_i_mem_to_reg             ;
-    wire                                MEM_i_write_mem              ;
-    wire                                MEM_i_mem_byte               ;
-    wire                                MEM_i_mem_half               ;
-    wire                                MEM_i_mem_word               ;
-    wire                                MEM_i_mem_byte_u             ;
-    wire                                MEM_i_mem_half_u             ;
-    wire                                MEM_i_system_halt            ;
-    wire                                MEM_i_raddr_change           ;  
-    wire                                MEM_i_waddr_change           ;
+    wire               [   `ysyx_23060136_CSR_W-1:0]          MEM_i_csr_rd_1               ;
+    wire               [   `ysyx_23060136_CSR_W-1:0]          MEM_i_csr_rd_2               ;
+    wire                                                      MEM_i_write_gpr              ;
+    wire                                                      MEM_i_write_csr_1            ;
+    wire                                                      MEM_i_write_csr_2            ;
+    wire                                                      MEM_i_mem_to_reg             ;
+    wire                                                      MEM_i_system_halt            ;
+
 
 
     ysyx_23060136_EXU_MEM_SEG_REG  ysyx_23060136_EXU_MEM_SEG_REG_inst (
@@ -823,48 +884,52 @@ module ysyx_23060136 (
     // ===========================================================================
     // MEM
 
-    wire               [  31:0]         WB_o_rs1_data                ;
-    wire               [  31:0]         WB_o_rs2_data                ;
-    wire               [  31:0]         WB_o_csr_rs_data             ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         WB_o_rs1_data                ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         WB_o_rs2_data                ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         WB_o_csr_rs_data_1             ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         WB_o_csr_rs_data_2             ;
 
   
-    wire                                MEM_o_commit              ;
-    wire               [  31:0]         MEM_o_pc                  ;
-    wire               [  31:0]         MEM_o_inst                ;
-    wire               [  31:0]         MEM_o_ALU_ALUout          ;
-    wire               [  31:0]         MEM_o_ALU_CSR_out         ;
-    wire               [  31:0]         MEM_o_rdata               ;
-    wire                                MEM_o_write_gpr           ;
-    wire                                MEM_o_write_csr           ;
-    wire                                MEM_o_mem_to_reg          ;
+    wire                                                     MEM_o_commit              ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         MEM_o_pc                  ;
+    wire               [  `ysyx_23060136_INST_W-1:0]         MEM_o_inst                ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         MEM_o_ALU_ALUout          ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         MEM_o_ALU_CSR_out         ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         MEM_o_rdata               ;
+    wire                                                     MEM_o_write_gpr           ;
+    wire                                                     MEM_o_write_csr_1         ;
+    wire                                                     MEM_o_write_csr_2         ;
+    wire                                                     MEM_o_mem_to_reg          ;
+
     wire               [    `ysyx_23060136_GPR_W-1:0]         MEM_o_rd                  ;
-    wire               [   2:0]         MEM_o_csr_rd              ;
-    wire                                MEM_o_system_halt         ;
+    wire               [   `ysyx_23060136_CSR_W -1:0]         MEM_o_csr_rd_1              ;
+    wire               [   `ysyx_23060136_CSR_W -1:0]         MEM_o_csr_rd_2              ;
+    wire                                                      MEM_o_system_halt         ;
 
-    wire               [  31:0]         FORWARD_rs1_data_EXU       ;
-    wire               [  31:0]         FORWARD_rs2_data_EXU       ;
-    wire               [  31:0]         FORWARD_csr_rs_data_EXU    ;
-    wire                                FORWARD_rs1_hazard_EXU     ;
-    wire                                FORWARD_rs2_hazard_EXU     ;
-    wire                                FORWARD_csr_rs_hazard_EXU  ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         FORWARD_rs1_data_EXU       ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         FORWARD_rs2_data_EXU       ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         FORWARD_csr_rs_data_EXU    ;
+    wire                                                     FORWARD_rs1_hazard_EXU     ;
+    wire                                                     FORWARD_rs2_hazard_EXU     ;
+    wire                                                     FORWARD_csr_rs_hazard_EXU  ;
 
 
   
-    wire                                ARBITER_MEM_raddr_ready    ;
-    wire               [  31:0]         ARBITER_MEM_raddr          ;
-    wire                                ARBITER_MEM_raddr_valid    ;
-    wire               [  63:0]         ARBITER_MEM_rdata          ;
-    wire                                ARBITER_MEM_rdata_valid    ;
-    wire                                ARBITER_MEM_rdata_ready    ;
-    wire               [   2:0]         ARBITER_MEM_rsize          ;
+    wire                                                     ARBITER_MEM_raddr_ready    ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         ARBITER_MEM_raddr          ;
+    wire                                                     ARBITER_MEM_raddr_valid    ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         ARBITER_MEM_rdata          ;
+    wire                                                     ARBITER_MEM_rdata_valid    ;
+    wire                                                     ARBITER_MEM_rdata_ready    ;
+    wire               [   2:0]                              ARBITER_MEM_rsize          ;
 
-    wire                                CLINT_MEM_raddr_ready      ;
-    wire               [  31:0]         CLINT_MEM_raddr            ;
-    wire                                CLINT_MEM_raddr_valid      ;
-    wire               [  63:0]         CLINT_MEM_rdata            ;
-    wire                                CLINT_MEM_rdata_valid      ;
-    wire                                CLINT_MEM_rdata_ready      ;
-    wire               [   2:0]         CLINT_MEM_rsize            ;
+    wire                                                     CLINT_MEM_raddr_ready      ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         CLINT_MEM_raddr            ;
+    wire                                                     CLINT_MEM_raddr_valid      ;
+    wire               [  `ysyx_23060136_BITS_W-1:0]         CLINT_MEM_rdata            ;
+    wire                                                     CLINT_MEM_rdata_valid      ;
+    wire                                                     CLINT_MEM_rdata_ready      ;
+    wire               [   2:0]                              CLINT_MEM_rsize            ;
   
 
                             
@@ -899,9 +964,9 @@ module ysyx_23060136 (
         .WB_o_rd                           (WB_o_rd                   ),
         .WB_o_csr_rd_1                     (WB_o_csr_rd_1             ),
         .WB_o_csr_rd_2                     (WB_o_csr_rd_2             ),
-        .WB_o_write_gpr                    (WB_o_write_gpr            ),
-        .WB_o_write_csr_1                  (WB_o_write_csr_1          ),
-        .WB_o_write_csr_2                  (WB_o_write_csr_2          ),
+        .WB_o_write_gpr                    (WB_i_write_gpr            ),
+        .WB_o_write_csr_1                  (WB_i_write_csr_1          ),
+        .WB_o_write_csr_2                  (WB_i_write_csr_2          ),
         .WB_o_rs1_data                     (WB_o_rs1_data             ),
         .WB_o_rs2_data                     (WB_o_rs2_data             ),
         .WB_o_csr_rs_data_1                (WB_o_csr_rs_data_1        ),
@@ -989,20 +1054,22 @@ module ysyx_23060136 (
 
     // ===========================================================================
     // MEM -> WB
-    wire                                FORWARD_flushME    = `ysyx_23060136_false  ;
-    wire                                FORWARD_stallWB              ;
-    wire                                WB_i_commit                  ;
+    wire                                                     FORWARD_flushME    = `ysyx_23060136_false  ;
+    wire                                                     FORWARD_stallWB              ;
+    wire                                                     WB_i_commit                  ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         WB_i_pc                      ;
     wire               [  `ysyx_23060136_INST_W-1:0]         WB_i_inst                    ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         WB_i_ALU_ALUout              ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         WB_i_ALU_CSR_out             ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         WB_i_rdata                   ;
-    wire                                WB_i_mem_to_reg              ;
-    wire                                WB_i_system_halt             ;
-    wire                                WB_i_write_gpr               ;
-    wire                                WB_i_write_csr               ;
-    wire               [ `ysyx_23060136_GPR_W-1 : 0]          WB_i_rd                      ;
-    wire               [2 : 0]          WB_i_csr_rd                  ;
+    wire                                                     WB_i_mem_to_reg              ;
+    wire                                                     WB_i_system_halt             ;
+    wire                                                     WB_i_write_gpr               ;
+    wire                                                     WB_i_write_csr_1             ;
+    wire                                                     WB_i_write_csr_2             ;
+    wire               [ `ysyx_23060136_GPR_W-1 : 0]         WB_i_rd                      ;
+    wire               [`ysyx_23060136_CSR_W-1 : 0]          WB_i_csr_rd_1                ;
+    wire               [`ysyx_23060136_CSR_W-1 : 0]          WB_i_csr_rd_2                ;
                         
     ysyx_23060136_MEM_WB_SEG_REG  ysyx_23060136_MEM_WB_SEG_REG_inst (
         .clk                               (clk                       ),

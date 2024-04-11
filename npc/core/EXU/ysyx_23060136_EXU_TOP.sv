@@ -22,14 +22,11 @@ module ysyx_23060136_EXU_TOP (
         input              [  `ysyx_23060136_INST_W-1 :0]         EXU_i_inst                   ,
         input                                                     EXU_i_commit                 ,
         input              [  `ysyx_23060136_GPR_W-1  :0]         EXU_i_rd                     ,
-        input              [  `ysyx_23060136_GPR_W-1  :0]         EXU_i_rs1                    ,
-        input              [  `ysyx_23060136_GPR_W-1  :0]         EXU_i_rs2                    ,
         input              [  `ysyx_23060136_BITS_W-1 :0]         EXU_i_imm                    ,
         input              [  `ysyx_23060136_BITS_W-1 :0]         EXU_i_rs1_data               ,
         input              [  `ysyx_23060136_BITS_W-1 :0]         EXU_i_rs2_data               ,
         input              [  `ysyx_23060136_CSR_W-1:0  ]         EXU_i_csr_rd_1               ,
         input              [  `ysyx_23060136_CSR_W-1:0  ]         EXU_i_csr_rd_2               ,
-        input              [  `ysyx_23060136_CSR_W-1:0  ]         EXU_i_csr_rs                 ,
         input              [  `ysyx_23060136_BITS_W-1 :0]         EXU_i_csr_rs_data            ,
 
         // ===========================================================================
@@ -118,15 +115,11 @@ module ysyx_23060136_EXU_TOP (
         // origin signal pushed to the next stage
         // mem
         output             [   `ysyx_23060136_GPR_W-1:0]          EXU_o_rd                 ,
-        // forward unit will use the rs
-        output             [   `ysyx_23060136_GPR_W-1:0]          EXU_o_rs1                ,
-        output             [   `ysyx_23060136_GPR_W-1:0]          EXU_o_rs2                ,
         // mem write data
         output             [  `ysyx_23060136_BITS_W-1 :0]         EXU_o_HAZARD_rs2_data    ,
         output             [   `ysyx_23060136_CSR_W-1:0]          EXU_o_csr_rd_1           ,
         output             [   `ysyx_23060136_CSR_W-1:0]          EXU_o_csr_rd_2           ,
         // forward unit
-        output             [   `ysyx_23060136_CSR_W-1:0]          EXU_o_csr_rs             ,
         // mem
         output                                                    EXU_o_write_gpr          ,
         output                                                    EXU_o_write_csr_1        ,
@@ -268,11 +261,8 @@ module ysyx_23060136_EXU_TOP (
         .EXU1_inst                         (EXU_i_inst                 ),
         .EXU1_commit                       (EXU_i_commit               ),
         .EXU1_rd                           (EXU_i_rd                    ),
-        .EXU1_rs1                          (EXU_i_rs1                   ),
-        .EXU1_rs2                          (EXU_i_rs2                   ),
         .EXU1_csr_rd_1                     (EXU_i_csr_rd_1              ),
         .EXU1_csr_rd_2                     (EXU_i_csr_rd_2              ),
-        .EXU1_csr_rs                       (EXU_i_csr_rs                ),
 
         .EXU1_HAZARD_rs1_data              (HAZARD_rs1_data_EXU1       ),
         .EXU1_HAZARD_rs2_data              (HAZARD_rs2_data_EXU1       ),
@@ -305,11 +295,8 @@ module ysyx_23060136_EXU_TOP (
         .EXU2_commit                       (EXU_o_commit               ),
 
         .EXU2_rd                           (EXU_o_rd                    ), 
-        .EXU2_rs1                          (EXU_o_rs1                   ), 
-        .EXU2_rs2                          (EXU_o_rs2                   ), 
         .EXU2_csr_rd_1                     (EXU_o_csr_rd_1              ), 
         .EXU2_csr_rd_2                     (EXU_o_csr_rd_2              ), 
-        .EXU2_csr_rs                       (EXU_o_csr_rs                ), 
 
         .EXU2_HAZARD_rs1_data              (EXU2_HAZARD_rs1_data       ),
         .EXU2_HAZARD_rs2_data              (EXU_o_HAZARD_rs2_data      ),
