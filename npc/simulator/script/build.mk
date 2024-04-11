@@ -1,9 +1,10 @@
 # /*
 #  * @Author: Juqi Li @ NJU 
-#  * @Date: 2024-01-16 13:22:39 
+#  * @Date: 2024-04-12 01:07:16 
 #  * @Last Modified by:   Juqi Li @ NJU 
-#  * @Last Modified time: 2024-03-22 11:22:39 
+#  * @Last Modified time: 2024-04-12 01:07:16 
 #  */
+
 
 IMG ?= 
 VERILATOR = verilator
@@ -14,7 +15,9 @@ BATCH_MODE = -b
 override ARGS ?= --log=$(OBJ_DIR)/npc-log.txt
 override ARGS += $(ARGS_DIFF)
 
-$(VBIN): $(CSRC) $(VSRC) $(NVBOARD_ARCHIVE)
+
+
+$(VBIN): $(CSRC) $(VSRC)
 	@echo "$(COLOR_YELLOW)[VERILATOR]$(COLOR_NONE) $(VBIN)"
 	@echo "$(COLOR_YELLOW)[GENERATE]$(COLOR_NONE) Creating System Verilog Model"
 	@$(VERILATOR) $(VFLAGS) $^ $(CINC_PATH)
@@ -25,10 +28,6 @@ $(NEMUISO):
 	@echo "$(COLOR_YELLOW)[Make DIFF]$(COLOR_NONE) $(notdir $(NEMU_HOME))/build/nemu-interpreter-so"
 	@$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) app
 
-# constraint file
-$(SRC_AUTO_BIND): $(NXDC_FILES)
-	$(shell mkdir -p $(OBJ_DIR))
-	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 run: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
@@ -58,6 +57,6 @@ clean-all:
 	@echo rm -rf OBJ_DIR *vcd NEMU_DIFF
 	@rm -rf $(OBJ_DIR)
 	@rm -rf *.vcd
-	@make -s -C $(NEMU_DIR) clean
+	@make -s -C $(NEMU_HONE) clean
 
 .PHONY: run gdb wave clean-all clean
