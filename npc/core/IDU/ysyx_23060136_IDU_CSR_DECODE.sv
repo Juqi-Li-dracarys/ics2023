@@ -41,7 +41,7 @@
                                  ({`ysyx_23060136_CSR_W{csr_mcause}}    & `ysyx_23060136_mcause)    | ({`ysyx_23060136_CSR_W{csr_mepc}}       & `ysyx_23060136_mepc)    |
                                  ({`ysyx_23060136_CSR_W{csr_mvendorid}} & `ysyx_23060136_mvendorid) | ({`ysyx_23060136_CSR_W{csr_marchid}}    & `ysyx_23060136_marchid) ;
 
-    assign   IDU_csr_rd_2      = {`ysyx_23060136_CSR_W{csr_ecall}}      & `ysyx_23060136_mstatus;
+    assign   IDU_csr_rd_2      = {`ysyx_23060136_CSR_W{csr_ecall}}      & `ysyx_23060136_mcause;
 
     
 endmodule
