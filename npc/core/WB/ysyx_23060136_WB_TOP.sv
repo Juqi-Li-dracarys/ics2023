@@ -34,20 +34,26 @@ module ysyx_23060136_WB_TOP (
         // ===========================================================================
         // write back to IDU GPR register file and CSR register file
         output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_rf_busW               ,
-        output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_csr_busW              ,
+        output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_csr_busW_1            ,
+        output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_csr_busW_2            ,
+
         output             [  `ysyx_23060136_GPR_W-1:0]           WB_o_rd                    ,
-        output             [   `ysyx_23060136_CSR_W-1:0]          WB_o_csr_rd                ,
+        output             [  `ysyx_23060136_CSR_W-1:0]           WB_o_csr_rd_1              ,
+        output             [  `ysyx_23060136_CSR_W-1:0]           WB_o_csr_rd_2              ,
+
         output                                                    WB_o_RegWr                 ,
-        output                                                    WB_o_CSRWr                 ,
+        output                                                    WB_o_CSRWr_1               ,
+        output                                                    WB_o_CSRWr_2               ,
 
         // write data for FORWARD
         output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_rs1_data              ,
         output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_rs2_data              ,
-        output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_csr_rs_data           ,
+        output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_csr_rs_data_1         ,
+        output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_csr_rs_data_2         ,
 
         // system
         output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_pc                    ,
-        output             [  `ysyx_23060136_BITS_W-1:0]          WB_o_inst                  ,
+        output             [  `ysyx_23060136_INST_W-1:0]          WB_o_inst                  ,
         output                                                    WB_o_commit                ,
         output                                                    WB_o_system_halt           
 
@@ -56,11 +62,14 @@ module ysyx_23060136_WB_TOP (
     // write back bus for gpr
     assign  WB_o_rf_busW        =    WB_i_mem_to_reg ?  WB_i_rdata : WB_i_ALU_ALUout ;
     // write back bus for csr
-    assign  WB_o_csr_busW       =    WB_i_ALU_CSR_out;
+    assign  WB_o_csr_busW_1     =    WB_i_ALU_CSR_out;
+    assign  WB_o_csr_busW_2     =    `ysyx_23060136_ecall_v;
     assign  WB_o_rd             =    WB_i_rd;
-    assign  WB_o_csr_rd         =    WB_i_csr_rd ;
+    assign  WB_o_csr_rd_1       =    WB_i_csr_rd_1 ;
+    assign  WB_o_csr_rd_2       =    WB_i_csr_rd_2 ;
     assign  WB_o_RegWr          =    WB_i_write_gpr;
-    assign  WB_o_CSRWr          =    WB_i_write_csr;
+    assign  WB_o_CSRWr_1        =    WB_i_write_csr_1;
+    assign  WB_o_CSRWr_2        =    WB_i_write_csr_2;
     assign  WB_o_commit         =    WB_i_commit;
     assign  WB_o_system_halt    =    WB_i_system_halt;
     assign  WB_o_pc             =    WB_i_pc;
@@ -69,7 +78,8 @@ module ysyx_23060136_WB_TOP (
     // signal for FORWARD
     assign  WB_o_rs1_data       =    WB_o_rf_busW ; 
     assign  WB_o_rs2_data       =    WB_o_rf_busW ;
-    assign  WB_o_csr_rs_data    =    WB_o_csr_busW;
+    assign  WB_o_csr_rs_data_1  =    WB_o_csr_busW_1;
+    assign  WB_o_csr_rs_data_2  =    WB_o_csr_busW_2;
 
 endmodule
 

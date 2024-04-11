@@ -1,15 +1,16 @@
 /*
  * @Author: Juqi Li @ NJU 
- * @Date: 2024-03-07 20:07:19 
+ * @Date: 2024-04-11 16:43:25 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-16 15:43:54
+ * @Last Modified time: 2024-04-11 17:17:14
  */
 
 
-`include "DEFINES_ysyx_23060136.sv"
+
+`include "ysyx_23060136_DEFINES.sv"
 
 
-// Top module of riscv32e core
+// Top module of RISCV-64IM core with 7 stage pipeline
 // ===========================================================================
 module ysyx_23060136 (
         // YSYX-SoC AXI 标准总线接口，目前只考虑 CPU core 为 master
@@ -77,7 +78,64 @@ module ysyx_23060136 (
         output            [   1:0]         io_slave_rresp              ,
         output            [  63:0]         io_slave_rdata              ,
         output                             io_slave_rlast              ,
-        output            [   3:0]         io_slave_rid                
+        output            [   3:0]         io_slave_rid                ,
+        // ===========================================================================
+        // sram
+        output             [   5:0]        io_sram0_addr               ,             
+        output                             io_sram0_cen                ,             
+        output                             io_sram0_wen                ,             
+        output             [ 127:0]        io_sram0_wmask              ,             
+        output             [ 127:0]        io_sram0_wdata              ,             
+        input              [ 127:0]        io_sram0_rdata              ,
+
+        output             [   5:0]        io_sram1_addr               ,             
+        output                             io_sram1_cen                ,             
+        output                             io_sram1_wen                ,             
+        output             [ 127:0]        io_sram1_wmask              ,             
+        output             [ 127:0]        io_sram1_wdata              ,             
+        input              [ 127:0]        io_sram1_rdata              ,
+
+        output             [   5:0]        io_sram2_addr               ,             
+        output                             io_sram2_cen                ,             
+        output                             io_sram2_wen                ,             
+        output             [ 127:0]        io_sram2_wmask              ,             
+        output             [ 127:0]        io_sram2_wdata              ,             
+        input              [ 127:0]        io_sram2_rdata              ,
+
+        output             [   5:0]        io_sram3_addr               ,             
+        output                             io_sram3_cen                ,             
+        output                             io_sram3_wen                ,             
+        output             [ 127:0]        io_sram3_wmask              ,             
+        output             [ 127:0]        io_sram3_wdata              ,             
+        input              [ 127:0]        io_sram3_rdata              ,
+
+        output             [   5:0]        io_sram4_addr               ,             
+        output                             io_sram4_cen                ,             
+        output                             io_sram4_wen                ,             
+        output             [ 127:0]        io_sram4_wmask              ,             
+        output             [ 127:0]        io_sram4_wdata              ,             
+        input              [ 127:0]        io_sram4_rdata              ,
+
+        output             [   5:0]        io_sram5_addr               ,             
+        output                             io_sram5_cen                ,             
+        output                             io_sram5_wen                ,             
+        output             [ 127:0]        io_sram5_wmask              ,             
+        output             [ 127:0]        io_sram5_wdata              ,             
+        input              [ 127:0]        io_sram5_rdata              , 
+
+        output             [   5:0]        io_sram6_addr               ,
+        output                             io_sram6_cen                ,             
+        output                             io_sram6_wen                ,             
+        output             [ 127:0]        io_sram6_wmask              ,             
+        output             [ 127:0]        io_sram6_wdata              ,             
+        input              [ 127:0]        io_sram6_rdata              ,
+                      
+        output             [   5:0]        io_sram7_addr               ,             
+        output                             io_sram7_cen                ,             
+        output                             io_sram7_wen                ,             
+        output             [ 127:0]        io_sram7_wmask              ,             
+        output             [ 127:0]        io_sram7_wdata              ,             
+        input              [ 127:0]        io_sram7_rdata                         
 
     );
      
@@ -88,88 +146,91 @@ module ysyx_23060136 (
      wire            rst                                           =    reset                           ;
     
      // PC 地址错误
-     wire            IFU_error_signal     /* verilator public */                                        ;
+     wire                                   IFU_error_signal     /* verilator public */                                        ;
      // AXI 返回信息错误
-     wire            MEM_error_signal     /* verilator public */                                        ;
-     wire            ARBITER_error_signal /* verilator public */                                        ;
-     wire            inst_commit          /* verilator public */   =     WB_o_commit                    ;
-     wire   [31 : 0] pc_cur               /* verilator public */   =     WB_o_pc                        ;
-     wire   [31 : 0] inst                 /* verilator public */   =     WB_o_inst                      ;
-     wire            system_halt          /* verilator public */   =     WB_o_system_halt               ;
+     wire                                   MEM_error_signal     /* verilator public */                                        ;
+     wire                                   ARBITER_error_signal /* verilator public */                                        ;
+     wire                                   inst_commit          /* verilator public */   =     WB_o_commit                    ;
+     wire   [`ysyx_23060136_BITS_W-1 : 0]   pc_cur               /* verilator public */   =     WB_o_pc                        ;
+     wire   [`ysyx_23060136_INST_W-1 : 0]   inst                 /* verilator public */   =     WB_o_inst                      ;
+     wire                                   system_halt          /* verilator public */   =     WB_o_system_halt               ;
 
 
     // ===========================================================================
     // 暂时不考虑的信号
-     assign          io_slave_awready        =            `false                  ;           
-     assign          io_slave_wready         =            `false                  ;           
-     assign          io_slave_bvalid         =            `false                  ;           
-     assign          io_slave_bresp          =            `false                  ;           
-     assign          io_slave_bid            =            `false                  ;           
-     assign          io_slave_arready        =            `false                  ;           
-     assign          io_slave_rvalid         =            `false                  ;           
-     assign          io_slave_rresp          =            `false                  ;           
-     assign          io_slave_rdata          =            `false                  ;           
-     assign          io_slave_rlast          =            `false                  ;           
-     assign          io_slave_rid            =            `false                  ;           
+     assign          io_slave_awready        =     `ysyx_23060136_false    ;           
+     assign          io_slave_wready         =     `ysyx_23060136_false    ;           
+     assign          io_slave_bvalid         =     `ysyx_23060136_false    ;           
+     assign          io_slave_bresp          =     `ysyx_23060136_false    ;           
+     assign          io_slave_bid            =     `ysyx_23060136_false    ;           
+     assign          io_slave_arready        =     `ysyx_23060136_false    ;           
+     assign          io_slave_rvalid         =     `ysyx_23060136_false    ;           
+     assign          io_slave_rresp          =     `ysyx_23060136_false    ;           
+     assign          io_slave_rdata          =     `ysyx_23060136_false    ;           
+     assign          io_slave_rlast          =     `ysyx_23060136_false    ;           
+     assign          io_slave_rid            =     `ysyx_23060136_false    ;
+     
+
 
 
     // ===========================================================================
     // IFU
-    wire                                 FORWARD_stallIF            ;
-    wire                [  31:0]         BRANCH_branch_target       ;
-    wire                                 BRANCH_PCSrc               ;
-    wire                [  31:0]         IFU_o_inst                 ;
-    wire                [  31:0]         IFU_o_pc                   ;
-    wire                                 IFU_o_valid                ;
+    wire                                                      FORWARD_stallIF            ;
+    wire                [  `ysyx_23060136_BITS_W-1:0]         BRANCH_branch_target       ;
+    wire                                                      BRANCH_PCSrc               ;
+    wire                [  `ysyx_23060136_INST_W-1:0]         IFU_o_inst                 ;
+    wire                [  `ysyx_23060136_BITS_W-1:0]         IFU_o_pc                   ;
+    wire                                                      IFU_o_valid                ;
 
-    wire                [  63:0]         ARBITER_IFU_inst           ;
-    wire                                 ARBITER_IFU_inst_valid     ;
-    wire                                 ARBITER_IFU_pc_ready       ;
-    wire                [  31:0]         ARBITER_IFU_pc             ;
-    wire                                 ARBITER_IFU_pc_valid       ;
-    wire                                 ARBITER_IFU_inst_ready     ;
+    wire                [  `ysyx_23060136_BITS_W-1:0]         ARBITER_IFU_inst           ;
+    wire                                                      ARBITER_IFU_inst_valid     ;
+    wire                                                      ARBITER_IFU_pc_ready       ;
+    wire                [  `ysyx_23060136_BITS_W-1:0]         ARBITER_IFU_pc             ;
+    wire                                                      ARBITER_IFU_pc_valid       ;
+    wire                                                      ARBITER_IFU_inst_ready     ;
   
 
-    IFU_TOP_ysyx_23060136  IFU_TOP_ysyx_23060136_inst (
-                            .clk                               (clk                       ),
-                            .rst                               (rst                       ),
-                            .FORWARD_stallIF                   (FORWARD_stallIF           ),
-                            .BRANCH_branch_target              (BRANCH_branch_target      ),
-                            .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
-                            .IFU_o_inst                        (IFU_o_inst                ),
-                            .IFU_o_pc                          (IFU_o_pc                  ),
-                            .IFU_o_valid                       (IFU_o_valid               ),
-                            .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
-                            .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
-                            .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
-                            .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
-                            .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
-                            .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ),
-                            .IFU_error_signal                  (IFU_error_signal          ) 
-                        );
+    ysyx_23060136_IFU_TOP  ysyx_23060136_IFU_TOP_inst (
+        .clk                               (clk                       ),
+        .rst                               (rst                       ),
+        .FORWARD_stallIF                   (FORWARD_stallIF           ),
+        .BRANCH_flushIF                    (BRANCH_flushIF            ),
+        .BRANCH_branch_target              (BRANCH_branch_target      ),
+        .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
+        .IFU_o_inst                        (IFU_o_inst                ),
+        .IFU_o_pc                          (IFU_o_pc                  ),
+        .IFU_o_valid                       (IFU_o_valid               ),
+        .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
+        .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
+        .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
+        .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
+        .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
+        .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ),
+        .IFU_error_signal                  (IFU_error_signal          ) 
+      );
 
 
 
     // ===========================================================================
     // IFU -> IDU SEG REG
-    wire                                 BRANCH_flushIF             ;
-    wire                                 FORWARD_stallID            ;
-    wire                                 IDU_i_commit               ;
-    wire                [  31:0]         IDU_i_pc                   ;
-    wire                [  31:0]         IDU_i_inst                 ;
+    wire                                                      BRANCH_flushIF             ;
+    wire                                                      FORWARD_stallID            ;
+    wire                                                      IDU_i_commit               ;
+    wire                [  `ysyx_23060136_BITS_W-1:0]         IDU_i_pc                   ;
+    wire                [  `ysyx_23060136_INST_W-1:0]         IDU_i_inst                 ;
 
 
-    IFU_IDU_SEG_REG_ysyx_23060136  IFU_IDU_SEG_REG_ysyx_23060136_inst (
-                                    .clk                               (clk                       ),
-                                    .rst                               (rst                       ),
-                                    .BRANCH_flushIF                    (BRANCH_flushIF            ),
-                                    .FORWARD_stallID                   (FORWARD_stallID           ),
-                                    .IFU_o_pc                          (IFU_o_pc                    ),
-                                    .IFU_o_inst                        (IFU_o_inst                  ),
-                                    .IDU_i_commit                      (IDU_i_commit                ),
-                                    .IDU_i_pc                          (IDU_i_pc                    ),
-                                    .IDU_i_inst                        (IDU_i_inst                  )
-                    );
+    ysyx_23060136_IFU_IDU_SEG  ysyx_23060136_IFU_IDU_SEG_inst (
+        .clk                               (clk                       ),
+        .rst                               (rst                       ),
+        .BRANCH_flushIF                    (BRANCH_flushIF            ),
+        .FORWARD_stallID                   (FORWARD_stallID           ),
+        .IFU_o_pc                          (IFU_o_pc                  ),
+        .IFU_o_inst                        (IFU_o_inst                ),
+        .IDU_i_commit                      (IDU_i_commit              ),
+        .IDU_i_pc                          (IDU_i_pc                  ),
+        .IDU_i_inst                        (IDU_i_inst                ) 
+      );
 
 
     
@@ -595,7 +656,7 @@ module ysyx_23060136 (
 
     // ===========================================================================
     // EXU -> MEM
-    wire                                FORWARD_flushEX    = `false  ;
+    wire                                FORWARD_flushEX    = `ysyx_23060136_false  ;
     wire                                FORWARD_stallME              ; 
     wire                                MEM_i_commit                 ;
     wire               [  31:0]         MEM_i_pc                     ;
@@ -818,7 +879,7 @@ MEM_TOP_ysyx_23060136  MEM_TOP_ysyx_23060136_inst (
 
     // ===========================================================================
     // MEM -> WB
-    wire                                FORWARD_flushME    = `false  ;
+    wire                                FORWARD_flushME    = `ysyx_23060136_false  ;
     wire                                FORWARD_stallWB              ;
     wire                                WB_i_commit                  ;
     wire               [  31:0]         WB_i_pc                      ;

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 21:51:01 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-05 21:59:32
+ * @Last Modified time: 2024-04-11 17:15:33
  */
 
 
@@ -14,16 +14,16 @@
 
 // ===========================================================================
 module ysyx_23060136_IFU_IDU_SEG (
-        input                                                   clk                        ,
-        input                                                   rst                        ,
+        input                                                    clk                        ,
+        input                                                    rst                        ,
          // forward unit signal
-        input                                                   BRANCH_flushIF             ,
+        input                                                    BRANCH_flushIF             ,
         // FORWARD unit remote control
-        input                                                   FORWARD_stallID            ,
+        input                                                    FORWARD_stallID            ,
         // IDU buffer
         input              [  `ysyx_23060136_BITS_W-1:0]         IFU_o_pc                   ,
         input              [  `ysyx_23060136_INST_W-1:0]         IFU_o_inst                 ,
-        output      logic                                       IDU_i_commit               ,
+        output      logic                                        IDU_i_commit               ,
         output      logic  [`ysyx_23060136_BITS_W-1 : 0]         IDU_i_pc                   ,
         output      logic  [`ysyx_23060136_INST_W-1 : 0]         IDU_i_inst        
     );
