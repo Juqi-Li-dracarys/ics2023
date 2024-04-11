@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-07 14:07:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-08 12:52:48
+ * @Last Modified time: 2024-04-10 17:53:09
  */
 
 
@@ -17,6 +17,7 @@ module ysyx_23060136_EXU_ALU (
 
         input                                                    BRANCH_flushEX1              ,
         input                                                    FORWARD_stallEX2             ,
+        input                                                    FORWARD_flushEX1             ,
 
         input              [  `ysyx_23060136_BITS_W-1:0]         EXU_ALU_da                   ,
         input              [  `ysyx_23060136_BITS_W-1:0]         EXU_ALU_db                   ,
@@ -215,7 +216,7 @@ module ysyx_23060136_EXU_ALU (
     end
 
     always_ff @(posedge clk) begin : state_update
-        if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
+        if(rst || ((BRANCH_flushEX1 || FORWARD_flushEX1) & ~FORWARD_stallEX2)) begin
             state <=  `ysyx_23060136_idle;
         end
         else begin
@@ -224,7 +225,7 @@ module ysyx_23060136_EXU_ALU (
     end
 
     always_ff @(posedge clk) begin : seg_update
-        if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
+        if(rst || ((BRANCH_flushEX1 || FORWARD_flushEX1) & ~FORWARD_stallEX2)) begin
             mulw            <=  `ysyx_23060136_false;
             mul_signed      <=  `ysyx_23060136_false;
             multiplicand    <=  `ysyx_23060136_false;
@@ -261,7 +262,7 @@ module ysyx_23060136_EXU_ALU (
     end
 
     always_ff @(posedge clk) begin : mul_valid_update
-        if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
+        if(rst || ((BRANCH_flushEX1 || FORWARD_flushEX1) & ~FORWARD_stallEX2)) begin
             mul_valid <= `ysyx_23060136_false;
         end
         else if(state_idle & next_state == `ysyx_23060136_ready & EXU_i_ALU_mul) begin
@@ -273,7 +274,7 @@ module ysyx_23060136_EXU_ALU (
     end
 
     always_ff @(posedge clk) begin : div_valid_update
-        if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
+        if(rst || ((BRANCH_flushEX1 || FORWARD_flushEX1) & ~FORWARD_stallEX2)) begin
             div_valid <= `ysyx_23060136_false;
         end
         else if(state_idle & next_state == `ysyx_23060136_ready & EXU_i_ALU_div) begin
@@ -285,7 +286,7 @@ module ysyx_23060136_EXU_ALU (
     end
 
     always_ff @(posedge clk) begin : update_output
-        if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
+        if(rst || ((BRANCH_flushEX1 || FORWARD_flushEX1) & ~FORWARD_stallEX2)) begin
             ALU_valid <= `ysyx_23060136_true;
         end
         else if(state_idle & (next_state == `ysyx_23060136_ready)) begin
@@ -297,7 +298,7 @@ module ysyx_23060136_EXU_ALU (
     end
 
     always_ff @(posedge clk) begin : EXU_ALU_ALUout_update
-        if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
+        if(rst || ((BRANCH_flushEX1 || FORWARD_flushEX1) & ~FORWARD_stallEX2)) begin
             EXU_ALU_ALUout  <=  `ysyx_23060136_false;
             EXU_ALU_Less    <=  `ysyx_23060136_false;
             EXU_ALU_Zero    <=  `ysyx_23060136_false;

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-07 14:31:11 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-08 12:25:46
+ * @Last Modified time: 2024-04-10 17:54:07
  */
 
 
@@ -17,6 +17,7 @@ module ysyx_23060136_EXU_SEG (
 
     input                                                         BRANCH_flushEX1             ,
     input                                                         FORWARD_stallEX2            ,
+    input                                                         FORWARD_flushEX1             ,
 
     input                  [  `ysyx_23060136_BITS_W-1:0 ]         EXU1_pc                     ,
     input                  [  `ysyx_23060136_INST_W-1 :0]         EXU1_inst                   ,
@@ -115,7 +116,7 @@ module ysyx_23060136_EXU_SEG (
 );
 
     always_ff @(posedge clk) begin : update_pc
-        if(rst || (BRANCH_flushEX1 & ~FORWARD_stallEX2)) begin
+        if(rst || ((BRANCH_flushEX1 || FORWARD_flushEX1) & ~FORWARD_stallEX2)) begin
             EXU2_pc                 <=   `ysyx_23060136_PC_RST;
             EXU2_inst               <=   `ysyx_23060136_NOP;       
             EXU2_commit             <=   `ysyx_23060136_false;

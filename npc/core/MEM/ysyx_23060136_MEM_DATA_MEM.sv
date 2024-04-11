@@ -25,7 +25,7 @@ module ysyx_23060136_MEM_DATA_MEM (
     input              [  `ysyx_23060136_BITS_W-1:0]        MEM_addr                   ,
     // write data
     input              [  `ysyx_23060136_BITS_W-1:0]        MEM_wdata                  ,
-    output  logic      [  `ysyx_23060136_BITS_W-1:0]        MEM_rdata                  ,
+    output  logic      [  `ysyx_23060136_BITS_W-1:0]        MEM_o_rdata                ,
 
     // write/read mode
     input                                                   EXU_o_write_mem            , 
@@ -248,10 +248,10 @@ module ysyx_23060136_MEM_DATA_MEM (
 
     always_ff @(posedge clk) begin : rdata_update
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
-            MEM_rdata   <=  `ysyx_23060136_false;
+            MEM_o_rdata   <=  `ysyx_23060136_false;
         end
         else if(r_state_wait & r_state_next == `ysyx_23060136_idle)begin
-            MEM_rdata   <=  ({`ysyx_23060136_BITS_W{MEM_mem_byte_u}}) & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_0000_00FF   |
+            MEM_o_rdata   <=  ({`ysyx_23060136_BITS_W{MEM_mem_byte_u}}) & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_0000_00FF   |
                             ({`ysyx_23060136_BITS_W{MEM_mem_half_u}}) & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_0000_FFFF   |
                             ({`ysyx_23060136_BITS_W{MEM_mem_word_u}}) & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_FFFF_FFFF   |
                             ({`ysyx_23060136_BITS_W{MEM_mem_byte  }}) & ((`ysyx_23060136_BITS_W'h0000_0000_0000_00FF & r_abstract) | {{56{r_abstract[7]}},  {8{1'b0}}})  |
@@ -292,6 +292,7 @@ module ysyx_23060136_MEM_DATA_MEM (
     wire                       w_state_ready   =  (w_state == `ysyx_23060136_ready);
     wire                       w_state_wait    =  (w_state == `ysyx_23060136_wait);
 
+
     always_comb begin : w_state_trans
         // 当 AXI lite 发生握手，将转移到下一个状态
         unique case(w_state)
@@ -304,7 +305,8 @@ module ysyx_23060136_MEM_DATA_MEM (
                 end
             end
             `ysyx_23060136_ready: begin
-                    if(io_master_awready & io_master_awvalid & io_master_wready & io_master_wvalid) begin
+                    // hand shake over
+                    if(!io_master_awvalid & !io_master_wvalid) begin
                         w_state_next = `ysyx_23060136_wait;
                     end
                     else begin
@@ -333,22 +335,25 @@ module ysyx_23060136_MEM_DATA_MEM (
         end
     end
 
-
-    always_ff @(posedge clk) begin : waddr_valid
+    always_ff @(posedge clk) begin : wvalid_update
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
             io_master_awvalid <= `ysyx_23060136_false;
             io_master_wvalid  <= `ysyx_23060136_false;
-            io_master_wlast   <= `ysyx_23060136_false;            
+            io_master_wlast   <= `ysyx_23060136_false;          
         end
         else if((w_state_idle & w_state_next == `ysyx_23060136_ready)) begin
             io_master_awvalid <=  `ysyx_23060136_true;
             io_master_wvalid  <=  `ysyx_23060136_true;
             io_master_wlast   <=  `ysyx_23060136_true;
         end 
-        else if((w_state_ready & w_state_next == `ysyx_23060136_wait))begin
-            io_master_awvalid <= `ysyx_23060136_false;
-            io_master_wvalid  <= `ysyx_23060136_false;
-            io_master_wlast   <= `ysyx_23060136_false; 
+        else if(w_state_ready) begin
+            if((io_master_awready))begin
+                io_master_awvalid <= `ysyx_23060136_false;
+            end
+             if((io_master_wready)) begin
+                io_master_wvalid  <= `ysyx_23060136_false;
+                io_master_wlast   <= `ysyx_23060136_false; 
+            end  
         end
     end
 
@@ -357,7 +362,7 @@ module ysyx_23060136_MEM_DATA_MEM (
             io_master_awaddr  <= `ysyx_23060136_PC_RST;
             io_master_wdata   <= `ysyx_23060136_false; 
             io_master_awsize  <= `ysyx_23060136_false; 
-            io_master_wstrb   <= `ysyx_23060136_false;  
+            io_master_wstrb   <= `ysyx_23060136_false;
         end
         else if(w_state_idle & w_state_next == `ysyx_23060136_ready) begin
             io_master_awaddr  <=    {MEM_addr[63 : 3], {3{1'b0}}};

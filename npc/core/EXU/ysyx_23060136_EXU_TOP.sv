@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-07 16:26:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-07 17:31:00
+ * @Last Modified time: 2024-04-10 18:30:51
  */
 
 
@@ -14,7 +14,9 @@
 module ysyx_23060136_EXU_TOP (
         input                                                     clk                          ,
         input                                                     rst                          ,
+
         input                                                     FORWARD_stallEX2             ,
+        input                                                     FORWARD_flushEX1             ,
 
         input              [  `ysyx_23060136_BITS_W-1 :0]         EXU_i_pc                     ,
         input              [  `ysyx_23060136_INST_W-1 :0]         EXU_i_inst                   ,
@@ -168,15 +170,19 @@ module ysyx_23060136_EXU_TOP (
         .EXU1_csr_rs_data                  (EXU_i_csr_rs_data         ),
         .EXU1_pc                           (EXU_i_pc                  ),
         .EXU1_imm                          (EXU_i_imm                 ),
+
         .FORWARD_rs1_data_EXU1             (FORWARD_rs1_data_EXU1     ),
         .FORWARD_rs2_data_EXU1             (FORWARD_rs2_data_EXU1     ),
         .FORWARD_csr_rs_data_EXU1          (FORWARD_csr_rs_data_EXU1  ),
+
         .FORWARD_rs1_hazard_EXU1           (FORWARD_rs1_hazard_EXU1   ),
         .FORWARD_rs2_hazard_EXU1           (FORWARD_rs2_hazard_EXU1   ),
         .FORWARD_csr_rs_hazard_EXU1        (FORWARD_csr_rs_hazard_EXU1),
+        
         .HAZARD_rs1_data_EXU1              (HAZARD_rs1_data_EXU1      ),
         .HAZARD_rs2_data_EXU1              (HAZARD_rs2_data_EXU1      ),
         .HAZARD_csr_rs_data_EXU1           (HAZARD_csr_rs_data_EXU1   ),
+        
         .EXU1_ALU_i1_rs1                   (EXU_i_ALU_i1_rs1          ),
         .EXU1_ALU_i1_pc                    (EXU_i_ALU_i1_pc           ),
         .EXU1_ALU_i2_rs2                   (EXU_i_ALU_i2_rs2          ),
@@ -192,6 +198,7 @@ module ysyx_23060136_EXU_TOP (
     .clk                               (clk                       ),
     .rst                               (rst                       ),
     .BRANCH_flushEX1                   (BRANCH_flushEX1           ),
+    .FORWARD_flushEX1                  (FORWARD_flushEX1           ),
     .FORWARD_stallEX2                  (FORWARD_stallEX2          ),
     .EXU_ALU_da                        (EXU_ALU_da                ),
     .EXU_ALU_db                        (EXU_ALU_db                ),
@@ -255,6 +262,7 @@ module ysyx_23060136_EXU_TOP (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
         .BRANCH_flushEX1                   (BRANCH_flushEX1           ),
+        .FORWARD_flushEX1                  (FORWARD_flushEX1           ),
         .FORWARD_stallEX2                  (FORWARD_stallEX2          ),
         .EXU1_pc                           (EXU_i_pc                   ),
         .EXU1_inst                         (EXU_i_inst                 ),
