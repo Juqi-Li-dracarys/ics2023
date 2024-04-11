@@ -12,7 +12,7 @@
  
  // Arbiter for IFU and MEM reading section 
  // ===========================================================================
- module ysyx_23060136_PUBLIC_ARBITER (
+ module ysyx_23060136_ARBITER (
     input                                                   clk                         ,
     input                                                   rst                         ,
     // ===========================================================================
