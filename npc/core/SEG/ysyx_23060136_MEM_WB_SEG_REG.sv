@@ -12,83 +12,91 @@
       MEM -> MEM_WB_REG -> WB
 */
 
-
 // ===========================================================================
-module MEM_WB_SEG_REG_ysyx_23060136 (
-        input                               clk                        ,
-        input                               rst                        ,
+module ysyx_23060136_MEM_WB_SEG_REG (
+        input                                                    clk                        ,
+        input                                                    rst                        ,
         // forward signal
-        input                               FORWARD_flushME            ,
-        input                               FORWARD_stallWB            ,
+        input                                                    FORWARD_flushME            ,
+        input                                                    FORWARD_stallWB            ,
 
-        input                               MEM_o_commit               ,
-        input             [31 : 0]          MEM_o_pc                   ,
-        input             [31 : 0]          MEM_o_inst                 ,
+        input                                                    MEM_o_commit               ,
+        input             [`ysyx_23060136_BITS_W-1 : 0]          MEM_o_pc                   ,
+        input             [`ysyx_23060136_INST_W-1 : 0]          MEM_o_inst                 ,
 
-        input             [31 : 0]          MEM_o_ALU_ALUout           ,
-        input             [31 : 0]          MEM_o_ALU_CSR_out          ,
-        input             [31 : 0]          MEM_o_rdata                ,
+        input             [`ysyx_23060136_BITS_W-1 : 0]          MEM_o_ALU_ALUout           ,
+        input             [`ysyx_23060136_BITS_W-1 : 0]          MEM_o_ALU_CSR_out          ,
+        input             [`ysyx_23060136_BITS_W-1 : 0]          MEM_o_rdata                ,
 
-        input                               MEM_o_write_gpr            ,
-        input                               MEM_o_write_csr            ,
-        input                               MEM_o_mem_to_reg           ,
+        input                                                    MEM_o_write_gpr            ,
+        input                                                    MEM_o_write_csr_1          ,
+        input                                                    MEM_o_write_csr_2          ,
+        input                                                    MEM_o_mem_to_reg           ,
 
-        input             [4 : 0]           MEM_o_rd                   ,
-        input             [2 : 0]           MEM_o_csr_rd               ,
+        input             [`ysyx_23060136_GPR_W-1 : 0]           MEM_o_rd                   ,
+        input             [`ysyx_23060136_CSR_W-1 : 0]           MEM_o_csr_rd_1             ,
+        input             [`ysyx_23060136_CSR_W-1 : 0]           MEM_o_csr_rd_2             ,
         // system signal
-        input                               MEM_o_system_halt          ,
+        input                                                    MEM_o_system_halt          ,
+
         // ===========================================================================
-        output   logic                      WB_i_commit                  ,
-        output   logic    [31 : 0]          WB_i_pc                      ,
-        output   logic    [31 : 0]          WB_i_inst                    ,
+        output    logic                                          WB_i_commit               ,
+        output    logic   [`ysyx_23060136_BITS_W-1 : 0]          WB_i_pc                   ,
+        output    logic   [`ysyx_23060136_INST_W-1 : 0]          WB_i_inst                 ,
 
-        output   logic    [31 : 0]          WB_i_ALU_ALUout              ,
-        output   logic    [31 : 0]          WB_i_ALU_CSR_out             ,
-        output   logic    [31 : 0]          WB_i_rdata                   ,
+        output    logic   [`ysyx_23060136_BITS_W-1 : 0]          WB_i_ALU_ALUout           ,
+        output    logic   [`ysyx_23060136_BITS_W-1 : 0]          WB_i_ALU_CSR_out          ,
+        output    logic   [`ysyx_23060136_BITS_W-1 : 0]          WB_i_rdata                ,
 
-        output   logic                      WB_i_write_gpr               ,
-        output   logic                      WB_i_write_csr               ,
-        output   logic                      WB_i_mem_to_reg              ,
+        output    logic                                          WB_i_write_gpr            ,
+        output    logic                                          WB_i_write_csr_1          ,
+        output    logic                                          WB_i_write_csr_2          ,
+        output    logic                                          WB_i_mem_to_reg           ,
 
-        output   logic    [4 : 0]           WB_i_rd                      ,
-        output   logic    [2 : 0]           WB_i_csr_rd                  ,
-
-        output   logic                      WB_i_system_halt             
+        output    logic   [`ysyx_23060136_GPR_W-1 : 0]           WB_i_rd                   ,
+        output    logic   [`ysyx_23060136_CSR_W-1 : 0]           WB_i_csr_rd_1             ,
+        output    logic   [`ysyx_23060136_CSR_W-1 : 0]           WB_i_csr_rd_2             ,
+        // system signal
+        output    logic                                          WB_i_system_halt              
 
     );
 
     always_ff @(posedge clk) begin : update_data
         if(rst || (FORWARD_flushME & ~FORWARD_stallWB)) begin
-            WB_i_commit         <=     `false;
-            WB_i_pc             <=     `PC_RST;
-            WB_i_inst           <=     `NOP;
-            WB_i_ALU_ALUout     <=     32'b0;
-            WB_i_ALU_CSR_out    <=     32'b0;
-            WB_i_rdata          <=     32'b0;
+            WB_i_commit         <=     `ysyx_23060136_false;
+            WB_i_pc             <=     `ysyx_23060136_PC_RST;
+            WB_i_inst           <=     `ysyx_23060136_NOP;
+            WB_i_ALU_ALUout     <=     `ysyx_23060136_false;
+            WB_i_ALU_CSR_out    <=     `ysyx_23060136_false;
+            WB_i_rdata          <=     `ysyx_23060136_false;
 
-            WB_i_write_gpr      <=     1'b0;
-            WB_i_write_csr      <=     1'b0;
-            WB_i_mem_to_reg     <=     1'b0;
+            WB_i_write_gpr      <=     `ysyx_23060136_false;
+            WB_i_write_csr_1    <=     `ysyx_23060136_false;
+            WB_i_write_csr_2    <=     `ysyx_23060136_false;
+            WB_i_mem_to_reg     <=     `ysyx_23060136_false;
 
-            WB_i_rd             <=     5'b0;
-            WB_i_csr_rd         <=     3'b0;
-            WB_i_system_halt    <=     1'b0;
+            WB_i_rd             <=     `ysyx_23060136_false;
+            WB_i_csr_rd_1       <=     `ysyx_23060136_false;
+            WB_i_csr_rd_2       <=     `ysyx_23060136_false;
+            WB_i_system_halt    <=     `ysyx_23060136_false;
         end
-        else begin
-            WB_i_commit         <=     FORWARD_stallWB  ? `false              : MEM_o_commit;
-            WB_i_pc             <=     FORWARD_stallWB  ?  WB_i_pc            : MEM_o_pc;
-            WB_i_inst           <=     FORWARD_stallWB  ?  WB_i_inst          : MEM_o_inst;
-            WB_i_ALU_ALUout     <=     FORWARD_stallWB  ?  WB_i_ALU_ALUout    : MEM_o_ALU_ALUout;
-            WB_i_ALU_CSR_out    <=     FORWARD_stallWB  ?  WB_i_ALU_CSR_out   : MEM_o_ALU_CSR_out;
-            WB_i_rdata          <=     FORWARD_stallWB  ?  WB_i_rdata         : MEM_o_rdata;
+        else if(~FORWARD_stallWB)begin
+            WB_i_commit         <=     MEM_o_commit;
+            WB_i_pc             <=     MEM_o_pc;
+            WB_i_inst           <=     MEM_o_inst;
+            WB_i_ALU_ALUout     <=     MEM_o_ALU_ALUout;
+            WB_i_ALU_CSR_out    <=     MEM_o_ALU_CSR_out;
+            WB_i_rdata          <=     MEM_o_rdata;
 
-            WB_i_write_gpr      <=     FORWARD_stallWB  ?  WB_i_write_gpr     : MEM_o_write_gpr;
-            WB_i_write_csr      <=     FORWARD_stallWB  ?  WB_i_write_csr     : MEM_o_write_csr;
-            WB_i_mem_to_reg     <=     FORWARD_stallWB  ?  WB_i_mem_to_reg    : MEM_o_mem_to_reg;
+            WB_i_write_gpr      <=     MEM_o_write_gpr;
+            WB_i_write_csr_1    <=     MEM_o_write_csr_1;
+            WB_i_write_csr_2    <=     MEM_o_write_csr_2;
+            WB_i_mem_to_reg     <=     MEM_o_mem_to_reg;
 
-            WB_i_rd             <=     FORWARD_stallWB  ?  WB_i_rd            : MEM_o_rd;
-            WB_i_csr_rd         <=     FORWARD_stallWB  ?  WB_i_csr_rd        : MEM_o_csr_rd;
-            WB_i_system_halt    <=     FORWARD_stallWB  ?  WB_i_system_halt   : MEM_o_system_halt;
+            WB_i_rd             <=     MEM_o_rd;
+            WB_i_csr_rd_1       <=     MEM_o_csr_rd_1;
+            WB_i_csr_rd_2       <=     MEM_o_csr_rd_2;
+            WB_i_system_halt    <=     MEM_o_system_halt;
         end
     end
 
