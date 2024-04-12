@@ -24,7 +24,6 @@ static inline bool in_pmem(paddr_t addr) {
 
 #define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
 #define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
-#define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
 
 /* device interface */
 // add the spcae into mmio map, so cpu visit this space will jump to device handler
