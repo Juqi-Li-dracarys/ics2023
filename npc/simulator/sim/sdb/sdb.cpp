@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 18:53:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 17:45:23
+ * @Last Modified time: 2024-04-12 12:25:09
  */
 
 #include <common.h>
@@ -120,14 +120,14 @@ static int cmd_x(char *args) {
       return 0;
     }
     // Parsing the value
-    uint32_t index, addr;
+    word_t index, addr;
     bool success;
-    sscanf(arg1, "%u", &index);
+    sscanf(arg1, "%lu", &index);
     addr = expr(arg2, &success);
     if(success == false) assert(0);
     puts("The information of memory is listed below:\n");
     for(uint16_t i = 0; i < index; i++) {
-      printf("Address: 0x%08x   Value: 0x%02x\n", addr + i, paddr_read(addr + i, 1));
+      printf("Address: 0x%016lx   Value: 0x%016lxx\n", addr + i, paddr_read(addr + i, 1));
     }
   }
   return 0;
@@ -142,13 +142,13 @@ static int cmd_p(char *args) {
   }
   else {
     bool success;
-    uint32_t result = expr(args, &success);
+    word_t result = expr(args, &success);
     if (success == false) {
       printf("calculate fault."); 
       assert(0);
     }
     else {
-      printf("Done.\nthe result of expr in hex is: 0x%08x\nanswer in dec is %u\n", result, result);
+      printf("Done.\nthe result of expr in hex is: 0x%016lx\nanswer in dec is %lu\n", result, result);
       return 0;
     }
   }
@@ -172,7 +172,7 @@ static int cmd_e(char *args) {
   // read every line and store them in the result
   for (int i = 0; i < lineCount; i++) {
       if (fgets(line, sizeof(line), file)) {
-          uint32_t answer,result;
+          word_t answer,result;
           char str[10000];
           if (sscanf(line, "%u %9999[^\n]", &answer, str) == 2) {
               result = expr(str, &success);  
