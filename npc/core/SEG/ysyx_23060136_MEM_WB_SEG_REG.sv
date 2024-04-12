@@ -80,23 +80,23 @@ module ysyx_23060136_MEM_WB_SEG_REG (
             WB_i_csr_rd_2       <=     `ysyx_23060136_false;
             WB_i_system_halt    <=     `ysyx_23060136_false;
         end
-        else if(~FORWARD_stallWB)begin
-            WB_i_commit         <=     MEM_o_commit;
-            WB_i_pc             <=     MEM_o_pc;
-            WB_i_inst           <=     MEM_o_inst;
-            WB_i_ALU_ALUout     <=     MEM_o_ALU_ALUout;
-            WB_i_ALU_CSR_out    <=     MEM_o_ALU_CSR_out;
-            WB_i_rdata          <=     MEM_o_rdata;
+        else begin
+            WB_i_commit         <=     FORWARD_stallWB ? `ysyx_23060136_false  :  MEM_o_commit;
+            WB_i_pc             <=     FORWARD_stallWB ?  WB_i_pc              :  MEM_o_pc;
+            WB_i_inst           <=     FORWARD_stallWB ?  WB_i_inst            :  MEM_o_inst;
+            WB_i_ALU_ALUout     <=     FORWARD_stallWB ?  WB_i_ALU_ALUout      :  MEM_o_ALU_ALUout;
+            WB_i_ALU_CSR_out    <=     FORWARD_stallWB ?  WB_i_ALU_CSR_out     :  MEM_o_ALU_CSR_out;
+            WB_i_rdata          <=     FORWARD_stallWB ?  WB_i_rdata           :  MEM_o_rdata;
 
-            WB_i_write_gpr      <=     MEM_o_write_gpr;
-            WB_i_write_csr_1    <=     MEM_o_write_csr_1;
-            WB_i_write_csr_2    <=     MEM_o_write_csr_2;
-            WB_i_mem_to_reg     <=     MEM_o_mem_to_reg;
+            WB_i_write_gpr      <=     FORWARD_stallWB ?  WB_i_write_gpr       :  MEM_o_write_gpr;
+            WB_i_write_csr_1    <=     FORWARD_stallWB ?  WB_i_write_csr_1     :  MEM_o_write_csr_1;
+            WB_i_write_csr_2    <=     FORWARD_stallWB ?  WB_i_write_csr_2     :  MEM_o_write_csr_2;
+            WB_i_mem_to_reg     <=     FORWARD_stallWB ?  WB_i_mem_to_reg      :  MEM_o_mem_to_reg;
 
-            WB_i_rd             <=     MEM_o_rd;
-            WB_i_csr_rd_1       <=     MEM_o_csr_rd_1;
-            WB_i_csr_rd_2       <=     MEM_o_csr_rd_2;
-            WB_i_system_halt    <=     MEM_o_system_halt;
+            WB_i_rd             <=     FORWARD_stallWB ?  WB_i_rd              :  MEM_o_rd;
+            WB_i_csr_rd_1       <=     FORWARD_stallWB ?  WB_i_csr_rd_1        :  MEM_o_csr_rd_1;
+            WB_i_csr_rd_2       <=     FORWARD_stallWB ?  WB_i_csr_rd_2        :  MEM_o_csr_rd_2;
+            WB_i_system_halt    <=     FORWARD_stallWB ?  WB_i_system_halt     :  MEM_o_system_halt;
         end
     end
 
