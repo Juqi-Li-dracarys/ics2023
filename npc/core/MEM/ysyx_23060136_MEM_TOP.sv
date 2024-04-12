@@ -117,9 +117,15 @@ module ysyx_23060136_MEM_TOP (
         output            [`ysyx_23060136_BITS_W -1 : 0]          FORWARD_rs1_data_SEG         ,
         output            [`ysyx_23060136_BITS_W -1 : 0]          FORWARD_rs2_data_SEG         ,
         output            [`ysyx_23060136_BITS_W -1 : 0]          FORWARD_csr_rs_data_SEG      ,
+
         output                                                    FORWARD_rs1_hazard_SEG       ,
         output                                                    FORWARD_rs2_hazard_SEG       ,
         output                                                    FORWARD_csr_rs_hazard_SEG    ,
+
+        output                                                    FORWARD_rs1_hazard_SEG_f       ,
+        output                                                    FORWARD_rs2_hazard_SEG_f       ,
+        output                                                    FORWARD_csr_rs_hazard_SEG_f    ,
+
         // ===========================================================================
         // interface for arbiter(read)
         input                                                       ARBITER_MEM_raddr_ready      ,
@@ -294,7 +300,10 @@ module ysyx_23060136_MEM_TOP (
         .FORWARD_csr_rs_data_SEG           (FORWARD_csr_rs_data_SEG   ),
         .FORWARD_rs1_hazard_SEG            (FORWARD_rs1_hazard_SEG    ),
         .FORWARD_rs2_hazard_SEG            (FORWARD_rs2_hazard_SEG    ),
-        .FORWARD_csr_rs_hazard_SEG         (FORWARD_csr_rs_hazard_SEG ) 
+        .FORWARD_csr_rs_hazard_SEG         (FORWARD_csr_rs_hazard_SEG ),
+        .FORWARD_rs1_hazard_SEG_f          (FORWARD_rs1_hazard_SEG_f    ),
+        .FORWARD_rs2_hazard_SEG_f          (FORWARD_rs2_hazard_SEG_f    ),
+        .FORWARD_csr_rs_hazard_SEG_f       (FORWARD_csr_rs_hazard_SEG_f ) 
   );
     
 

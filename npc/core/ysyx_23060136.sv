@@ -467,9 +467,14 @@ module ysyx_23060136 (
     wire               [  `ysyx_23060136_BITS_W-1:0]         FORWARD_rs1_data_SEG         ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         FORWARD_rs2_data_SEG         ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         FORWARD_csr_rs_data_SEG      ;
+
     wire                                                     FORWARD_rs1_hazard_SEG       ;
     wire                                                     FORWARD_rs2_hazard_SEG       ;
     wire                                                     FORWARD_csr_rs_hazard_SEG    ;
+
+    wire                                                     FORWARD_rs1_hazard_SEG_f       ;
+    wire                                                     FORWARD_rs2_hazard_SEG_f       ;
+    wire                                                     FORWARD_csr_rs_hazard_SEG_f    ;
 
     wire               [  `ysyx_23060136_BITS_W-1:0]         EXU_i_pc                     ;
     wire               [  `ysyx_23060136_INST_W-1:0]         EXU_i_inst                   ;
@@ -569,6 +574,9 @@ module ysyx_23060136 (
         .FORWARD_rs1_hazard_SEG            (FORWARD_rs1_hazard_SEG    ),
         .FORWARD_rs2_hazard_SEG            (FORWARD_rs2_hazard_SEG    ),
         .FORWARD_csr_rs_hazard_SEG         (FORWARD_csr_rs_hazard_SEG ),
+        .FORWARD_rs1_hazard_SEG_f          (FORWARD_rs1_hazard_SEG_f    ),
+        .FORWARD_rs2_hazard_SEG_f          (FORWARD_rs2_hazard_SEG_f    ),
+        .FORWARD_csr_rs_hazard_SEG_f       (FORWARD_csr_rs_hazard_SEG_f ),
         .EXU_i_pc                          (EXU_i_pc                  ),
         .EXU_i_inst                        (EXU_i_inst                ),
         .EXU_i_commit                      (EXU_i_commit              ),
@@ -1020,6 +1028,11 @@ module ysyx_23060136 (
         .FORWARD_rs1_hazard_SEG            (FORWARD_rs1_hazard_SEG    ),
         .FORWARD_rs2_hazard_SEG            (FORWARD_rs2_hazard_SEG    ),
         .FORWARD_csr_rs_hazard_SEG         (FORWARD_csr_rs_hazard_SEG ),
+
+        .FORWARD_rs1_hazard_SEG_f          (FORWARD_rs1_hazard_SEG_f    ),
+        .FORWARD_rs2_hazard_SEG_f          (FORWARD_rs2_hazard_SEG_f    ),
+        .FORWARD_csr_rs_hazard_SEG_f       (FORWARD_csr_rs_hazard_SEG_f ),
+
         .ARBITER_MEM_raddr_ready           (ARBITER_MEM_raddr_ready   ),
         .ARBITER_MEM_raddr                 (ARBITER_MEM_raddr         ),
         .ARBITER_MEM_raddr_valid           (ARBITER_MEM_raddr_valid   ),

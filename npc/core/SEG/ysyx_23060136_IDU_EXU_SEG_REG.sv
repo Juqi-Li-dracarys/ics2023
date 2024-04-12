@@ -42,7 +42,11 @@ module ysyx_23060136_IDU_EXU_SEG_REG (
 
         input                                                    FORWARD_rs1_hazard_SEG     ,
         input                                                    FORWARD_rs2_hazard_SEG     ,
-        input                                                    FORWARD_csr_rs_hazard_SEG  ,      
+        input                                                    FORWARD_csr_rs_hazard_SEG  ,
+        
+        input                                                    FORWARD_rs1_hazard_SEG_f     ,
+        input                                                    FORWARD_rs2_hazard_SEG_f     ,
+        input                                                    FORWARD_csr_rs_hazard_SEG_f  , 
         // ===========================================================================
         output    logic    [`ysyx_23060136_BITS_W-1 : 0]         EXU_i_pc                   ,
         output    logic    [`ysyx_23060136_INST_W-1 : 0]         EXU_i_inst                 ,
@@ -281,81 +285,89 @@ module ysyx_23060136_IDU_EXU_SEG_REG (
             // Reset system signals
             EXU_i_system_halt  <=  `ysyx_23060136_false;
         end
-        else if(~FORWARD_stallEX) begin
-            EXU_i_pc           <=  IDU_o_pc ;
-            EXU_i_inst         <=  IDU_o_inst ;
-            EXU_i_commit       <=  IDU_o_commit ;
-            EXU_i_rd           <=  IDU_o_rd;    
-            EXU_i_rs1          <=  IDU_o_rs1;  
-            EXU_i_rs2          <=  IDU_o_rs2;
-            EXU_i_imm          <=  IDU_o_imm;
-            // 判断数据来源
-            EXU_i_rs1_data     <=  FORWARD_rs1_hazard_SEG ? FORWARD_rs1_data_SEG : IDU_o_rs1_data;  
-            EXU_i_rs2_data     <=  FORWARD_rs2_hazard_SEG ? FORWARD_rs2_data_SEG : IDU_o_rs2_data;  
-            EXU_i_csr_rd_1     <=  IDU_o_csr_rd_1;
-            EXU_i_csr_rd_2     <=  IDU_o_csr_rd_2;
-            EXU_i_csr_rs       <=  IDU_o_csr_rs; 
-            EXU_i_csr_rs_data  <=  FORWARD_csr_rs_hazard_SEG ? FORWARD_csr_rs_data_SEG : IDU_o_csr_rs_data;
+        else begin
+            EXU_i_pc           <=  FORWARD_stallEX  ?  EXU_i_pc      :  IDU_o_pc ;
+            EXU_i_inst         <=  FORWARD_stallEX  ?  EXU_i_inst    :  IDU_o_inst ;
+            EXU_i_commit       <=  FORWARD_stallEX  ?  EXU_i_commit  :  IDU_o_commit ;
+            EXU_i_rd           <=  FORWARD_stallEX  ?  EXU_i_rd      :  IDU_o_rd;    
+            EXU_i_rs1          <=  FORWARD_stallEX  ?  EXU_i_rs1     :  IDU_o_rs1;  
+            EXU_i_rs2          <=  FORWARD_stallEX  ?  EXU_i_rs2     :  IDU_o_rs2;
+            EXU_i_imm          <=  FORWARD_stallEX  ?  EXU_i_imm     :  IDU_o_imm;
+            EXU_i_csr_rd_1     <=  FORWARD_stallEX  ? EXU_i_csr_rd_1  :  IDU_o_csr_rd_1;
+            EXU_i_csr_rd_2     <=  FORWARD_stallEX  ? EXU_i_csr_rd_2  :  IDU_o_csr_rd_2;
+            EXU_i_csr_rs       <=  FORWARD_stallEX  ? EXU_i_csr_rs    :  IDU_o_csr_rs; 
 
-            EXU_i_ALU_add      <=  IDU_o_ALU_add;  
-            EXU_i_ALU_sub      <=  IDU_o_ALU_sub; 
-            EXU_i_ALU_slt      <=  IDU_o_ALU_slt;
-            EXU_i_ALU_sltu     <=  IDU_o_ALU_sltu;  
-            EXU_i_ALU_or       <=  IDU_o_ALU_or;
-            EXU_i_ALU_and      <=  IDU_o_ALU_and;  
-            EXU_i_ALU_xor      <=  IDU_o_ALU_xor;  
-            EXU_i_ALU_sll      <=  IDU_o_ALU_sll;  
-            EXU_i_ALU_srl      <=  IDU_o_ALU_srl;  
-            EXU_i_ALU_sra      <=  IDU_o_ALU_sra;
-
-            EXU_i_ALU_mul      <=  IDU_o_ALU_mul    ;
-            EXU_i_ALU_mul_hi   <=  IDU_o_ALU_mul_hi ;
-            EXU_i_ALU_mul_lo   <=  IDU_o_ALU_mul_lo ;
-            EXU_i_ALU_mul_u    <=  IDU_o_ALU_mul_u  ;
-            EXU_i_ALU_mul_s    <=  IDU_o_ALU_mul_s  ;
-            EXU_i_ALU_mul_su   <=  IDU_o_ALU_mul_su ;
-            EXU_i_ALU_div      <=  IDU_o_ALU_div    ;
-            EXU_i_ALU_div_u    <=  IDU_o_ALU_div_u  ;
-            EXU_i_ALU_div_s    <=  IDU_o_ALU_div_s  ;
-            EXU_i_ALU_rem      <=  IDU_o_ALU_rem    ;
-            EXU_i_ALU_rem_u    <=  IDU_o_ALU_rem_u  ;
-            EXU_i_ALU_rem_s    <=  IDU_o_ALU_rem_s  ;
-
-            EXU_i_ALU_explicit <=  IDU_o_ALU_explicit;
-            EXU_i_ALU_word_t   <=  IDU_o_ALU_word_t; 
-            EXU_i_ALU_i1_rs1   <=  IDU_o_ALU_i1_rs1;  
-            EXU_i_ALU_i1_pc    <=  IDU_o_ALU_i1_pc;  
-            EXU_i_ALU_i2_rs2   <=  IDU_o_ALU_i2_rs2;  
-            EXU_i_ALU_i2_imm   <=  IDU_o_ALU_i2_imm;  
-            EXU_i_ALU_i2_4     <=  IDU_o_ALU_i2_4;   
-            EXU_i_ALU_i2_csr   <=  IDU_o_ALU_i2_csr;
-
-            EXU_i_jump         <=  IDU_o_jump;  
-            EXU_i_pc_plus_imm  <=  IDU_o_pc_plus_imm;  
-            EXU_i_rs1_plus_imm <=  IDU_o_rs1_plus_imm;  
-            EXU_i_csr_plus_imm <=  IDU_o_csr_plus_imm; 
-            EXU_i_cmp_eq       <=  IDU_o_cmp_eq;
-            EXU_i_cmp_neq      <=  IDU_o_cmp_neq;
-            EXU_i_cmp_ge       <=  IDU_o_cmp_ge;
-            EXU_i_cmp_lt       <=  IDU_o_cmp_lt;
+            EXU_i_ALU_add      <=  FORWARD_stallEX  ?   EXU_i_ALU_add       :   IDU_o_ALU_add     ;                                         
+            EXU_i_ALU_sub      <=  FORWARD_stallEX  ?   EXU_i_ALU_sub       :   IDU_o_ALU_sub     ;                                        
+            EXU_i_ALU_slt      <=  FORWARD_stallEX  ?   EXU_i_ALU_slt       :   IDU_o_ALU_slt     ;                                       
+            EXU_i_ALU_sltu     <=  FORWARD_stallEX  ?   EXU_i_ALU_sltu      :   IDU_o_ALU_sltu    ;                                         
+            EXU_i_ALU_or       <=  FORWARD_stallEX  ?   EXU_i_ALU_or        :   IDU_o_ALU_or      ;                                   
+            EXU_i_ALU_and      <=  FORWARD_stallEX  ?   EXU_i_ALU_and       :   IDU_o_ALU_and     ;                                         
+            EXU_i_ALU_xor      <=  FORWARD_stallEX  ?   EXU_i_ALU_xor       :   IDU_o_ALU_xor     ;                                         
+            EXU_i_ALU_sll      <=  FORWARD_stallEX  ?   EXU_i_ALU_sll       :   IDU_o_ALU_sll     ;                                         
+            EXU_i_ALU_srl      <=  FORWARD_stallEX  ?   EXU_i_ALU_srl       :   IDU_o_ALU_srl     ;                                         
+            EXU_i_ALU_sra      <=  FORWARD_stallEX  ?   EXU_i_ALU_sra       :   IDU_o_ALU_sra     ;                                       
+            EXU_i_ALU_mul      <=  FORWARD_stallEX  ?   EXU_i_ALU_mul       :   IDU_o_ALU_mul     ;                                           
+            EXU_i_ALU_mul_hi   <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_hi    :   IDU_o_ALU_mul_hi  ;                                           
+            EXU_i_ALU_mul_lo   <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_lo    :   IDU_o_ALU_mul_lo  ;                                           
+            EXU_i_ALU_mul_u    <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_u     :   IDU_o_ALU_mul_u   ;                                           
+            EXU_i_ALU_mul_s    <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_s     :   IDU_o_ALU_mul_s   ;                                           
+            EXU_i_ALU_mul_su   <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_su    :   IDU_o_ALU_mul_su  ;                                           
+            EXU_i_ALU_div      <=  FORWARD_stallEX  ?   EXU_i_ALU_div       :   IDU_o_ALU_div     ;                                           
+            EXU_i_ALU_div_u    <=  FORWARD_stallEX  ?   EXU_i_ALU_div_u     :   IDU_o_ALU_div_u   ;                                           
+            EXU_i_ALU_div_s    <=  FORWARD_stallEX  ?   EXU_i_ALU_div_s     :   IDU_o_ALU_div_s   ;                                           
+            EXU_i_ALU_rem      <=  FORWARD_stallEX  ?   EXU_i_ALU_rem       :   IDU_o_ALU_rem     ;                                           
+            EXU_i_ALU_rem_u    <=  FORWARD_stallEX  ?   EXU_i_ALU_rem_u     :   IDU_o_ALU_rem_u   ;                                           
+            EXU_i_ALU_rem_s    <=  FORWARD_stallEX  ?   EXU_i_ALU_rem_s     :   IDU_o_ALU_rem_s   ;                                           
+            EXU_i_ALU_explicit <=  FORWARD_stallEX  ?   EXU_i_ALU_explicit  :   IDU_o_ALU_explicit;                                           
+            EXU_i_ALU_word_t   <=  FORWARD_stallEX  ?   EXU_i_ALU_word_t    :   IDU_o_ALU_word_t  ;                                        
+            EXU_i_ALU_i1_rs1   <=  FORWARD_stallEX  ?   EXU_i_ALU_i1_rs1    :   IDU_o_ALU_i1_rs1  ;                                         
+            EXU_i_ALU_i1_pc    <=  FORWARD_stallEX  ?   EXU_i_ALU_i1_pc     :   IDU_o_ALU_i1_pc   ;                                         
+            EXU_i_ALU_i2_rs2   <=  FORWARD_stallEX  ?   EXU_i_ALU_i2_rs2    :   IDU_o_ALU_i2_rs2  ;                                         
+            EXU_i_ALU_i2_imm   <=  FORWARD_stallEX  ?   EXU_i_ALU_i2_imm    :   IDU_o_ALU_i2_imm  ;                                         
+            EXU_i_ALU_i2_4     <=  FORWARD_stallEX  ?   EXU_i_ALU_i2_4      :   IDU_o_ALU_i2_4    ;                                          
+            EXU_i_ALU_i2_csr   <=  FORWARD_stallEX  ?   EXU_i_ALU_i2_csr    :   IDU_o_ALU_i2_csr  ;                                       
+            EXU_i_jump         <=  FORWARD_stallEX  ?   EXU_i_jump          :   IDU_o_jump        ;                                     
+            EXU_i_pc_plus_imm  <=  FORWARD_stallEX  ?   EXU_i_pc_plus_imm   :   IDU_o_pc_plus_imm ;                                             
+            EXU_i_rs1_plus_imm <=  FORWARD_stallEX  ?   EXU_i_rs1_plus_imm  :   IDU_o_rs1_plus_imm;                                             
+            EXU_i_csr_plus_imm <=  FORWARD_stallEX  ?   EXU_i_csr_plus_imm  :   IDU_o_csr_plus_imm;                                            
+            EXU_i_cmp_eq       <=  FORWARD_stallEX  ?   EXU_i_cmp_eq        :   IDU_o_cmp_eq      ;                                   
+            EXU_i_cmp_neq      <=  FORWARD_stallEX  ?   EXU_i_cmp_neq       :   IDU_o_cmp_neq     ;                                       
+            EXU_i_cmp_ge       <=  FORWARD_stallEX  ?   EXU_i_cmp_ge        :   IDU_o_cmp_ge      ;                                   
+            EXU_i_cmp_lt       <=  FORWARD_stallEX  ?   EXU_i_cmp_lt        :   IDU_o_cmp_lt      ;                                   
+            EXU_i_write_gpr    <=  FORWARD_stallEX  ?   EXU_i_write_gpr     :   IDU_o_write_gpr   ;                                       
+            EXU_i_write_csr_1  <=  FORWARD_stallEX  ?   EXU_i_write_csr_1   :   IDU_o_write_csr_1 ;                                           
+            EXU_i_write_csr_2  <=  FORWARD_stallEX  ?   EXU_i_write_csr_2   :   IDU_o_write_csr_2 ;                                             
+            EXU_i_mem_to_reg   <=  FORWARD_stallEX  ?   EXU_i_mem_to_reg    :   IDU_o_mem_to_reg  ;                                         
+            EXU_i_rv64_csrrs   <=  FORWARD_stallEX  ?   EXU_i_rv64_csrrs    :   IDU_o_rv64_csrrs  ;                                         
+            EXU_i_rv64_csrrw   <=  FORWARD_stallEX  ?   EXU_i_rv64_csrrw    :   IDU_o_rv64_csrrw  ;                                          
+            EXU_i_rv64_ecall   <=  FORWARD_stallEX  ?   EXU_i_rv64_ecall    :   IDU_o_rv64_ecall  ;                                         
+            EXU_i_write_mem    <=  FORWARD_stallEX  ?   EXU_i_write_mem     :   IDU_o_write_mem   ;                                         
+            EXU_i_mem_byte     <=  FORWARD_stallEX  ?   EXU_i_mem_byte      :   IDU_o_mem_byte    ;                                         
+            EXU_i_mem_half     <=  FORWARD_stallEX  ?   EXU_i_mem_half      :   IDU_o_mem_half    ;                                         
+            EXU_i_mem_word     <=  FORWARD_stallEX  ?   EXU_i_mem_word      :   IDU_o_mem_word    ;                                         
+            EXU_i_mem_byte_u   <=  FORWARD_stallEX  ?   EXU_i_mem_byte_u    :   IDU_o_mem_byte_u  ;                                         
+            EXU_i_mem_half_u   <=  FORWARD_stallEX  ?   EXU_i_mem_half_u    :   IDU_o_mem_half_u  ;                                       
+            EXU_i_mem_dword    <=  FORWARD_stallEX  ?   EXU_i_mem_dword     :   IDU_o_mem_dword   ;                                       
+            EXU_i_mem_word_u   <=  FORWARD_stallEX  ?   EXU_i_mem_word_u    :   IDU_o_mem_word_u  ;                                       
+            EXU_i_system_halt  <=  FORWARD_stallEX  ?   EXU_i_system_halt   :   IDU_o_system_halt ;
             
-            EXU_i_write_gpr    <=  IDU_o_write_gpr;
-            EXU_i_write_csr_1  <=  IDU_o_write_csr_1;
-            EXU_i_write_csr_2  <=  IDU_o_write_csr_2;  
-            EXU_i_mem_to_reg   <=  IDU_o_mem_to_reg;  
-            EXU_i_rv64_csrrs   <=  IDU_o_rv64_csrrs;  
-            EXU_i_rv64_csrrw   <=  IDU_o_rv64_csrrw;   
-            EXU_i_rv64_ecall   <=  IDU_o_rv64_ecall;  
-            EXU_i_write_mem    <=  IDU_o_write_mem;  
-            EXU_i_mem_byte     <=  IDU_o_mem_byte;  
-            EXU_i_mem_half     <=  IDU_o_mem_half;  
-            EXU_i_mem_word     <=  IDU_o_mem_word;  
-            EXU_i_mem_byte_u   <=  IDU_o_mem_byte_u;  
-            EXU_i_mem_half_u   <=  IDU_o_mem_half_u;
-            EXU_i_mem_dword    <=  IDU_o_mem_dword;
-            EXU_i_mem_word_u   <=  IDU_o_mem_word_u;
-            EXU_i_system_halt  <=  IDU_o_system_halt;
+            
+            if(!FORWARD_stallEX) begin
+                // 判断数据来源
+                EXU_i_rs1_data     <=  FORWARD_rs1_hazard_SEG ? FORWARD_rs1_data_SEG : IDU_o_rs1_data;  
+                EXU_i_rs2_data     <=  FORWARD_rs2_hazard_SEG ? FORWARD_rs2_data_SEG : IDU_o_rs2_data;  
+                EXU_i_csr_rs_data  <=  FORWARD_csr_rs_hazard_SEG ? FORWARD_csr_rs_data_SEG : IDU_o_csr_rs_data;
+            end
+            else begin
+                EXU_i_rs1_data     <=  FORWARD_rs1_hazard_SEG_f ?    FORWARD_rs1_data_SEG    : EXU_i_rs1_data    ;
+                EXU_i_rs2_data     <=  FORWARD_rs2_hazard_SEG_f ?    FORWARD_rs2_data_SEG    : EXU_i_rs2_data    ;
+                EXU_i_csr_rs_data  <=  FORWARD_csr_rs_hazard_SEG_f ? FORWARD_csr_rs_data_SEG : EXU_i_csr_rs_data ;
+            end
         end
+
+
+
         
     end
 

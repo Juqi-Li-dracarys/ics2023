@@ -96,7 +96,11 @@
 
     output                                                   FORWARD_rs1_hazard_SEG         ,
     output                                                   FORWARD_rs2_hazard_SEG         ,
-    output                                                   FORWARD_csr_rs_hazard_SEG                
+    output                                                   FORWARD_csr_rs_hazard_SEG      ,
+    
+    output                                                   FORWARD_rs1_hazard_SEG_f         ,
+    output                                                   FORWARD_rs2_hazard_SEG_f         ,
+    output                                                   FORWARD_csr_rs_hazard_SEG_f         
  );
    
     // 判断是否是写寄存器 X0
@@ -161,12 +165,15 @@
     assign  FORWARD_csr_rs_hazard_EXU   =  (second_stage_hazard_csr_1  | third_stage_hazard_csr_1 | load_use_hazard_csr_1 | second_stage_hazard_csr_2  | third_stage_hazard_csr_2 | load_use_hazard_csr_2) & !first_stage_hazard;
 
     // forward sel for IDU-EXU seg register
-    // fourth stage forward or first stage forward
-    assign  FORWARD_rs1_hazard_SEG      =  (fourth_stage_hazard_rs1 & ~first_stage_hazard)                                 | ((second_stage_hazard_rs1    | third_stage_hazard_rs1   | load_use_hazard_rs1) & first_stage_hazard);
-    assign  FORWARD_rs2_hazard_SEG      =  (fourth_stage_hazard_rs2 & ~first_stage_hazard)                                 | ((second_stage_hazard_rs2    | third_stage_hazard_rs2   | load_use_hazard_rs2) & first_stage_hazard);
-    assign  FORWARD_csr_rs_hazard_SEG   =  ((fourth_stage_hazard_csr_1 | fourth_stage_hazard_csr_2) & ~first_stage_hazard) | ((second_stage_hazard_csr_1  | third_stage_hazard_csr_1 | load_use_hazard_csr_1 | second_stage_hazard_csr_2  | third_stage_hazard_csr_2 | load_use_hazard_csr_2) & first_stage_hazard);
+    // fourth stage forward
+    assign  FORWARD_rs1_hazard_SEG      =  (fourth_stage_hazard_rs1 & ~first_stage_hazard);                                 
+    assign  FORWARD_rs2_hazard_SEG      =  (fourth_stage_hazard_rs2 & ~first_stage_hazard);                                 
+    assign  FORWARD_csr_rs_hazard_SEG   =  ((fourth_stage_hazard_csr_1 | fourth_stage_hazard_csr_2) & ~first_stage_hazard); 
 
-
+    // force to write seg reg to deal with first stage hazard
+    assign  FORWARD_rs1_hazard_SEG_f    =  (second_stage_hazard_rs1    | third_stage_hazard_rs1   | load_use_hazard_rs1) & first_stage_hazard       ;  
+    assign  FORWARD_rs2_hazard_SEG_f    =  (second_stage_hazard_rs2    | third_stage_hazard_rs2   | load_use_hazard_rs2) & first_stage_hazard       ;  
+    assign  FORWARD_csr_rs_hazard_SEG_f =  (second_stage_hazard_csr_1  | third_stage_hazard_csr_1 | load_use_hazard_csr_1 | second_stage_hazard_csr_2  | third_stage_hazard_csr_2 | load_use_hazard_csr_2) & first_stage_hazard      ;  
     // ===========================================================================
     // forward data for EXU
     // 前传数据时注意优先级关系
