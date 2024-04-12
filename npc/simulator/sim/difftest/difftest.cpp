@@ -25,12 +25,14 @@ void (*difftest_exec)(uint64_t n) = NULL;
 void (*difftest_raise_intr)(uint64_t NO) = NULL;
 
 
-// should skip difftest 
+// should skip cuurent difftest 
 static bool is_skip_ref = false;
 // the num of instruction that should be skipped
 static int skip_dut_nr_inst = 0;
 
 // skip in the next cycle
+// due to the read/write action happen in MEM(one cycle after current commit)
+// We import software pipeline here
 static bool is_skip_next = false;
 
 

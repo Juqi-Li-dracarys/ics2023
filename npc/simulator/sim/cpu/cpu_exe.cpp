@@ -95,13 +95,15 @@ void run_untile_commit() {
 // execute n instructions
 void excute(uint64_t n) {
   while (n--) {
-    // 流水线还未完成复位,需要跑完第一条指令
+    // 流水线还未完成复位
+    // We need to run untile the arrival of the first instruction
     // 以保证和 REF 同步
     if (!CPU->inst_commit) {
       run_untile_commit();
     }
     log_ptr->pc = CPU->pc_cur;
     log_ptr->inst = CPU->inst;
+    // run untile the arrival of the second instruction
     run_untile_commit();
     // 保存下一条指令执行前的状态
     set_state();
