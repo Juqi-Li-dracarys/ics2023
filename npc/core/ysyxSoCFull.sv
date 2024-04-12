@@ -399,7 +399,6 @@ module ysyx_23060136_MEMORY (
 
 
     logic [31 : 0] araddr_buffer;
-    logic [63:0] test;
 
     always_ff @(posedge clk) begin : raddr_buf_update
         if(rst) begin
