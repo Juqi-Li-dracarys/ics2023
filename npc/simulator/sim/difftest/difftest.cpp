@@ -106,7 +106,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
       for(int j = 0; j < MUXDEF(CONFIG_RVE, 16, 32); j++) {
         printf("%s:0X%016lx ",regs[j], ref_r->gpr[j]);
         if((j + 1) % 4 == 0)
-        putchar('\n');
+            putchar('\n');
       }
       return false;
     }
@@ -118,8 +118,8 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
       puts("REF register map:");
       for(int j = 0; j < 4; j++) {
         printf("%s:0X%016lx ",regs[j + MUXDEF(CONFIG_RVE, 16, 32)], ref_csr_ptr[j]);
-        if((j + 1) % 4 == 0);
-        putchar('\n');
+        if((j + 1) % 4 == 0)
+            putchar('\n');
       }
       return false;
     }
