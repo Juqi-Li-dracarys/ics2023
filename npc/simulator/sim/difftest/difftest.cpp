@@ -140,9 +140,8 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 bool isa_difftest_checkmem(uint8_t *ref_pmem, vaddr_t pc) {
   for (uint32_t i = 0; i < CONFIG_MSIZE; i++){
     if (ref_pmem[i] != pmem[i]) {
-      printf(ANSI_BG_RED "memory of NPC is wrong before executing instruction at pc = " FMT_WORD
-        ", mem[%08x] right = " "%08x" ", wrong = " "%08x" "\n",
-        sim_cpu.pc, i, ref_pmem[i], pmem[i]); 
+      printf("memory of NPC is wrong before executing instruction at pc = " FMT_WORD
+        ", mem[%08x] right = " "%08x" ", wrong = " "%08x" "\n", sim_cpu.pc, i, ref_pmem[i], pmem[i]); 
       return false;
     }
   }
