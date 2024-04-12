@@ -142,7 +142,7 @@ void cpu_exec(unsigned int n) {
   switch (sim_state.state) {
     case SIM_RUNNING: sim_state.state = SIM_STOP; break;
     case SIM_END: case SIM_ABORT:
-      Log("SoC simulator: %s at pc = " FMT_WORD,
+      Log("NPC simulator: %s at pc = " FMT_WORD,
         (sim_state.state == SIM_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
           (sim_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
