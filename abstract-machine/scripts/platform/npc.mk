@@ -16,7 +16,7 @@ LDFLAGS   += -T $(AM_HOME)/scripts/linker.ld \
 LDFLAGS   += --gc-sections -e _start --print-map
 NEMUFLAGS += -l $(shell dirname $(IMAGE).elf)/nemu-log.txt
 # send the elf dir to the main
-NEMUFLAGS += -f $(IMAGE).elf
+NPC_FLAGS += -f $(IMAGE).elf
 
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
 CFLAGS += -I$(AM_HOME)/am/src/platform/nemu/include
