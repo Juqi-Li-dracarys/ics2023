@@ -33,6 +33,7 @@ static int skip_dut_nr_inst = 0;
 // skip in the next cycle
 static bool is_skip_next = false;
 
+
 #ifdef CONFIG_DIFFTEST 
 
 extern uint8_t pmem     [CONFIG_MSIZE];
