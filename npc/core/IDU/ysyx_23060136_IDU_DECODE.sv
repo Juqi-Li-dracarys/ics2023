@@ -272,9 +272,12 @@ module ysyx_23060136_IDU_DECODE (
     wire  rv64_jal      = opcode_6_5_11 & opcode_4_2_011 & opcode_1_0_11;
 
     // U type IDU_inst
-    wire  rv64_auipc    = opcode_6_5_00 & opcode_4_2_101 & opcode_1_0_11;
+    
+    // wire  rv64_auipc    = opcode_6_5_00 & opcode_4_2_101 & opcode_1_0_11;
     wire  rv64_lui      = opcode_6_5_01 & opcode_4_2_101 & opcode_1_0_11;
 
+    wire  rv64_auipc    = 0;
+ 
 
     // ===========================================================================
     // ===========================================================================
