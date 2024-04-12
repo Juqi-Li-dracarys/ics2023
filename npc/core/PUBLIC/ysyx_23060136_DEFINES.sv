@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 12:40:17 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-06 23:42:51
+ * @Last Modified time: 2024-04-12 12:37:41
  */
 
 // ===========================================================================
@@ -30,11 +30,12 @@
 `define  ysyx_23060136_PC_RST     64'h80000000
 `define  ysyx_23060136_NOP        32'h00000013
 
- // csr idx   
-`define  ysyx_23060136_mstatus   'h0
-`define  ysyx_23060136_mtvec     'h1
-`define  ysyx_23060136_mepc      'h2
-`define  ysyx_23060136_mcause    'h3
+ // csr idx  
+`define  ysyx_23060136_mepc      'h0
+`define  ysyx_23060136_mstatus   'h1
+`define  ysyx_23060136_mcause    'h2
+`define  ysyx_23060136_mtvec     'h3
+
 `define  ysyx_23060136_mvendorid 'h4
 `define  ysyx_23060136_marchid   'h5
 

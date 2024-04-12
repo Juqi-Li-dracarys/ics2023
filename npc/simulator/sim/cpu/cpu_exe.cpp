@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU
  * @Date: 2024-01-17 09:39:10
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-23 10:42:15
+ * @Last Modified time: 2024-04-12 12:29:45
  */
 
 #include <bits/stdc++.h>
@@ -107,6 +107,7 @@ void excute(uint64_t n) {
     set_state();
     g_nr_guest_inst++;
     trace_and_difftest(log_ptr, false);
+    device_update();
     // 对于有异常的指令，会在下一次执行前终止程序
     if (signal_detect()) {
       // save the end state

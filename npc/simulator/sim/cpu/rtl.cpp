@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 17:44:39 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-12 11:56:56
+ * @Last Modified time: 2024-04-12 12:30:18
  */
 
 #include <common.h>
@@ -13,8 +13,8 @@
 // load the state of your simulated cpu into sim_cpu
 void set_state() {
   sim_cpu.pc = CPU->pc_cur;
-  memcpy(&sim_cpu.gpr[0], cpu_gpr, sizeof(uint32_t) * MUXDEF(CONFIG_RVE, 16, 32));
-  memcpy(&sim_cpu.csr, cpu_csr, sizeof(uint32_t) * 4);
+  memcpy(&sim_cpu.gpr[0], cpu_gpr, sizeof(word_t) * MUXDEF(CONFIG_RVE, 16, 32));
+  memcpy(&sim_cpu.csr, cpu_csr, sizeof(word_t) * 4);
 }
 
 // reset the cpu
