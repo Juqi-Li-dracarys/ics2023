@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 16:33:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-12 12:02:25
+ * @Last Modified time: 2024-04-12 12:05:07
  */
 
 #include <common.h>
@@ -18,10 +18,10 @@ static void welcome() {
   IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
         "to record the trace. This may lead to a large log file. "
         "If it is not necessary, you can disable it in menuconfig"));
-  printf("For help, type \"help\", as an EE rat @NJU, please always remember to RTFM:\n");
+  printf("For help, type \"help\", please always remember to RTFM:\n");
   printf("%s", isa_logo);
   Log("Build time: %s, %s", __TIME__, __DATE__);
-  printf("Welcome to %s %s SoC Simulator!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED),  ANSI_FMT(str(__CPU_ARCH__), ANSI_FG_YELLOW ANSI_BG_RED));
+  printf("Welcome to %s %s Season 5 NPC Simulator!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED),  ANSI_FMT(str(__CPU_ARCH__), ANSI_FG_YELLOW ANSI_BG_RED));
 }
 
 static const uint32_t img [] = {
