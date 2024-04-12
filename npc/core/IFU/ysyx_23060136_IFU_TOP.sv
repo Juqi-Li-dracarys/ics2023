@@ -33,6 +33,7 @@ module ysyx_23060136_IFU_TOP(
         // output IFU_valid for FORWARD unit
         // 当该信号为 true
         output                                              IFU_o_valid                ,
+        output                                              IFU_o_commit               ,
 
         input              [  `ysyx_23060136_BITS_W-1:0]    ARBITER_IFU_inst           ,
         input                                               ARBITER_IFU_inst_valid     ,
@@ -46,11 +47,13 @@ module ysyx_23060136_IFU_TOP(
 
     // current inst/pc is valid
     wire                                   inst_valid                           ;
+    wire                                   IFU2_commit                          ;
     wire     [  `ysyx_23060136_BITS_W-1:0] IFU1_pc                              ;
     wire     [  `ysyx_23060136_BITS_W-1:0] IFU2_pc                              ;
 
     assign                                 IFU_o_valid      =      inst_valid   ;
     assign                                 IFU_o_pc         =      IFU2_pc      ;
+    assign                                 IFU_o_commit     =      IFU2_commit  ;
 
     ysyx_23060136_IFU_PC_COUNT  ysyx_23060136_IFU_PC_COUNT_inst (
         .clk                               (clk                       ),
@@ -86,7 +89,8 @@ module ysyx_23060136_IFU_TOP(
         .BRANCH_flushIF                    (BRANCH_flushIF            ),
         .FORWARD_stallIF                   (FORWARD_stallIF           ),
         .IFU1_pc                           (IFU1_pc                   ),
-        .IFU2_pc                           (IFU2_pc                   ) 
+        .IFU2_pc                           (IFU2_pc                   ),
+        .IFU2_commit                       (IFU2_commit               )
   );
 
 endmodule
