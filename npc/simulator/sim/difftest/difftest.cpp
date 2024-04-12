@@ -96,18 +96,35 @@ void difftest_sync() {
 
 // check the registers with nemu
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
+    
+  word_t *ref_csr_ptr = (word_t *)&(ref_r->csr);
+
   for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
     if(ref_r->gpr[i] != (sim_cpu.gpr[check_reg_idx(i)])) {
-      printf("difftest fail @PC = 0x%08lx, due to wrong reg[%d].\n", pc, i);
+      printf("difftest fail @PC = 0x%016lx, due to wrong gpr reg[%d].\n", pc, i);
       puts("REF register map:");
       for(int j = 0; j < MUXDEF(CONFIG_RVE, 16, 32); j++) {
-        printf("%s:0X%08lx ",regs[j], ref_r->gpr[j]);
+        printf("%s:0X%016lx ",regs[j], ref_r->gpr[j]);
         if((j + 1) % 4 == 0)
         putchar('\n');
       }
       return false;
     }
   }
+
+ for(int i = 0; i < 4; i++) {
+    if(ref_csr_ptr[i] != csr(i)) {
+      printf("difftest fail @PC = 0x%016lx, due to wrong csr reg[%d].\n", pc, i);
+      puts("REF register map:");
+      for(int j = 0; j < 4; j++) {
+        printf("%s:0X%016lx ",regs[j + MUXDEF(CONFIG_RVE, 16, 32)], ref_csr_ptr[j]);
+        if((j + 1) % 4 == 0);
+        putchar('\n');
+      }
+      return false;
+    }
+  }
+
   if(ref_r->pc != pc) {
     printf("difftest fail @PC = 0x%08lx, due to wrong PC.\n", pc);
     printf("REF PC = 0x%08lx\n", ref_r->pc);
