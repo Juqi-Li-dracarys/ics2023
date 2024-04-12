@@ -140,7 +140,7 @@
 
 
     // 流水段上所有操作已经完成
-    wire     all_process_over     =  IFU_o_valid   &  EXU_o_valid   &  MEM_rvalid   &  MEM_wdone ;
+    wire     all_process_over     =   IFU_o_valid   &  EXU_o_valid   &  MEM_rvalid   &  MEM_wdone ;
 
     // stall and flush signal
     assign  FORWARD_stallIF       =   ~all_process_over | first_stage_hazard;
