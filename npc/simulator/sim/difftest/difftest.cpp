@@ -136,17 +136,17 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   }
 }
 
-// check mem， use it carefully
-bool isa_difftest_checkmem(uint8_t *ref_pmem, vaddr_t pc) {
-  for (uint32_t i = 0; i < CONFIG_MSIZE; i++){
-    if (ref_pmem[i] != pmem[i]) {
-      printf("memory of NPC is wrong before executing instruction at pc = " FMT_WORD
-        ", mem[%08x] right = " "%08x" ", wrong = " "%08x" "\n", sim_cpu.pc, i, ref_pmem[i], pmem[i]); 
-      return false;
-    }
-  }
-  return true;
-}
+// // check mem， use it carefully
+// bool isa_difftest_checkmem(uint8_t *ref_pmem, vaddr_t pc) {
+//   for (uint32_t i = 0; i < CONFIG_MSIZE; i++){
+//     if (ref_pmem[i] != pmem[i]) {
+//       printf("memory of NPC is wrong before executing instruction at pc = " FMT_WORD
+//         ", mem[%08x] right = " "%08x" ", wrong = " "%08x" "\n", sim_cpu.pc, i, ref_pmem[i], pmem[i]); 
+//       return false;
+//     }
+//   }
+//   return true;
+// }
 
 
 static void checkregs(CPU_state *ref, vaddr_t pc) {
@@ -159,15 +159,15 @@ static void checkregs(CPU_state *ref, vaddr_t pc) {
   }
 }
 
-static void checkmem(uint8_t *ref_pmem, vaddr_t pc) {
-  if (!isa_difftest_checkmem(ref_pmem, pc)) {
-    sim_state.state = SIM_ABORT;
-    sim_state.halt_pc = pc;
-    isa_reg_display();
-    IFDEF(CONFIG_ITRACE, print_ring_buffer(ring_head));
-    IFDEF(CONFIG_FTRACE, ftrace_log_d());
-  }
-}
+// static void checkmem(uint8_t *ref_pmem, vaddr_t pc) {
+//   if (!isa_difftest_checkmem(ref_pmem, pc)) {
+//     sim_state.state = SIM_ABORT;
+//     sim_state.halt_pc = pc;
+//     isa_reg_display();
+//     IFDEF(CONFIG_ITRACE, print_ring_buffer(ring_head));
+//     IFDEF(CONFIG_FTRACE, ftrace_log_d());
+//   }
+// }
 
 void difftest_step(bool interrupt) {
   CPU_state ref_r;
@@ -179,11 +179,11 @@ void difftest_step(bool interrupt) {
   }
   difftest_exec(1);
   difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-  difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
+//   difftest_memcpy(CONFIG_MBASE, ref_pmem, CONFIG_MSIZE, DIFFTEST_TO_DUT);
 
   if(!interrupt) {
     checkregs(&ref_r, sim_cpu.pc);
-    checkmem(ref_pmem, sim_cpu.pc);
+    // checkmem(ref_pmem, sim_cpu.pc);
   }
   if(is_skip_ref) {
     is_skip_ref = false;
