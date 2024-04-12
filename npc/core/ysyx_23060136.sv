@@ -231,6 +231,7 @@ module ysyx_23060136 (
     wire                [  `ysyx_23060136_INST_W-1:0]         IFU_o_inst                 ;
     wire                [  `ysyx_23060136_BITS_W-1:0]         IFU_o_pc                   ;
     wire                                                      IFU_o_valid                ;
+    wire                                                      IFU_o_commit               ;
 
     wire                [  `ysyx_23060136_BITS_W-1:0]         ARBITER_IFU_inst           ;
     wire                                                      ARBITER_IFU_inst_valid     ;
@@ -250,6 +251,7 @@ module ysyx_23060136 (
         .IFU_o_inst                        (IFU_o_inst                ),
         .IFU_o_pc                          (IFU_o_pc                  ),
         .IFU_o_valid                       (IFU_o_valid               ),
+        .IFU_o_commit                      (IFU_o_commit              ),
         .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
         .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
         .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
@@ -277,6 +279,7 @@ module ysyx_23060136 (
         .FORWARD_stallID                   (FORWARD_stallID           ),
         .IFU_o_pc                          (IFU_o_pc                  ),
         .IFU_o_inst                        (IFU_o_inst                ),
+        .IFU_o_commit                      (IFU_o_commit              ),
         .IDU_i_commit                      (IDU_i_commit              ),
         .IDU_i_pc                          (IDU_i_pc                  ),
         .IDU_i_inst                        (IDU_i_inst                ) 

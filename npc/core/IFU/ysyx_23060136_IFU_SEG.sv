@@ -16,15 +16,18 @@ module ysyx_23060136_IFU_SEG(
     input                                                 BRANCH_flushIF             ,
     input                                                 FORWARD_stallIF            ,
     input              [`ysyx_23060136_BITS_W - 1 : 0]    IFU1_pc                    ,
-    output      logic  [`ysyx_23060136_BITS_W - 1 : 0]    IFU2_pc                               
+    output      logic  [`ysyx_23060136_BITS_W - 1 : 0]    IFU2_pc                    ,
+    output      logic                                     IFU2_commit                           
 );
 
     always_ff @(posedge clk) begin : update_pc
         if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
-            IFU2_pc  <=  `ysyx_23060136_PC_RST;
+            IFU2_pc      <=  `ysyx_23060136_PC_RST;
+            IFU2_commit  <=  `ysyx_23060136_false;
         end
-        else if(!FORWARD_stallIF) begin
-            IFU2_pc  <=  IFU1_pc;
+        else if(~FORWARD_stallIF) begin
+            IFU2_pc      <=   IFU1_pc;
+            IFU2_commit  <=  `ysyx_23060136_true;
         end
     end
 
