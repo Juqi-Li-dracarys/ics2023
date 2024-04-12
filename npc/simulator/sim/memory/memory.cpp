@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-12 12:11:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-12 12:20:10
+ * @Last Modified time: 2024-04-12 12:21:03
  */
 
 
@@ -25,7 +25,7 @@ static inline bool in_pmem(paddr_t addr) {
 // print a log when addr is out of bound
 static void out_of_bound(paddr_t addr) {
   printf("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD "\n",
-      addr, CONFIG_MBASE, CONFIG_MBASE + CONFIG_MSIZE, (uint64_t)sim_cpu.pc);
+      addr, (paddr_t)CONFIG_MBASE, (paddr_t)(CONFIG_MBASE + CONFIG_MSIZE), sim_cpu.pc);
 }
 
 // map the addr in riscv code to the addr in our host
