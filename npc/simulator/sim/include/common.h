@@ -10,19 +10,19 @@
 
 #define MAX_SIM_TIME 40000000
 
-typedef uint32_t word_t;
-typedef int32_t sword_t;
+typedef uint64_t word_t;
+typedef int64_t sword_t;
 typedef unsigned long long duword_t;
 typedef long long dsword_t;
 
-#define FMT_WORD "0x%08x"
+#define FMT_WORD "0x%016lx"
 
 typedef word_t vaddr_t;
-typedef uint32_t paddr_t;
-#define FMT_PADDR "0x%08x"
+typedef word_t paddr_t;
+#define FMT_PADDR "0x%016lx"
 typedef uint16_t ioaddr_t;
 
-extern uint32_t *cpu_gpr;
+extern word_t *cpu_gpr;
 
 #define PAGE_SHIFT        12
 #define PAGE_SIZE         (1ul << PAGE_SHIFT)
@@ -31,7 +31,7 @@ extern uint32_t *cpu_gpr;
 typedef struct {
   int state;
   vaddr_t halt_pc;
-  uint32_t halt_ret;
+  word_t halt_ret;
 } SimState;
 
 typedef struct {
@@ -41,11 +41,13 @@ typedef struct {
     word_t mtvec;
 } CSR;
 
+
 typedef struct {
     word_t gpr[32];
     vaddr_t pc;
     CSR csr;
 } CPU_state;
+
 
 typedef struct log{
   word_t pc;
@@ -78,8 +80,12 @@ void init_device(const char *diskpath);
 
 // memory
 word_t paddr_read(paddr_t addr, int len);
+void paddr_write(paddr_t addr, int len, word_t data);
 word_t host_read(void *addr, int len);
+void host_write(void *addr, int len, word_t data);
+
 paddr_t host_to_guest(uint8_t *haddr);
+uint8_t* guest_to_host(paddr_t paddr);
 
 
 // halt

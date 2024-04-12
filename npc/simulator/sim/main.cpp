@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 13:33:06 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-07 22:42:33
+ * @Last Modified time: 2024-04-12 10:32:06
  */
 
 #include <bits/stdc++.h>
@@ -32,8 +32,6 @@ int main(int argc, char** argv, char** env) {
     Verilated::commandArgs(argc, argv);
     // simulation monitor
     init_monitor(argc, argv);
-    nvboard_bind_all_pins(dut);
-    nvboard_init();
     // start wave trace
     Verilated::traceEverOn(true);
     dut->trace(m_trace, 5);
@@ -44,7 +42,6 @@ int main(int argc, char** argv, char** env) {
     sdb_mainloop();
     // close wave trace
     m_trace->close();
-    nvboard_quit();
     delete dut;
     // close wave trace
     delete contextp;

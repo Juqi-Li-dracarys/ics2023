@@ -22,17 +22,12 @@ void difftest_step(bool interrupt);
 void device_update();
 void disassemble(char* str, int size, uint64_t pc, uint8_t* code, int nbyte);
 
-static const char* regs[] = {
-  "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
-  "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5"
-};
-
 
 inst_log* log_ptr = new inst_log;
 
 // reg dpi-c
-uint32_t* cpu_gpr = NULL;
-uint32_t* cpu_csr = NULL;
+word_t* cpu_gpr = NULL;
+word_t* cpu_csr = NULL;
 
 // init the running state of our simulator
 SimState sim_state = { .state = SIM_STOP };

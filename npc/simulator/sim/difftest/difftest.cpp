@@ -16,7 +16,7 @@ extern inst_log *log_ptr;
 
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 // the size of registers that should be checked in difftest, 32 gpr, 1 pc, 4 csr
-#define DIFFTEST_REG_SIZE (sizeof(uint64_t) * (16 + 1 + 4))
+#define DIFFTEST_REG_SIZE (sizeof(word_t) * (16 + 1 + 4))
 
 // init fuction pointer with NULL, they will be assign when init
 void (*difftest_regcpy)(void *dut, bool direction) = NULL;
@@ -98,10 +98,10 @@ void difftest_sync() {
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
     if(ref_r->gpr[i] != (sim_cpu.gpr[check_reg_idx(i)])) {
-      printf("difftest fail @PC = 0x%08x, due to wrong reg[%d].\n", pc, i);
+      printf("difftest fail @PC = 0x%08lx, due to wrong reg[%d].\n", pc, i);
       puts("REF register map:");
       for(int j = 0; j < MUXDEF(CONFIG_RVE, 16, 32); j++) {
-        printf("%s:0X%08x ",regs[j], ref_r->gpr[j]);
+        printf("%s:0X%08lx ",regs[j], ref_r->gpr[j]);
         if((j + 1) % 4 == 0)
         putchar('\n');
       }
@@ -109,8 +109,8 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     }
   }
   if(ref_r->pc != pc) {
-    printf("difftest fail @PC = 0x%08x, due to wrong PC.\n", pc);
-    printf("REF PC = 0x%08x\n", ref_r->pc);
+    printf("difftest fail @PC = 0x%08lx, due to wrong PC.\n", pc);
+    printf("REF PC = 0x%08lx\n", ref_r->pc);
     return false;
   }
   else {

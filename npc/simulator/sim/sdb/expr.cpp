@@ -447,11 +447,11 @@ word_t eval(int p, int q) {
 
     switch (tokens[p].type) {
       case TK_DEC_NUM: {
-        sscanf(tokens[p].str, "%u", &result);
+        sscanf(tokens[p].str, "%lu", &result);
         return result;
       }
       case TK_HEX_NUM: {
-        sscanf(tokens[p].str, "%x", &result);
+        sscanf(tokens[p].str, "%lx", &result);
         return result;
       }
       case TK_REG: {

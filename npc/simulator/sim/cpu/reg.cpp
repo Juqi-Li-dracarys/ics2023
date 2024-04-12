@@ -2,17 +2,19 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 15:48:16 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-08 00:17:01
+ * @Last Modified time: 2024-04-12 10:31:33
  */
 
 #include <common.h>
 #include <reg.h>
 #include <sim.h>
 
-const char *regs[] = {
+const char* regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
   "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
-  "mstatus", "mtvec", "mepc", "mcause"
+  "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
+  "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6",
+  "mepc", "mstatus", "mcause", "mtvec"
 };
 
 
@@ -20,8 +22,8 @@ const char *regs[] = {
 void isa_reg_display() {
     puts("ALL register in npc:");
     for (int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32) + 4; i++) {
-        if (i < MUXDEF(CONFIG_RVE, 16, 32)) printf("%s:0X%08x ", regs[i], gpr(i));
-        else printf("%s:0X%08x ", regs[i], csr(i - MUXDEF(CONFIG_RVE, 16, 32)));
+        if (i < MUXDEF(CONFIG_RVE, 16, 32)) printf("%s:0X%016lx ", regs[i], gpr(i));
+        else printf("%s:0X%016lx ", regs[i], csr(i - MUXDEF(CONFIG_RVE, 16, 32)));
         if ((i + 1) % 4 == 0)
             putchar('\n');
     }
@@ -46,10 +48,10 @@ word_t isa_reg_str2val(const char* s, bool* success) {
 
 // set cpu_gpr point to your cpu's gpr
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-  cpu_gpr = (uint32_t *)(((VerilatedDpiOpenVar*)r)->datap());
+  cpu_gpr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
 // set the pointers pint to you cpu's csr
 extern "C" void set_csr_ptr(const svOpenArrayHandle r) {
-  cpu_csr = (uint32_t *)(((VerilatedDpiOpenVar*)r)->datap());
+  cpu_csr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }

@@ -4,8 +4,8 @@
 #include <common.h>
 #include <sim.h>
 
-extern uint32_t *cpu_gpr;
-extern uint32_t *cpu_csr;
+extern word_t *cpu_gpr;
+extern word_t *cpu_csr;
 
 extern const char *regs[];
 

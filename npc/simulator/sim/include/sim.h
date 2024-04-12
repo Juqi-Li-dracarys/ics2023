@@ -10,8 +10,6 @@
 #include "verilated_vcd_c.h"
 #include "VysyxSoCFull.h"
 #include "VysyxSoCFull_ysyxSoCFull.h"
-#include "VysyxSoCFull_ysyxSoCASIC.h"
-#include "VysyxSoCFull_CPU.h"
 #include "VysyxSoCFull_ysyx_23060136.h"
 
 // dpi-c
@@ -22,12 +20,9 @@ extern VysyxSoCFull *dut;
 extern VerilatedVcdC *m_trace;
 extern VerilatedContext* contextp;
 
-// nvboard api
-#include <nvboard.h>
-void nvboard_bind_all_pins(VysyxSoCFull *dut);
 
 // PATH to cpu core in C++ hierarchy
-#define CPU dut->ysyxSoCFull->asic->cpu->cpu
+#define CPU dut->ysyxSoCFull->cpu
 
 
 

@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 16:33:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-03-09 17:40:31
+ * @Last Modified time: 2024-04-12 10:57:57
  */
 
 #include <common.h>
@@ -34,8 +34,8 @@ static const uint32_t img [] = {
 
 void init_isa() {
   // load built-in image size
-  memcpy(guest_to_host(CONFIG_FLASH_BASE), img, sizeof(img));
-  sim_cpu.csr.mstatus = 0x1800;
+  memcpy(guest_to_host(CONFIG_MBASE), img, sizeof(img));
+  sim_cpu.csr.mstatus = 0xa00001800;
   return ;
 }
 
@@ -62,7 +62,7 @@ static long load_img() {
   Log("The image is %s, size = %ld", img_file, size);
 
   fseek(fp, 0, SEEK_SET);
-  int ret = fread(guest_to_host(CONFIG_FLASH_BASE), size, 1, fp);
+  int ret = fread(guest_to_host(CONFIG_MBASE), size, 1, fp);
   assert(ret == 1);
 
   fclose(fp);
@@ -114,8 +114,6 @@ void init_monitor(int argc, char *argv[]) {
   /* Open the log file. */
   init_log(log_file);
 
-  init_mem();
-
   /* Open the elf file. */
   IFDEF(CONFIG_FTRACE, init_ftrace(elf_file));
 
@@ -130,7 +128,7 @@ void init_monitor(int argc, char *argv[]) {
   /* Initialize the simple debugger. */
   init_sdb();
 
-  init_disasm("riscv32");
+  init_disasm("riscv64");
 
   /* Display welcome message. */
   welcome();
