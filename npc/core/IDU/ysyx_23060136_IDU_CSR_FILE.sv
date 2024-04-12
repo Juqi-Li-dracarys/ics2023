@@ -48,7 +48,7 @@ module ysyx_23060136_IDU_CSR_FILE (
     integer i;
     always_ff @(posedge clk) begin
         if(rst) begin
-            csr_reg[`ysyx_23060136_mstatus]    <=    `ysyx_23060136_BITS_W'ha00001000;
+            csr_reg[`ysyx_23060136_mstatus]    <=    `ysyx_23060136_BITS_W'ha00001800;
             csr_reg[`ysyx_23060136_mtvec]      <=    `ysyx_23060136_BITS_W'h0;
             csr_reg[`ysyx_23060136_mepc]       <=    `ysyx_23060136_BITS_W'h0;
             csr_reg[`ysyx_23060136_mcause]     <=    `ysyx_23060136_BITS_W'h0;
