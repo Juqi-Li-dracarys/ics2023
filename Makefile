@@ -57,7 +57,7 @@ submit:
 	git gc
 	git push $(GIT_NAME) --all
 # STUID=$(STUID) STUNAME=$(STUNAME) bash -c "$$(curl -s http://why.ink:8080/static/submit.sh)"
-	$(MAKE) -C $(SOC_HOME) submit
+# $(MAKE) -C $(SOC_HOME) submit
 
 _default:
 	@echo "Please run 'make' under subprojects."
