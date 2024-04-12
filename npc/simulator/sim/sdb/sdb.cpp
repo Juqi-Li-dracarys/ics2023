@@ -208,7 +208,7 @@ static int cmd_w(char *args) {
       WP* ptr = new_wp();
       strcpy(ptr->expr, args);
       ptr->result = value;
-      printf("Watching point %d: expr: %s, latest value: %u is created.\n", ptr->NO, ptr->expr, ptr->result);
+      printf("Watching point %d: expr: %s, latest value: %lu is created.\n", ptr->NO, ptr->expr, ptr->result);
       return 0;
     }
 #endif
