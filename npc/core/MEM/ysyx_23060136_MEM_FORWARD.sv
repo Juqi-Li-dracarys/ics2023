@@ -143,9 +143,9 @@
     wire     all_process_over     =  IFU_o_valid   &  EXU_o_valid   &  MEM_rvalid   &  MEM_wdone ;
 
     // stall and flush signal
-    assign  FORWARD_stallIF       =   ~all_process_over & ~first_stage_hazard;
-    assign  FORWARD_stallID       =   ~all_process_over & ~first_stage_hazard;
-    assign  FORWARD_stallEX       =   ~all_process_over & ~first_stage_hazard;
+    assign  FORWARD_stallIF       =   ~all_process_over | first_stage_hazard;
+    assign  FORWARD_stallID       =   ~all_process_over | first_stage_hazard;
+    assign  FORWARD_stallEX       =   ~all_process_over | first_stage_hazard;
     assign  FORWARD_stallEX2      =   ~all_process_over;
     assign  FORWARD_stallME       =   ~all_process_over;
     assign  FORWARD_stallWB       =   ~all_process_over;
