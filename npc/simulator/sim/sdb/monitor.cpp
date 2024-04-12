@@ -21,7 +21,7 @@ static void welcome() {
   printf("For help, type \"help\", please always remember to RTFM:\n");
   printf("%s", isa_logo);
   Log("Build time: %s, %s", __TIME__, __DATE__);
-  printf("Welcome to %s %s Season 5 NPC Simulator!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED),  ANSI_FMT(str(__CPU_ARCH__), ANSI_FG_YELLOW ANSI_BG_RED));
+  printf("Welcome to %s %s season-5 NPC Simulator!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED),  ANSI_FMT(str(__CPU_ARCH__), ANSI_FG_YELLOW ANSI_BG_RED));
 }
 
 static const uint32_t img [] = {
