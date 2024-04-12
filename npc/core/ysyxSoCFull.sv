@@ -399,6 +399,7 @@ module ysyx_23060136_MEMORY (
 
 
     logic [31 : 0] araddr_buffer;
+    logic [63:0] test;
 
     always_ff @(posedge clk) begin : raddr_buf_update
         if(rst) begin
@@ -417,6 +418,12 @@ module ysyx_23060136_MEMORY (
             io_slave_rdata    <=  pmem_read(araddr_buffer);
         end
     end
+
+    always_comb begin : blockName
+        test = pmem_read(araddr_buffer);
+    end
+
+
     
     
 
