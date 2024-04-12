@@ -48,21 +48,20 @@ extern "C" word_t pmem_read(int araddr) {
 }
 
 extern "C" void pmem_write(int waddr, paddr_t wdata, char wmask) {
-    word_t data = wdata;
-    word_t u_addr = (word_t)waddr;
+    word_t u_addr = (word_t)((uint32_t)waddr);
     while(wmask > 0) {
         if(wmask & 0x1) {
             if (in_pmem(u_addr)) {
-                paddr_write(u_addr, 1, data);
+                paddr_write(u_addr, 1, wdata);
             }
             // if not in mem, then check mmio
             else {
-                mmio_write(u_addr, 1, data);
+                mmio_write(u_addr, 1, wdata);
             }
         }
         wmask >>= 1;
         u_addr++;
-        data >>= 8;
+        wdata >>= 8;
     }
     return;
 }
