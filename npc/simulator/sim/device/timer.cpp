@@ -1,7 +1,7 @@
 #include "device/map.h"
 #include <stdbool.h>
 #include <time.h>
-static uint8_t *rtc_port_base = NULL;
+static uint32_t *rtc_port_base = NULL;
 
 static void rtc_io_handler(paddr_t offset, int len, bool is_write) {
   assert(!is_write);
@@ -18,6 +18,6 @@ static void rtc_io_handler(paddr_t offset, int len, bool is_write) {
 }
 
 void init_timer() {
-  rtc_port_base = (uint8_t *)new_space(32);
+  rtc_port_base = (uint32_t *)new_space(32);
   add_mmio_map("rtc", CONFIG_RTC_MMIO, rtc_port_base, 32, rtc_io_handler);
 }

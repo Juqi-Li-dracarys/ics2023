@@ -17,7 +17,7 @@ static uint32_t screen_size() {
 }
 
 static void *vmem = NULL;
-static uint8_t *vgactl_port_base = NULL;
+static uint32_t *vgactl_port_base = NULL;
 
 #include <SDL2/SDL.h>
 
@@ -53,7 +53,7 @@ void vga_update_screen() {
 }
 
 // fast render
-static uint8_t *ffb_mem = NULL;
+static uint32_t *ffb_mem = NULL;
 static void *ffb_draw = NULL;
 
 void fast_fb_draw(paddr_t offset, int len, bool is_write) {
@@ -79,7 +79,7 @@ void fast_fb_draw(paddr_t offset, int len, bool is_write) {
 
 void init_vga() {
   // alloc a memory space
-  vgactl_port_base = (uint8_t *)new_space(8);
+  vgactl_port_base = (uint32_t *)new_space(8);
   vgactl_port_base[0] = (screen_width() << 16) | screen_height();
   add_mmio_map("vgactl", CONFIG_VGA_CTL_MMIO, vgactl_port_base, 8, NULL);
 
@@ -89,9 +89,9 @@ void init_vga() {
   memset(vmem, 0, screen_size());
 
   // fast fb draw
-  ffb_mem = (uint8_t *)new_space(28); // x, y, w, h, W, H, pixels
+  ffb_mem = (uint32_t *)new_space(28); // x, y, w, h, W, H, pixels
   add_mmio_map("ffb_mem", CONFIG_FFB_ADDR, ffb_mem, 28, NULL);
 
-  ffb_draw = (uint8_t *)new_space(4);
+  ffb_draw = (uint32_t *)new_space(4);
   add_mmio_map("ffb_draw", CONFIG_FFB_ADDR + 28, ffb_draw, 4, fast_fb_draw);
 }

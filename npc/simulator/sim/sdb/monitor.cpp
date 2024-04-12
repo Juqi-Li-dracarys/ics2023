@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-16 16:33:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-12 10:57:57
+ * @Last Modified time: 2024-04-12 12:00:59
  */
 
 #include <common.h>
@@ -129,6 +129,8 @@ void init_monitor(int argc, char *argv[]) {
   init_sdb();
 
   init_disasm("riscv64");
+
+  init_device(NULL);
 
   /* Display welcome message. */
   welcome();
