@@ -256,7 +256,7 @@ module ysyx_23060136_MEM_DATA_MEM (
                             ({`ysyx_23060136_BITS_W{MEM_mem_word_u}})   & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_FFFF_FFFF   |
                             ({`ysyx_23060136_BITS_W{MEM_mem_byte  }})   & ((`ysyx_23060136_BITS_W'h0000_0000_0000_00FF & r_abstract) | {{56{r_abstract[7]}},  {8{1'b0}}})  |
                             ({`ysyx_23060136_BITS_W{MEM_mem_half  }})   & ((`ysyx_23060136_BITS_W'h0000_0000_0000_FFFF & r_abstract) | {{48{r_abstract[15]}}, {16{1'b0}}}) |
-                            ({`ysyx_23060136_BITS_W{MEM_mem_word}})     & ((`ysyx_23060136_BITS_W'h0000_0000_FFFF_FFFF & r_abstract) | {{32{r_abstract[32]}}, {32{1'b0}}}) |
+                            ({`ysyx_23060136_BITS_W{MEM_mem_word}})     & ((`ysyx_23060136_BITS_W'h0000_0000_FFFF_FFFF & r_abstract) | {{32{r_abstract[31]}}, {32{1'b0}}}) |
                             ({`ysyx_23060136_BITS_W{MEM_mem_dword}})    &  r_abstract ;
         end 
     end
