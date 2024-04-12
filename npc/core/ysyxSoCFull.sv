@@ -419,9 +419,9 @@ module ysyx_23060136_MEMORY (
         end
     end
 
-    always_comb begin : blockName
-        test = pmem_read(araddr_buffer);
-    end
+    // always_comb begin : blockName
+    //     test = pmem_read(araddr_buffer);
+    // end
 
 
     
