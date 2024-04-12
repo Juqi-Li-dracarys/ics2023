@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-17 18:53:49 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-12 12:25:37
+ * @Last Modified time: 2024-04-12 12:26:04
  */
 
 #include <common.h>
@@ -176,7 +176,7 @@ static int cmd_e(char *args) {
           char str[10000];
           if (sscanf(line, "%lu %9999[^\n]", &answer, str) == 2) {
               result = expr(str, &success);  
-              printf("Line: %ld   Result: %lu   Answer: %u\n", i, result, answer);
+              printf("Line: %d   Result: %lu   Answer: %lu\n", i, result, answer);
               if (result != answer || success == 0) {
                 printf("Error: the answer is not correct.");
                 assert(0);
