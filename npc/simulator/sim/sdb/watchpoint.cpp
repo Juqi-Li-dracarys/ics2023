@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-01-11 23:44:45 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-01-18 08:23:30
+ * @Last Modified time: 2024-04-12 10:56:53
  */
 
 // source code for wp bp
@@ -15,7 +15,7 @@ typedef struct watchpoint {
 
   /* TODO: Add more members if necessary */
   char expr [128]; // To store the expr
-  uint32_t result; // To store the latest result of expr
+  word_t result; // To store the latest result of expr
 } WP;
 
 #define NR_WP 32
@@ -88,7 +88,7 @@ void free_wp(WP *wp) {
 void print_wp(void) {
   WP *temp = head;
   while(temp != NULL) {
-    printf("Watching point %d: expr: %s, latest value: 0x%08x\n", temp->NO, temp->expr, temp->result);
+    printf("Watching point %d: expr: %s, latest value: 0x%016lx\n", temp->NO, temp->expr, temp->result);
     temp = temp->next;
   }
 }
@@ -106,14 +106,14 @@ void delete_wp(unsigned int index) {
 */
 bool check_wp(void) {
   WP *temp = head;
-  uint32_t new_value;
+  word_t new_value;
   bool flag = false;
   while(temp != NULL) {
     bool success;
     new_value = expr(temp->expr, &success);
     if (temp->result != new_value) {
       flag = true;
-      printf("After complish the follow action, Watching point %d value change: \nexpr: %s  value: 0x%08x  ->  0x%08x\n", temp->NO, temp->expr, temp->result, new_value);
+      printf("After complish the follow action, Watching point %d value change: \nexpr: %s  value: 0x%016lx  ->  0x%016lx\n", temp->NO, temp->expr, temp->result, new_value);
       temp->result = new_value;
     }
     temp = temp->next;
@@ -126,7 +126,7 @@ bool check_wp(void) {
 void set_bp(word_t _pc_addr) {
   pc_break = true;
   pc_addr = _pc_addr;
-  printf("Set up/Update the break point @PC = 0x%08x\n", pc_addr);
+  printf("Set up/Update the break point @PC = 0x%016lx\n", pc_addr);
   return;
 }
 
@@ -136,7 +136,7 @@ void set_bp(word_t _pc_addr) {
 */
 bool check_bp(word_t pc) {
   if(pc_break == true && pc_addr == pc) {
-    printf("Got the break point @PC = 0x%08x, and complish the follow action: \n", pc);
+    printf("Got the break point @PC = 0x%016lx, and complish the follow action: \n", pc);
     return true;
   }
   else {
@@ -148,6 +148,6 @@ bool check_bp(word_t pc) {
 */
 void delete_bp(void) {
   pc_break = false;
-  printf("Delete the break point @PC = 0x%08x\n", pc_addr);
+  printf("Delete the break point @PC = 0x%016lx\n", pc_addr);
   return;
 }

@@ -16,7 +16,7 @@ typedef struct watchpoint {
 
   /* TODO: Add more members if necessary */
   char expr [128]; // To store the expr
-  uint32_t result; // To store the latest result of expr
+  word_t result; // To store the latest result of expr
 } WP;
 
 void init_wp_pool();
