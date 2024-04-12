@@ -38,28 +38,30 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 // DIP-C interface for cpu
 extern "C" word_t pmem_read(int araddr) {
-  if (in_pmem(araddr)) {
-    return paddr_read(araddr, sizeof(word_t));
+  word_t u_addr = (word_t)araddr;
+  if (in_pmem(u_addr)) {
+    return paddr_read(u_addr, sizeof(word_t));
   }
   // if not in mem, then check mmio
   else
-    return mmio_read(araddr, sizeof(word_t));
+    return mmio_read(u_addr, sizeof(word_t));
 }
 
 extern "C" void pmem_write(int waddr, paddr_t wdata, char wmask) {
-    uint64_t data = wdata;
+    word_t data = wdata;
+    word_t u_addr = (word_t)waddr;
     while(wmask > 0) {
         if(wmask & 0x1) {
-            if (in_pmem(waddr)) {
-                paddr_write(waddr, 1, data);
+            if (in_pmem(u_addr)) {
+                paddr_write(u_addr, 1, data);
             }
             // if not in mem, then check mmio
             else {
-                mmio_write(waddr, 1, data);
+                mmio_write(u_addr, 1, data);
             }
         }
         wmask >>= 1;
-        waddr++;
+        u_addr++;
         data >>= 8;
     }
     return;
