@@ -40,9 +40,11 @@ module ysyx_23060136_EXU_ALU (
         input                                                    EXU_i_ALU_mul_u              ,
         input                                                    EXU_i_ALU_mul_s              ,
         input                                                    EXU_i_ALU_mul_su             ,
+
         input                                                    EXU_i_ALU_div                ,
         input                                                    EXU_i_ALU_div_u              ,
         input                                                    EXU_i_ALU_div_s              ,
+
         input                                                    EXU_i_ALU_rem                ,
         input                                                    EXU_i_ALU_rem_u              ,
         input                                                    EXU_i_ALU_rem_s              ,
@@ -171,8 +173,8 @@ module ysyx_23060136_EXU_ALU (
     always_comb begin
         unique case(state)
             `ysyx_23060136_idle: begin
-                // raise the request of mul/div
-                if((EXU_i_ALU_mul | EXU_i_ALU_div) & !FORWARD_stallEX2) begin
+                // raise the request of mul/div/rem
+                if((EXU_i_ALU_mul | EXU_i_ALU_div | EXU_i_ALU_rem) & !FORWARD_stallEX2) begin
                     next_state = `ysyx_23060136_ready;
                 end
                 else begin
@@ -281,7 +283,7 @@ module ysyx_23060136_EXU_ALU (
         if(rst || ((BRANCH_flushEX1 || FORWARD_flushEX1) & ~FORWARD_stallEX2)) begin
             div_valid <= `ysyx_23060136_false;
         end
-        else if(state_idle & next_state == `ysyx_23060136_ready & EXU_i_ALU_div) begin
+        else if(state_idle & next_state == `ysyx_23060136_ready & (EXU_i_ALU_div | EXU_i_ALU_rem)) begin
             div_valid <= `ysyx_23060136_true;
         end
         else if((next_state == `ysyx_23060136_wait) & state_ready) begin
@@ -300,7 +302,6 @@ module ysyx_23060136_EXU_ALU (
             ALU_valid <= `ysyx_23060136_true;
         end
     end
-
 
     always_ff @(posedge clk) begin : EXU_ALU_ALUout_update
         if(rst || ((BRANCH_flushEX1 || FORWARD_flushEX1) & ~FORWARD_stallEX2)) begin
