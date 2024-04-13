@@ -14,7 +14,7 @@ CFLAGS    += -fdata-sections -ffunction-sections
 LDFLAGS   += -T $(AM_HOME)/scripts/linker.ld \
              --defsym=_pmem_start=0x80000000 --defsym=_entry_offset=0x0
 LDFLAGS   += --gc-sections -e _start --print-map
-NEMUFLAGS += -l $(shell dirname $(IMAGE).elf)/nemu-log.txt
+NPC_FLAGS  += -l $(shell dirname $(IMAGE).elf)/npc-log.txt
 # send the elf dir to the main
 NPC_FLAGS += -f $(IMAGE).elf
 
