@@ -49,7 +49,7 @@ extern "C" word_t pmem_read(uint32_t araddr) {
 
 extern "C" void pmem_write(uint32_t waddr, paddr_t wdata, uint8_t wmask) {
     word_t u_addr = (word_t)(waddr);
-    printf("addr:0x%016lx   data:0x%016lx\n   mask:0x%08x", u_addr, wdata, wmask);
+    printf("addr:0x%016lx   data:0x%016lx  mask:0x%08x\n", u_addr, wdata, wmask);
     while(wmask > 0) {
         if(wmask & 0x1) {
             if (in_pmem(u_addr)) {
