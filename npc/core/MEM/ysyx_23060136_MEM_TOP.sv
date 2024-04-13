@@ -100,6 +100,9 @@ module ysyx_23060136_MEM_TOP (
         output                                                    MEM_o_system_halt            ,
         // ===========================================================================
         // stall and flush
+
+        input                                                     BRANCH_PCSrc                 ,
+
         output                                                    FORWARD_stallIF              ,
         output                                                    FORWARD_stallID              ,
         output                                                    FORWARD_stallME              ,
@@ -282,6 +285,7 @@ module ysyx_23060136_MEM_TOP (
         .WB_o_rs2_data                     (WB_o_rs2_data             ),
         .WB_o_csr_rs_data_1                (WB_o_csr_rs_data_1        ),
         .WB_o_csr_rs_data_2                (WB_o_csr_rs_data_2        ),
+        .BRANCH_PCSrc                      (BRANCH_PCSrc              ), 
         .FORWARD_stallIF                   (FORWARD_stallIF           ),
         .FORWARD_stallID                   (FORWARD_stallID           ),
         .FORWARD_stallEX                   (FORWARD_stallEX           ),

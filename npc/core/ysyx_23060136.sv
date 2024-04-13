@@ -1009,6 +1009,7 @@ module ysyx_23060136 (
         .MEM_o_csr_rd_1                    (MEM_o_csr_rd_1            ),
         .MEM_o_csr_rd_2                    (MEM_o_csr_rd_2            ),
         .MEM_o_system_halt                 (MEM_o_system_halt         ),
+        .BRANCH_PCSrc                      (BRANCH_PCSrc              ), 
         .FORWARD_stallIF                   (FORWARD_stallIF           ),
         .FORWARD_stallID                   (FORWARD_stallID           ),
         .FORWARD_stallME                   (FORWARD_stallME           ),
