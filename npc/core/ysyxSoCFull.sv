@@ -511,7 +511,7 @@ module ysyx_23060136_MEMORY (
 
     always_ff @(posedge clk) begin : write_data
         if(w_state_ready & (next_w_state == `ysyx_23060136_wait)) begin
-            pmem_write(awaddr_buffer, wdata_buffer, wstrb_buffer);
+            pmem_write(awaddr_buffer[31 : 0], wdata_buffer, wstrb_buffer);
         end
     end
 
