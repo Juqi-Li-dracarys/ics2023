@@ -252,12 +252,12 @@ module ysyx_23060136_MEM_DATA_MEM (
         end
         else if(r_state_wait & r_state_next == `ysyx_23060136_idle)begin
             MEM_o_rdata   <=  ({`ysyx_23060136_BITS_W{MEM_mem_byte_u}}) & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_0000_00FF   |
-                            ({`ysyx_23060136_BITS_W{MEM_mem_half_u}})   & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_0000_FFFF   |
-                            ({`ysyx_23060136_BITS_W{MEM_mem_word_u}})   & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_FFFF_FFFF   |
-                            ({`ysyx_23060136_BITS_W{MEM_mem_byte  }})   & ((`ysyx_23060136_BITS_W'h0000_0000_0000_00FF & r_abstract) | {{56{r_abstract[7]}},  {8{1'b0}}})  |
-                            ({`ysyx_23060136_BITS_W{MEM_mem_half  }})   & ((`ysyx_23060136_BITS_W'h0000_0000_0000_FFFF & r_abstract) | {{48{r_abstract[15]}}, {16{1'b0}}}) |
-                            ({`ysyx_23060136_BITS_W{MEM_mem_word}})     & ((`ysyx_23060136_BITS_W'h0000_0000_FFFF_FFFF & r_abstract) | {{32{r_abstract[31]}}, {32{1'b0}}}) |
-                            ({`ysyx_23060136_BITS_W{MEM_mem_dword}})    &  r_abstract ;
+                              ({`ysyx_23060136_BITS_W{MEM_mem_half_u}})   & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_0000_FFFF   |
+                              ({`ysyx_23060136_BITS_W{MEM_mem_word_u}})   & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_FFFF_FFFF   |
+                              ({`ysyx_23060136_BITS_W{MEM_mem_byte  }})   & ((`ysyx_23060136_BITS_W'h0000_0000_0000_00FF & r_abstract) | {{56{r_abstract[7]}},  {8{1'b0}}})  |
+                              ({`ysyx_23060136_BITS_W{MEM_mem_half  }})   & ((`ysyx_23060136_BITS_W'h0000_0000_0000_FFFF & r_abstract) | {{48{r_abstract[15]}}, {16{1'b0}}}) |
+                              ({`ysyx_23060136_BITS_W{MEM_mem_word}})     & ((`ysyx_23060136_BITS_W'h0000_0000_FFFF_FFFF & r_abstract) | {{32{r_abstract[31]}}, {32{1'b0}}}) |
+                              ({`ysyx_23060136_BITS_W{MEM_mem_dword}})    &  r_abstract ;
         end 
     end
     
@@ -374,7 +374,8 @@ module ysyx_23060136_MEM_DATA_MEM (
 
             io_master_wstrb   <=    ({8{EXU_o_mem_byte}}) & (8'b0000_0001 << io_master_awaddr[2 : 0]) |
                                     ({8{EXU_o_mem_half}}) & (8'b0000_0011 << io_master_awaddr[2 : 0]) |
-                                    ({8{EXU_o_mem_word}}) & (8'b0000_1111 << io_master_awaddr[2 : 0]) ;
+                                    ({8{EXU_o_mem_word}}) & (8'b0000_1111 << io_master_awaddr[2 : 0]) |
+                                    ({8{EXU_o_mem_dword}}) & (8'b1111_1111)                           ;
         end
     end
 
