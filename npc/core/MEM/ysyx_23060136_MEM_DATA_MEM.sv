@@ -110,8 +110,8 @@ module ysyx_23060136_MEM_DATA_MEM (
     wire                       r_state_wait    =  (r_state == `ysyx_23060136_wait);
 
     // read state
-    wire                       from_mem        =  (MEM_addr >= `ysyx_23060136_MBASE && MEM_addr < `ysyx_23060136_MEND);
-    logic                      is_mem ;
+    wire                       from_mem        =  `ysyx_23060136_true;
+    logic                      is_mem           ;
     logic                      MEM_mem_byte_u   ;
     logic                      MEM_mem_half_u   ;
     logic                      MEM_mem_word_u   ;
