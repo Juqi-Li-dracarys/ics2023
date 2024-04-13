@@ -70,7 +70,7 @@
 
     // ===========================================================================
     // siganl for seg reg
-    input                                                    BRANCH_PCSrc                 ,
+    input                                                    BRANCH_PCSrc               ,
 
     output                                                   FORWARD_stallIF            ,
     output                                                   FORWARD_stallID            ,
@@ -274,7 +274,7 @@
                 FORWARD_rs2_data_SEG = WB_o_rs2_data;
             end
         end
-        else if(fourth_stage_hazard_rs1) begin
+        else if(fourth_stage_hazard_rs2) begin
             FORWARD_rs2_data_SEG = WB_o_rs2_data;
         end
         else FORWARD_rs2_data_SEG =  `ysyx_23060136_false;
