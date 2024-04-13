@@ -70,6 +70,8 @@
 
     // ===========================================================================
     // siganl for seg reg
+    input                                                    BRANCH_PCSrc                 ,
+
     output                                                   FORWARD_stallIF            ,
     output                                                   FORWARD_stallID            ,
     output                                                   FORWARD_stallEX            ,
@@ -109,38 +111,38 @@
     wire       EXU_rd_x0                =  (EXU_o_rd   == 'b0);
 
     // 4级数据冒险
-    wire     fourth_stage_hazard_rs1     =  (IDU_o_rs1    == WB_o_rd)           & WB_o_write_gpr & ~WB_rd_x0;
-    wire     fourth_stage_hazard_rs2     =  (IDU_o_rs2    == WB_o_rd)           & WB_o_write_gpr & ~WB_rd_x0;
-    wire     fourth_stage_hazard_csr_1   =  (IDU_o_csr_rs == WB_o_csr_rd_1)     & WB_o_write_csr_1          ;
-    wire     fourth_stage_hazard_csr_2   =  (IDU_o_csr_rs == WB_o_csr_rd_2)     & WB_o_write_csr_2          ;
+    wire     fourth_stage_hazard_rs1     =  (IDU_o_rs1    == WB_o_rd)           & WB_o_write_gpr & ~WB_rd_x0 & ~BRANCH_PCSrc ;
+    wire     fourth_stage_hazard_rs2     =  (IDU_o_rs2    == WB_o_rd)           & WB_o_write_gpr & ~WB_rd_x0 & ~BRANCH_PCSrc ;  
+    wire     fourth_stage_hazard_csr_1   =  (IDU_o_csr_rs == WB_o_csr_rd_1)     & WB_o_write_csr_1 & ~BRANCH_PCSrc           ;
+    wire     fourth_stage_hazard_csr_2   =  (IDU_o_csr_rs == WB_o_csr_rd_2)     & WB_o_write_csr_2 & ~BRANCH_PCSrc           ;
 
     // 3级数据冒险
-    wire     third_stage_hazard_rs1      =  (EXU_i_rs1    == WB_o_rd)          & WB_o_write_gpr & ~WB_rd_x0  ;  
-    wire     third_stage_hazard_rs2      =  (EXU_i_rs2    == WB_o_rd)          & WB_o_write_gpr & ~WB_rd_x0  ; 
-    wire     third_stage_hazard_csr_1    =  (EXU_i_csr_rs == WB_o_csr_rd_1)    & WB_o_write_csr_1            ;
-    wire     third_stage_hazard_csr_2    =  (EXU_i_csr_rs == WB_o_csr_rd_2)    & WB_o_write_csr_2            ;
+    wire     third_stage_hazard_rs1      =  (EXU_i_rs1    == WB_o_rd)          & WB_o_write_gpr & ~WB_rd_x0 & ~BRANCH_PCSrc ;  
+    wire     third_stage_hazard_rs2      =  (EXU_i_rs2    == WB_o_rd)          & WB_o_write_gpr & ~WB_rd_x0 & ~BRANCH_PCSrc ; 
+    wire     third_stage_hazard_csr_1    =  (EXU_i_csr_rs == WB_o_csr_rd_1)    & WB_o_write_csr_1           & ~BRANCH_PCSrc ;
+    wire     third_stage_hazard_csr_2    =  (EXU_i_csr_rs == WB_o_csr_rd_2)    & WB_o_write_csr_2           & ~BRANCH_PCSrc ;
 
 
     // 2级数据冒险
-    wire     second_stage_hazard_rs1      =  (EXU_i_rs1    == MEM_i_rd)        & MEM_i_write_gpr   & ~MEM_i_mem_to_reg & ~MEM_rd_x0  ;  
-    wire     second_stage_hazard_rs2      =  (EXU_i_rs2    == MEM_i_rd)        & MEM_i_write_gpr   & ~MEM_i_mem_to_reg & ~MEM_rd_x0  ; 
-    wire     second_stage_hazard_csr_1    =  (EXU_i_csr_rs == MEM_i_csr_rd_1)  & MEM_i_write_csr_1 & ~MEM_i_mem_to_reg               ;
-    wire     second_stage_hazard_csr_2    =  (EXU_i_csr_rs == MEM_i_csr_rd_2)  & MEM_i_write_csr_2 & ~MEM_i_mem_to_reg               ;
+    wire     second_stage_hazard_rs1      =  (EXU_i_rs1    == MEM_i_rd)        & MEM_i_write_gpr   & ~MEM_i_mem_to_reg & ~MEM_rd_x0 & ~BRANCH_PCSrc ;  
+    wire     second_stage_hazard_rs2      =  (EXU_i_rs2    == MEM_i_rd)        & MEM_i_write_gpr   & ~MEM_i_mem_to_reg & ~MEM_rd_x0 & ~BRANCH_PCSrc ; 
+    wire     second_stage_hazard_csr_1    =  (EXU_i_csr_rs == MEM_i_csr_rd_1)  & MEM_i_write_csr_1 & ~MEM_i_mem_to_reg              & ~BRANCH_PCSrc ;
+    wire     second_stage_hazard_csr_2    =  (EXU_i_csr_rs == MEM_i_csr_rd_2)  & MEM_i_write_csr_2 & ~MEM_i_mem_to_reg              & ~BRANCH_PCSrc ;
 
 
     // 1级数据冒险
-    wire     first_stage_hazard_rs1       =  (EXU_i_rs1     ==  EXU_o_rd)          & EXU_o_write_gpr    & ~EXU_rd_x0                ;
-    wire     first_stage_hazard_rs2       =  (EXU_i_rs2     ==  EXU_o_rd)          & EXU_o_write_gpr    & ~EXU_rd_x0                ;
-    wire     first_stage_hazard_csr_1     =  (EXU_i_csr_rs  ==  EXU_o_csr_rd_1)    & EXU_o_write_csr_1                              ;
-    wire     first_stage_hazard_csr_2     =  (EXU_i_csr_rs  ==  EXU_o_csr_rd_2)    & EXU_o_write_csr_2                              ;
+    wire     first_stage_hazard_rs1       =  (EXU_i_rs1     ==  EXU_o_rd)          & EXU_o_write_gpr    & ~EXU_rd_x0               & ~BRANCH_PCSrc ;
+    wire     first_stage_hazard_rs2       =  (EXU_i_rs2     ==  EXU_o_rd)          & EXU_o_write_gpr    & ~EXU_rd_x0               & ~BRANCH_PCSrc ;
+    wire     first_stage_hazard_csr_1     =  (EXU_i_csr_rs  ==  EXU_o_csr_rd_1)    & EXU_o_write_csr_1                             & ~BRANCH_PCSrc ;
+    wire     first_stage_hazard_csr_2     =  (EXU_i_csr_rs  ==  EXU_o_csr_rd_2)    & EXU_o_write_csr_2                             & ~BRANCH_PCSrc ;
     wire     first_stage_hazard           =  first_stage_hazard_rs1  | first_stage_hazard_rs2  | first_stage_hazard_csr_1  | first_stage_hazard_csr_2; 
 
 
     // load use 数据冒险(2 level)     
-    wire     load_use_hazard_rs1          =  (EXU_i_rs1    == MEM_i_rd)        & MEM_i_write_gpr   & MEM_i_mem_to_reg & ~MEM_rd_x0  ;
-    wire     load_use_hazard_rs2          =  (EXU_i_rs2    == MEM_i_rd)        & MEM_i_write_gpr   & MEM_i_mem_to_reg & ~MEM_rd_x0  ;
-    wire     load_use_hazard_csr_1        =  (EXU_i_csr_rs == MEM_i_csr_rd_1)  & MEM_i_write_csr_1 & MEM_i_mem_to_reg               ;
-    wire     load_use_hazard_csr_2        =  (EXU_i_csr_rs == MEM_i_csr_rd_2)  & MEM_i_write_csr_2 & MEM_i_mem_to_reg               ;
+    wire     load_use_hazard_rs1          =  (EXU_i_rs1    == MEM_i_rd)        & MEM_i_write_gpr   & MEM_i_mem_to_reg & ~MEM_rd_x0 & ~BRANCH_PCSrc ;
+    wire     load_use_hazard_rs2          =  (EXU_i_rs2    == MEM_i_rd)        & MEM_i_write_gpr   & MEM_i_mem_to_reg & ~MEM_rd_x0 & ~BRANCH_PCSrc ;
+    wire     load_use_hazard_csr_1        =  (EXU_i_csr_rs == MEM_i_csr_rd_1)  & MEM_i_write_csr_1 & MEM_i_mem_to_reg              & ~BRANCH_PCSrc ;
+    wire     load_use_hazard_csr_2        =  (EXU_i_csr_rs == MEM_i_csr_rd_2)  & MEM_i_write_csr_2 & MEM_i_mem_to_reg              & ~BRANCH_PCSrc ;
 
 
     // 流水段上所有操作已经完成
