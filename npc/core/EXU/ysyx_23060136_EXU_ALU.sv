@@ -128,7 +128,7 @@ module ysyx_23060136_EXU_ALU (
 
                                
     // ALU result that does not require MUL OR DIV
-    wire [`ysyx_23060136_BITS_W-1 : 0]  EXU_ALU_COMB_dw  =      ({`ysyx_23060136_BITS_W{EXU_i_ALU_add}}       & (result_shifter))                 |
+    wire [`ysyx_23060136_BITS_W-1 : 0]  EXU_ALU_COMB_dw  =      ({`ysyx_23060136_BITS_W{EXU_i_ALU_add}}       & (add_result))                 |
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_sub}}       & (add_result))                 |
 
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_slt}}       & ({{`ysyx_23060136_BITS_W-1{1'b0}}, EXU_ALU_Less_COMB})) |
