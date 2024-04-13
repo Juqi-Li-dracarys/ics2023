@@ -70,6 +70,6 @@
 #define CONFIG_WBCHECK 1
 
 // // wave record
-#define WAVE_RECORD 1
+// #define WAVE_RECORD 1
 
 
