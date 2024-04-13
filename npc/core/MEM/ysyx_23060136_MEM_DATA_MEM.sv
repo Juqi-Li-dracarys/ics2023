@@ -372,10 +372,10 @@ module ysyx_23060136_MEM_DATA_MEM (
             io_master_awsize  <=    ({3{EXU_o_mem_byte}}) & 3'b000         |   ({3{EXU_o_mem_half}}) & 3'b001             |
                                     ({3{EXU_o_mem_word}}) & 3'b010         |   ({3{EXU_o_mem_dword}}) & 3'b011            ;
 
-            io_master_wstrb   <=    ({8{EXU_o_mem_byte}}) & (8'b0000_0001 << io_master_awaddr[2 : 0]) |
-                                    ({8{EXU_o_mem_half}}) & (8'b0000_0011 << io_master_awaddr[2 : 0]) |
-                                    ({8{EXU_o_mem_word}}) & (8'b0000_1111 << io_master_awaddr[2 : 0]) |
-                                    ({8{EXU_o_mem_dword}}) & (8'b1111_1111)                           ;
+            io_master_wstrb   <=    ({8{EXU_o_mem_byte}}) & (8'b0000_0001 << MEM_addr[2 : 0]) |
+                                    ({8{EXU_o_mem_half}}) & (8'b0000_0011 << MEM_addr[2 : 0]) |
+                                    ({8{EXU_o_mem_word}}) & (8'b0000_1111 << MEM_addr[2 : 0]) |
+                                    ({8{EXU_o_mem_dword}}) & (8'b1111_1111)                    ;
         end
     end
 
