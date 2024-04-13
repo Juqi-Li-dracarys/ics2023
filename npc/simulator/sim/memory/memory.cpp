@@ -38,7 +38,7 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 // DIP-C interface for cpu
 extern "C" word_t pmem_read(uint32_t araddr) {
-  word_t u_addr = (word_t)((uint32_t)araddr);
+  word_t u_addr = (word_t)(araddr);
   if (in_pmem(u_addr)) {
     return paddr_read(u_addr, sizeof(word_t));
   }
@@ -48,8 +48,8 @@ extern "C" word_t pmem_read(uint32_t araddr) {
 }
 
 extern "C" void pmem_write(uint32_t waddr, paddr_t wdata, uint8_t wmask) {
-    word_t u_addr = (word_t)((uint32_t)waddr);
-    printf("addr:0x%016lx   data:0x%016lx\n", u_addr, wdata);
+    word_t u_addr = (word_t)(waddr);
+    // printf("addr:0x%016lx   data:0x%016lx\n", u_addr, wdata);
     while(wmask > 0) {
         if(wmask & 0x1) {
             if (in_pmem(u_addr)) {
