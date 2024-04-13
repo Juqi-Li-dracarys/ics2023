@@ -119,6 +119,7 @@ module ysyx_23060136_EXU_ALU (
 
     ysyx_23060136_EXU_SHIFT  shifter (
         .din                               (ALU_da_word_t             ),
+        .word_t                            (EXU_i_ALU_word_t          ),
         .shamt                             (ALU_db_word_t[`ysyx_23060136_BITS_S-1 : 0]),
         .LR                                (LR                        ),
         .AL                                (AL                        ),
