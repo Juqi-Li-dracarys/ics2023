@@ -52,9 +52,9 @@
 #define CONFIG_TRACE 1
 
 // Itrace
-#define CONFIG_ITRACE 1
-#define CONFIG_ITRACE_COND 1
-#define ITRACE_COND  1
+// #define CONFIG_ITRACE 1
+// #define CONFIG_ITRACE_COND 1
+// #define ITRACE_COND  1
 
 // Itrace max record number setting
 #define CONFIG_TRACE_START 0
