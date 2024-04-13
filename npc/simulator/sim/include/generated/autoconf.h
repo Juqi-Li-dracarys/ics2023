@@ -63,6 +63,9 @@
 // diff test
 #define CONFIG_DIFFTEST 1
 
+// mem trace
+#define CONFIG_MTRACE_COND 1
+
 // watch/break point
 #define CONFIG_WBCHECK 1
 
