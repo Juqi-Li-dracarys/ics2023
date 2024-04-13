@@ -98,7 +98,7 @@ word_t paddr_read(paddr_t addr, int len) {
   else 
     out_of_bound(addr);
 #ifdef CONFIG_MTRACE_COND
-    if (MTRACE_COND) {log_write("MTRACE: 0x%016lx\t read %d byte 0x%016lx in mem: 0x%016lx\n", log_ptr->pc, len, r_data, addr);}
+    log_write("MTRACE: 0x%016lx\t read %d byte 0x%016lx in mem: 0x%016lx\n", log_ptr->pc, len, r_data, addr);
 #endif
   return r_data;
 }
@@ -106,7 +106,7 @@ word_t paddr_read(paddr_t addr, int len) {
 // write with addr in riscv code, without mmio
 void paddr_write(paddr_t addr, int len, word_t data) {
   #ifdef CONFIG_MTRACE_COND
-    if (MTRACE_COND) {log_write("MTRACE: 0x%016lx\t write %d byte 0x%016lx in mem: 0x%016lx\n", log_ptr->pc, len, data, addr);}
+    log_write("MTRACE: 0x%016lx\t write %d byte 0x%016lx in mem: 0x%016lx\n", log_ptr->pc, len, data, addr);
   #endif
   if (in_pmem(addr)) { host_write(guest_to_host(addr), len, data); return; }
   out_of_bound(addr);
