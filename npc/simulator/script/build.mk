@@ -35,22 +35,17 @@ $(NEMUISO):
 run: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "RUN NPC")
-	@$(GPROF) $(VBIN) $(GPROF_FILE)
-	@verilator_profcfunc $(GPROF_FILE) $(GPROF_REPORT)
 	@$(VBIN) $(ARGS) $(IMG)
+	@$(GPROF) $(VBIN) $(GPROF_FILE)
 
 test: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "RUN NPC")
-	@$(GPROF) $(VBIN) $(GPROF_FILE)
-	@verilator_profcfunc $(PROF_FILE) $(GPROF_REPORT)
 	@$(VBIN) $(ARGS) $(BATCH_MODE) $(IMG)
 
 gdb: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[GDB IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "GDB NPC")
-	@$(GPROF) $(VBIN) $(GPROF_FILE)
-	@verilator_profcfunc $(PROF_FILE) $(GPROF_REPORT)
 	@gdb -s $(VBIN) --args $(VBIN) $(ARGS) $(IMG)
 
 wave: run
