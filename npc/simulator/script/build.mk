@@ -12,9 +12,12 @@ ARGS_DIFF = --diff=$(NEMUISO)
 SILENT = -s
 BATCH_MODE = -b
 
+GPROF=gprof
+GPROF_FILE=$(dir $(VBIN))/gprof.out
+GPROF_REPORT=$(dir $(VBIN))/report.out
+
 override ARGS ?= --log=$(OBJ_DIR)/npc-log.txt
 override ARGS += $(ARGS_DIFF)
-
 
 
 $(VBIN): $(CSRC) $(VSRC)
@@ -32,22 +35,26 @@ $(NEMUISO):
 run: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "RUN NPC")
-	@gprof $(VBIN) | verilator_profcfunc report.out
+	@$(GPROF) $(VBIN) $(PROF_DIR)
+	@verilator_profcfunc $(PROF_DIR) $(GPROF_REPORT)
 	@$(VBIN) $(ARGS) $(IMG)
 
 test: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "RUN NPC")
+	@$(GPROF) $(VBIN) $(PROF_DIR)
+	@verilator_profcfunc $(PROF_DIR) $(GPROF_REPORT)
 	@$(VBIN) $(ARGS) $(BATCH_MODE) $(IMG)
 
 gdb: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[GDB IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "GDB NPC")
+	@$(GPROF) $(VBIN) $(PROF_DIR)
+	@verilator_profcfunc $(PROF_DIR) $(GPROF_REPORT)
 	@gdb -s $(VBIN) --args $(VBIN) $(ARGS) $(IMG)
 
 wave: run
 	@gtkwave waveform.vcd $(GTKFLAGS)
-
 
 clean:
 	@echo rm -rf OBJ_DIR *vcd
