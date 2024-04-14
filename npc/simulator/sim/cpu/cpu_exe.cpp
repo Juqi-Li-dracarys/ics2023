@@ -53,7 +53,7 @@ static void statistic() {
   else 
     Log("Finish running in less than 1 us and can not calculate the simulation frequency");
   if(g_nr_guest_inst)
-    Log("IPC = " NUMBERIC_FMT " inst/clock", g_nr_guest_clock/g_nr_guest_inst); 
+    Log("IPC = " NUMBERIC_FMT " inst/clock", g_nr_guest_clock / g_nr_guest_inst); 
 }
 
 
