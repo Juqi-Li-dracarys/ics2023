@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 17:30:02 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-05 21:49:41
+ * @Last Modified time: 2024-04-14 00:07:36
  */
 
 
@@ -34,15 +34,46 @@ module ysyx_23060136_IFU_TOP(
         // 当该信号为 true
         output                                              IFU_o_valid                ,
         output                                              IFU_o_commit               ,
-
-        input              [  `ysyx_23060136_BITS_W-1:0]    ARBITER_IFU_inst           ,
-        input                                               ARBITER_IFU_inst_valid     ,
-        input                                               ARBITER_IFU_pc_ready       ,
-  
-        output             [  `ysyx_23060136_BITS_W-1:0]    ARBITER_IFU_pc             ,
-        output                                              ARBITER_IFU_pc_valid       ,
-        output                                              ARBITER_IFU_inst_ready     ,
-        output                                              IFU_error_signal
+        // ===========================================================================
+        input                                               ARBITER_IFU_arready        , 
+        output                                              ARBITER_IFU_arvalid        , 
+        output            [  31:0]                          ARBITER_IFU_araddr         , 
+        output            [   3:0]                          ARBITER_IFU_arid           , 
+        output            [   7:0]                          ARBITER_IFU_arlen          , 
+        output            [   2:0]                          ARBITER_IFU_arsize         , 
+        output            [   1:0]                          ARBITER_IFU_arburst        , 
+        output                                              ARBITER_IFU_rready         , 
+        input                                               ARBITER_IFU_rvalid         , 
+        input             [   1:0]                          ARBITER_IFU_rresp          , 
+        input             [  63:0]                          ARBITER_IFU_rdata          , 
+        input                                               ARBITER_IFU_rlast          , 
+        input             [   3:0]                          ARBITER_IFU_rid            ,
+        output                                              IFU_error_signal           ,
+        // ===========================================================================
+        output            [   5:0]                          io_sram0_addr               ,
+        output                                              io_sram0_cen                ,
+        output                                              io_sram0_wen                ,
+        output            [ 127:0]                          io_sram0_wmask              ,
+        output            [ 127:0]                          io_sram0_wdata              ,
+        input             [ 127:0]                          io_sram0_rdata              ,
+        output            [   5:0]                          io_sram1_addr               ,
+        output                                              io_sram1_cen                ,
+        output                                              io_sram1_wen                ,
+        output            [ 127:0]                          io_sram1_wmask              ,
+        output            [ 127:0]                          io_sram1_wdata              ,
+        input             [ 127:0]                          io_sram1_rdata              ,
+        output            [   5:0]                          io_sram2_addr               ,
+        output                                              io_sram2_cen                ,
+        output                                              io_sram2_wen                ,
+        output            [ 127:0]                          io_sram2_wmask              ,
+        output            [ 127:0]                          io_sram2_wdata              ,
+        input             [ 127:0]                          io_sram2_rdata              ,
+        output            [   5:0]                          io_sram3_addr               ,
+        output                                              io_sram3_cen                ,
+        output                                              io_sram3_wen                ,
+        output            [ 127:0]                          io_sram3_wmask              ,
+        output            [ 127:0]                          io_sram3_wdata              ,
+        input             [ 127:0]                          io_sram3_rdata              
     );
 
     // current inst/pc is valid
@@ -55,7 +86,7 @@ module ysyx_23060136_IFU_TOP(
     assign                                 IFU_o_pc         =      IFU2_pc      ;
     assign                                 IFU_o_commit     =      IFU2_commit  ;
 
-    ysyx_23060136_IFU_PC_COUNT  ysyx_23060136_IFU_PC_COUNT_inst (
+    ysyx_23060136_IFU_PC ysyx_23060136_IFU_PC_COUNT_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
         .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
@@ -65,22 +96,55 @@ module ysyx_23060136_IFU_TOP(
      );
 
      
-     ysyx_23060136_IFU_INST_MEM  ysyx_23060136_IFU_INST_MEM_inst (
-        .clk                               (clk                       ),
-        .rst                               (rst                       ),
-        .IFU1_pc                           (IFU1_pc                   ),
-        .BRANCH_flushIF                    (BRANCH_flushIF            ),
-        .FORWARD_stallIF                   (FORWARD_stallIF           ),
-        .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
-        .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
-        .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
-        .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
-        .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
-        .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ),
-        .IFU_o_inst                        (IFU_o_inst                ),
-        .inst_valid                        (inst_valid                ),
-        .IFU_error_signal                  (IFU_error_signal          ) 
-  );
+    ysyx_23060136_IFU_ICACHE  ysyx_23060136_IFU_ICACHE_inst (
+            .clk                               (clk                       ),
+            .rst                               (rst                       ),
+            .IFU1_pc                           (IFU1_pc                   ),
+            .BRANCH_flushIF                    (BRANCH_flushIF            ),
+            .FORWARD_stallIF                   (FORWARD_stallIF           ),
+            .ARBITER_IFU_arready               (ARBITER_IFU_arready       ),
+            .ARBITER_IFU_arvalid               (ARBITER_IFU_arvalid       ),
+            .ARBITER_IFU_araddr                (ARBITER_IFU_araddr        ),
+            .ARBITER_IFU_arid                  (ARBITER_IFU_arid          ),
+            .ARBITER_IFU_arlen                 (ARBITER_IFU_arlen         ),
+            .ARBITER_IFU_arsize                (ARBITER_IFU_arsize        ),
+            .ARBITER_IFU_arburst               (ARBITER_IFU_arburst       ),
+            .ARBITER_IFU_rready                (ARBITER_IFU_rready        ),
+            .ARBITER_IFU_rvalid                (ARBITER_IFU_rvalid        ),
+            .ARBITER_IFU_rresp                 (ARBITER_IFU_rresp         ),
+            .ARBITER_IFU_rdata                 (ARBITER_IFU_rdata         ),
+            .ARBITER_IFU_rlast                 (ARBITER_IFU_rlast         ),
+            .ARBITER_IFU_rid                   (ARBITER_IFU_rid           ),
+            .io_sram0_addr                     (io_sram0_addr             ),
+            .io_sram0_cen                      (io_sram0_cen              ),
+            .io_sram0_wen                      (io_sram0_wen              ),
+            .io_sram0_wmask                    (io_sram0_wmask            ),
+            .io_sram0_wdata                    (io_sram0_wdata            ),
+            .io_sram0_rdata                    (io_sram0_rdata            ),
+            .io_sram1_addr                     (io_sram1_addr             ),
+            .io_sram1_cen                      (io_sram1_cen              ),
+            .io_sram1_wen                      (io_sram1_wen              ),
+            .io_sram1_wmask                    (io_sram1_wmask            ),
+            .io_sram1_wdata                    (io_sram1_wdata            ),
+            .io_sram1_rdata                    (io_sram1_rdata            ),
+            .io_sram2_addr                     (io_sram2_addr             ),
+            .io_sram2_cen                      (io_sram2_cen              ),
+            .io_sram2_wen                      (io_sram2_wen              ),
+            .io_sram2_wmask                    (io_sram2_wmask            ),
+            .io_sram2_wdata                    (io_sram2_wdata            ),
+            .io_sram2_rdata                    (io_sram2_rdata            ),
+            .io_sram3_addr                     (io_sram3_addr             ),
+            .io_sram3_cen                      (io_sram3_cen              ),
+            .io_sram3_wen                      (io_sram3_wen              ),
+            .io_sram3_wmask                    (io_sram3_wmask            ),
+            .io_sram3_wdata                    (io_sram3_wdata            ),
+            .io_sram3_rdata                    (io_sram3_rdata            ),
+            .IFU_o_inst                        (IFU_o_inst                ),
+            .inst_valid                        (inst_valid                ),
+            .IFU_error_signal                  (IFU_error_signal          ) 
+    );
+
+
 
 
   ysyx_23060136_IFU_SEG  ysyx_23060136_IFU_SEG_inst (

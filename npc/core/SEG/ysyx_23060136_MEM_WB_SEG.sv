@@ -13,7 +13,7 @@
 */
 
 // ===========================================================================
-module ysyx_23060136_MEM_WB_SEG_REG (
+module ysyx_23060136_MEM_WB_SEG (
         input                                                    clk                        ,
         input                                                    rst                        ,
         // forward signal

@@ -2,18 +2,17 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-09 21:33:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-11 16:51:29
+ * @Last Modified time: 2024-04-14 01:10:35
  */
 
 
  `include "ysyx_23060136_DEFINES.sv"
 
 
-// interface for DATA memory
-// protocol: Easy AXI-lite and full-AXI
-
+// Interface for arbiter(AXI bus) and cache
+// protocol: AXI and cache interface
 // ===========================================================================
-module ysyx_23060136_MEM_DATA_MEM (
+module ysyx_23060136_MEM_DCACHE (
     input                                                   clk                        ,
     input                                                   rst                        ,
     // ===========================================================================
@@ -39,20 +38,24 @@ module ysyx_23060136_MEM_DATA_MEM (
     input                                                   EXU_o_mem_half_u           , 
     input                                                   EXU_o_mem_word_u           , 
     // ===========================================================================
-    // read interface for arbiter(AXI-lite) 
-    input                                                   ARBITER_MEM_raddr_ready     ,
-    output  logic      [  `ysyx_23060136_BITS_W-1:0]        ARBITER_MEM_raddr           ,
-    // 这里需要声明读取长度
-    output  logic      [   2:0]                             ARBITER_MEM_rsize           ,
-    output  logic                                           ARBITER_MEM_raddr_valid     ,
-
-    input              [  `ysyx_23060136_BITS_W-1:0]        ARBITER_MEM_rdata           ,
-    input                                                   ARBITER_MEM_rdata_valid     ,
-    output                                                  ARBITER_MEM_rdata_ready     ,
+    // Interface for arbiter(AXI) 
+    input                                                   ARBITER_MEM_arready        , 
+    output    logic                                         ARBITER_MEM_arvalid        , 
+    output    logic   [  31:0]                              ARBITER_MEM_araddr         , 
+    output            [   3:0]                              ARBITER_MEM_arid           , 
+    output            [   7:0]                              ARBITER_MEM_arlen          , 
+    output    logic   [   2:0]                              ARBITER_MEM_arsize         , 
+    output            [   1:0]                              ARBITER_MEM_arburst        , 
+    output                                                  ARBITER_MEM_rready         , 
+    input                                                   ARBITER_MEM_rvalid         , 
+    input             [   1:0]                              ARBITER_MEM_rresp          , 
+    input             [  63:0]                              ARBITER_MEM_rdata          , 
+    input                                                   ARBITER_MEM_rlast          , 
+    input             [   3:0]                              ARBITER_MEM_rid            ,
     // ===========================================================================
     // read interface for clint(AXI-lite)
     input                                                   CLINT_MEM_raddr_ready       ,
-    output  logic           [  `ysyx_23060136_BITS_W-1:0]   CLINT_MEM_raddr             ,
+    output  logic      [  `ysyx_23060136_BITS_W-1:0]        CLINT_MEM_raddr             ,
     // 这里需要声明读取长度
     output  logic      [   2:0]                             CLINT_MEM_rsize             ,
     output  logic                                           CLINT_MEM_raddr_valid       ,
@@ -60,35 +63,62 @@ module ysyx_23060136_MEM_DATA_MEM (
     input              [  `ysyx_23060136_BITS_W-1:0]        CLINT_MEM_rdata             ,
     input                                                   CLINT_MEM_rdata_valid       ,
     output                                                  CLINT_MEM_rdata_ready       ,
-
     // ===========================================================================
     // interface for AXI-full write BUS in SoC
-    input                                                    io_master_awready            ,
-    output  logic                                            io_master_awvalid            ,
-    output  logic      [   31:0]                             io_master_awaddr             ,
-    output             [   3:0]                              io_master_awid               ,
-    output             [   7:0]                              io_master_awlen              ,
-    output  logic      [   2:0]                              io_master_awsize             ,
-    output             [   1:0]                              io_master_awburst            ,
-    input                                                    io_master_wready             ,
-    output  logic                                            io_master_wvalid             , 
-    output  logic      [  63:0]                              io_master_wdata              ,
-    output  logic      [   7:0]                              io_master_wstrb              ,
-    output  logic                                            io_master_wlast              ,
-    output                                                   io_master_bready             ,
-    input                                                    io_master_bvalid             ,
-    input              [   1:0]                              io_master_bresp              ,
-    input              [   3:0]                              io_master_bid                ,
+    input                                                   io_master_awready            ,
+    output  logic                                           io_master_awvalid            ,
+    output  logic      [   31:0]                            io_master_awaddr             ,
+    output             [   3:0]                             io_master_awid               ,
+    output             [   7:0]                             io_master_awlen              ,
+    output  logic      [   2:0]                             io_master_awsize             ,
+    output             [   1:0]                             io_master_awburst            ,
+    input                                                   io_master_wready             ,
+    output  logic                                           io_master_wvalid             , 
+    output  logic      [  63:0]                             io_master_wdata              ,
+    output  logic      [   7:0]                             io_master_wstrb              ,
+    output  logic                                           io_master_wlast              ,
+    output                                                  io_master_bready             ,
+    input                                                   io_master_bvalid             ,
+    input              [   1:0]                             io_master_bresp              ,
+    input              [   3:0]                             io_master_bid                ,
     // ===========================================================================
+    // cache interface
+    // To do: cache
+    output             [   5:0]                             io_sram4_addr               ,   
+    output                                                  io_sram4_cen                ,   
+    output                                                  io_sram4_wen                ,   
+    output             [ 127:0]                             io_sram4_wmask              ,   
+    output             [ 127:0]                             io_sram4_wdata              ,   
+    input              [ 127:0]                             io_sram4_rdata              ,
+    output             [   5:0]                             io_sram5_addr               ,   
+    output                                                  io_sram5_cen                ,   
+    output                                                  io_sram5_wen                ,   
+    output             [ 127:0]                             io_sram5_wmask              ,   
+    output             [ 127:0]                             io_sram5_wdata              ,   
+    input              [ 127:0]                             io_sram5_rdata              , 
+    output             [   5:0]                             io_sram6_addr               ,
+    output                                                  io_sram6_cen                ,   
+    output                                                  io_sram6_wen                ,   
+    output             [ 127:0]                             io_sram6_wmask              ,   
+    output             [ 127:0]                             io_sram6_wdata              ,   
+    input              [ 127:0]                             io_sram6_rdata              ,
+                  
+    output             [   5:0]                             io_sram7_addr               ,   
+    output                                                  io_sram7_cen                ,   
+    output                                                  io_sram7_wen                ,   
+    output             [ 127:0]                             io_sram7_wmask              ,   
+    output             [ 127:0]                             io_sram7_wdata              ,   
+    input              [ 127:0]                             io_sram7_rdata              ,
+    // ===========================================================================    
     // 读写完成信号和异常信号
-    output    logic                                          MEM_rvalid                   ,
-    output    logic                                          MEM_wdone                    ,
-    output    logic                                          MEM_error_signal             
+    output    logic                                         MEM_rvalid                   ,
+    output    logic                                         MEM_wdone                    ,
+    output    logic                                         MEM_error_signal             
 );
 
     // ===========================================================================
     // read module signal(arbiter)
-    assign                              ARBITER_MEM_rdata_ready  =  r_state_wait & is_mem              ;
+    assign                              ARBITER_MEM_rready       =  r_state_wait & is_mem              ;
     assign                              CLINT_MEM_rdata_ready    =  r_state_wait & !is_mem             ; 
 
     // write module signal
@@ -97,8 +127,41 @@ module ysyx_23060136_MEM_DATA_MEM (
     assign                              io_master_awlen          =  8'b0000_0000                       ;
     assign                              io_master_awburst        =  2'b00                              ;
 
+    assign                              ARBITER_MEM_arid         =  'b0                                ;
+    assign                              ARBITER_MEM_arlen        =  8'b0000_0000                       ;
+    assign                              ARBITER_MEM_arburst      =  2'b00                              ;
+
     // ===========================================================================
-    wire                       cache_hit      =  `ysyx_23060136_false;
+    // TO DO cache
+    wire                       cache_hit               =      `ysyx_23060136_false   ;
+    
+    assign                     io_sram4_addr           =      `ysyx_23060136_false   ;
+    assign                     io_sram4_cen            =      `ysyx_23060136_false   ;
+    assign                     io_sram4_wen            =      `ysyx_23060136_false   ;
+    assign                     io_sram4_wmask          =      `ysyx_23060136_false   ;
+    assign                     io_sram4_wdata          =      `ysyx_23060136_false   ;
+
+    assign                     io_sram5_addr           =      `ysyx_23060136_false   ;
+    assign                     io_sram5_cen            =      `ysyx_23060136_false   ;
+    assign                     io_sram5_wen            =      `ysyx_23060136_false   ;
+    assign                     io_sram5_wmask          =      `ysyx_23060136_false   ;
+    assign                     io_sram5_wdata          =      `ysyx_23060136_false   ;
+
+
+    assign                     io_sram6_addr           =      `ysyx_23060136_false   ;
+    assign                     io_sram6_cen            =      `ysyx_23060136_false   ;
+    assign                     io_sram6_wen            =      `ysyx_23060136_false   ;
+    assign                     io_sram6_wmask          =      `ysyx_23060136_false   ;
+    assign                     io_sram6_wdata          =      `ysyx_23060136_false   ;
+
+
+    assign                     io_sram7_addr           =      `ysyx_23060136_false   ;
+    assign                     io_sram7_cen            =      `ysyx_23060136_false   ;
+    assign                     io_sram7_wen            =      `ysyx_23060136_false   ;
+    assign                     io_sram7_wmask          =      `ysyx_23060136_false   ;
+    assign                     io_sram7_wdata          =      `ysyx_23060136_false   ;
+
+    
     // ===========================================================================
 
 
@@ -118,11 +181,14 @@ module ysyx_23060136_MEM_DATA_MEM (
     logic                      MEM_mem_byte     ;          
     logic                      MEM_mem_half     ;      
     logic                      MEM_mem_word     ;      
-    logic                      MEM_mem_dword    ;                  
+    logic                      MEM_mem_dword    ;
+    // record the lower 3 bits of addr
+    logic     [2 : 0]          bit_start        ;
+    
+    
 
 
     always_comb begin : r_state_trans
-        // 当 AXI lite 发生握手，将转移到下一个状态
         unique case(r_state)
             `ysyx_23060136_idle: begin
                 if(!FORWARD_stallME & !cache_hit & EXU_o_mem_to_reg) begin
@@ -134,7 +200,7 @@ module ysyx_23060136_MEM_DATA_MEM (
             end
             `ysyx_23060136_ready: begin
                 if(is_mem) begin
-                    if(ARBITER_MEM_raddr_ready & ARBITER_MEM_raddr_valid) begin
+                    if(ARBITER_MEM_arready & ARBITER_MEM_arvalid) begin
                         r_state_next = `ysyx_23060136_wait;
                     end
                     else begin
@@ -152,7 +218,7 @@ module ysyx_23060136_MEM_DATA_MEM (
             end
             `ysyx_23060136_wait: begin
                 if(is_mem) begin
-                    if(ARBITER_MEM_rdata_ready & ARBITER_MEM_rdata_valid) begin
+                    if(ARBITER_MEM_rready & ARBITER_MEM_rvalid ) begin
                         r_state_next = `ysyx_23060136_idle;
                     end
                     else begin
@@ -191,12 +257,13 @@ module ysyx_23060136_MEM_DATA_MEM (
             MEM_mem_byte   <=   `ysyx_23060136_false; 
             MEM_mem_half   <=   `ysyx_23060136_false; 
             MEM_mem_word   <=   `ysyx_23060136_false; 
-            MEM_mem_dword  <=   `ysyx_23060136_false;  
+            MEM_mem_dword  <=   `ysyx_23060136_false;
+            bit_start      <=   `ysyx_23060136_false;   
             
-            ARBITER_MEM_raddr <= `ysyx_23060136_PC_RST;
-            ARBITER_MEM_rsize <= `ysyx_23060136_false;
-            CLINT_MEM_raddr   <= `ysyx_23060136_PC_RST;                          
-            CLINT_MEM_rsize   <= `ysyx_23060136_false; 
+            ARBITER_MEM_araddr <= `ysyx_23060136_false;
+            ARBITER_MEM_arsize <= `ysyx_23060136_false;
+            CLINT_MEM_raddr    <= `ysyx_23060136_PC_RST;                          
+            CLINT_MEM_rsize    <= `ysyx_23060136_false; 
         end
         else if((r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
             is_mem         <=    from_mem;
@@ -207,28 +274,31 @@ module ysyx_23060136_MEM_DATA_MEM (
             MEM_mem_half   <=    EXU_o_mem_half   ; 
             MEM_mem_word   <=    EXU_o_mem_word   ; 
             MEM_mem_dword  <=    EXU_o_mem_dword  ; 
-            ARBITER_MEM_raddr <=  MEM_addr;
-            ARBITER_MEM_rsize <=    ({3{MEM_mem_byte_u}}) & 3'b000           |   ({3{MEM_mem_byte  }}) & 3'b000           |
-                                    ({3{MEM_mem_half_u}}) & 3'b001           |   ({3{MEM_mem_half  }}) & 3'b001           |
-                                    ({3{MEM_mem_word  }}) & 3'b010           |   ({3{MEM_mem_word_u }}) & 3'b010          |
-                                    ({3{MEM_mem_dword}})  & 3'b011           ;
-            CLINT_MEM_raddr   <=  MEM_addr; 
-            CLINT_MEM_rsize   <=    ({3{MEM_mem_byte_u}}) & 3'b000           |   ({3{MEM_mem_byte  }}) & 3'b000           |
-                                    ({3{MEM_mem_half_u}}) & 3'b001           |   ({3{MEM_mem_half  }}) & 3'b001           |
-                                    ({3{MEM_mem_word  }}) & 3'b010           |   ({3{MEM_mem_word_u }}) & 3'b010          |
-                                    ({3{MEM_mem_dword}})  & 3'b011           ; 
+            bit_start      <=    MEM_addr[2 : 0]  ;
+
+            ARBITER_MEM_araddr <= {MEM_addr[31 : 3], {3{1'b0}}};
+            ARBITER_MEM_arsize <=    ({3{EXU_o_mem_byte_u}}) & 3'b000          |   ({3{EXU_o_mem_byte  }}) & 3'b000           |
+                                     ({3{EXU_o_mem_half_u}}) & 3'b001          |   ({3{EXU_o_mem_half  }}) & 3'b001           |
+                                     ({3{EXU_o_mem_word  }}) & 3'b010          |   ({3{EXU_o_mem_word_u }}) & 3'b010          |
+                                     ({3{EXU_o_mem_dword}})  & 3'b011          ;
+
+            CLINT_MEM_raddr    <=  MEM_addr; 
+            CLINT_MEM_rsize    <=    ({3{EXU_o_mem_byte_u}}) & 3'b000           |   ({3{EXU_o_mem_byte  }}) & 3'b000           |
+                                     ({3{EXU_o_mem_half_u}}) & 3'b001           |   ({3{EXU_o_mem_half  }}) & 3'b001           |
+                                     ({3{EXU_o_mem_word  }}) & 3'b010           |   ({3{EXU_o_mem_word_u }}) & 3'b010          |
+                                     ({3{EXU_o_mem_dword}})  & 3'b011           ;
         end 
     end
 
     always_ff @(posedge clk) begin : A_raddr_valid
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
-            ARBITER_MEM_raddr_valid <= `ysyx_23060136_false;       
+            ARBITER_MEM_arvalid <= `ysyx_23060136_false;       
         end
         else if((r_state_idle & r_state_next == `ysyx_23060136_ready & from_mem)) begin
-            ARBITER_MEM_raddr_valid <=  `ysyx_23060136_true;
+            ARBITER_MEM_arvalid <=  `ysyx_23060136_true;
         end 
         else if((r_state_ready & r_state_next == `ysyx_23060136_wait)) begin
-            ARBITER_MEM_raddr_valid <= `ysyx_23060136_false;
+            ARBITER_MEM_arvalid <= `ysyx_23060136_false;
         end
     end
 
@@ -244,14 +314,15 @@ module ysyx_23060136_MEM_DATA_MEM (
         end
     end
 
-    wire [`ysyx_23060136_BITS_W-1 : 0]  r_abstract  =  (is_mem ? ARBITER_MEM_rdata : CLINT_MEM_rdata) >> ({ARBITER_MEM_raddr[2 : 0], 3'b0});
+
+    wire [`ysyx_23060136_BITS_W-1 : 0]  r_abstract  =  (is_mem ? ARBITER_MEM_rdata : CLINT_MEM_rdata) >> ({bit_start, 3'b0});
 
     always_ff @(posedge clk) begin : rdata_update
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
             MEM_o_rdata   <=  `ysyx_23060136_false;
         end
-        else if(r_state_wait & r_state_next == `ysyx_23060136_idle)begin
-            MEM_o_rdata   <=  ({`ysyx_23060136_BITS_W{MEM_mem_byte_u}}) & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_0000_00FF   |
+        else if(r_state_wait & r_state_next == `ysyx_23060136_idle & ARBITER_MEM_rlast)begin
+            MEM_o_rdata   <=  ({`ysyx_23060136_BITS_W{MEM_mem_byte_u}})   & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_0000_00FF   |
                               ({`ysyx_23060136_BITS_W{MEM_mem_half_u}})   & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_0000_FFFF   |
                               ({`ysyx_23060136_BITS_W{MEM_mem_word_u}})   & r_abstract  & `ysyx_23060136_BITS_W'h0000_0000_FFFF_FFFF   |
                               ({`ysyx_23060136_BITS_W{MEM_mem_byte  }})   & ((`ysyx_23060136_BITS_W'h0000_0000_0000_00FF & r_abstract) | {{56{r_abstract[7]}},  {8{1'b0}}})  |
@@ -260,8 +331,7 @@ module ysyx_23060136_MEM_DATA_MEM (
                               ({`ysyx_23060136_BITS_W{MEM_mem_dword}})    &  r_abstract ;
         end 
     end
-    
-                                                
+                                                  
     always_ff @(posedge clk) begin : rvalid_update
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
             MEM_rvalid <= `ysyx_23060136_true;
@@ -380,15 +450,6 @@ module ysyx_23060136_MEM_DATA_MEM (
     end
 
 
-    always_ff @(posedge clk) begin : error_update
-        if(rst) begin
-            MEM_error_signal <= `ysyx_23060136_false;
-        end
-        else if(w_state_wait & w_state_next == `ysyx_23060136_idle) begin
-            MEM_error_signal <= (io_master_bresp != `ysyx_23060136_OKAY) || (io_master_bid != io_master_awid);
-        end
-    end
-
     always_ff @(posedge clk) begin : wdone_update
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
             MEM_wdone <= `ysyx_23060136_true;
@@ -398,6 +459,18 @@ module ysyx_23060136_MEM_DATA_MEM (
         end
         else if(w_state_wait & w_state_next == `ysyx_23060136_idle)begin
             MEM_wdone <= `ysyx_23060136_true;
+        end
+    end
+
+    always_ff @(posedge clk) begin : error_update
+        if(rst) begin
+            MEM_error_signal <= `ysyx_23060136_false;
+        end
+        else if((w_state_wait & w_state_next == `ysyx_23060136_idle)) begin
+            MEM_error_signal <= (io_master_bresp != `ysyx_23060136_OKAY) || (io_master_bid != io_master_awid);
+        end
+        else if((r_state_wait & r_state_next == `ysyx_23060136_idle)) begin
+            MEM_error_signal <= (ARBITER_MEM_rresp != `ysyx_23060136_OKAY) || (ARBITER_MEM_rid != ARBITER_MEM_arid);
         end
     end
 
