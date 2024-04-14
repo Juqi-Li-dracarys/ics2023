@@ -19,7 +19,9 @@ VerilatedContext* contextp = new VerilatedContext;
 VysyxSoCFull *dut = new VysyxSoCFull{contextp};
 
 // wave tracer
+#ifdef WAVE_RECORD
 VerilatedVcdC *m_trace = new VerilatedVcdC;
+#endif
 //////////////////////////////////////////////////////
 
 // state of our simulated cpu
