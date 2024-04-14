@@ -12,7 +12,7 @@
 // PC counter of CPU in IFU1
 // mini pipeline in IFU 
 // ===========================================================================
-module ysyx_23060136_IFU_PC_COUNT (
+module ysyx_23060136_IFU_PC (
     input                                                 clk                        ,
     input                                                 rst                        ,
     input                                                 BRANCH_PCSrc               ,

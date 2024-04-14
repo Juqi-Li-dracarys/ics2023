@@ -100,8 +100,9 @@
     output                                                   FORWARD_rs2_hazard_SEG         ,
     output                                                   FORWARD_csr_rs_hazard_SEG      ,
     
-    output                                                   FORWARD_rs1_hazard_SEG_f         ,
-    output                                                   FORWARD_rs2_hazard_SEG_f         ,
+    // force to insert data in stall(to deal with first stage hazard)
+    output                                                   FORWARD_rs1_hazard_SEG_f        ,
+    output                                                   FORWARD_rs2_hazard_SEG_f        ,
     output                                                   FORWARD_csr_rs_hazard_SEG_f         
  );
    

@@ -39,34 +39,25 @@
 `define  ysyx_23060136_mvendorid 'h4
 `define  ysyx_23060136_marchid   'h5
 
-
+// ecall value
 `define  ysyx_23060136_ecall_v   'hb
-
-
-// ===========================================================================
 
 `define  ysyx_23060136_true      'b1
 `define  ysyx_23060136_false     'b0
 
 
-// AXI-lite machine state(arbiter)
+// ===========================================================================
+
+
+// AXI state machine
 `define  ysyx_23060136_idle      'h0
 `define  ysyx_23060136_ready     'h1
 `define  ysyx_23060136_wait      'h2
-`define  ysyx_23060136_done      'h3
  
 
-
-// arbiter state machine(read)
-`define  ysyx_23060136_idle      'h0
-`define  ysyx_23060136_ready     'h1
-`define  ysyx_23060136_wait      'h2
-`define  ysyx_23060136_over      'h3
-
-
-// arbiter handling guests
-`define  ysyx_23060136_G_IFU     'd0
-`define  ysyx_23060136_G_MEM     'd1
+// arbiter state machine
+`define  ysyx_23060136_IFU       'd1
+`define  ysyx_23060136_MEM       'd2
 
 
  // response signal
@@ -75,3 +66,5 @@
 `define  ysyx_23060136_SLVERR    'b10
 `define  ysyx_23060136_DECERR    'b11
 
+
+ 

@@ -171,56 +171,6 @@ module ysyx_23060136 (
      assign          io_slave_rdata          =     `ysyx_23060136_false    ;           
      assign          io_slave_rlast          =     `ysyx_23060136_false    ;           
      assign          io_slave_rid            =     `ysyx_23060136_false    ;
-     
-     assign          io_sram0_addr           =      `ysyx_23060136_false   ;
-     assign          io_sram0_cen            =      `ysyx_23060136_false   ;
-     assign          io_sram0_wen            =      `ysyx_23060136_false   ;
-     assign          io_sram0_wmask          =      `ysyx_23060136_false   ;
-     assign          io_sram0_wdata          =      `ysyx_23060136_false   ;
-
-     assign          io_sram1_addr           =      `ysyx_23060136_false   ;
-     assign          io_sram1_cen            =      `ysyx_23060136_false   ;
-     assign          io_sram1_wen            =      `ysyx_23060136_false   ;
-     assign          io_sram1_wmask          =      `ysyx_23060136_false   ;
-     assign          io_sram1_wdata          =      `ysyx_23060136_false   ;
-
-     assign          io_sram2_addr           =      `ysyx_23060136_false   ;
-     assign          io_sram2_cen            =      `ysyx_23060136_false   ;
-     assign          io_sram2_wen            =      `ysyx_23060136_false   ;
-     assign          io_sram2_wmask          =      `ysyx_23060136_false   ;
-     assign          io_sram2_wdata          =      `ysyx_23060136_false   ;
-
-     assign          io_sram3_addr           =      `ysyx_23060136_false   ;
-     assign          io_sram3_cen            =      `ysyx_23060136_false   ;
-     assign          io_sram3_wen            =      `ysyx_23060136_false   ;
-     assign          io_sram3_wmask          =      `ysyx_23060136_false   ;
-     assign          io_sram3_wdata          =      `ysyx_23060136_false   ;
-
-     assign          io_sram4_addr           =      `ysyx_23060136_false   ;
-     assign          io_sram4_cen            =      `ysyx_23060136_false   ;
-     assign          io_sram4_wen            =      `ysyx_23060136_false   ;
-     assign          io_sram4_wmask          =      `ysyx_23060136_false   ;
-     assign          io_sram4_wdata          =      `ysyx_23060136_false   ;
-
-     assign          io_sram5_addr           =      `ysyx_23060136_false   ;
-     assign          io_sram5_cen            =      `ysyx_23060136_false   ;
-     assign          io_sram5_wen            =      `ysyx_23060136_false   ;
-     assign          io_sram5_wmask          =      `ysyx_23060136_false   ;
-     assign          io_sram5_wdata          =      `ysyx_23060136_false   ;
-
-
-     assign          io_sram6_addr           =      `ysyx_23060136_false   ;
-     assign          io_sram6_cen            =      `ysyx_23060136_false   ;
-     assign          io_sram6_wen            =      `ysyx_23060136_false   ;
-     assign          io_sram6_wmask          =      `ysyx_23060136_false   ;
-     assign          io_sram6_wdata          =      `ysyx_23060136_false   ;
-
-
-     assign          io_sram7_addr           =      `ysyx_23060136_false   ;
-     assign          io_sram7_cen            =      `ysyx_23060136_false   ;
-     assign          io_sram7_wen            =      `ysyx_23060136_false   ;
-     assign          io_sram7_wmask          =      `ysyx_23060136_false   ;
-     assign          io_sram7_wdata          =      `ysyx_23060136_false   ;
 
 
     // ===========================================================================
@@ -233,13 +183,23 @@ module ysyx_23060136 (
     wire                                                      IFU_o_valid                ;
     wire                                                      IFU_o_commit               ;
 
-    wire                [  `ysyx_23060136_BITS_W-1:0]         ARBITER_IFU_inst           ;
-    wire                                                      ARBITER_IFU_inst_valid     ;
-    wire                                                      ARBITER_IFU_pc_ready       ;
-    wire                [  `ysyx_23060136_BITS_W-1:0]         ARBITER_IFU_pc             ;
-    wire                                                      ARBITER_IFU_pc_valid       ;
-    wire                                                      ARBITER_IFU_inst_ready     ;
+
+    wire                                                      ARBITER_IFU_arready        ;
+    wire                                                      ARBITER_IFU_arvalid        ;
+    wire                [  31:0]                              ARBITER_IFU_araddr         ;
+    wire                [   3:0]                              ARBITER_IFU_arid           ;
+    wire                [   7:0]                              ARBITER_IFU_arlen          ;
+    wire                [   2:0]                              ARBITER_IFU_arsize         ;
+    wire                [   1:0]                              ARBITER_IFU_arburst        ;
+    wire                                                      ARBITER_IFU_rready         ;
+    wire                                                      ARBITER_IFU_rvalid         ;
+    wire                [   1:0]                              ARBITER_IFU_rresp          ;
+    wire                [  63:0]                              ARBITER_IFU_rdata          ;
+    wire                                                      ARBITER_IFU_rlast          ;
+    wire                [   3:0]                              ARBITER_IFU_rid            ;
+    wire                                                      IFU_error_signal           ;
   
+
 
     ysyx_23060136_IFU_TOP  ysyx_23060136_IFU_TOP_inst (
         .clk                               (clk                       ),
@@ -252,14 +212,45 @@ module ysyx_23060136 (
         .IFU_o_pc                          (IFU_o_pc                  ),
         .IFU_o_valid                       (IFU_o_valid               ),
         .IFU_o_commit                      (IFU_o_commit              ),
-        .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
-        .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
-        .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
-        .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
-        .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
-        .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ),
-        .IFU_error_signal                  (IFU_error_signal          ) 
-      );
+        .ARBITER_IFU_arready               (ARBITER_IFU_arready       ),
+        .ARBITER_IFU_arvalid               (ARBITER_IFU_arvalid       ),
+        .ARBITER_IFU_araddr                (ARBITER_IFU_araddr        ),
+        .ARBITER_IFU_arid                  (ARBITER_IFU_arid          ),
+        .ARBITER_IFU_arlen                 (ARBITER_IFU_arlen         ),
+        .ARBITER_IFU_arsize                (ARBITER_IFU_arsize        ),
+        .ARBITER_IFU_arburst               (ARBITER_IFU_arburst       ),
+        .ARBITER_IFU_rready                (ARBITER_IFU_rready        ),
+        .ARBITER_IFU_rvalid                (ARBITER_IFU_rvalid        ),
+        .ARBITER_IFU_rresp                 (ARBITER_IFU_rresp         ),
+        .ARBITER_IFU_rdata                 (ARBITER_IFU_rdata         ),
+        .ARBITER_IFU_rlast                 (ARBITER_IFU_rlast         ),
+        .ARBITER_IFU_rid                   (ARBITER_IFU_rid           ),
+        .IFU_error_signal                  (IFU_error_signal          ),
+        .io_sram0_addr                     (io_sram0_addr             ),
+        .io_sram0_cen                      (io_sram0_cen              ),
+        .io_sram0_wen                      (io_sram0_wen              ),
+        .io_sram0_wmask                    (io_sram0_wmask            ),
+        .io_sram0_wdata                    (io_sram0_wdata            ),
+        .io_sram0_rdata                    (io_sram0_rdata            ),
+        .io_sram1_addr                     (io_sram1_addr             ),
+        .io_sram1_cen                      (io_sram1_cen              ),
+        .io_sram1_wen                      (io_sram1_wen              ),
+        .io_sram1_wmask                    (io_sram1_wmask            ),
+        .io_sram1_wdata                    (io_sram1_wdata            ),
+        .io_sram1_rdata                    (io_sram1_rdata            ),
+        .io_sram2_addr                     (io_sram2_addr             ),
+        .io_sram2_cen                      (io_sram2_cen              ),
+        .io_sram2_wen                      (io_sram2_wen              ),
+        .io_sram2_wmask                    (io_sram2_wmask            ),
+        .io_sram2_wdata                    (io_sram2_wdata            ),
+        .io_sram2_rdata                    (io_sram2_rdata            ),
+        .io_sram3_addr                     (io_sram3_addr             ),
+        .io_sram3_cen                      (io_sram3_cen              ),
+        .io_sram3_wen                      (io_sram3_wen              ),
+        .io_sram3_wmask                    (io_sram3_wmask            ),
+        .io_sram3_wdata                    (io_sram3_wdata            ),
+        .io_sram3_rdata                    (io_sram3_rdata            ) 
+  );
 
 
 
@@ -550,7 +541,7 @@ module ysyx_23060136 (
 
 
 
-    ysyx_23060136_IDU_EXU_SEG_REG  ysyx_23060136_IDU_EXU_SEG_REG_inst (
+    ysyx_23060136_IDU_EXU_SEG  ysyx_23060136_IDU_EXU_SEG_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
         .BRANCH_flushID                    (BRANCH_flushID            ),
@@ -858,7 +849,7 @@ module ysyx_23060136 (
 
 
 
-    ysyx_23060136_EXU_MEM_SEG_REG  ysyx_23060136_EXU_MEM_SEG_REG_inst (
+    ysyx_23060136_EXU_MEM_SEG  ysyx_23060136_EXU_MEM_SEG_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
         .FORWARD_flushEX                   (FORWARD_flushEX           ),
@@ -912,10 +903,10 @@ module ysyx_23060136 (
     wire                                                     MEM_o_write_csr_2         ;
     wire                                                     MEM_o_mem_to_reg          ;
 
-    wire               [    `ysyx_23060136_GPR_W-1:0]         MEM_o_rd                  ;
-    wire               [   `ysyx_23060136_CSR_W -1:0]         MEM_o_csr_rd_1              ;
-    wire               [   `ysyx_23060136_CSR_W -1:0]         MEM_o_csr_rd_2              ;
-    wire                                                      MEM_o_system_halt         ;
+    wire               [    `ysyx_23060136_GPR_W-1:0]        MEM_o_rd                  ;
+    wire               [   `ysyx_23060136_CSR_W -1:0]        MEM_o_csr_rd_1              ;
+    wire               [   `ysyx_23060136_CSR_W -1:0]        MEM_o_csr_rd_2              ;
+    wire                                                     MEM_o_system_halt         ;
 
     wire               [  `ysyx_23060136_BITS_W-1:0]         FORWARD_rs1_data_EXU       ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         FORWARD_rs2_data_EXU       ;
@@ -923,16 +914,22 @@ module ysyx_23060136 (
     wire                                                     FORWARD_rs1_hazard_EXU     ;
     wire                                                     FORWARD_rs2_hazard_EXU     ;
     wire                                                     FORWARD_csr_rs_hazard_EXU  ;
+    
+    wire                                                     ARBITER_MEM_arready        ; 
+    wire                                                     ARBITER_MEM_arvalid        ; 
+    wire               [  31:0]                              ARBITER_MEM_araddr         ; 
+    wire               [   3:0]                              ARBITER_MEM_arid           ; 
+    wire               [   7:0]                              ARBITER_MEM_arlen          ; 
+    wire               [   2:0]                              ARBITER_MEM_arsize         ; 
+    wire               [   1:0]                              ARBITER_MEM_arburst        ; 
+    wire                                                     ARBITER_MEM_rready         ; 
+    wire                                                     ARBITER_MEM_rvalid         ; 
+    wire               [   1:0]                              ARBITER_MEM_rresp          ; 
+    wire               [  63:0]                              ARBITER_MEM_rdata          ; 
+    wire                                                     ARBITER_MEM_rlast          ; 
+    wire               [   3:0]                              ARBITER_MEM_rid            ;
 
 
-  
-    wire                                                     ARBITER_MEM_raddr_ready    ;
-    wire               [  `ysyx_23060136_BITS_W-1:0]         ARBITER_MEM_raddr          ;
-    wire                                                     ARBITER_MEM_raddr_valid    ;
-    wire               [  `ysyx_23060136_BITS_W-1:0]         ARBITER_MEM_rdata          ;
-    wire                                                     ARBITER_MEM_rdata_valid    ;
-    wire                                                     ARBITER_MEM_rdata_ready    ;
-    wire               [   2:0]                              ARBITER_MEM_rsize          ;
 
     wire                                                     CLINT_MEM_raddr_ready      ;
     wire               [  `ysyx_23060136_BITS_W-1:0]         CLINT_MEM_raddr            ;
@@ -943,8 +940,8 @@ module ysyx_23060136 (
     wire               [   2:0]                              CLINT_MEM_rsize            ;
   
 
-                            
-    ysyx_23060136_MEM_TOP  ysyx_23060136_MEM_TOP_inst (
+
+      ysyx_23060136_MEM_TOP  ysyx_23060136_MEM_TOP_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
         .IFU_o_valid                       (IFU_o_valid               ),
@@ -1009,7 +1006,7 @@ module ysyx_23060136 (
         .MEM_o_csr_rd_1                    (MEM_o_csr_rd_1            ),
         .MEM_o_csr_rd_2                    (MEM_o_csr_rd_2            ),
         .MEM_o_system_halt                 (MEM_o_system_halt         ),
-        .BRANCH_PCSrc                      (BRANCH_PCSrc              ), 
+        .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
         .FORWARD_stallIF                   (FORWARD_stallIF           ),
         .FORWARD_stallID                   (FORWARD_stallID           ),
         .FORWARD_stallME                   (FORWARD_stallME           ),
@@ -1029,25 +1026,53 @@ module ysyx_23060136 (
         .FORWARD_rs1_hazard_SEG            (FORWARD_rs1_hazard_SEG    ),
         .FORWARD_rs2_hazard_SEG            (FORWARD_rs2_hazard_SEG    ),
         .FORWARD_csr_rs_hazard_SEG         (FORWARD_csr_rs_hazard_SEG ),
-
-        .FORWARD_rs1_hazard_SEG_f          (FORWARD_rs1_hazard_SEG_f    ),
-        .FORWARD_rs2_hazard_SEG_f          (FORWARD_rs2_hazard_SEG_f    ),
-        .FORWARD_csr_rs_hazard_SEG_f       (FORWARD_csr_rs_hazard_SEG_f ),
-
-        .ARBITER_MEM_raddr_ready           (ARBITER_MEM_raddr_ready   ),
-        .ARBITER_MEM_raddr                 (ARBITER_MEM_raddr         ),
-        .ARBITER_MEM_raddr_valid           (ARBITER_MEM_raddr_valid   ),
-        .ARBITER_MEM_rsize                 (ARBITER_MEM_rsize         ),
+        .FORWARD_rs1_hazard_SEG_f          (FORWARD_rs1_hazard_SEG_f  ),
+        .FORWARD_rs2_hazard_SEG_f          (FORWARD_rs2_hazard_SEG_f  ),
+        .FORWARD_csr_rs_hazard_SEG_f       (FORWARD_csr_rs_hazard_SEG_f),
+        .ARBITER_MEM_arready               (ARBITER_MEM_arready       ),
+        .ARBITER_MEM_arvalid               (ARBITER_MEM_arvalid       ),
+        .ARBITER_MEM_araddr                (ARBITER_MEM_araddr        ),
+        .ARBITER_MEM_arid                  (ARBITER_MEM_arid          ),
+        .ARBITER_MEM_arlen                 (ARBITER_MEM_arlen         ),
+        .ARBITER_MEM_arsize                (ARBITER_MEM_arsize        ),
+        .ARBITER_MEM_arburst               (ARBITER_MEM_arburst       ),
+        .ARBITER_MEM_rready                (ARBITER_MEM_rready        ),
+        .ARBITER_MEM_rvalid                (ARBITER_MEM_rvalid        ),
+        .ARBITER_MEM_rresp                 (ARBITER_MEM_rresp         ),
         .ARBITER_MEM_rdata                 (ARBITER_MEM_rdata         ),
-        .ARBITER_MEM_rdata_valid           (ARBITER_MEM_rdata_valid   ),
-        .ARBITER_MEM_rdata_ready           (ARBITER_MEM_rdata_ready   ),
+        .ARBITER_MEM_rlast                 (ARBITER_MEM_rlast         ),
+        .ARBITER_MEM_rid                   (ARBITER_MEM_rid           ),
         .CLINT_MEM_raddr_ready             (CLINT_MEM_raddr_ready     ),
         .CLINT_MEM_raddr                   (CLINT_MEM_raddr           ),
-        .CLINT_MEM_raddr_valid             (CLINT_MEM_raddr_valid     ),
         .CLINT_MEM_rsize                   (CLINT_MEM_rsize           ),
+        .CLINT_MEM_raddr_valid             (CLINT_MEM_raddr_valid     ),
         .CLINT_MEM_rdata                   (CLINT_MEM_rdata           ),
         .CLINT_MEM_rdata_valid             (CLINT_MEM_rdata_valid     ),
         .CLINT_MEM_rdata_ready             (CLINT_MEM_rdata_ready     ),
+        .io_sram4_addr                     (io_sram4_addr             ),
+        .io_sram4_cen                      (io_sram4_cen              ),
+        .io_sram4_wen                      (io_sram4_wen              ),
+        .io_sram4_wmask                    (io_sram4_wmask            ),
+        .io_sram4_wdata                    (io_sram4_wdata            ),
+        .io_sram4_rdata                    (io_sram4_rdata            ),
+        .io_sram5_addr                     (io_sram5_addr             ),
+        .io_sram5_cen                      (io_sram5_cen              ),
+        .io_sram5_wen                      (io_sram5_wen              ),
+        .io_sram5_wmask                    (io_sram5_wmask            ),
+        .io_sram5_wdata                    (io_sram5_wdata            ),
+        .io_sram5_rdata                    (io_sram5_rdata            ),
+        .io_sram6_addr                     (io_sram6_addr             ),
+        .io_sram6_cen                      (io_sram6_cen              ),
+        .io_sram6_wen                      (io_sram6_wen              ),
+        .io_sram6_wmask                    (io_sram6_wmask            ),
+        .io_sram6_wdata                    (io_sram6_wdata            ),
+        .io_sram6_rdata                    (io_sram6_rdata            ),
+        .io_sram7_addr                     (io_sram7_addr             ),
+        .io_sram7_cen                      (io_sram7_cen              ),
+        .io_sram7_wen                      (io_sram7_wen              ),
+        .io_sram7_wmask                    (io_sram7_wmask            ),
+        .io_sram7_wdata                    (io_sram7_wdata            ),
+        .io_sram7_rdata                    (io_sram7_rdata            ),
         .io_master_awready                 (io_master_awready         ),
         .io_master_awvalid                 (io_master_awvalid         ),
         .io_master_awaddr                  (io_master_awaddr          ),
@@ -1065,7 +1090,7 @@ module ysyx_23060136 (
         .io_master_bresp                   (io_master_bresp           ),
         .io_master_bid                     (io_master_bid             ),
         .MEM_error_signal                  (MEM_error_signal          ) 
-      );
+  );
 
 
 
@@ -1088,7 +1113,8 @@ module ysyx_23060136 (
     wire               [`ysyx_23060136_CSR_W-1 : 0]          WB_i_csr_rd_1                ;
     wire               [`ysyx_23060136_CSR_W-1 : 0]          WB_i_csr_rd_2                ;
                         
-    ysyx_23060136_MEM_WB_SEG_REG  ysyx_23060136_MEM_WB_SEG_REG_inst (
+
+    ysyx_23060136_MEM_WB_SEG  ysyx_23060136_MEM_WB_SEG_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
         .FORWARD_flushME                   (FORWARD_flushME           ),
@@ -1180,22 +1206,36 @@ module ysyx_23060136 (
         .CLINT_MEM_rdata_ready(CLINT_MEM_rdata_ready)
       );
 
+
       ysyx_23060136_ARBITER  ysyx_23060136_ARBITER_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
-        .ARBITER_IFU_pc                    (ARBITER_IFU_pc            ),
-        .ARBITER_IFU_pc_valid              (ARBITER_IFU_pc_valid      ),
-        .ARBITER_IFU_pc_ready              (ARBITER_IFU_pc_ready      ),
-        .ARBITER_IFU_inst_ready            (ARBITER_IFU_inst_ready    ),
-        .ARBITER_IFU_inst                  (ARBITER_IFU_inst          ),
-        .ARBITER_IFU_inst_valid            (ARBITER_IFU_inst_valid    ),
-        .ARBITER_MEM_raddr                 (ARBITER_MEM_raddr         ),
-        .ARBITER_MEM_rsize                 (ARBITER_MEM_rsize         ),
-        .ARBITER_MEM_raddr_valid           (ARBITER_MEM_raddr_valid   ),
-        .ARBITER_MEM_raddr_ready           (ARBITER_MEM_raddr_ready   ),
+        .ARBITER_IFU_arready               (ARBITER_IFU_arready       ),
+        .ARBITER_IFU_arvalid               (ARBITER_IFU_arvalid       ),
+        .ARBITER_IFU_araddr                (ARBITER_IFU_araddr        ),
+        .ARBITER_IFU_arid                  (ARBITER_IFU_arid          ),
+        .ARBITER_IFU_arlen                 (ARBITER_IFU_arlen         ),
+        .ARBITER_IFU_arsize                (ARBITER_IFU_arsize        ),
+        .ARBITER_IFU_arburst               (ARBITER_IFU_arburst       ),
+        .ARBITER_IFU_rready                (ARBITER_IFU_rready        ),
+        .ARBITER_IFU_rvalid                (ARBITER_IFU_rvalid        ),
+        .ARBITER_IFU_rresp                 (ARBITER_IFU_rresp         ),
+        .ARBITER_IFU_rdata                 (ARBITER_IFU_rdata         ),
+        .ARBITER_IFU_rlast                 (ARBITER_IFU_rlast         ),
+        .ARBITER_IFU_rid                   (ARBITER_IFU_rid           ),
+        .ARBITER_MEM_arready               (ARBITER_MEM_arready       ),
+        .ARBITER_MEM_arvalid               (ARBITER_MEM_arvalid       ),
+        .ARBITER_MEM_araddr                (ARBITER_MEM_araddr        ),
+        .ARBITER_MEM_arid                  (ARBITER_MEM_arid          ),
+        .ARBITER_MEM_arlen                 (ARBITER_MEM_arlen         ),
+        .ARBITER_MEM_arsize                (ARBITER_MEM_arsize        ),
+        .ARBITER_MEM_arburst               (ARBITER_MEM_arburst       ),
+        .ARBITER_MEM_rready                (ARBITER_MEM_rready        ),
+        .ARBITER_MEM_rvalid                (ARBITER_MEM_rvalid        ),
+        .ARBITER_MEM_rresp                 (ARBITER_MEM_rresp         ),
         .ARBITER_MEM_rdata                 (ARBITER_MEM_rdata         ),
-        .ARBITER_MEM_rdata_valid           (ARBITER_MEM_rdata_valid   ),
-        .ARBITER_MEM_rdata_ready           (ARBITER_MEM_rdata_ready   ),
+        .ARBITER_MEM_rlast                 (ARBITER_MEM_rlast         ),
+        .ARBITER_MEM_rid                   (ARBITER_MEM_rid           ),
         .io_master_arready                 (io_master_arready         ),
         .io_master_arvalid                 (io_master_arvalid         ),
         .io_master_araddr                  (io_master_araddr          ),
@@ -1208,10 +1248,8 @@ module ysyx_23060136 (
         .io_master_rresp                   (io_master_rresp           ),
         .io_master_rdata                   (io_master_rdata           ),
         .io_master_rlast                   (io_master_rlast           ),
-        .io_master_rid                     (io_master_rid             ),
-        .ARBITER_error_signal              (ARBITER_error_signal      ) 
-  );
-
+        .io_master_rid                     (io_master_rid             ) 
+      );
     
                            
 endmodule
