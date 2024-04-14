@@ -23,8 +23,7 @@ VSRC_INC            = $(foreach dir,$(shell find $(VSRC_DIR) -type d),-y $(dir))
 
 NEMUISO 			= $(NEMU_HOME)/build/riscv64-nemu-interpreter-so
 
-VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all $(VSRC_INC) --timescale "1ns/1ns"  \
-					   --no-timing -Mdir $(OBJ_DIR) -DDIFF --top-module $(basename $(notdir $(VERILOG_TOP)))
+VFLAGS 				= --MMD --trace --cc --exe -O3 --threads-dpi all $(VSRC_INC)  --timescale "1ns/1ns" --x-assign fast --noassert --x-initial fast --no-timing -Mdir $(OBJ_DIR) -DDIFF --top-module $(basename $(notdir $(VERILOG_TOP)))
 
 CINC_PATH 			= -CFLAGS -I$(CSRC_DIR)/include
 
