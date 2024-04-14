@@ -35,7 +35,7 @@ run: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "RUN NPC")
 	@$(VBIN) $(ARGS) $(IMG)
-	@$(GPROF) $(VBIN) $(GPROF_FILE)
+# @$(GPROF) $(VBIN) $(GPROF_FILE)
 
 test: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
