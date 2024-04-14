@@ -13,8 +13,7 @@ SILENT = -s
 BATCH_MODE = -b
 
 GPROF = gprof
-GPROF_FILE= $(dir $(VBIN))gprof.out
-GPROF_REPORT = $(dir $(VBIN))report.out
+GPROF_FILE = gmon.out
 
 override ARGS ?= --log=$(OBJ_DIR)/npc-log.txt
 override ARGS += $(ARGS_DIFF)
@@ -36,6 +35,7 @@ run: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "RUN NPC")
 	@$(VBIN) $(ARGS) $(IMG)
+	@$(GPROF) $(VBIN) $(GPROF_FILE)
 
 test: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
