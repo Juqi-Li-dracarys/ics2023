@@ -28,7 +28,8 @@ VFLAGS 				= --MMD --cc --exe -O3 --threads-dpi all $(VSRC_INC)  \
 					--no-timing -Mdir $(OBJ_DIR) -DDIFF --top-module $(basename $(notdir $(VERILOG_TOP)))
 
 # debug option
-# VFLAGS              += --trace
+VFLAGS              += --trace
+# VFLAGS              += --prof-cfuncs
 
 
 CINC_PATH 			= -CFLAGS -I$(CSRC_DIR)/include
