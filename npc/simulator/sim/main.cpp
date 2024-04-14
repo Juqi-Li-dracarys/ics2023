@@ -33,15 +33,19 @@ int main(int argc, char** argv, char** env) {
     // simulation monitor
     init_monitor(argc, argv);
     // start wave trace
+#ifdef WAVE_RECORD
     Verilated::traceEverOn(true);
     dut->trace(m_trace, 5);
     m_trace->open("waveform.vcd");
+#endif
     // reset the whole circuit
-    reset(20);
+    reset(10);
     // start running
     sdb_mainloop();
     // close wave trace
+#ifdef WAVE_RECORD
     m_trace->close();
+#endif
     delete dut;
     // close wave trace
     delete contextp;
