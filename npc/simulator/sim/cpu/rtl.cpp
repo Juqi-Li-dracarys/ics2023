@@ -10,6 +10,8 @@
 #include <debug.h>
 #include <reg.h>
 
+extern uint64_t g_nr_guest_clock;
+
 // load the state of your simulated cpu into sim_cpu
 void set_state() {
   sim_cpu.pc = CPU->pc_cur;
@@ -42,18 +44,19 @@ void reset(int n) {
 
 // give a single posedge clock
 void single_cycle() {
-  dut->clock = 1;
-  dut->eval();
+    dut->clock = 1;
+    dut->eval();
 #ifdef WAVE_RECORD
-  m_trace->dump(contextp->time()); // dump wave
-  contextp->timeInc(5);            // 推动仿真时间
+    m_trace->dump(contextp->time()); // dump wave
+    contextp->timeInc(5);            // 推动仿真时间
 #endif
-  dut->clock = 0;
-  dut->eval();
+    dut->clock = 0;
+    dut->eval();
 #ifdef WAVE_RECORD
-  m_trace->dump(contextp->time()); // dump wave
-  contextp->timeInc(5);            // 推动仿真时间
+    m_trace->dump(contextp->time()); // dump wave
+    contextp->timeInc(5);            // 推动仿真时间
 #endif
+    g_nr_guest_clock++;
 }
 
 

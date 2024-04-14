@@ -35,6 +35,9 @@ SimState sim_state = { .state = SIM_STOP };
 // num of executed instruction
 uint64_t g_nr_guest_inst = 0;
 
+// num of clock
+uint64_t g_nr_guest_clock = 0;
+
 // time spend
 static uint64_t g_timer = 0; // unit: us
 
@@ -44,8 +47,13 @@ static void statistic() {
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
   Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
-  if (g_timer > 0) Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
-  else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
+  Log("total guest clock  = " NUMBERIC_FMT, g_nr_guest_clock);
+  if (g_timer > 0) 
+    Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
+  else 
+    Log("Finish running in less than 1 us and can not calculate the simulation frequency");
+  if(g_nr_guest_inst)
+    Log("IPC = " NUMBERIC_FMT " inst/clock", g_nr_guest_clock/g_nr_guest_inst); 
 }
 
 
@@ -154,7 +162,7 @@ void cpu_exec(unsigned int n) {
   }
 }
 
-// execute n clock
+// execute n clock(ONLY for debug)
 void cpu_exec_clk(unsigned int n) {
   while (n-- > 0) {
     single_cycle();
