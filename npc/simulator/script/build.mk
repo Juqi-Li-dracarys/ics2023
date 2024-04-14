@@ -32,7 +32,7 @@ $(NEMUISO):
 run: $(VBIN) $(NEMUISO) $(IMG)
 	@echo "$(COLOR_YELLOW)[RUN IMG]$(COLOR_NONE)" $(notdir $(IMG))
 	$(call git_commit, "RUN NPC")
-	@grof $(VBIN) | verilator_profcfunc report.out
+	@gprof $(VBIN) | verilator_profcfunc report.out
 	@$(VBIN) $(ARGS) $(IMG)
 
 test: $(VBIN) $(NEMUISO) $(IMG)
