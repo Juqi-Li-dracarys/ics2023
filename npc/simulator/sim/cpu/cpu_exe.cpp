@@ -43,6 +43,9 @@ static uint64_t g_timer = 0; // unit: us
 
 static bool g_print_step = false;
 
+// every 250 cyc to update device 
+uint32_t device_cyc_cnt = 0;
+
 static void statistic() {
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
@@ -117,7 +120,12 @@ void excute(uint64_t n) {
     set_state();
     g_nr_guest_inst++;
     trace_and_difftest(log_ptr, false);
-    device_update();
+    if(device_cyc_cnt > 250) {
+        device_update();
+        device_cyc_cnt = 0;
+    }
+    else
+        device_cyc_cnt++;
     // 对于有异常的指令，会在下一次执行前终止程序
     if (signal_detect()) {
       // save the end state
