@@ -509,8 +509,11 @@ endmodule
 
 
 // 1KB size SRAM
-// Block size: 16B (2^4)
-// Row_number: 64  (2^6)
+// Block size: 8B (2^3)
+// Row_number: 128  (2^7)
+
+// Set_number: 64
+
 // ===========================================================================
 module S011HD1P_X32Y2D128_BW (
         Q, CLK, CEN, WEN, BWEN, A, D

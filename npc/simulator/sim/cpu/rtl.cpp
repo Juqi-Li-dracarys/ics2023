@@ -15,8 +15,10 @@ extern uint64_t g_nr_guest_clock;
 // load the state of your simulated cpu into sim_cpu
 void set_state() {
   sim_cpu.pc = CPU->pc_cur;
+#ifdef  CONFIG_DIFFTEST
   memcpy(&sim_cpu.gpr[0], cpu_gpr, sizeof(word_t) * MUXDEF(CONFIG_RVE, 16, 32));
   memcpy(&sim_cpu.csr, cpu_csr, sizeof(word_t) * 4);
+#endif
 }
 
 // reset the cpu

@@ -8,7 +8,6 @@ void init_serial();
 void init_timer();
 void init_vga();
 void init_i8042();
-void init_disk(const char *diskpath);
 
 void send_key(uint8_t, bool);
 void vga_update_screen();
@@ -16,12 +15,12 @@ void vga_update_screen();
 #define TIMER_HZ 60
 
 void device_update() {
-  static uint64_t last = 0;
-  uint64_t now = get_time();
-  if (now - last < 100000 / TIMER_HZ) {
-    return;
-  }
-  last = now;
+//   static uint64_t last = 0;
+//   uint64_t now = get_time();
+//   if (now - last < 100000 / TIMER_HZ) {
+//     return;
+//   }
+//   last = now;
 
   vga_update_screen();
 
@@ -57,6 +56,4 @@ void init_device(const char *diskpath) {
   init_vga();
   // keyboard
   init_i8042();
-
-  if (strcmp(diskpath, " ") != 0) init_disk(diskpath);
 }
