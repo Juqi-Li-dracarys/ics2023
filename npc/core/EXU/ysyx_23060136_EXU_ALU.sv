@@ -141,13 +141,13 @@ module ysyx_23060136_EXU_ALU (
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_sll   &   ~EXU_i_ALU_word_t}}    &   (ALU_da_word_t << ALU_db_word_t))                |
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_sll   &   EXU_i_ALU_word_t}}     &   {32'b0, ALU_da_word_t[31 : 0] << ALU_db_word_t}) |
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_srl   &   ~EXU_i_ALU_word_t}}    &   ((ALU_da_word_t >> ALU_db_word_t)))              |
-                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_sll   &   EXU_i_ALU_word_t}}     &   {32'b0, ALU_da_word_t[31 : 0] >> ALU_db_word_t}) |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_srl   &   EXU_i_ALU_word_t}}     &   {32'b0, ALU_da_word_t[31 : 0] >> ALU_db_word_t}) |
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_sra   &   ~EXU_i_ALU_word_t}}    &   ($signed(ALU_da_word_t) >>> ALU_db_word_t))      |
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_sra   &   EXU_i_ALU_word_t}}     &   {32'b0, $signed(ALU_da_word_t[31 : 0]) >>> ALU_db_word_t}) |
 
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_explicit}}  & (ALU_db_word_t))              ;
 
-                                                                
+
     wire [`ysyx_23060136_BITS_W-1 : 0]  EXU_ALU_COMB_w     =    {{32{EXU_ALU_COMB_dw[31]}}, EXU_ALU_COMB_dw[31 : 0]};
 
 
