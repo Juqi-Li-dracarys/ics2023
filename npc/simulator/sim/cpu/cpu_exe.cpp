@@ -120,7 +120,7 @@ void excute(uint64_t n) {
     set_state();
     g_nr_guest_inst++;
     trace_and_difftest(log_ptr, false);
-    if(device_cyc_cnt > 10000) {
+    if(device_cyc_cnt > 1000) {
         device_update();
         device_cyc_cnt = 0;
     }
