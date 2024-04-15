@@ -68,7 +68,6 @@ module ysyx_23060136_IDU_TOP (
     
         output                                                   IDU_o_ALU_mul              ,
         output                                                   IDU_o_ALU_mul_hi           ,
-        output                                                   IDU_o_ALU_mul_lo           ,
         output                                                   IDU_o_ALU_mul_u            ,
         output                                                   IDU_o_ALU_mul_s            ,
         output                                                   IDU_o_ALU_mul_su           ,
@@ -150,7 +149,6 @@ module ysyx_23060136_IDU_TOP (
         .ALU_sra                           (IDU_o_ALU_sra             ),
         .ALU_mul                           (IDU_o_ALU_mul             ),
         .ALU_mul_hi                        (IDU_o_ALU_mul_hi          ),
-        .ALU_mul_lo                        (IDU_o_ALU_mul_lo          ),
         .ALU_mul_u                         (IDU_o_ALU_mul_u           ),
         .ALU_mul_s                         (IDU_o_ALU_mul_s           ),
         .ALU_mul_su                        (IDU_o_ALU_mul_su          ),

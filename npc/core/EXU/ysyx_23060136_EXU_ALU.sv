@@ -36,7 +36,6 @@ module ysyx_23060136_EXU_ALU (
 
         input                                                    EXU_i_ALU_mul                ,
         input                                                    EXU_i_ALU_mul_hi             ,
-        input                                                    EXU_i_ALU_mul_lo             ,
         input                                                    EXU_i_ALU_mul_u              ,
         input                                                    EXU_i_ALU_mul_s              ,
         input                                                    EXU_i_ALU_mul_su             ,
@@ -99,8 +98,6 @@ module ysyx_23060136_EXU_ALU (
     // Control bus
     wire                                 sub_add       = (EXU_i_ALU_sub) | (EXU_i_ALU_slt) | (EXU_i_ALU_sltu);  // sub_add = 1, subtract
     wire                                 US            = (EXU_i_ALU_sltu);                                      // US = 1, unsigned
-    wire                                 LR            = (EXU_i_ALU_sll);                                       // LR = 1, left
-    wire                                 AL            = (EXU_i_ALU_sra);                                       // AL = 1, algorithm shift
 
     
     // subtract db
@@ -113,20 +110,7 @@ module ysyx_23060136_EXU_ALU (
     wire                                   EXU_ALU_Zero_COMB      =  (add_result == `ysyx_23060136_BITS_W'b0);
     wire                                   EXU_ALU_Less_COMB      =  US ? add_carry ^ sub_add : add_overflow ^ add_result[`ysyx_23060136_BITS_W-1];
 
-    
-    // shifter
-    wire    [`ysyx_23060136_BITS_W-1 : 0]  result_shifter;
-
-    ysyx_23060136_EXU_SHIFT  shifter (
-        .din                               (ALU_da_word_t             ),
-        .word_t                            (EXU_i_ALU_word_t          ),
-        .shamt                             (ALU_db_word_t[`ysyx_23060136_BITS_S-1 : 0]),
-        .LR                                (LR                        ),
-        .AL                                (AL                        ),
-        .dout                              (result_shifter            ) 
-    );
-
-                               
+                              
     // ALU result that does not require MUL OR DIV
     wire [`ysyx_23060136_BITS_W-1 : 0]  EXU_ALU_COMB_dw  =      ({`ysyx_23060136_BITS_W{EXU_i_ALU_add}}       & (add_result))                 |
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_sub}}       & (add_result))                 |

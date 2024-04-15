@@ -40,7 +40,6 @@ module ysyx_23060136_IDU_DECODE (
 
     output                                                   ALU_mul                    ,
     output                                                   ALU_mul_hi                 ,
-    output                                                   ALU_mul_lo                 ,
     output                                                   ALU_mul_u                  ,
     output                                                   ALU_mul_s                  ,
     output                                                   ALU_mul_su                 ,
@@ -297,7 +296,6 @@ module ysyx_23060136_IDU_DECODE (
     // Multiplier ctrl
     assign ALU_mul       = rv64_mul   | rv64_mulw   | rv64_mulh | rv64_mulhsu | rv64_mulhu ;
     assign ALU_mul_hi    = rv64_mulh  | rv64_mulhsu | rv64_mulhu;
-    assign ALU_mul_lo    = rv64_mul   | rv64_mulw;
     assign ALU_mul_u     = rv64_mulhu;
     assign ALU_mul_s     = rv64_mulh;
     assign ALU_mul_su    = rv64_mulhsu;
