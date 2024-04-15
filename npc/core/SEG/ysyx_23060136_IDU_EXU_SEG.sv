@@ -81,7 +81,6 @@ module ysyx_23060136_IDU_EXU_SEG (
     
         input                                                    IDU_o_ALU_mul              ,
         input                                                    IDU_o_ALU_mul_hi           ,
-        input                                                    IDU_o_ALU_mul_lo           ,
         input                                                    IDU_o_ALU_mul_u            ,
         input                                                    IDU_o_ALU_mul_s            ,
         input                                                    IDU_o_ALU_mul_su           ,
@@ -121,7 +120,6 @@ module ysyx_23060136_IDU_EXU_SEG (
     
         output   logic                                           EXU_i_ALU_mul              ,
         output   logic                                           EXU_i_ALU_mul_hi           ,
-        output   logic                                           EXU_i_ALU_mul_lo           ,
         output   logic                                           EXU_i_ALU_mul_u            ,
         output   logic                                           EXU_i_ALU_mul_s            ,
         output   logic                                           EXU_i_ALU_mul_su           ,
@@ -234,7 +232,6 @@ module ysyx_23060136_IDU_EXU_SEG (
 
             EXU_i_ALU_mul      <=  `ysyx_23060136_false;   
             EXU_i_ALU_mul_hi   <=  `ysyx_23060136_false;   
-            EXU_i_ALU_mul_lo   <=  `ysyx_23060136_false;   
             EXU_i_ALU_mul_u    <=  `ysyx_23060136_false;   
             EXU_i_ALU_mul_s    <=  `ysyx_23060136_false;   
             EXU_i_ALU_mul_su   <=  `ysyx_23060136_false;   
@@ -308,8 +305,7 @@ module ysyx_23060136_IDU_EXU_SEG (
             EXU_i_ALU_srl      <=  FORWARD_stallEX  ?   EXU_i_ALU_srl       :   IDU_o_ALU_srl     ;                                         
             EXU_i_ALU_sra      <=  FORWARD_stallEX  ?   EXU_i_ALU_sra       :   IDU_o_ALU_sra     ;                                       
             EXU_i_ALU_mul      <=  FORWARD_stallEX  ?   EXU_i_ALU_mul       :   IDU_o_ALU_mul     ;                                           
-            EXU_i_ALU_mul_hi   <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_hi    :   IDU_o_ALU_mul_hi  ;                                           
-            EXU_i_ALU_mul_lo   <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_lo    :   IDU_o_ALU_mul_lo  ;                                           
+            EXU_i_ALU_mul_hi   <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_hi    :   IDU_o_ALU_mul_hi  ;                                                                                     
             EXU_i_ALU_mul_u    <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_u     :   IDU_o_ALU_mul_u   ;                                           
             EXU_i_ALU_mul_s    <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_s     :   IDU_o_ALU_mul_s   ;                                           
             EXU_i_ALU_mul_su   <=  FORWARD_stallEX  ?   EXU_i_ALU_mul_su    :   IDU_o_ALU_mul_su  ;                                           

@@ -318,7 +318,6 @@ module ysyx_23060136 (
 
     wire                                                     IDU_o_ALU_mul                ; 
     wire                                                     IDU_o_ALU_mul_hi             ; 
-    wire                                                     IDU_o_ALU_mul_lo             ; 
     wire                                                     IDU_o_ALU_mul_u              ; 
     wire                                                     IDU_o_ALU_mul_s              ; 
     wire                                                     IDU_o_ALU_mul_su             ; 
@@ -406,7 +405,6 @@ module ysyx_23060136 (
         .IDU_o_ALU_sra                     (IDU_o_ALU_sra             ),
         .IDU_o_ALU_mul                     (IDU_o_ALU_mul             ),
         .IDU_o_ALU_mul_hi                  (IDU_o_ALU_mul_hi          ),
-        .IDU_o_ALU_mul_lo                  (IDU_o_ALU_mul_lo          ),
         .IDU_o_ALU_mul_u                   (IDU_o_ALU_mul_u           ),
         .IDU_o_ALU_mul_s                   (IDU_o_ALU_mul_s           ),
         .IDU_o_ALU_mul_su                  (IDU_o_ALU_mul_su          ),
@@ -494,8 +492,7 @@ module ysyx_23060136 (
     wire                                                     EXU_i_ALU_sra                ;
 
     wire                                                     EXU_i_ALU_mul                ;   
-    wire                                                     EXU_i_ALU_mul_hi             ;   
-    wire                                                     EXU_i_ALU_mul_lo             ;   
+    wire                                                     EXU_i_ALU_mul_hi             ;     
     wire                                                     EXU_i_ALU_mul_u              ;   
     wire                                                     EXU_i_ALU_mul_s              ;   
     wire                                                     EXU_i_ALU_mul_su             ;   
@@ -594,7 +591,6 @@ module ysyx_23060136 (
         .IDU_o_ALU_sra                     (IDU_o_ALU_sra             ),
         .IDU_o_ALU_mul                     (IDU_o_ALU_mul             ),
         .IDU_o_ALU_mul_hi                  (IDU_o_ALU_mul_hi          ),
-        .IDU_o_ALU_mul_lo                  (IDU_o_ALU_mul_lo          ),
         .IDU_o_ALU_mul_u                   (IDU_o_ALU_mul_u           ),
         .IDU_o_ALU_mul_s                   (IDU_o_ALU_mul_s           ),
         .IDU_o_ALU_mul_su                  (IDU_o_ALU_mul_su          ),
@@ -624,7 +620,6 @@ module ysyx_23060136 (
         .EXU_i_ALU_sra                     (EXU_i_ALU_sra             ),
         .EXU_i_ALU_mul                     (EXU_i_ALU_mul             ),
         .EXU_i_ALU_mul_hi                  (EXU_i_ALU_mul_hi          ),
-        .EXU_i_ALU_mul_lo                  (EXU_i_ALU_mul_lo          ),
         .EXU_i_ALU_mul_u                   (EXU_i_ALU_mul_u           ),
         .EXU_i_ALU_mul_s                   (EXU_i_ALU_mul_s           ),
         .EXU_i_ALU_mul_su                  (EXU_i_ALU_mul_su          ),
@@ -752,7 +747,6 @@ module ysyx_23060136 (
         .EXU_i_ALU_sra                     (EXU_i_ALU_sra             ),
         .EXU_i_ALU_mul                     (EXU_i_ALU_mul             ),
         .EXU_i_ALU_mul_hi                  (EXU_i_ALU_mul_hi          ),
-        .EXU_i_ALU_mul_lo                  (EXU_i_ALU_mul_lo          ),
         .EXU_i_ALU_mul_u                   (EXU_i_ALU_mul_u           ),
         .EXU_i_ALU_mul_s                   (EXU_i_ALU_mul_s           ),
         .EXU_i_ALU_mul_su                  (EXU_i_ALU_mul_su          ),
