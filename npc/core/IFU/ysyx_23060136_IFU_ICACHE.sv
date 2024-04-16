@@ -69,7 +69,7 @@ module ysyx_23060136_IFU_ICACHE (
       input              [ 127:0]                       io_sram3_rdata             ,
       // ===========================================================================
       // output for the next stage
-      output             [  `ysyx_23060136_INST_W-1:0]  IFU_o_inst                 ,
+      output   logic     [  `ysyx_23060136_INST_W-1:0]  IFU_o_inst                 ,
       output   logic                                    inst_valid                 ,
       output   logic                                    IFU_error_signal                                           
 );
@@ -85,8 +85,6 @@ module ysyx_23060136_IFU_ICACHE (
     assign                       ARBITER_IFU_arid       =  'b0                                                     ;
     assign                       ARBITER_IFU_arlen      =  8'b0000_0000                                            ;
     assign                       ARBITER_IFU_arburst    =  2'b00                                                   ;
-
-    assign                       IFU_o_inst             =  (cache_valid & r_state_idle) ? cache_o_inst : AXI_o_inst;  
     
     wire                         r_state_idle           =  (r_state == `ysyx_23060136_idle)                     ;
     wire                         r_state_ready          =  (r_state == `ysyx_23060136_ready)                    ;
@@ -96,8 +94,6 @@ module ysyx_23060136_IFU_ICACHE (
     logic       [1 : 0]          r_state_next                                                                   ;
 
     // AXI higher 32 bits or lower 
-    logic  [  `ysyx_23060136_INST_W-1:0]    AXI_o_inst                                                          ;
-    // higher bits or lower
     logic                                   AXI_inst_hi                                                         ;
 
 
@@ -128,8 +124,6 @@ module ysyx_23060136_IFU_ICACHE (
     logic   [31  : 0]                                 hit_line_id                                               ;
     // whether the hit occures
     logic                                             cache_hit                                                 ;
-    // decide the final output data(AXI or cache)
-    logic                                             cache_valid                                               ;
     // higher bits or lower in cache(higher 32 bits or lower)
     logic                                             cache_inst_hi                                             ;
 
@@ -138,7 +132,6 @@ module ysyx_23060136_IFU_ICACHE (
                                                                      {`ysyx_23060136_INST_W{(cache_index[7 : 6] == 2'b01)}}  & (hit_line_id==1 ? (cache_inst_hi ? io_sram1_rdata[127 : 96] : io_sram1_rdata[95 : 64]) : (cache_inst_hi ? io_sram1_rdata[63 : 32] : io_sram1_rdata[31 : 0])) |
                                                                      {`ysyx_23060136_INST_W{(cache_index[7 : 6] == 2'b10)}}  & (hit_line_id==1 ? (cache_inst_hi ? io_sram2_rdata[127 : 96] : io_sram2_rdata[95 : 64]) : (cache_inst_hi ? io_sram2_rdata[63 : 32] : io_sram2_rdata[31 : 0])) |
                                                                      {`ysyx_23060136_INST_W{(cache_index[7 : 6] == 2'b11)}}  & (hit_line_id==1 ? (cache_inst_hi ? io_sram3_rdata[127 : 96] : io_sram3_rdata[95 : 64]) : (cache_inst_hi ? io_sram3_rdata[63 : 32] : io_sram3_rdata[31 : 0])) ;
-
     
     // ===========================================================================
     // cache interface                                                         
@@ -206,14 +199,9 @@ module ysyx_23060136_IFU_ICACHE (
 
     always_ff @(posedge clk) begin : cache_valid_update
         if(rst || (BRANCH_flushIF & !FORWARD_stallIF)) begin
-            cache_valid   <= `ysyx_23060136_false;
             cache_inst_hi <= `ysyx_23060136_false;
         end
-        else if(r_state_idle & r_state_next == `ysyx_23060136_ready) begin
-            cache_valid <= `ysyx_23060136_false;
-        end
-        else if(cache_hit) begin
-            cache_valid <= `ysyx_23060136_true;
+        else if(cache_hit & r_state_idle) begin
             cache_inst_hi <= cache_offset[2];
         end
     end
@@ -321,10 +309,13 @@ module ysyx_23060136_IFU_ICACHE (
 
     always_ff @(posedge clk) begin : inst_update
         if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
-            AXI_o_inst <= `ysyx_23060136_NOP;
+            IFU_o_inst <= `ysyx_23060136_NOP;
         end
         else if((r_state_next == `ysyx_23060136_idle & r_state_wait & ARBITER_IFU_rlast))begin
-            AXI_o_inst <=  AXI_inst_hi   ?  ARBITER_IFU_rdata[63 : 32] : ARBITER_IFU_rdata[31 : 0] ;
+            IFU_o_inst <=  AXI_inst_hi   ?  ARBITER_IFU_rdata[63 : 32] : ARBITER_IFU_rdata[31 : 0] ;
+        end
+        else if(r_state_idle & cache_hit) begin
+            IFU_o_inst <=  cache_o_inst;
         end
     end
 
