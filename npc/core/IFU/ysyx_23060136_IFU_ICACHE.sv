@@ -135,9 +135,9 @@ module ysyx_23060136_IFU_ICACHE (
     
     // ===========================================================================
     // cache interface                                                         
-    assign                      io_sram0_addr           =  cache_index[5 : 0]                                               ;
-    assign                      io_sram0_cen            =  ~((cache_index[7 : 6] == 2'b00) & (r_state_idle | r_state_wait)) ;
-    assign                      io_sram0_wen            =   ~(r_state_wait & io_sram2_cen)                                  ;
+    assign                      io_sram0_addr           =  cache_index[5 : 0]                                                   ;
+    assign                      io_sram0_cen            =  ~((cache_index[7 : 6] == 2'b00) & (r_state_idle | r_state_wait))     ;
+    assign                      io_sram0_wen            =  ~(r_state_wait & io_sram0_cen & r_state_next == `ysyx_23060136_idle) ;
     assign                      io_sram0_wmask          =  {128{(cache_index[7 : 6] == 2'b00)}} & (thrash[cache_index] ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF)  : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000)) ;
     assign                      io_sram0_wdata          =  {128{(cache_index[7 : 6] == 2'b00)}} & (thrash[cache_index] ? ({ARBITER_IFU_rdata, 64'b0})  : ({64'b0, ARBITER_IFU_rdata})) ;
 
@@ -145,26 +145,26 @@ module ysyx_23060136_IFU_ICACHE (
 
 
 
-    assign                      io_sram1_addr           =  cache_index[5 : 0]                                                   ;
-    assign                      io_sram1_cen            =   ~((cache_index[7 : 6] == 2'b01) & (r_state_idle | r_state_wait))    ;
-    assign                      io_sram1_wen            =   ~(r_state_wait & io_sram2_cen)                                      ;
+    assign                      io_sram1_addr           =  cache_index[5 : 0]                                                     ;
+    assign                      io_sram1_cen            =   ~((cache_index[7 : 6] == 2'b01) & (r_state_idle | r_state_wait))      ;
+    assign                      io_sram1_wen            =   ~(r_state_wait & io_sram1_cen & r_state_next == `ysyx_23060136_idle)  ;
     assign                      io_sram1_wmask          =  {128{(cache_index[7 : 6] == 2'b01)}} & (thrash[cache_index] ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF)  : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000)) ;
     assign                      io_sram1_wdata          =  {128{(cache_index[7 : 6] == 2'b01)}} & (thrash[cache_index] ? ({ARBITER_IFU_rdata, 64'b0})  : ({64'b0, ARBITER_IFU_rdata})) ;
 
 
 
-    assign                      io_sram2_addr           =  cache_index[5 : 0]                                              ;
-    assign                      io_sram2_cen            =  ~((cache_index[7 : 6] == 2'b10) & (r_state_idle | r_state_wait));
-    assign                      io_sram2_wen            =  ~(r_state_wait & io_sram2_cen)                                     ;
+    assign                      io_sram2_addr           =  cache_index[5 : 0]                                                     ;
+    assign                      io_sram2_cen            =  ~((cache_index[7 : 6] == 2'b10) & (r_state_idle | r_state_wait))       ;
+    assign                      io_sram2_wen            =  ~(r_state_wait & io_sram2_cen & r_state_next == `ysyx_23060136_idle)   ;
     assign                      io_sram2_wmask          =  {128{(cache_index[7 : 6] == 2'b10)}} & (thrash[cache_index] ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF)  : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000)) ;
     assign                      io_sram2_wdata          =  {128{(cache_index[7 : 6] == 2'b10)}} & (thrash[cache_index] ? ({ARBITER_IFU_rdata, 64'b0})  : ({64'b0, ARBITER_IFU_rdata})) ;
 
 
 
 
-    assign                      io_sram3_addr           =  cache_index[5 : 0]                                               ;
-    assign                      io_sram3_cen            =  ~((cache_index[7 : 6] == 2'b11) & (r_state_idle | r_state_wait)) ;
-    assign                      io_sram3_wen            =   ~(r_state_wait & io_sram2_cen)                                  ;
+    assign                      io_sram3_addr           =  cache_index[5 : 0]                                                    ;
+    assign                      io_sram3_cen            =  ~((cache_index[7 : 6] == 2'b11) & (r_state_idle | r_state_wait))      ;
+    assign                      io_sram3_wen            =  ~(r_state_wait & io_sram3_cen & r_state_next == `ysyx_23060136_idle)  ;
     assign                      io_sram3_wmask          =  {128{(cache_index[7 : 6] == 2'b11)}} & (thrash[cache_index] ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF)  : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000)) ;
     assign                      io_sram3_wdata          =  {128{(cache_index[7 : 6] == 2'b11)}} & (thrash[cache_index] ? ({ARBITER_IFU_rdata, 64'b0})  : ({64'b0, ARBITER_IFU_rdata})) ;
 
