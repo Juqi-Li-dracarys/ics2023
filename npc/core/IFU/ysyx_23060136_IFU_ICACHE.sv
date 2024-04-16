@@ -97,7 +97,7 @@ module ysyx_23060136_IFU_ICACHE (
     logic                        inst_hi                                                                        ;
 
     // ===========================================================================
-    // TO DO: add cache interface here
+    // TO DO: add I-cache interface here
     wire                        cache_hit               =  `ysyx_23060136_false                                 ;
     
     assign                      io_sram0_addr           =  `ysyx_23060136_false                                 ;
