@@ -32,9 +32,6 @@ module ysyx_23060136_IDU_CSR_FILE (
     logic  [`ysyx_23060136_BITS_W-1  : 0]   csr_reg      [0 : `ysyx_23060136_CSR_NUM-1];
     wire                                    w_e_1        [0 : `ysyx_23060136_CSR_NUM-1];
     wire                                    w_e_2        [0 : `ysyx_23060136_CSR_NUM-1];
-    wire                                    r_e          [0 : `ysyx_23060136_CSR_NUM-1];
-    wire  [`ysyx_23060136_BITS_W-1  : 0]    data_out     [0 : `ysyx_23060136_CSR_NUM-1] /*verilator split_var*/;
-
 
     // DIP-C in verilog
     import "DPI-C" function void set_csr_ptr(input logic [`ysyx_23060136_BITS_W-1  : 0] b []);
@@ -73,18 +70,11 @@ module ysyx_23060136_IDU_CSR_FILE (
         for (j = 0; j < `ysyx_23060136_CSR_NUM; j = j + 1) begin
             assign w_e_1 [j]  =  CSRWr_1 & (WBU_csr_rd_1 == j)           ;
             assign w_e_2 [j]  =  CSRWr_2 & (WBU_csr_rd_2 == j)           ;
-            assign r_e [j]    =  (IDU_csr_rs == j)                       ;
         end
     endgenerate
 
-    generate
-        assign data_out[0] = {`ysyx_23060136_BITS_W{r_e[0]}} & csr_reg[0];
-        for (j = 1; j < `ysyx_23060136_CSR_NUM; j = j + 1) begin
-            assign data_out[j] = data_out[j- 1] | ({`ysyx_23060136_BITS_W{r_e[j]}} & csr_reg[j]);
-        end
-    endgenerate
 
-    assign IDU_csr_rs_data = data_out[`ysyx_23060136_CSR_NUM-1];
+    assign IDU_csr_rs_data = csr_reg[IDU_csr_rs];
 
 
 endmodule
