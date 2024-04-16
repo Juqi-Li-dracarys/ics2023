@@ -39,14 +39,7 @@ module ysyx_23060136_IDU_GPR_FILE (
 
     logic  [`ysyx_23060136_BITS_W-1 : 0]  gpr_reg      [`ysyx_23060136_GPR_NUM-1 : 0];
     // write enable
-    wire             w_e          [`ysyx_23060136_GPR_NUM-1 : 0];
-    // read enable in 2 channels
-    wire             r_e_1        [`ysyx_23060136_GPR_NUM-1 : 0];
-    wire             r_e_2        [`ysyx_23060136_GPR_NUM-1 : 0];
-    // data_out(temp data)
-    wire   [`ysyx_23060136_BITS_W-1 : 0]  data_out_1   [`ysyx_23060136_GPR_NUM-1 : 0] /*verilator split_var*/;
-    wire   [`ysyx_23060136_BITS_W-1 : 0]  data_out_2   [`ysyx_23060136_GPR_NUM-1 : 0] /*verilator split_var*/; 
-    
+    wire                                  w_e          [`ysyx_23060136_GPR_NUM-1 : 0];
     
     integer i;
     always_ff @(posedge clk) begin
@@ -72,22 +65,11 @@ module ysyx_23060136_IDU_GPR_FILE (
             else begin
                 assign w_e[j] = RegWr & (WBU_rd == j);
             end
-            assign r_e_1[j] = (IDU_rs1 == j);
-            assign r_e_2[j] = (IDU_rs2 == j);
         end
     endgenerate
 
-    generate
-        assign data_out_1[0] = {`ysyx_23060136_BITS_W{r_e_1[0]}} & gpr_reg[0];
-        assign data_out_2[0] = {`ysyx_23060136_BITS_W{r_e_2[0]}} & gpr_reg[0];
-        for (j = 1; j < `ysyx_23060136_GPR_NUM; j = j + 1) begin
-            assign data_out_1[j] = data_out_1[j- 1] | ({`ysyx_23060136_BITS_W{r_e_1[j]}} & gpr_reg[j]);
-            assign data_out_2[j] = data_out_2[j- 1] | ({`ysyx_23060136_BITS_W{r_e_2[j]}} & gpr_reg[j]);
-        end
-    endgenerate
-
-    assign IDU_rs1_data = data_out_1[`ysyx_23060136_GPR_NUM-1];
-    assign IDU_rs2_data = data_out_2[`ysyx_23060136_GPR_NUM-1];
+    assign IDU_rs1_data = gpr_reg[IDU_rs1];
+    assign IDU_rs2_data = gpr_reg[IDU_rs2];
 
 endmodule
 

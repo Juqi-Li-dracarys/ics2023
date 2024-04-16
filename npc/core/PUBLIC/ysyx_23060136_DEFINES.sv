@@ -45,6 +45,12 @@
 `define  ysyx_23060136_true      'b1
 `define  ysyx_23060136_false     'b0
 
+`define  ysyx_23060136_cache_offset 3
+`define  ysyx_23060136_cache_index  8
+`define  ysyx_23060136_cache_tag    21
+`define  ysyx_23060136_cache_ways   2
+`define  ysyx_23060136_cache_line   512
+`define  ysyx_23060136_cache_group  256
 
 // ===========================================================================
 

@@ -11,6 +11,7 @@
 !*.cpp
 !*.c
 !*.h
+!*.tcl
 !.gitignore
 !README.md
 build/
