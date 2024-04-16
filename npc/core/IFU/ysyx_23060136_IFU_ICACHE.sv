@@ -100,24 +100,27 @@ module ysyx_23060136_IFU_ICACHE (
     // higher bits or lower
     logic                                   AXI_inst_hi                                                         ;
 
-    // ===========================================================================
+
     // Two-way set associative I-cache
     // Total cache size: 4KB
     // Block size: 8B(64bits)
     // Group size: 16B
     // Group number: 256
     // Line number: 512
-
+    // ===========================================================================
+    // offset in block
     wire    [`ysyx_23060136_cache_offset-1 : 0]       cache_offset   =  r_state_idle ? IFU1_pc[2 : 0]   : ARBITER_IFU_araddr[2 : 0]     ;
-    wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  r_state_idle ? IFU1_pc[10 : 3]  : ARBITER_IFU_araddr[10 : 3]    ;                       
+    // group id
+    wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  r_state_idle ? IFU1_pc[10 : 3]  : ARBITER_IFU_araddr[10 : 3]    ;   
+    // tag                    
     wire    [`ysyx_23060136_cache_tag-1 : 0]          cache_tag      =  r_state_idle ? IFU1_pc[31 : 11] : ARBITER_IFU_araddr[31 : 11]   ;
 
 
-    logic   [`ysyx_23060136_cache_tag-1 : 0]          tag_array [`ysyx_23060136_cache_line-1 : 0]  ;    
+    logic   [`ysyx_23060136_cache_tag-1 : 0]          tag_array [`ysyx_23060136_cache_line-1 : 0]               ;    
     // vlid bit
-    logic                                             valid_bit [`ysyx_23060136_cache_line-1 : 0]  ;
+    logic                                             valid_bit [`ysyx_23060136_cache_line-1 : 0]               ;
     // next line(block) to thrash
-    logic   [`ysyx_23060136_cache_group-1 : 0]        thrash                                       ;
+    logic   [`ysyx_23060136_cache_group-1 : 0]        thrash                                                    ;
     
     // start of the group
     logic   [31  : 0]                                 group_base                                                ;
@@ -141,20 +144,18 @@ module ysyx_23060136_IFU_ICACHE (
     // cache interface                                                         
     assign                      io_sram0_addr           =  cache_index[5 : 0]                                               ;
     assign                      io_sram0_cen            =  ~((cache_index[7 : 6] == 2'b00) & (r_state_idle | r_state_wait)) ;
-    assign                      io_sram0_wen            =  r_state_wait | io_sram0_cen                                      ;
-
-    assign                      io_sram0_wmask          =  {128{(cache_index[7 : 6] == 2'b00)}} & (thrash[cache_index] ? (AXI_inst_hi ? 128'h0000_0000_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF : 128'hFFFF_FFFF_0000_0000_FFFF_FFFF_FFFF_FFFF)  : 
-                                                                                                                        (AXI_inst_hi ? 128'hFFFF_FFFF_FFFF_FFFF_0000_0000_FFFF_FFFF : 128'hFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_0000_0000)) ;
-
-    assign                      io_sram0_wdata          =  {128{(cache_index[7 : 6] == 2'b00)}} & (thrash[cache_index] ? (AXI_inst_hi ? {ARBITER_IFU_rdata[63 : 32], 96'b0}        : {32'b0, ARBITER_IFU_rdata[63 : 32], 64'b0})  : 
-                                                                                                                        (AXI_inst_hi ? {64'b0, ARBITER_IFU_rdata[63 : 32], 32'b0} : {96'b0, ARBITER_IFU_rdata[31 : 0]}))         ;
+    assign                      io_sram0_wen            =   ~(r_state_wait & io_sram2_cen)                                  ;
+    assign                      io_sram0_wmask          =  {128{(cache_index[7 : 6] == 2'b00)}} & (thrash[cache_index] ? (AXI_inst_hi ? 128'h0000_0000_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF : 128'hFFFF_FFFF_0000_0000_FFFF_FFFF_FFFF_FFFF) : 
+                                                                                                                         (AXI_inst_hi ? 128'hFFFF_FFFF_FFFF_FFFF_0000_0000_FFFF_FFFF : 128'hFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_0000_0000));
+    assign                      io_sram0_wdata          =  {128{(cache_index[7 : 6] == 2'b00)}} & (thrash[cache_index] ? (AXI_inst_hi ? {ARBITER_IFU_rdata[63 : 32], 96'b0}        : {32'b0, ARBITER_IFU_rdata[63 : 32], 64'b0})     : 
+                                                                                                                         (AXI_inst_hi ? {64'b0, ARBITER_IFU_rdata[63 : 32], 32'b0} : {96'b0, ARBITER_IFU_rdata[31 : 0]}))            ;
 
 
 
 
     assign                      io_sram1_addr           =  cache_index[5 : 0]                                                   ;
     assign                      io_sram1_cen            =   ~((cache_index[7 : 6] == 2'b01) & (r_state_idle | r_state_wait))    ;
-    assign                      io_sram1_wen            =  r_state_wait | io_sram1_cen                                          ;
+    assign                      io_sram1_wen            =   ~(r_state_wait & io_sram2_cen)                                      ;
     assign                      io_sram1_wmask          =  {128{(cache_index[7 : 6] == 2'b01)}} & (thrash[cache_index] ? (AXI_inst_hi ? 128'h0000_0000_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF : 128'hFFFF_FFFF_0000_0000_FFFF_FFFF_FFFF_FFFF)  : 
                                                                                                                          (AXI_inst_hi ? 128'hFFFF_FFFF_FFFF_FFFF_0000_0000_FFFF_FFFF : 128'hFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_0000_0000)) ;
     assign                      io_sram1_wdata          =  {128{(cache_index[7 : 6] == 2'b01)}} & (thrash[cache_index] ? (AXI_inst_hi ? {ARBITER_IFU_rdata[63 : 32], 96'b0}        : {32'b0, ARBITER_IFU_rdata[63 : 32], 64'b0})      : 
@@ -164,7 +165,7 @@ module ysyx_23060136_IFU_ICACHE (
 
     assign                      io_sram2_addr           =  cache_index[5 : 0]                                              ;
     assign                      io_sram2_cen            =  ~((cache_index[7 : 6] == 2'b10) & (r_state_idle | r_state_wait));
-    assign                      io_sram2_wen            =  r_state_wait | io_sram2_cen                                     ;
+    assign                      io_sram2_wen            =  ~(r_state_wait & io_sram2_cen)                                     ;
     assign                      io_sram2_wmask          =  {128{(cache_index[7 : 6] == 2'b10)}} & (thrash[cache_index] ? (AXI_inst_hi ? 128'h0000_0000_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF : 128'hFFFF_FFFF_0000_0000_FFFF_FFFF_FFFF_FFFF)  : 
                                                                                                                          (AXI_inst_hi ? 128'hFFFF_FFFF_FFFF_FFFF_0000_0000_FFFF_FFFF : 128'hFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_0000_0000)) ;
     assign                      io_sram2_wdata          =  {128{(cache_index[7 : 6] == 2'b10)}} & (thrash[cache_index] ? (AXI_inst_hi ? {ARBITER_IFU_rdata[63 : 32], 96'b0}        : {32'b0, ARBITER_IFU_rdata[63 : 32], 64'b0})      : 
@@ -174,7 +175,7 @@ module ysyx_23060136_IFU_ICACHE (
 
     assign                      io_sram3_addr           =  cache_index[5 : 0]                                               ;
     assign                      io_sram3_cen            =  ~((cache_index[7 : 6] == 2'b11) & (r_state_idle | r_state_wait)) ;
-    assign                      io_sram3_wen            =  r_state_wait | io_sram3_cen                                      ;
+    assign                      io_sram3_wen            =   ~(r_state_wait & io_sram2_cen)                                  ;
     assign                      io_sram3_wmask          =  {128{(cache_index[7 : 6] == 2'b11)}} & (thrash[cache_index] ? (AXI_inst_hi ? 128'h0000_0000_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF : 128'hFFFF_FFFF_0000_0000_FFFF_FFFF_FFFF_FFFF)  : 
                                                                                                                          (AXI_inst_hi ? 128'hFFFF_FFFF_FFFF_FFFF_0000_0000_FFFF_FFFF : 128'hFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_0000_0000)) ;
     assign                      io_sram3_wdata          =  {128{(cache_index[7 : 6] == 2'b11)}} & (thrash[cache_index] ? (AXI_inst_hi ? {ARBITER_IFU_rdata[63 : 32], 96'b0}        : {32'b0, ARBITER_IFU_rdata[63 : 32], 64'b0})      : 
