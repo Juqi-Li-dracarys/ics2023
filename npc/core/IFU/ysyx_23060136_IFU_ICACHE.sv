@@ -348,7 +348,7 @@ module ysyx_23060136_IFU_ICACHE (
         else if((r_state_next == `ysyx_23060136_idle & r_state_wait & ARBITER_IFU_rlast))begin
             IFU_o_inst <=  AXI_inst_hi   ?  ARBITER_IFU_rdata[63 : 32] : ARBITER_IFU_rdata[31 : 0] ;
         end
-        else if(c_state_idle & c_state_next == `ysyx_23060136_ready) begin
+        else if(c_state_ready & c_state_next == `ysyx_23060136_idle) begin
             IFU_o_inst <=  cache_o_inst;
         end
     end
