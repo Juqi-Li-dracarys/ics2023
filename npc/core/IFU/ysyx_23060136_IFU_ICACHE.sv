@@ -185,11 +185,11 @@ module ysyx_23060136_IFU_ICACHE (
         cache_hit   = `ysyx_23060136_false;
         hit_line_id = `ysyx_23060136_false;
         if(tag_array[group_base] == cache_tag & valid_bit[group_base] & r_state_idle) begin
-            // cache_hit    = `ysyx_23060136_true;
+            cache_hit    = `ysyx_23060136_true;
             hit_line_id  =  'b0;
         end
         else if(tag_array[group_base + 1] == cache_tag & valid_bit[group_base + 1] & r_state_idle) begin
-            // cache_hit    = `ysyx_23060136_true;
+            cache_hit    = `ysyx_23060136_true;
             hit_line_id  =  'b1;
         end
     end
