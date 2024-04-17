@@ -250,6 +250,9 @@ module ysyx_23060136_IFU_ICACHE (
             cache_index_buf <=  cache_index;
             cache_hit_buf   <=  `ysyx_23060136_true;
         end
+        else if(r_state_idle & r_state_next == `ysyx_23060136_ready) begin
+            cache_hit_buf   <=  `ysyx_23060136_false;
+        end
     end
 
 
