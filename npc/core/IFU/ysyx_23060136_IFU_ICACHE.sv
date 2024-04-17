@@ -104,8 +104,9 @@ module ysyx_23060136_IFU_ICACHE (
     // Line number: 512
     // ===========================================================================
 
-    logic                                             c_state;
-    logic                                             c_state_next;
+    // cache state machine
+    logic                                             c_state                                                ;
+    logic                                             c_state_next                                           ;
     wire                   c_state_idle           =  (c_state == `ysyx_23060136_idle)                        ;
     wire                   c_state_ready          =  (c_state == `ysyx_23060136_ready)                       ;
 
