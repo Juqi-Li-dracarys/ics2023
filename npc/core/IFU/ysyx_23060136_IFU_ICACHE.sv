@@ -113,7 +113,8 @@ module ysyx_23060136_IFU_ICACHE (
     // offset in block
     wire    [`ysyx_23060136_cache_offset-1 : 0]       cache_offset   =  r_state_idle ? IFU1_pc[2 : 0]   : ARBITER_IFU_araddr[2 : 0]     ;
     // group id
-    wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  r_state_idle ? IFU1_pc[10 : 3]  : ARBITER_IFU_araddr[10 : 3]    ;                    
+    wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  r_state_idle ? IFU1_pc[10 : 3]  : ARBITER_IFU_araddr[10 : 3]    ;
+    logic   [`ysyx_23060136_cache_index-1 : 0]        cache_index_buf;             
     // tag                    
     wire    [`ysyx_23060136_cache_tag-1 : 0]          cache_tag      =  r_state_idle ? IFU1_pc[31 : 11] : ARBITER_IFU_araddr[31 : 11]   ;
 
@@ -127,25 +128,25 @@ module ysyx_23060136_IFU_ICACHE (
     
     // start of the group
     logic   [8  : 0]                                  group_base                                                ;
-
     // hit cache line in one group(0/1)
     logic                                             hit_line_id                                               ;
-
+    logic                                             hit_line_id_buf                                           ;
     // whether the hit occures
     logic                                             cache_hit                                                 ;
-
-
     // higher bits or lower in cache(higher 32 bits or lower)
     logic                                             cache_inst_hi                                             ;
 
 
-    wire [  `ysyx_23060136_INST_W-1:0]                cache_o_inst = {`ysyx_23060136_INST_W{(cache_index[7 : 6] == 2'b00)}}  & (hit_line_id == 1'b1 ? (cache_inst_hi ? io_sram0_rdata[127 : 96] : io_sram0_rdata[95 : 64]) : (cache_inst_hi ? io_sram0_rdata[63 : 32] : io_sram0_rdata[31 : 0])) |
-                                                                     {`ysyx_23060136_INST_W{(cache_index[7 : 6] == 2'b01)}}  & (hit_line_id == 1'b1 ? (cache_inst_hi ? io_sram1_rdata[127 : 96] : io_sram1_rdata[95 : 64]) : (cache_inst_hi ? io_sram1_rdata[63 : 32] : io_sram1_rdata[31 : 0])) |
-                                                                     {`ysyx_23060136_INST_W{(cache_index[7 : 6] == 2'b10)}}  & (hit_line_id == 1'b1 ? (cache_inst_hi ? io_sram2_rdata[127 : 96] : io_sram2_rdata[95 : 64]) : (cache_inst_hi ? io_sram2_rdata[63 : 32] : io_sram2_rdata[31 : 0])) |
-                                                                     {`ysyx_23060136_INST_W{(cache_index[7 : 6] == 2'b11)}}  & (hit_line_id == 1'b1 ? (cache_inst_hi ? io_sram3_rdata[127 : 96] : io_sram3_rdata[95 : 64]) : (cache_inst_hi ? io_sram3_rdata[63 : 32] : io_sram3_rdata[31 : 0])) ;
+    wire [  `ysyx_23060136_INST_W-1:0]                cache_o_inst = {`ysyx_23060136_INST_W{(cache_index_buf[7 : 6] == 2'b00)}}  & (hit_line_id_buf == 1'b1 ? (cache_inst_hi ? io_sram0_rdata[127 : 96] : io_sram0_rdata[95 : 64]) : (cache_inst_hi ? io_sram0_rdata[63 : 32] : io_sram0_rdata[31 : 0])) |
+                                                                     {`ysyx_23060136_INST_W{(cache_index_buf[7 : 6] == 2'b01)}}  & (hit_line_id_buf == 1'b1 ? (cache_inst_hi ? io_sram1_rdata[127 : 96] : io_sram1_rdata[95 : 64]) : (cache_inst_hi ? io_sram1_rdata[63 : 32] : io_sram1_rdata[31 : 0])) |
+                                                                     {`ysyx_23060136_INST_W{(cache_index_buf[7 : 6] == 2'b10)}}  & (hit_line_id_buf == 1'b1 ? (cache_inst_hi ? io_sram2_rdata[127 : 96] : io_sram2_rdata[95 : 64]) : (cache_inst_hi ? io_sram2_rdata[63 : 32] : io_sram2_rdata[31 : 0])) |
+                                                                     {`ysyx_23060136_INST_W{(cache_index_buf[7 : 6] == 2'b11)}}  & (hit_line_id_buf == 1'b1 ? (cache_inst_hi ? io_sram3_rdata[127 : 96] : io_sram3_rdata[95 : 64]) : (cache_inst_hi ? io_sram3_rdata[63 : 32] : io_sram3_rdata[31 : 0])) ;
     
     // ===========================================================================
-    // cache interface                                                         
+    // cache interface     
+    // addr = group id
+    // group 128bits, sram 128bits                                                               
+                                                                     
     assign                      io_sram0_addr           =  cache_index[5 : 0]                                                    ;
     assign                      io_sram0_cen            =  ~((cache_index[7 : 6] == 2'b00) & (r_state_idle & c_state_next == `ysyx_23060136_ready | r_state_wait))     ;
     assign                      io_sram0_wen            =  ~(r_state_wait & ~io_sram0_cen & r_state_next == `ysyx_23060136_idle) ;
@@ -236,10 +237,14 @@ module ysyx_23060136_IFU_ICACHE (
 
     always_ff @(posedge clk) begin : cache_valid_update
         if(rst || (BRANCH_flushIF & !FORWARD_stallIF)) begin
-            cache_inst_hi <= `ysyx_23060136_false;
+            cache_inst_hi   <= `ysyx_23060136_false;
+            cache_index_buf <= `ysyx_23060136_false;
+            hit_line_id_buf <= `ysyx_23060136_false;
         end
         else if(c_state_idle & c_state_next == `ysyx_23060136_ready) begin
             cache_inst_hi <= cache_offset[2];
+            cache_index_buf <= cache_index;
+            hit_line_id_buf <= hit_line_id;
         end
     end
 
