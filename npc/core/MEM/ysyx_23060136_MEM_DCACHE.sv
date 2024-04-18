@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-09 21:33:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-14 01:10:35
+ * @Last Modified time: 2024-04-18 16:48:36
  */
 
 
@@ -133,6 +133,8 @@ module ysyx_23060136_MEM_DCACHE (
 
     // ===========================================================================
     // TO DO cache
+    // offset in block(before any judegment)
+
     wire                       cache_hit               =      `ysyx_23060136_false   ;
     
     assign                     io_sram4_addr           =      `ysyx_23060136_false   ;
