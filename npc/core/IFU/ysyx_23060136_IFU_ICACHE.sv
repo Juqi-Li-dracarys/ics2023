@@ -115,8 +115,7 @@ module ysyx_23060136_IFU_ICACHE (
     // offset in block
     wire    [`ysyx_23060136_cache_offset-1 : 0]       cache_offset   =  r_state_idle ? IFU1_pc[2 : 0]   : ARBITER_IFU_araddr[2 : 0]     ;
     // group id
-    wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  r_state_idle ? IFU1_pc[10 : 3]  : ARBITER_IFU_araddr[10 : 3]    ;
-    logic   [`ysyx_23060136_cache_index-1 : 0]        cache_index_buf;             
+    wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  r_state_idle ? IFU1_pc[10 : 3]  : ARBITER_IFU_araddr[10 : 3]    ;             
     // tag                    
     wire    [`ysyx_23060136_cache_tag-1 : 0]          cache_tag      =  r_state_idle ? IFU1_pc[31 : 11] : ARBITER_IFU_araddr[31 : 11]   ;
 
@@ -127,12 +126,13 @@ module ysyx_23060136_IFU_ICACHE (
 
     // line(block) in group to thrash
     logic   [`ysyx_23060136_cache_group-1 : 0]        thrash                                                    ;
-    
-    // start of the group
+    // start line index of the group
     logic   [8  : 0]                                  group_base                                                ;
     // hit cache line in one group(0/1)
     logic                                             hit_line_id                                               ;
+
     logic                                             hit_line_id_buf                                           ;
+    logic   [`ysyx_23060136_cache_index-1 : 0]        cache_index_buf                                           ;
     // whether the hit occures
     logic                                             cache_hit                                                 ;
     // higher bits or lower in cache(higher 32 bits or lower)
