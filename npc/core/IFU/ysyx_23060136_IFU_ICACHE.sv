@@ -278,6 +278,7 @@ module ysyx_23060136_IFU_ICACHE (
         // pipeline flow and cache miss
         unique case(r_state)
             `ysyx_23060136_idle: begin
+                // raise the read request on AXI 
                 if(!FORWARD_stallIF & !cache_hit) begin
                     r_state_next = `ysyx_23060136_ready;
                 end
