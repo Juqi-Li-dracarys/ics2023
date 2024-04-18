@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 12:40:17 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-12 12:37:41
+ * @Last Modified time: 2024-04-18 17:40:20
  */
 
 // ===========================================================================
@@ -49,6 +49,27 @@
 `define  ysyx_23060136_false     'b0
 
 `define  ysyx_23060136_cache_offset 3
+`define  ysyx_23060136_cache_index  8
+`define  ysyx_23060136_cache_tag    21
+`define  ysyx_23060136_cache_ways   2
+`define  ysyx_23060136_cache_line   512
+`define  ysyx_23060136_cache_group  256
+
+// IFU I-cache state
+`define ysyx_23060136_icache_idle  0
+`define ysyx_23060136_icache_hit   1
+
+ 
+// MEM D-cache state
+`define  ysyx_23060136_read_idle    0
+`define  ysyx_23060136_read_clean   1
+`define  ysyx_23060136_read_dirty   2
+
+`define  ysyx_23060136_write_idle    0
+`define  ysyx_23060136_write_clean   1
+`define  ysyx_23060136_write_dirty   2
+
+
 `define  ysyx_23060136_cache_index  8
 `define  ysyx_23060136_cache_tag    21
 `define  ysyx_23060136_cache_ways   2

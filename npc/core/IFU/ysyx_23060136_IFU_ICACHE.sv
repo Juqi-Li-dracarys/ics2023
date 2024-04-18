@@ -2,15 +2,15 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-13 23:51:28 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-16 22:01:22
+ * @Last Modified time: 2024-04-18 17:40:00
  */
 
 
 `include "ysyx_23060136_DEFINES.sv"
 
 
-// Interface for arbiter(AXI bus) and cache
-// protocol: AXI and cache interface
+// I-cache module with AXI ctr and sram interface
+// protocol: AXI / sarm interface
 // ===========================================================================
 module ysyx_23060136_IFU_ICACHE (
       // data from pc counter
@@ -108,8 +108,8 @@ module ysyx_23060136_IFU_ICACHE (
     // cache state machine
     logic                                             c_state                                                ;
     logic                                             c_state_next                                           ;
-    wire                   c_state_idle           =  (c_state == `ysyx_23060136_idle)                        ;
-    wire                   c_state_ready          =  (c_state == `ysyx_23060136_ready)                       ;
+    wire                   c_state_idle           =  (c_state == `ysyx_23060136_icache_idle)                  ;
+    wire                   c_state_hit            =  (c_state == `ysyx_23060136_icache_hit)                  ;
 
 
     // offset in block
@@ -132,6 +132,7 @@ module ysyx_23060136_IFU_ICACHE (
     logic                                             hit_line_id                                               ;
 
     logic                                             hit_line_id_buf                                           ;
+
     logic   [`ysyx_23060136_cache_index-1 : 0]        cache_index_buf                                           ;
     // whether the hit occures
     logic                                             cache_hit                                                 ;
@@ -150,7 +151,7 @@ module ysyx_23060136_IFU_ICACHE (
     // group 128bits, sram 128bits                                                               
                                                                      
     assign                      io_sram0_addr           =  cache_index[5 : 0]                                                    ;
-    assign                      io_sram0_cen            =  ~((cache_index[7 : 6] == 2'b00) & (r_state_idle & c_state_next == `ysyx_23060136_ready | r_state_wait))     ;
+    assign                      io_sram0_cen            =  ~((cache_index[7 : 6] == 2'b00) & (r_state_idle & c_state_next == `ysyx_23060136_icache_hit | r_state_wait))     ;
     assign                      io_sram0_wen            =  ~(r_state_wait & ~io_sram0_cen & r_state_next == `ysyx_23060136_idle) ;
     assign                      io_sram0_wmask          =  {128{(cache_index[7 : 6] == 2'b00)}} & (thrash[cache_index] ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF)  : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000)) ;
     assign                      io_sram0_wdata          =  {128{(cache_index[7 : 6] == 2'b00)}} & (thrash[cache_index] ? ({ARBITER_IFU_rdata, 64'b0})  : ({64'b0, ARBITER_IFU_rdata})) ;
@@ -158,7 +159,7 @@ module ysyx_23060136_IFU_ICACHE (
 
 
     assign                      io_sram1_addr           =  cache_index[5 : 0]                                                     ;
-    assign                      io_sram1_cen            =   ~((cache_index[7 : 6] == 2'b01) & (r_state_idle & c_state_next == `ysyx_23060136_ready  | r_state_wait))      ;
+    assign                      io_sram1_cen            =   ~((cache_index[7 : 6] == 2'b01) & (r_state_idle & c_state_next == `ysyx_23060136_icache_hit  | r_state_wait))      ;
     assign                      io_sram1_wen            =   ~(r_state_wait & ~io_sram1_cen & r_state_next == `ysyx_23060136_idle)  ;
     assign                      io_sram1_wmask          =  {128{(cache_index[7 : 6] == 2'b01)}} & (thrash[cache_index] ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF)  : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000)) ;
     assign                      io_sram1_wdata          =  {128{(cache_index[7 : 6] == 2'b01)}} & (thrash[cache_index] ? ({ARBITER_IFU_rdata, 64'b0})  : ({64'b0, ARBITER_IFU_rdata})) ;
@@ -166,7 +167,7 @@ module ysyx_23060136_IFU_ICACHE (
 
 
     assign                      io_sram2_addr           =  cache_index[5 : 0]                                                     ;
-    assign                      io_sram2_cen            =  ~((cache_index[7 : 6] == 2'b10) & (r_state_idle & c_state_next == `ysyx_23060136_ready | r_state_wait))       ;
+    assign                      io_sram2_cen            =  ~((cache_index[7 : 6] == 2'b10) & (r_state_idle & c_state_next == `ysyx_23060136_icache_hit | r_state_wait))       ;
     assign                      io_sram2_wen            =  ~(r_state_wait & ~io_sram2_cen & r_state_next == `ysyx_23060136_idle)   ;
     assign                      io_sram2_wmask          =  {128{(cache_index[7 : 6] == 2'b10)}} & (thrash[cache_index] ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF)  : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000)) ;
     assign                      io_sram2_wdata          =  {128{(cache_index[7 : 6] == 2'b10)}} & (thrash[cache_index] ? ({ARBITER_IFU_rdata, 64'b0})  : ({64'b0, ARBITER_IFU_rdata})) ;
@@ -175,32 +176,32 @@ module ysyx_23060136_IFU_ICACHE (
 
 
     assign                      io_sram3_addr           =  cache_index[5 : 0]                                                    ;
-    assign                      io_sram3_cen            =  ~((cache_index[7 : 6] == 2'b11) & (r_state_idle & c_state_next == `ysyx_23060136_ready | r_state_wait))      ;
-    assign                      io_sram3_wen            =  ~(r_state_wait & ~io_sram3_cen & r_state_next == `ysyx_23060136_idle)  ;
+    assign                      io_sram3_cen            =  ~((cache_index[7 : 6] == 2'b11) & (r_state_idle & c_state_next == `ysyx_23060136_icache_hit | r_state_wait))      ;
+    assign                      io_sram3_wen            =  ~(r_state_wait & ~io_sram3_cen & r_state_next == `ysyx_23060136_idle) ;
     assign                      io_sram3_wmask          =  {128{(cache_index[7 : 6] == 2'b11)}} & (thrash[cache_index] ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF)  : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000)) ;
     assign                      io_sram3_wdata          =  {128{(cache_index[7 : 6] == 2'b11)}} & (thrash[cache_index] ? ({ARBITER_IFU_rdata, 64'b0})  : ({64'b0, ARBITER_IFU_rdata})) ;
 
 
     always_comb begin : c_state_update
         case(c_state)
-            `ysyx_23060136_idle: begin
+            `ysyx_23060136_icache_idle: begin
                 if(!FORWARD_stallIF & cache_hit & r_state_idle) begin
-                    c_state_next = `ysyx_23060136_ready;
+                    c_state_next = `ysyx_23060136_icache_hit;
                 end
                 else begin
-                    c_state_next = `ysyx_23060136_idle;
+                    c_state_next = `ysyx_23060136_icache_idle;
                 end
             end
-            `ysyx_23060136_ready: begin
-                c_state_next = `ysyx_23060136_idle;
+            `ysyx_23060136_icache_hit: begin
+                c_state_next = `ysyx_23060136_icache_idle;
             end
-            default: c_state_next = `ysyx_23060136_idle;
+            default: c_state_next = `ysyx_23060136_icache_idle;
         endcase
     end
 
     always_ff @(posedge clk) begin : c_state_machine
         if(rst || (BRANCH_flushIF & !FORWARD_stallIF)) begin
-            c_state <=  `ysyx_23060136_idle;
+            c_state <=  `ysyx_23060136_icache_idle;
         end
         else begin
             c_state <=  c_state_next;
@@ -243,7 +244,7 @@ module ysyx_23060136_IFU_ICACHE (
             cache_index_buf <= `ysyx_23060136_false;
             hit_line_id_buf <= `ysyx_23060136_false;
         end
-        else if(c_state_idle & c_state_next == `ysyx_23060136_ready) begin
+        else if(c_state_idle & c_state_next == `ysyx_23060136_icache_hit) begin
             cache_inst_hi <= cache_offset[2];
             cache_index_buf <= cache_index;
             hit_line_id_buf <= hit_line_id;
@@ -346,10 +347,10 @@ module ysyx_23060136_IFU_ICACHE (
         if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
             inst_valid <= `ysyx_23060136_true;
         end
-        else if((r_state_idle & r_state_next == `ysyx_23060136_ready) || (c_state_idle & c_state_next == `ysyx_23060136_ready) ) begin
+        else if((r_state_idle & r_state_next == `ysyx_23060136_ready) || (c_state_idle & c_state_next == `ysyx_23060136_icache_hit) ) begin
             inst_valid <=  `ysyx_23060136_false;
         end
-        else if(((r_state_next == `ysyx_23060136_idle & r_state_wait) || (c_state_ready & c_state_next == `ysyx_23060136_idle))) begin
+        else if(((r_state_next == `ysyx_23060136_idle & r_state_wait) || (c_state_hit & c_state_next == `ysyx_23060136_icache_idle))) begin
             inst_valid <= `ysyx_23060136_true;
         end
     end
@@ -361,7 +362,7 @@ module ysyx_23060136_IFU_ICACHE (
         else if((r_state_next == `ysyx_23060136_idle & r_state_wait & ARBITER_IFU_rlast))begin
             IFU_o_inst <=  arbiter_inst_hi   ?  ARBITER_IFU_rdata[63 : 32] : ARBITER_IFU_rdata[31 : 0] ;
         end
-        else if(c_state_ready & c_state_next == `ysyx_23060136_idle) begin
+        else if(c_state_hit & c_state_next == `ysyx_23060136_icache_idle) begin
             IFU_o_inst <= cache_o_inst;
         end
     end
