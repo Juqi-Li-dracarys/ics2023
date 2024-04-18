@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-09 21:33:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-18 16:48:36
+ * @Last Modified time: 2024-04-18 17:36:38
  */
 
 
@@ -183,15 +183,15 @@ module ysyx_23060136_MEM_DCACHE (
     logic                      is_clint          ;
     logic                      is_mmio           ;
 
-    logic                      MEM_mem_byte_u   ;
-    logic                      MEM_mem_half_u   ;
-    logic                      MEM_mem_word_u   ;
-    logic                      MEM_mem_byte     ;          
-    logic                      MEM_mem_half     ;      
-    logic                      MEM_mem_word     ;      
-    logic                      MEM_mem_dword    ;
-    // record the lower 3 bits of addr
-    logic     [2 : 0]          bit_start        ;
+        // record the lower 3 bits of addr
+    logic     [2 : 0]          bit_start         ;
+    logic                      MEM_mem_byte_u    ;
+    logic                      MEM_mem_half_u    ;
+    logic                      MEM_mem_word_u    ;
+    logic                      MEM_mem_byte      ;          
+    logic                      MEM_mem_half      ;      
+    logic                      MEM_mem_word      ;      
+    logic                      MEM_mem_dword     ;
     
     
 
