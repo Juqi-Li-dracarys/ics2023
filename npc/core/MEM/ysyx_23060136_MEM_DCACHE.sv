@@ -118,8 +118,8 @@ module ysyx_23060136_MEM_DCACHE (
 
     // ===========================================================================
     // read module signal(arbiter)
-    assign                              ARBITER_MEM_rready       =  r_state_wait & is_mem              ;
-    assign                              CLINT_MEM_rdata_ready    =  r_state_wait & !is_mem             ; 
+    assign                              ARBITER_MEM_rready       =  r_state_wait & (is_mmio | is_sdram)  ;
+    assign                              CLINT_MEM_rdata_ready    =  r_state_wait & is_clint              ; 
 
     // write module signal
     assign                              io_master_bready         =  w_state_wait                       ;
@@ -173,8 +173,14 @@ module ysyx_23060136_MEM_DCACHE (
     wire                       r_state_wait    =  (r_state == `ysyx_23060136_wait);
 
     // read state
-    wire                       from_mem        =  ~(MEM_addr >= `ysyx_23060136_CLINT_BASE & MEM_addr < `ysyx_23060136_CLINT_END) ;
-    logic                      is_mem           ;
+    wire                       from_clint      =   MEM_addr >= `ysyx_23060136_CLINT_BASE & MEM_addr < `ysyx_23060136_CLINT_END  ;
+    wire                       from_sdram      =   MEM_addr >= `ysyx_23060136_MBASE & MEM_addr < `ysyx_23060136_MEND            ;
+    wire                       from_mmio       =   MEM_addr >= `ysyx_23060136_MMIOB & MEM_addr < `ysyx_23060136_MMIOD           ;
+
+    logic                      is_sdram          ;
+    logic                      is_clint          ;
+    logic                      is_mmio           ;
+
     logic                      MEM_mem_byte_u   ;
     logic                      MEM_mem_half_u   ;
     logic                      MEM_mem_word_u   ;
@@ -199,7 +205,7 @@ module ysyx_23060136_MEM_DCACHE (
                 end
             end
             `ysyx_23060136_ready: begin
-                if(is_mem) begin
+                if(is_mmio | is_sdram) begin
                     if(ARBITER_MEM_arready & ARBITER_MEM_arvalid) begin
                         r_state_next = `ysyx_23060136_wait;
                     end
@@ -217,8 +223,8 @@ module ysyx_23060136_MEM_DCACHE (
                 end
             end
             `ysyx_23060136_wait: begin
-                if(is_mem) begin
-                    if(ARBITER_MEM_rready & ARBITER_MEM_rvalid ) begin
+                if(is_mmio | is_sdram) begin
+                    if(ARBITER_MEM_rready & ARBITER_MEM_rvalid) begin
                         r_state_next = `ysyx_23060136_idle;
                     end
                     else begin
@@ -250,7 +256,9 @@ module ysyx_23060136_MEM_DCACHE (
 
     always_ff @(posedge clk) begin : update_source_read
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
-            is_mem         <=   `ysyx_23060136_false;
+            is_mmio        <=   `ysyx_23060136_false;
+            is_sdram       <=   `ysyx_23060136_false;
+            is_clint       <=   `ysyx_23060136_false;
             MEM_mem_byte_u <=   `ysyx_23060136_false; 
             MEM_mem_half_u <=   `ysyx_23060136_false; 
             MEM_mem_word_u <=   `ysyx_23060136_false; 
@@ -266,7 +274,9 @@ module ysyx_23060136_MEM_DCACHE (
             CLINT_MEM_rsize    <= `ysyx_23060136_false; 
         end
         else if((r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
-            is_mem         <=    from_mem;
+            is_mmio        <=    from_mmio;
+            is_sdram       <=    from_sdram;
+            is_clint       <=    from_clint;
             MEM_mem_byte_u <=    EXU_o_mem_byte_u ;   
             MEM_mem_half_u <=    EXU_o_mem_half_u ;        
             MEM_mem_word_u <=    EXU_o_mem_word_u ;  
@@ -294,7 +304,7 @@ module ysyx_23060136_MEM_DCACHE (
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
             ARBITER_MEM_arvalid <= `ysyx_23060136_false;       
         end
-        else if((r_state_idle & r_state_next == `ysyx_23060136_ready & from_mem)) begin
+        else if((r_state_idle & r_state_next == `ysyx_23060136_ready & (from_mmio | from_sdram))) begin
             ARBITER_MEM_arvalid <=  `ysyx_23060136_true;
         end 
         else if((r_state_ready & r_state_next == `ysyx_23060136_wait)) begin
@@ -306,7 +316,7 @@ module ysyx_23060136_MEM_DCACHE (
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
             CLINT_MEM_raddr_valid <= `ysyx_23060136_false;       
         end
-        else if((r_state_idle & r_state_next == `ysyx_23060136_ready & !from_mem)) begin
+        else if((r_state_idle & r_state_next == `ysyx_23060136_ready & !(from_mmio | from_sdram))) begin
             CLINT_MEM_raddr_valid <=  `ysyx_23060136_true;
         end 
         else if((r_state_ready & r_state_next == `ysyx_23060136_wait)) begin
@@ -315,7 +325,7 @@ module ysyx_23060136_MEM_DCACHE (
     end
 
 
-    wire [`ysyx_23060136_BITS_W-1 : 0]  r_abstract  =  (is_mem ? ARBITER_MEM_rdata : CLINT_MEM_rdata) >> ({bit_start, 3'b0});
+    wire [`ysyx_23060136_BITS_W-1 : 0]  r_abstract  =  (is_clint ?  CLINT_MEM_rdata : ARBITER_MEM_rdata) >> ({bit_start, 3'b0});
 
     always_ff @(posedge clk) begin : rdata_update
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin

@@ -27,6 +27,9 @@
 `define  ysyx_23060136_CLINT_BASE 64'h02000000
 `define  ysyx_23060136_CLINT_END  64'h0200ffff
 
+`define  ysyx_23060136_MMIOB      64'ha0000000
+`define  ysyx_23060136_MMIOD      64'hb0000000
+
 `define  ysyx_23060136_PC_RST     64'h80000000
 `define  ysyx_23060136_NOP        32'h00000013
 
