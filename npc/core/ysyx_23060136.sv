@@ -945,6 +945,7 @@ module ysyx_23060136 (
         .EXU_i_rs1                         (EXU_i_rs1                 ),
         .EXU_i_rs2                         (EXU_i_rs2                 ),
         .EXU_i_csr_rs                      (EXU_i_csr_rs              ),
+        .EXU_o_pc                          (EXU_o_pc                  ),
         .EXU_o_ALU_ALUout                  (EXU_o_ALU_ALUout          ),
         .EXU_o_HAZARD_rs2_data             (EXU_o_HAZARD_rs2_data     ),
         .EXU_o_write_mem                   (EXU_o_write_mem           ),

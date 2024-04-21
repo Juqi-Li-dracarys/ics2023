@@ -27,6 +27,7 @@ module ysyx_23060136_MEM_TOP (
         input             [`ysyx_23060136_GPR_W -1 : 0]           EXU_i_rs2                    ,
         input             [`ysyx_23060136_CSR_W-1 : 0]            EXU_i_csr_rs                 ,
 
+        input             [`ysyx_23060136_BITS_W -1 : 0]          EXU_o_pc                     ,  
         input             [`ysyx_23060136_BITS_W -1 : 0]          EXU_o_ALU_ALUout             , 
         input             [`ysyx_23060136_BITS_W -1 : 0]          EXU_o_HAZARD_rs2_data        ,
         input                                                     EXU_o_write_mem              ,  
@@ -230,7 +231,7 @@ module ysyx_23060136_MEM_TOP (
   ysyx_23060136_MEM_DCACHE  ysyx_23060136_MEM_DCACHE_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
-        .pc                                (MEM_i_pc                  ),
+        .pc                                (EXU_o_pc                  ),
         .FORWARD_flushEX                   (`ysyx_23060136_false      ),
         .FORWARD_stallME                   (FORWARD_stallME           ),
         .MEM_addr                          (MEM_addr                  ),
