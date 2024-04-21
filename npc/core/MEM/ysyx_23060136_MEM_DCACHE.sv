@@ -300,12 +300,12 @@ module ysyx_23060136_MEM_DCACHE (
 
     assign                     io_sram4_wmask          =      {128{(cache_index[7 : 6] == 2'b00)}} & ({128{cr_state_miss & r_state_wait}}           & (thrash[cache_index]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))   | 
                                                                                                       {128{cw_state_al   & w_state_ready}}          & (thrash[cache_index]  ? ({~sram_wstrb_exp, 64'hFFFF_FFFF_FFFF_FFFF})   : ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_wstrb_exp}))     |
-                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((thrash[cache_index] ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
+                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((hit_line_id         ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
 
 
     assign                     io_sram4_wdata          =      {128{(cache_index[7 : 6] == 2'b00)}} & (({128{cr_state_miss & r_state_wait}}            & (thrash[cache_index] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata}))) | 
                                                                                                       ({128{cw_state_al & w_state_ready}}             & (thrash[cache_index] ? ({io_master_wdata, 64'b0})    : ({64'b0, io_master_wdata})))   |
-                                                                                                      ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (thrash[cache_index] ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;
+                                                                                                      ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (hit_line_id         ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;
     
 
 
@@ -328,12 +328,12 @@ module ysyx_23060136_MEM_DCACHE (
 
     assign                     io_sram5_wmask          =      {128{(cache_index[7 : 6] == 2'b01)}} & ({128{cr_state_miss & r_state_wait}}           & (thrash[cache_index]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))   | 
                                                                                                       {128{cw_state_al   & w_state_ready}}          & (thrash[cache_index]  ? ({~sram_wstrb_exp, 64'hFFFF_FFFF_FFFF_FFFF})   : ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_wstrb_exp}))     |
-                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((thrash[cache_index] ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
+                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((hit_line_id         ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
 
 
     assign                     io_sram5_wdata          =     {128{(cache_index[7 : 6] == 2'b01)}} & (({128{cr_state_miss & r_state_wait}}            & (thrash[cache_index] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata}))) | 
                                                                                                      ({128{cw_state_al & w_state_ready}}             & (thrash[cache_index] ? ({io_master_wdata, 64'b0})    : ({64'b0, io_master_wdata})))   |
-                                                                                                     ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (thrash[cache_index] ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;
+                                                                                                     ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (hit_line_id         ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;
 
 
 
@@ -358,12 +358,12 @@ module ysyx_23060136_MEM_DCACHE (
 
     assign                     io_sram6_wmask          =      {128{(cache_index[7 : 6] == 2'b10)}} & ({128{cr_state_miss & r_state_wait}}           & (thrash[cache_index]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))   | 
                                                                                                       {128{cw_state_al   & w_state_ready}}          & (thrash[cache_index]  ? ({~sram_wstrb_exp, 64'hFFFF_FFFF_FFFF_FFFF})   : ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_wstrb_exp}))     |
-                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((thrash[cache_index] ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
+                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((hit_line_id         ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
 
 
     assign                     io_sram6_wdata          =     {128{(cache_index[7 : 6] == 2'b10)}} & (({128{cr_state_miss & r_state_wait}}            & (thrash[cache_index] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata}))) |                        
                                                                                                      ({128{cw_state_al & w_state_ready}}             & (thrash[cache_index] ? ({io_master_wdata, 64'b0})    : ({64'b0, io_master_wdata})))   |                       
-                                                                                                     ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (thrash[cache_index] ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;                       
+                                                                                                     ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (hit_line_id         ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;                       
 
    
    
@@ -386,12 +386,12 @@ module ysyx_23060136_MEM_DCACHE (
 
      assign                     io_sram7_wmask          =     {128{(cache_index[7 : 6] == 2'b11)}} & ({128{cr_state_miss & r_state_wait}}           & (thrash[cache_index]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))   | 
                                                                                                       {128{cw_state_al   & w_state_ready}}          & (thrash[cache_index]  ? ({~sram_wstrb_exp, 64'hFFFF_FFFF_FFFF_FFFF})   : ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_wstrb_exp}))     |
-                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((thrash[cache_index] ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
+                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((hit_line_id         ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
 
 
      assign                     io_sram7_wdata          =     {128{(cache_index[7 : 6] == 2'b11)}} & (({128{cr_state_miss & r_state_wait}}            & (thrash[cache_index] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata}))) | 
                                                                                                       ({128{cw_state_al & w_state_ready}}             & (thrash[cache_index] ? ({io_master_wdata, 64'b0})    : ({64'b0, io_master_wdata})))   |
-                                                                                                      ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (thrash[cache_index] ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;
+                                                                                                      ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (hit_line_id         ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;
 
 
     always_comb begin : cache_pre_cal
