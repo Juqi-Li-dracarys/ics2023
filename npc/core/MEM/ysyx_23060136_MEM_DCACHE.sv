@@ -586,7 +586,7 @@ module ysyx_23060136_MEM_DCACHE (
         else if(is_sdram && ((r_state_wait & r_state_next == `ysyx_23060136_idle) || (cw_state_al & w_state_ready & w_state_next == `ysyx_23060136_wait))) begin
             valid_bit[group_base + {7'b0,thrash[cache_index]}] <= `ysyx_23060136_true;
             tag_array[group_base + {7'b0,thrash[cache_index]}] <=  cache_tag;
-            dirty_bit[group_base + {7'b0,hit_line_id}]         <= `ysyx_23060136_false;
+            dirty_bit[group_base + {7'b0,thrash[cache_index]}] <= `ysyx_23060136_false;
         end
         else if(cr_state_idle & cw_state_idle & cw_hit) begin
             dirty_bit[group_base + {7'b0,hit_line_id}]  <= `ysyx_23060136_true;
@@ -608,12 +608,15 @@ module ysyx_23060136_MEM_DCACHE (
 
 
     //////////////////////////////////////////////////////////////////////////////
-    wire  debug_valid_0  =  valid_bit[group_base];
-    wire  debug_valid_1  =  valid_bit[group_base + 1];
-    wire  debug_thrash_0 =  thrash[cache_index];
-    wire  debug_thrash_1 =  thrash[cache_index_buf];
-    wire  debug_dirty_0  =  dirty_bit[group_base];
-    wire  debug_dirty_1  =  dirty_bit[group_base+1];
+    wire                                        debug_valid_0  =  valid_bit[group_base];
+    wire                                        debug_valid_1  =  valid_bit[group_base + 1];
+    wire                                        debug_thrash_0 =  thrash   [cache_index];
+    wire                                        debug_thrash_1 =  thrash   [cache_index_buf];
+    wire                                        debug_dirty_0  =  dirty_bit[group_base];
+    wire                                        debug_dirty_1  =  dirty_bit[group_base+1];
+    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_0      =  tag_array[group_base];
+    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_1      =  tag_array[group_base+1];
+    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_2      =  tag_array[group_base + {7'b0,thrash[cache_index]}];
 
     
     // ===========================================================================
