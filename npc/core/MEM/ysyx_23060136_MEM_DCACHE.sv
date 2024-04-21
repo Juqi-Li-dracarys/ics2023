@@ -620,7 +620,7 @@ module ysyx_23060136_MEM_DCACHE (
 
 
     always_ff @(posedge clk) begin : debug
-        if(!FORWARD_stallME & rst) begin
+        if(!FORWARD_stallME & !rst) begin
             if(MEM_addr == 64'h00000000800009a0 & EXU_o_write_mem) begin
                 $display("get @PC=0x%016lx", pc);
             end
