@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 12:40:17 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-18 17:40:20
+ * @Last Modified time: 2024-04-18 20:06:18
  */
 
 // ===========================================================================
@@ -55,19 +55,24 @@
 `define  ysyx_23060136_cache_line   512
 `define  ysyx_23060136_cache_group  256
 
-// IFU I-cache state
-`define ysyx_23060136_icache_idle  0
-`define ysyx_23060136_icache_hit   1
-
  
-// MEM D-cache state
-`define  ysyx_23060136_read_idle    0
-`define  ysyx_23060136_read_clean   1
-`define  ysyx_23060136_read_dirty   2
+// IFU I-cache state
+`define ysyx_23060136_icache_idle    0
+`define ysyx_23060136_icache_r_hit   1
 
-`define  ysyx_23060136_write_idle    0
-`define  ysyx_23060136_write_clean   1
-`define  ysyx_23060136_write_dirty   2
+
+// MEM D-cache state(read)
+`define ysyx_23060136_dcache_idle     'h0
+`define ysyx_23060136_dcache_r_hit    'h1
+`define ysyx_23060136_dcache_r_dirty  'h2
+`define ysyx_23060136_dcache_r_miss   'h3
+ 
+
+// MEM D-cache state(write)
+`define ysyx_23060136_dcache_idle     'h0
+`define ysyx_23060136_dcache_w_dirty  'h1
+`define ysyx_23060136_dcache_w_wb     'h2
+`define ysyx_23060136_dcache_w_al     'h3
 
 
 `define  ysyx_23060136_cache_index  8
