@@ -230,6 +230,7 @@ module ysyx_23060136_MEM_TOP (
   ysyx_23060136_MEM_DCACHE  ysyx_23060136_MEM_DCACHE_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
+        .pc                                (MEM_i_pc                  ),
         .FORWARD_flushEX                   (`ysyx_23060136_false      ),
         .FORWARD_stallME                   (FORWARD_stallME           ),
         .MEM_addr                          (MEM_addr                  ),
