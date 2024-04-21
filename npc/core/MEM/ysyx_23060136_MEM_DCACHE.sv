@@ -15,6 +15,7 @@
 module ysyx_23060136_MEM_DCACHE (
     input                                                   clk                        ,
     input                                                   rst                        ,
+    input              [  `ysyx_23060136_BITS_W-1:0]        pc                         ,
     // ===========================================================================
     // forward unit signal
     input                                                   FORWARD_flushEX            ,
@@ -544,8 +545,8 @@ module ysyx_23060136_MEM_DCACHE (
             cache_index_buf    <=   `ysyx_23060136_false;
             hit_line_id_buf    <=   `ysyx_23060136_false;
 
-            dirty_addr_buffer  <= `ysyx_23060136_false;
-            w_i_data_buffer    <= `ysyx_23060136_false;
+            dirty_addr_buffer  <= `ysyx_23060136_false ;
+            w_i_data_buffer    <= `ysyx_23060136_false ;
             w_i_strb_buffer    <=  `ysyx_23060136_false;
         end
         else if(~FORWARD_stallME) begin
@@ -600,19 +601,19 @@ module ysyx_23060136_MEM_DCACHE (
             end
         end
         else if(is_sdram && ((cr_state_miss & cr_state_next ==  `ysyx_23060136_dcache_idle) || (cw_state_al & cr_state_next ==  `ysyx_23060136_dcache_idle))) begin
-            if(!valid_bit[group_base]) begin
-                thrash[cache_index] <= 'b1;
-            end
-            else if(!valid_bit[group_base + 1]) begin
-                thrash[cache_index] <= 'b0;
-            end
-            else begin 
-                thrash[cache_index] <= ~thrash[cache_index];
-            end
+            thrash[cache_index_buf] <= ~thrash[cache_index_buf];
         end
     end
 
 
+
+    //////////////////////////////////////////////////////////////////////////////
+    wire  debug_valid_0  =  valid_bit[group_base];
+    wire  debug_valid_1  =  valid_bit[group_base + 1];
+    wire  debug_thrash_0 =  thrash[cache_index];
+    wire  debug_thrash_1 =  thrash[cache_index_buf];
+    wire  debug_dirty_0  =  dirty_bit[group_base];
+    wire  debug_dirty_1  =  dirty_bit[group_base+1];
 
     
     // ===========================================================================
