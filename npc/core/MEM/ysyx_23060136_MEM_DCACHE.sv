@@ -614,9 +614,18 @@ module ysyx_23060136_MEM_DCACHE (
     wire                                        debug_thrash_1 =  thrash   [cache_index_buf];
     wire                                        debug_dirty_0  =  dirty_bit[group_base];
     wire                                        debug_dirty_1  =  dirty_bit[group_base+1];
-    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_0      =  tag_array[group_base];
-    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_1      =  tag_array[group_base+1];
-    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_2      =  tag_array[group_base + {7'b0,thrash[cache_index]}];
+    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_0    =  tag_array[group_base];
+    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_1    =  tag_array[group_base+1];
+    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_2    =  tag_array[group_base + {7'b0,thrash[cache_index]}];
+
+
+    always_ff @(posedge clk) begin : debug
+        if(!FORWARD_stallME & rst) begin
+            if(MEM_addr == 64'h00000000800009a0 & EXU_o_write_mem) begin
+                $display("get @PC=0x%016lx", pc);
+            end
+        end
+    end
 
     
     // ===========================================================================
