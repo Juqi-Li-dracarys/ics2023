@@ -619,36 +619,36 @@ module ysyx_23060136_MEM_DCACHE (
     wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_2    =  tag_array[group_base + {7'b0,thrash[cache_index]}];
 
 
-    always_ff @(posedge clk) begin : debug
-        if(!FORWARD_stallME & !rst) begin
-            if(MEM_addr == 64'h00000000800009a0 || cache_index == 'h34) begin
-                if(EXU_o_write_mem) begin
-                    $display("get @PC=0x%x, cache index=0x%x, addr=0x%x, write", pc, cache_index, MEM_addr);
-                    if(cw_hit) begin
-                        $display("hit the cache");
-                    end
-                    else if(cw_wb) begin
-                        $display("miss and write back");
-                    end
-                    else begin
-                        $display("miss the cache");
-                    end
-                end
-                else if(EXU_o_mem_to_reg) begin
-                    $display("get @PC=0x%x, cache index=0x%x, addr=0x%x, read", pc, cache_index, MEM_addr);
-                    if(cr_hit) begin
-                        $display("hit the cache");
-                    end
-                    else if(cr_wb) begin
-                        $display("miss and write back");
-                    end
-                    else begin
-                        $display("miss the cache");
-                    end
-                end
-            end
-        end
-    end
+    // always_ff @(posedge clk) begin : debug
+    //     if(!FORWARD_stallME & !rst) begin
+    //         if(MEM_addr == 64'h00000000800009a0 || cache_index == 'h34) begin
+    //             if(EXU_o_write_mem) begin
+    //                 $display("get @PC=0x%x, cache index=0x%x, addr=0x%x, write", pc, cache_index, MEM_addr);
+    //                 if(cw_hit) begin
+    //                     $display("hit the cache");
+    //                 end
+    //                 else if(cw_wb) begin
+    //                     $display("miss and write back");
+    //                 end
+    //                 else begin
+    //                     $display("miss the cache");
+    //                 end
+    //             end
+    //             else if(EXU_o_mem_to_reg) begin
+    //                 $display("get @PC=0x%x, cache index=0x%x, addr=0x%x, read", pc, cache_index, MEM_addr);
+    //                 if(cr_hit) begin
+    //                     $display("hit the cache");
+    //                 end
+    //                 else if(cr_wb) begin
+    //                     $display("miss and write back");
+    //                 end
+    //                 else begin
+    //                     $display("miss the cache");
+    //                 end
+    //             end
+    //         end
+    //     end
+    // end
 
     
     // ===========================================================================
