@@ -846,8 +846,11 @@ module ysyx_23060136_MEM_DCACHE (
         // 当 AXI lite 发生握手，将转移到下一个状态
         unique case(w_state)
             `ysyx_23060136_idle: begin
+                // 1. write miss not dirty
+                // 2. read dirty
+                // 3. write dirty and write data
                 if((!FORWARD_stallME & cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_al) | (cr_state_dirty & cr_state_next == `ysyx_23060136_dcache_r_miss) |
-                    (cw_state_dirty  & cw_state_next == `ysyx_23060136_dcache_w_wb) | (cw_state_wb & cw_state_next == `ysyx_23060136_dcache_w_al)) begin
+                    (cw_state_dirty  & cw_state_next == `ysyx_23060136_dcache_w_wb) | (cw_state_al)) begin
 
                     w_state_next = `ysyx_23060136_ready;
 
@@ -918,24 +921,22 @@ module ysyx_23060136_MEM_DCACHE (
         end
         else if(w_state_idle & w_state_next == `ysyx_23060136_ready) begin
             io_master_awaddr  <=    (cw_state_idle  & cw_state_next == `ysyx_23060136_dcache_w_al) ? {MEM_addr[31 : 3], {3{1'b0}}} :   
-                                    (cw_state_dirty & cw_state_next == `ysyx_23060136_dcache_w_al) ? {MEM_addr_buffer[31 : 3],{3{1'b0}}}
+                                    (cw_state_al) ? {MEM_addr_buffer[31 : 3],{3{1'b0}}}
                                     : {dirty_addr_buffer[31 : 3], {3{1'b0}}};
             // 注意字节对齐问题
             io_master_wdata   <=    (cw_state_idle  & cw_state_next == `ysyx_23060136_dcache_w_al) ? w_i_data : 
-                                    (cw_state_dirty & cw_state_next == `ysyx_23060136_dcache_w_al) ? w_i_data_buffer : dirty_data;
+                                    (cw_state_al) ? w_i_data_buffer : dirty_data;
 
             io_master_awsize  <=    (cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_al) ? 
                                     (({3{EXU_o_mem_byte}}) & 3'b000         |   ({3{EXU_o_mem_half}}) & 3'b001       |
                                     ({3{EXU_o_mem_word}})  & 3'b010         |   ({3{EXU_o_mem_dword}}) & 3'b011)     :  
                                     
-                                    ((cw_state_dirty & cw_state_next == `ysyx_23060136_dcache_w_al) ? 
+                                    ((cw_state_al) ? 
                                     (({3{MEM_byte_buffer}}) & 3'b000         |   ({3{MEM_half_buffer}}) & 3'b001       |
                                     ({3{MEM_word_buffer}})  & 3'b010         |   ({3{MEM_dword_buffer}}) & 3'b011)     : 3'b011)         ;
 
             io_master_wstrb   <=    (cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_al) ? 
-                                    w_i_strb : 
-                                    (cw_state_dirty & cw_state_next == `ysyx_23060136_dcache_w_al) ? 
-                                    w_i_strb_buffer : 8'hFF;             
+                                    w_i_strb : (cw_state_al) ? w_i_strb_buffer : 8'hFF;             
         end
     end
 
