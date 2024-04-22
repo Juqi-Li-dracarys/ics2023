@@ -58,7 +58,7 @@
 
 // Itrace max record number setting
 #define CONFIG_TRACE_START 0
-#define CONFIG_TRACE_END   10000
+#define CONFIG_TRACE_END   100000
 
 // diff test
 #define CONFIG_DIFFTEST 1
