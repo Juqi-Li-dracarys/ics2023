@@ -600,7 +600,7 @@ module ysyx_23060136_MEM_DCACHE (
                 thrash[j] <= `ysyx_23060136_false;
             end
         end
-        else if(is_sdram && ((cr_state_miss & cr_state_next ==  `ysyx_23060136_dcache_idle) || (cw_state_al & cr_state_next ==  `ysyx_23060136_dcache_idle))) begin
+        else if(is_sdram && ((cr_state_miss & cr_state_next ==  `ysyx_23060136_dcache_idle) || (cw_state_al & cw_state_next ==  `ysyx_23060136_dcache_idle))) begin
             thrash[cache_index_buf] <= ~thrash[cache_index_buf];
         end
     end
