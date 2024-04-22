@@ -621,9 +621,9 @@ module ysyx_23060136_MEM_DCACHE (
 
     always_ff @(posedge clk) begin : debug
         if(!FORWARD_stallME & !rst) begin
-            if(MEM_addr == 64'h00000000800009a0) begin
+            if(MEM_addr == 64'h00000000800009a0 || cache_index == 'h34) begin
                 if(EXU_o_write_mem) begin
-                    $display("get @PC=0x%x, cache index=0x%x, write", pc, cache_index);
+                    $display("get @PC=0x%x, cache index=0x%x, addr=0x%x, write", pc, cache_index, MEM_addr);
                     if(cw_hit) begin
                         $display("hit the cache");
                     end
@@ -635,7 +635,7 @@ module ysyx_23060136_MEM_DCACHE (
                     end
                 end
                 else if(EXU_o_mem_to_reg) begin
-                    $display("get @PC=0x%x, cache index=0x%x, read", pc, cache_index);
+                    $display("get @PC=0x%x, cache index=0x%x, addr=0x%x, read", pc, cache_index, MEM_addr);
                     if(cr_hit) begin
                         $display("hit the cache");
                     end
