@@ -403,21 +403,21 @@ module ysyx_23060136_MEM_DCACHE (
 
         if(tag_array[group_base] == cache_tag & valid_bit[group_base] & r_state_idle & from_sdram & w_state_idle & cr_state_idle & cw_state_idle) begin
             if(EXU_o_mem_to_reg) begin
-                cr_hit       = `ysyx_23060136_true;
+                // cr_hit       = `ysyx_23060136_true;
                 hit_line_id  =  'b0;
             end
             else if(EXU_o_write_mem) begin
-                cw_hit       = `ysyx_23060136_true;
+                // cw_hit       = `ysyx_23060136_true;
                 hit_line_id  =  'b0;
             end
         end
         else if(tag_array[group_base + 1] == cache_tag & valid_bit[group_base + 1] & r_state_idle & from_sdram & w_state_idle & cr_state_idle & cw_state_idle) begin
             if(EXU_o_mem_to_reg) begin
-                cr_hit       = `ysyx_23060136_true;
+                // cr_hit       = `ysyx_23060136_true;
                 hit_line_id  =  'b1;
             end
             else if(EXU_o_write_mem) begin
-                cw_hit       = `ysyx_23060136_true;
+                // cw_hit       = `ysyx_23060136_true;
                 hit_line_id  =  'b1;
             end
         end
