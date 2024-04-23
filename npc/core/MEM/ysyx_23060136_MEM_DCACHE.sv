@@ -822,7 +822,7 @@ module ysyx_23060136_MEM_DCACHE (
             ARBITER_MEM_arvalid <= `ysyx_23060136_false;       
         end
         else if((r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
-            if(cr_state_idle) begin
+            if(cr_miss) begin
                 ARBITER_MEM_arvalid <=  (from_mmio | from_sdram) ? `ysyx_23060136_true : ARBITER_MEM_arvalid;
             end
             else begin
