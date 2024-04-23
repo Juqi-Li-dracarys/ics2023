@@ -309,7 +309,12 @@ module ysyx_23060136_MEM_DCACHE (
 
             `ysyx_23060136_dcache_w_al: begin
                 if(w_state_wait & w_state_next == `ysyx_23060136_idle) begin
-                    cw_state_next = `ysyx_23060136_dcache_w_lo;
+                    if(is_sdram) begin
+                        cw_state_next = `ysyx_23060136_dcache_w_lo;
+                    end
+                    else begin
+                        cw_state_next = `ysyx_23060136_dcache_idle;   
+                    end 
                 end
                 else begin
                     cw_state_next = `ysyx_23060136_dcache_w_al;
@@ -888,7 +893,7 @@ module ysyx_23060136_MEM_DCACHE (
             MEM_rvalid <= `ysyx_23060136_false;
         end
         else if((cr_state_hit & cr_state_next == `ysyx_23060136_dcache_idle) || (cr_state_miss & cr_state_next == `ysyx_23060136_dcache_idle) || 
-                (cw_state_lo  & cw_state_next == `ysyx_23060136_dcache_idle) ) begin
+                (cw_state_lo  & cw_state_next == `ysyx_23060136_dcache_idle) || (cw_state_al  & cw_state_next == `ysyx_23060136_dcache_idle)) begin
             MEM_rvalid <= `ysyx_23060136_true;
         end
     end
@@ -1018,7 +1023,7 @@ module ysyx_23060136_MEM_DCACHE (
                 (cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_al)) begin
             MEM_wdone <= `ysyx_23060136_false;
         end
-        else if((cr_state_miss & cr_state_next == `ysyx_23060136_dcache_idle) || (cw_state_lo & cw_state_next == `ysyx_23060136_dcache_idle)) begin
+        else if((cr_state_miss & cr_state_next == `ysyx_23060136_dcache_idle) || (cw_state_lo & cw_state_next == `ysyx_23060136_dcache_idle) || (cw_state_al  & cw_state_next == `ysyx_23060136_dcache_idle)) begin
             MEM_wdone <= `ysyx_23060136_true;
         end
     end
