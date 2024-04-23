@@ -256,19 +256,10 @@ module ysyx_23060136_IFU_ICACHE (
                 thrash[j] <= `ysyx_23060136_false;
             end
         end
-        else if(r_state_idle & r_state_next == `ysyx_23060136_ready) begin
-            if(!valid_bit[group_base]) begin
-                thrash[cache_index] <= 'b0;
-            end
-            else if(!valid_bit[group_base + 1]) begin
-                thrash[cache_index] <= 'b1;
-            end
-            else begin 
-                thrash[cache_index] <= ~thrash[cache_index];
-            end
+        else if(r_state_wait & ARBITER_IFU_rlast & r_state_next == `ysyx_23060136_idle) begin
+             thrash[cache_index] <= ~thrash[cache_index];
         end
     end
-
 
 
     // ===========================================================================
