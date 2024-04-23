@@ -73,6 +73,7 @@
 `define ysyx_23060136_dcache_w_dirty  'h1
 `define ysyx_23060136_dcache_w_wb     'h2
 `define ysyx_23060136_dcache_w_al     'h3
+`define ysyx_23060136_dcache_w_lo     'h4
 
 
 `define  ysyx_23060136_cache_index  8

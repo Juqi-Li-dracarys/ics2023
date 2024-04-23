@@ -15,6 +15,7 @@
 module ysyx_23060136_MEM_DCACHE (
     input                                                   clk                        ,
     input                                                   rst                        ,
+    // for debug
     input              [  `ysyx_23060136_BITS_W-1:0]        pc                         ,
     // ===========================================================================
     // forward unit signal
@@ -132,41 +133,47 @@ module ysyx_23060136_MEM_DCACHE (
     assign                              ARBITER_MEM_arlen        =  8'b0000_0000                       ;
     assign                              ARBITER_MEM_arburst      =  2'b00                              ;
 
-    
-    wire [7 : 0]                        w_i_strb                 =      ({8{EXU_o_mem_byte}})  & (8'b0000_0001 << MEM_addr[2 : 0]) |
+    // ===========================================================================
+    // pre calculate 1
+    wire                                 from_clint               =     MEM_addr >= `ysyx_23060136_CLINT_BASE & MEM_addr < `ysyx_23060136_CLINT_END       ;
+    wire                                 from_sdram               =     MEM_addr >= `ysyx_23060136_MBASE      & MEM_addr < `ysyx_23060136_MEND            ;
+    wire                                 from_mmio                =     MEM_addr >= `ysyx_23060136_MMIOB      & MEM_addr < `ysyx_23060136_MMIOD           ;
+     // record the lower 3 bits of addr
+    wire [2 : 0]                         bit_start                =     MEM_addr[2 : 0]                                            ;
+
+    wire [7 : 0]                         w_i_strb                 =     ({8{EXU_o_mem_byte}})  & (8'b0000_0001 << MEM_addr[2 : 0]) |
                                                                         ({8{EXU_o_mem_half}})  & (8'b0000_0011 << MEM_addr[2 : 0]) |
                                                                         ({8{EXU_o_mem_word}})  & (8'b0000_1111 << MEM_addr[2 : 0]) |
                                                                         ({8{EXU_o_mem_dword}}) & (8'b1111_1111)                    ;
 
-    // write data shift
-    wire  [63 : 0]                      w_i_data                 =     MEM_wdata << ({MEM_addr[2 : 0], 3'b0});
+    // write data after shift
+    wire  [63 : 0]                       w_i_data                 =      MEM_wdata << ({MEM_addr[2 : 0], 3'b0});
 
     // expand to sram mask code
-    wire [63 : 0]                       sram_wstrb_exp           =      {{8{io_master_wstrb[7]}}, {8{io_master_wstrb[6]}}, {8{io_master_wstrb[5]}}, {8{io_master_wstrb[4]}}, {8{io_master_wstrb[3]}},{8{io_master_wstrb[2]}},{8{io_master_wstrb[1]}},{8{io_master_wstrb[0]}}};
-    wire [63 : 0]                       sram_w_i_strb_exp        =      {{8{w_i_strb[7]}}, {8{w_i_strb[6]}}, {8{w_i_strb[5]}}, {8{w_i_strb[4]}}, {8{w_i_strb[3]}},{8{w_i_strb[2]}},{8{w_i_strb[1]}},{8{w_i_strb[0]}}};
+    wire  [63 : 0]                       w_i_strb_expand          =      {{8{w_i_strb[7]}}, {8{w_i_strb[6]}}, {8{w_i_strb[5]}}, {8{w_i_strb[4]}}, {8{w_i_strb[3]}},{8{w_i_strb[2]}},{8{w_i_strb[1]}},{8{w_i_strb[0]}}};
 
+    // ===========================================================================
+    // pre buffer 1
 
     // sdram guest
-    logic                                                is_sdram          ;
-    logic                                                is_clint          ;
-    logic                                                is_mmio           ;
+    logic                                                is_sdram                       ;
+    logic                                                is_clint                       ;
+    logic                                                is_mmio                        ;
 
-    // record the lower 3 bits of addr
-    logic        [2 : 0]                                 bit_start          ;
-    logic                                                MEM_byte_u_buffer  ;
-    logic                                                MEM_half_u_buffer  ;
-    logic                                                MEM_word_u_buffer  ;
-    logic                                                MEM_byte_buffer    ;          
-    logic                                                MEM_half_buffer    ;      
-    logic                                                MEM_word_buffer    ;      
-    logic                                                MEM_dword_buffer   ;
-    // used in 
-    logic        [  `ysyx_23060136_BITS_W-1:0]           MEM_addr_buffer    ;
+    logic        [2 : 0]                                 bit_start_buffer               ;
+    logic                                                MEM_byte_u_buffer              ;
+    logic                                                MEM_half_u_buffer              ;
+    logic                                                MEM_word_u_buffer              ;
+    logic                                                MEM_byte_buffer                ;          
+    logic                                                MEM_half_buffer                ;      
+    logic                                                MEM_word_buffer                ;      
+    logic                                                MEM_dword_buffer               ;
+    // used in later
+    logic        [  `ysyx_23060136_BITS_W-1:0]           MEM_addr_buffer                ;
 
-
-    logic        [ `ysyx_23060136_BITS_W-1 : 0]          dirty_addr_buffer  ;
-    logic        [ `ysyx_23060136_BITS_W-1 : 0]          w_i_data_buffer    ;
-    logic        [7 : 0]                                 w_i_strb_buffer    ;
+    // shift data and mask buffer
+    logic        [ `ysyx_23060136_BITS_W-1 : 0]          w_i_data_buffer                ;
+    logic        [7 : 0]                                 w_i_strb_buffer                ;
 
     // ===========================================================================
     // TO DO cache
@@ -191,11 +198,6 @@ module ysyx_23060136_MEM_DCACHE (
     // 注意，任何从内存加载到 cache 的行为都需要将 dirty 清空，
     // 任何单独写 cache 的行为都需要将 dirty 置位，对于非 SDRAM 的内存空间，cache 要始终判定为 miss
 
-    // read state
-    wire                       from_clint      =   MEM_addr >= `ysyx_23060136_CLINT_BASE & MEM_addr < `ysyx_23060136_CLINT_END       ;
-    wire                       from_sdram      =   MEM_addr >= `ysyx_23060136_MBASE      & MEM_addr < `ysyx_23060136_MEND            ;
-    wire                       from_mmio       =   MEM_addr >= `ysyx_23060136_MMIOB      & MEM_addr < `ysyx_23060136_MMIOD           ;
-
     // cache state machine(read)
     logic     [1 : 0]          cr_state                                                                            ;
     logic     [1 : 0]          cr_state_next                                                                       ;
@@ -206,246 +208,36 @@ module ysyx_23060136_MEM_DCACHE (
     wire                       cr_state_miss            =  (cr_state == `ysyx_23060136_dcache_r_miss)              ;
 
     // cache state machine(write)
-    logic    [1 : 0]           cw_state                                                                            ;
-    logic    [1 : 0]           cw_state_next                                                                       ;
+    logic    [2 : 0]           cw_state                                                                            ;
+    logic    [2 : 0]           cw_state_next                                                                       ;
 
     wire                       cw_state_idle            =  (cw_state == `ysyx_23060136_dcache_idle)                ;
     wire                       cw_state_dirty           =  (cw_state == `ysyx_23060136_dcache_w_dirty)             ;
     wire                       cw_state_wb              =  (cw_state == `ysyx_23060136_dcache_w_wb)                ;
     wire                       cw_state_al              =  (cw_state == `ysyx_23060136_dcache_w_al)                ;
-
-
-
-    // offset from AXI or MEM_addr
-    // read or write cache      
-    wire    [`ysyx_23060136_cache_offset-1 : 0]       cache_offset   =  {3{cw_state_idle    & cr_state_idle & r_state_idle & w_state_idle}} & MEM_addr[2 : 0]  |
-                                                                        {3{r_state_wait }}  & ARBITER_MEM_araddr[2 : 0]                                        |
-                                                                        {3{w_state_ready}}  & io_master_awaddr[2 : 0]                                          ;
-    // group id from AXI or MEM_addr    
-    wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  {8{cw_state_idle    & (cr_state_idle & r_state_idle & w_state_idle)}} & MEM_addr[10 : 3] |
-                                                                        {8{r_state_wait }}  & ARBITER_MEM_araddr[10 : 3]                                       |
-                                                                        {8{w_state_ready}}  & io_master_awaddr[10 : 3]                                         ;
-    // tag from AXI or MEM_addr                    
-    wire    [`ysyx_23060136_cache_tag-1 : 0]          cache_tag      =  {21{cw_state_idle    & cr_state_idle & r_state_idle & w_state_idle}} & MEM_addr[31 : 11] |
-                                                                        {21{r_state_wait }}  & ARBITER_MEM_araddr[31 : 11]                                      |
-                                                                        {21{w_state_ready}}  & io_master_awaddr[31 : 11]                                        ;
-
-    // cache read hit
-    logic                                             cr_hit                                                    ;
-    // read need write back
-    logic                                             cr_wb                                                     ;
-
-    // cache write hit
-    logic                                             cw_hit                                                    ;
-    // write need write back
-    logic                                             cw_wb                                                     ;
-
-
-    logic   [`ysyx_23060136_cache_tag-1 : 0]          tag_array [`ysyx_23060136_cache_line-1 : 0]               ;  
-    // valid bit
-    logic                                             valid_bit [`ysyx_23060136_cache_line-1 : 0]               ;
-    // dirty bit
-    logic                                             dirty_bit [`ysyx_23060136_cache_line-1 : 0]               ;
-
-    // line(block) in group to thrash
-    logic   [`ysyx_23060136_cache_group-1 : 0]        thrash                                                    ;
-    // start line index of the group
-    wire    [8  : 0]                                  group_base  = {cache_index, 1'b0}                         ;             
-    // hit cache line in one group(0/1)
-    logic                                             hit_line_id                                               ;
-    // hit cache line buffer
-    logic                                             hit_line_id_buf                                           ;
-
-    // cache index buf of MEMaddr cache index
-    logic   [`ysyx_23060136_cache_index-1 : 0]        cache_index_buf                                           ;
-
-
-    // write back addr(in idle)
-    wire    [  `ysyx_23060136_BITS_W-1:0]             dirty_addr  =  {32'b0, tag_array[group_base + {7'b0,thrash[cache_index]}], cache_index, 3'b0}      ;
-    
-    // write back addr buffer
-    logic   [  `ysyx_23060136_BITS_W-1:0]             dirty_addr_bufer                                          ;
-
-    // write back source
-    wire    [  `ysyx_23060136_BITS_W-1:0]             dirty_data  =  {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b00)}}  & (thrash[cache_index_buf] ? (io_sram4_rdata[127 : 64]) : (io_sram4_rdata[63 : 0])) |
-                                                                     {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b01)}}  & (thrash[cache_index_buf] ? (io_sram5_rdata[127 : 64]) : (io_sram5_rdata[63 : 0])) |
-                                                                     {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b10)}}  & (thrash[cache_index_buf] ? (io_sram6_rdata[127 : 64]) : (io_sram6_rdata[63 : 0])) |
-                                                                     {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b11)}}  & (thrash[cache_index_buf] ? (io_sram7_rdata[127 : 64]) : (io_sram7_rdata[63 : 0])) ;
-
-    // MEM_output(hit)
-    wire    [ `ysyx_23060136_BITS_W-1:0]              cache_o_data =  {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b00)}}  & (hit_line_id_buf == 1'b1 ? (io_sram4_rdata[127 : 64]) : (io_sram4_rdata[63 : 0])) |
-                                                                      {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b01)}}  & (hit_line_id_buf == 1'b1 ? (io_sram5_rdata[127 : 64]) : (io_sram5_rdata[63 : 0])) |
-                                                                      {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b10)}}  & (hit_line_id_buf == 1'b1 ? (io_sram6_rdata[127 : 64]) : (io_sram6_rdata[63 : 0])) |
-                                                                      {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b11)}}  & (hit_line_id_buf == 1'b1 ? (io_sram7_rdata[127 : 64]) : (io_sram7_rdata[63 : 0])) ;
-                     
-    
-
-    // equal to gruop index
-    // 128 bits -> group
-    assign                     io_sram4_addr           =      cache_index[5 : 0];
-
-    assign                     io_sram4_cen            =      ~((cache_index[7 : 6] == 2'b00) & ((cr_state_idle & cw_state_idle & cr_state_next == `ysyx_23060136_dcache_r_dirty) |
-                                                                                                 (cr_state_idle & cw_state_idle & cr_state_next == `ysyx_23060136_dcache_r_hit)   |
-                                                                                                 (cr_state_idle & cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_dirty) |
-                                                                                                 (cr_state_idle & cw_state_idle & cw_hit)                                         |
-
-                                                                                                 (cr_state_miss & r_state_wait  & is_sdram)                                       |
-                                                                                                 (cw_state_al   & w_state_ready & is_sdram)))                                     ;            
-
-
-    assign                     io_sram4_wen            =      ~(~io_sram4_cen & (cr_state_miss & r_state_wait  & r_state_next == `ysyx_23060136_idle) | 
-                                                                                (cw_state_al   & w_state_ready & w_state_next == `ysyx_23060136_wait) |
-                                                                                (cr_state_idle & cw_state_idle & cw_hit)) ;
-
-
-    assign                     io_sram4_wmask          =      {128{(cache_index[7 : 6] == 2'b00)}} & ({128{cr_state_miss & r_state_wait}}           & (thrash[cache_index]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))   | 
-                                                                                                      {128{cw_state_al   & w_state_ready}}          & (thrash[cache_index]  ? ({~sram_wstrb_exp, 64'hFFFF_FFFF_FFFF_FFFF})   : ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_wstrb_exp}))     |
-                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((hit_line_id         ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
-
-
-    assign                     io_sram4_wdata          =      {128{(cache_index[7 : 6] == 2'b00)}} & (({128{cr_state_miss & r_state_wait}}            & (thrash[cache_index] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata}))) | 
-                                                                                                      ({128{cw_state_al & w_state_ready}}             & (thrash[cache_index] ? ({io_master_wdata, 64'b0})    : ({64'b0, io_master_wdata})))   |
-                                                                                                      ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (hit_line_id         ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;
-    
-
-
-
-    assign                     io_sram5_addr           =       cache_index[5 : 0]    ;  
-
-    assign                     io_sram5_cen            =      ~((cache_index[7 : 6] == 2'b01) & ((cr_state_idle & cw_state_idle & cr_state_next == `ysyx_23060136_dcache_r_dirty) |
-                                                                                                 (cr_state_idle & cw_state_idle & cr_state_next == `ysyx_23060136_dcache_r_hit)   |
-                                                                                                 (cr_state_idle & cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_dirty) |
-                                                                                                 (cr_state_idle & cw_state_idle & cw_hit)                                         |
-
-                                                                                                 (cr_state_miss & r_state_wait  & is_sdram)                                       |
-                                                                                                 (cw_state_al   & w_state_ready & is_sdram)));     
-                                                                                   
-                                                                                                 
-    assign                     io_sram5_wen            =      ~(~io_sram5_cen & (cr_state_miss & r_state_wait  & r_state_next == `ysyx_23060136_idle) | 
-                                                                                (cw_state_al   & w_state_ready & w_state_next == `ysyx_23060136_wait) |
-                                                                                (cr_state_idle & cw_state_idle & cw_hit)) ;
-
-
-    assign                     io_sram5_wmask          =      {128{(cache_index[7 : 6] == 2'b01)}} & ({128{cr_state_miss & r_state_wait}}           & (thrash[cache_index]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))   | 
-                                                                                                      {128{cw_state_al   & w_state_ready}}          & (thrash[cache_index]  ? ({~sram_wstrb_exp, 64'hFFFF_FFFF_FFFF_FFFF})   : ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_wstrb_exp}))     |
-                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((hit_line_id         ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
-
-
-    assign                     io_sram5_wdata          =     {128{(cache_index[7 : 6] == 2'b01)}} & (({128{cr_state_miss & r_state_wait}}            & (thrash[cache_index] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata}))) | 
-                                                                                                     ({128{cw_state_al & w_state_ready}}             & (thrash[cache_index] ? ({io_master_wdata, 64'b0})    : ({64'b0, io_master_wdata})))   |
-                                                                                                     ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (hit_line_id         ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;
-
-
-
-
-
-
-    assign                     io_sram6_addr           =       cache_index[5 : 0]    ;  
-
-    assign                     io_sram6_cen            =      ~((cache_index[7 : 6] == 2'b10) & ((cr_state_idle & cw_state_idle & cr_state_next == `ysyx_23060136_dcache_r_dirty) |
-                                                                                                 (cr_state_idle & cw_state_idle & cr_state_next == `ysyx_23060136_dcache_r_hit)   |
-                                                                                                 (cr_state_idle & cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_dirty) |
-                                                                                                 (cr_state_idle & cw_state_idle & cw_hit)                                         |
-
-                                                                                                 (cr_state_miss & r_state_wait  & is_sdram)                                       |
-                                                                                                 (cw_state_al   & w_state_ready & is_sdram)));     
-                                                                                   
-                                                                                                 
-    assign                     io_sram6_wen            =      ~(~io_sram6_cen & (cr_state_miss & r_state_wait  & r_state_next == `ysyx_23060136_idle) | 
-                                                                                (cw_state_al   & w_state_ready & w_state_next == `ysyx_23060136_wait) |
-                                                                                (cr_state_idle & cw_state_idle & cw_hit)) ;
-
-
-    assign                     io_sram6_wmask          =      {128{(cache_index[7 : 6] == 2'b10)}} & ({128{cr_state_miss & r_state_wait}}           & (thrash[cache_index]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))   | 
-                                                                                                      {128{cw_state_al   & w_state_ready}}          & (thrash[cache_index]  ? ({~sram_wstrb_exp, 64'hFFFF_FFFF_FFFF_FFFF})   : ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_wstrb_exp}))     |
-                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((hit_line_id         ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
-
-
-    assign                     io_sram6_wdata          =     {128{(cache_index[7 : 6] == 2'b10)}} & (({128{cr_state_miss & r_state_wait}}            & (thrash[cache_index] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata}))) |                        
-                                                                                                     ({128{cw_state_al & w_state_ready}}             & (thrash[cache_index] ? ({io_master_wdata, 64'b0})    : ({64'b0, io_master_wdata})))   |                       
-                                                                                                     ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (hit_line_id         ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;                       
-
-   
-   
-   
-    assign                     io_sram7_addr           =       cache_index[5 : 0]    ;  
-
-    assign                     io_sram7_cen            =      ~((cache_index[7 : 6] == 2'b11) & ((cr_state_idle & cw_state_idle & cr_state_next == `ysyx_23060136_dcache_r_dirty) |
-                                                                                                (cr_state_idle & cw_state_idle & cr_state_next == `ysyx_23060136_dcache_r_hit)   |
-                                                                                                (cr_state_idle & cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_dirty) |
-                                                                                                (cr_state_idle & cw_state_idle & cw_hit)                                         |
-
-                                                                                                (cr_state_miss & r_state_wait  & is_sdram)                                       |
-                                                                                                (cw_state_al   & w_state_ready & is_sdram)));     
-                                                                                                                                                                                    
-                                                                                                                                                                                                  
-     assign                     io_sram7_wen            =      ~(~io_sram7_cen & (cr_state_miss & r_state_wait  & r_state_next == `ysyx_23060136_idle) | 
-                                                                                 (cw_state_al   & w_state_ready & w_state_next == `ysyx_23060136_wait) |
-                                                                                 (cr_state_idle & cw_state_idle & cw_hit)) ;
-
-
-     assign                     io_sram7_wmask          =     {128{(cache_index[7 : 6] == 2'b11)}} & ({128{cr_state_miss & r_state_wait}}           & (thrash[cache_index]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))   | 
-                                                                                                      {128{cw_state_al   & w_state_ready}}          & (thrash[cache_index]  ? ({~sram_wstrb_exp, 64'hFFFF_FFFF_FFFF_FFFF})   : ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_wstrb_exp}))     |
-                                                                                                      {128{cr_state_idle & cw_state_idle & cw_hit}} & ((hit_line_id         ? ({~sram_w_i_strb_exp, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~sram_w_i_strb_exp}))));
-
-
-     assign                     io_sram7_wdata          =     {128{(cache_index[7 : 6] == 2'b11)}} & (({128{cr_state_miss & r_state_wait}}            & (thrash[cache_index] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata}))) | 
-                                                                                                      ({128{cw_state_al & w_state_ready}}             & (thrash[cache_index] ? ({io_master_wdata, 64'b0})    : ({64'b0, io_master_wdata})))   |
-                                                                                                      ({128{cr_state_idle & cw_state_idle & cw_hit}}  & (hit_line_id         ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))  ;
-
-
-    always_comb begin : cache_pre_cal
-        cr_hit      = `ysyx_23060136_false;
-        cr_wb       = `ysyx_23060136_false;
-        cw_hit      = `ysyx_23060136_false;
-        cw_wb       = `ysyx_23060136_false;
-        hit_line_id = `ysyx_23060136_false;
-
-        if(tag_array[group_base] == cache_tag & valid_bit[group_base] & r_state_idle & from_sdram & w_state_idle & cr_state_idle & cw_state_idle) begin
-            if(EXU_o_mem_to_reg) begin
-                // cr_hit       = `ysyx_23060136_true;
-                hit_line_id  =  'b0;
-            end
-            else if(EXU_o_write_mem) begin
-                // cw_hit       = `ysyx_23060136_true;
-                hit_line_id  =  'b0;
-            end
-        end
-        else if(tag_array[group_base + 1] == cache_tag & valid_bit[group_base + 1] & r_state_idle & from_sdram & w_state_idle & cr_state_idle & cw_state_idle) begin
-            if(EXU_o_mem_to_reg) begin
-                // cr_hit       = `ysyx_23060136_true;
-                hit_line_id  =  'b1;
-            end
-            else if(EXU_o_write_mem) begin
-                // cw_hit       = `ysyx_23060136_true;
-                hit_line_id  =  'b1;
-            end
-        end
-        // miss and dirty
-        else if(dirty_bit[group_base + {7'b0,thrash[cache_index]}] & r_state_idle & w_state_idle & from_sdram & cr_state_idle & cw_state_idle) begin
-            if(EXU_o_mem_to_reg) begin
-                cr_wb  = `ysyx_23060136_true;
-            end
-            else if(EXU_o_write_mem) begin
-                cw_wb  = `ysyx_23060136_true;
-            end
-        end
-    end
+    wire                       cw_state_lo              =  (cw_state == `ysyx_23060136_dcache_w_lo)                ;
 
 
     always_comb begin : cr_state_update
         unique case(cr_state)
             `ysyx_23060136_dcache_idle: begin
-                if(!FORWARD_stallME & cr_hit & EXU_o_mem_to_reg) begin
-                    cr_state_next = `ysyx_23060136_dcache_r_hit;
+                if(!FORWARD_stallME & EXU_o_mem_to_reg) begin
+                    if(cr_hit) begin
+                        cr_state_next = `ysyx_23060136_dcache_r_hit;
+                    end
+                    else if(cr_wb) begin
+                        cr_state_next = `ysyx_23060136_dcache_r_dirty;
+                    end
+                    else if(cr_miss) begin
+                        cr_state_next = `ysyx_23060136_dcache_r_miss;
+                    end
+                    else begin 
+                        cr_state_next = `ysyx_23060136_dcache_idle; 
+                    end
                 end
-                else if(!FORWARD_stallME & cr_wb & !cr_hit & EXU_o_mem_to_reg)begin
-                    cr_state_next = `ysyx_23060136_dcache_r_dirty;
+                else begin
+                    cr_state_next = `ysyx_23060136_dcache_idle; 
                 end
-                else if(!FORWARD_stallME & !cr_hit & !cr_wb & EXU_o_mem_to_reg) begin
-                    cr_state_next = `ysyx_23060136_dcache_r_miss;
-                end
-                else begin cr_state_next = `ysyx_23060136_dcache_idle; end
             end
 
             `ysyx_23060136_dcache_r_hit: begin
@@ -457,14 +249,15 @@ module ysyx_23060136_MEM_DCACHE (
             end
 
             `ysyx_23060136_dcache_r_miss: begin
-                if(((r_state_wait & ARBITER_MEM_rready & ARBITER_MEM_rvalid) & (is_mmio | is_sdram)) | (CLINT_MEM_rdata_ready & CLINT_MEM_rdata_valid & is_clint))  begin
+                // read finish and jump to idle
+                // write back might not finish
+                if(r_state_next == `ysyx_23060136_idle & r_state_wait)  begin
                     cr_state_next = `ysyx_23060136_dcache_idle;
                 end
                 else begin
                     cr_state_next = `ysyx_23060136_dcache_r_miss;
                 end
             end
-
             default:cr_state_next = `ysyx_23060136_dcache_idle;
         endcase
     end
@@ -482,33 +275,53 @@ module ysyx_23060136_MEM_DCACHE (
     always_comb begin : cw_state_update
         unique case(cw_state)
             `ysyx_23060136_dcache_idle: begin
-                if(!FORWARD_stallME & cw_wb & !cw_hit) begin
-                    cw_state_next = `ysyx_23060136_dcache_w_dirty;
-                end
-                else if(!FORWARD_stallME & !cw_hit & !cw_wb & EXU_o_write_mem) begin
-                    cw_state_next = `ysyx_23060136_dcache_w_al;
+                if(!FORWARD_stallME & EXU_o_write_mem) begin
+                    if(cw_hit) begin
+                        cw_state_next = `ysyx_23060136_dcache_idle;
+                    end
+                    else if(cw_wb) begin
+                        cw_state_next = `ysyx_23060136_dcache_w_dirty;
+                    end
+                    else if(cw_miss) begin
+                        cw_state_next = `ysyx_23060136_dcache_w_al;
+                    end
+                    else begin
+                        cw_state_next = `ysyx_23060136_dcache_idle;
+                    end
                 end
                 else begin
                     cw_state_next = `ysyx_23060136_dcache_idle;
                 end
             end
+
             `ysyx_23060136_dcache_w_dirty: begin
                 cw_state_next = `ysyx_23060136_dcache_w_wb;
             end
+
             `ysyx_23060136_dcache_w_wb: begin
-                if(io_master_bready  & io_master_bvalid & w_state_wait) begin
+                if(w_state_wait & w_state_next == `ysyx_23060136_idle) begin
                     cw_state_next = `ysyx_23060136_dcache_w_al;
                 end
                 else begin
                     cw_state_next = `ysyx_23060136_dcache_w_wb;
                 end
             end
+
             `ysyx_23060136_dcache_w_al: begin
-                if(io_master_bready  & io_master_bvalid & w_state_wait) begin
-                    cw_state_next = `ysyx_23060136_dcache_idle;
+                if(w_state_wait & w_state_next == `ysyx_23060136_idle) begin
+                    cw_state_next = `ysyx_23060136_dcache_w_lo;
                 end
                 else begin
                     cw_state_next = `ysyx_23060136_dcache_w_al;
+                end
+            end
+
+            `ysyx_23060136_dcache_w_lo: begin
+                if(r_state_wait & r_state_next == `ysyx_23060136_idle) begin
+                    cw_state_next = `ysyx_23060136_dcache_idle;
+                end
+                else begin
+                    cw_state_next = `ysyx_23060136_dcache_w_lo;
                 end
             end
             default: cw_state_next = `ysyx_23060136_dcache_idle;
@@ -525,51 +338,202 @@ module ysyx_23060136_MEM_DCACHE (
     end
 
 
+
+    // offset from AXI or MEM_addr
+    // read or write cache      
+    // wire    [`ysyx_23060136_cache_offset-1 : 0]       cache_offset   =  {3{cw_state_idle    & cr_state_idle & r_state_idle & w_state_idle}} & MEM_addr[2 : 0]  |
+    //                                                                     {3{r_state_wait }}  & ARBITER_MEM_araddr[2 : 0]                                        |
+    //                                                                     {3{w_state_ready}}  & io_master_awaddr[2 : 0]                                          ;
+    // // group id from AXI or MEM_addr    
+    // wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  {8{cw_state_idle    & (cr_state_idle & r_state_idle & w_state_idle)}} & MEM_addr[10 : 3] |
+    //                                                                     {8{r_state_wait }}  & ARBITER_MEM_araddr[10 : 3]                                       |
+    //                                                                     {8{w_state_ready}}  & io_master_awaddr[10 : 3]                                         ;
+    // // tag from AXI or MEM_addr                    
+    // wire    [`ysyx_23060136_cache_tag-1 : 0]          cache_tag      =  {21{cw_state_idle    & cr_state_idle & r_state_idle & w_state_idle}} & MEM_addr[31 : 11] |
+    //                                                                     {21{r_state_wait }}  & ARBITER_MEM_araddr[31 : 11]                                      |
+    //                                                                     {21{w_state_ready}}  & io_master_awaddr[31 : 11]                                        ;
+
+    // ===========================================================================
+    // pre calculate 2
+
+    wire    [`ysyx_23060136_cache_offset-1 : 0]       cache_offset   =  MEM_addr[2 : 0]                         ;
+    wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  MEM_addr[10 : 3]                        ;
+    wire    [`ysyx_23060136_cache_tag-1 : 0]          cache_tag      =  MEM_addr[31 : 11]                       ;
+    // start line index of the group
+    wire    [8  : 0]                                  group_base     = {cache_index, 1'b0}                      ; 
+
+
+    // cache read hit
+    logic                                             cr_hit                                                    ;
+    // read need write back
+    logic                                             cr_wb                                                     ;
+    logic                                             cr_miss                                                   ;
+
+    // cache write hit
+    logic                                             cw_hit                                                    ;
+    // write need write back
+    logic                                             cw_wb                                                     ;
+    logic                                             cw_miss                                                   ;
+
+    
+    // every line has the tag
+    logic   [`ysyx_23060136_cache_tag-1 : 0]          tag_array [`ysyx_23060136_cache_line-1 : 0]               ;  
+    // valid bit
+    logic                                             valid_bit [`ysyx_23060136_cache_line-1 : 0]               ;
+    // dirty bit
+    logic                                             dirty_bit [`ysyx_23060136_cache_line-1 : 0]               ;
+
+    // line in group to thrash
+    logic   [`ysyx_23060136_cache_group-1 : 0]        thrash                                                    ;
+    wire    [8  : 0]                                  thrash_line =  group_base + {7'b0,thrash[cache_index]}    ;
+
+    // hit cache line in one group(0/1)
+    logic                                             hit_line_id                                               ;
+
+
+    // write back addr(in idle)
+    wire    [`ysyx_23060136_cache_index-1 : 0]        dirty_index =  cache_index                                ;
+    wire    [  `ysyx_23060136_BITS_W-1:0]             dirty_addr  =  {32'b0, tag_array[thrash_line], dirty_index, 3'b0} ;
+
+
+
+    // write back source(dirty state)
+    wire    [  `ysyx_23060136_BITS_W-1:0]             dirty_data  =  {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b00)}}  & (thrash[cache_index_buf] ? (io_sram4_rdata[127 : 64]) : (io_sram4_rdata[63 : 0])) |
+                                                                     {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b01)}}  & (thrash[cache_index_buf] ? (io_sram5_rdata[127 : 64]) : (io_sram5_rdata[63 : 0])) |
+                                                                     {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b10)}}  & (thrash[cache_index_buf] ? (io_sram6_rdata[127 : 64]) : (io_sram6_rdata[63 : 0])) |
+                                                                     {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b11)}}  & (thrash[cache_index_buf] ? (io_sram7_rdata[127 : 64]) : (io_sram7_rdata[63 : 0])) ;
+
+    // MEM_output(read hit state)
+    wire    [ `ysyx_23060136_BITS_W-1:0]              cache_o_data =  {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b00)}}  & (hit_line_id_buf        ? (io_sram4_rdata[127 : 64]) : (io_sram4_rdata[63 : 0])) |
+                                                                      {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b01)}}  & (hit_line_id_buf        ? (io_sram5_rdata[127 : 64]) : (io_sram5_rdata[63 : 0])) |
+                                                                      {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b10)}}  & (hit_line_id_buf        ? (io_sram6_rdata[127 : 64]) : (io_sram6_rdata[63 : 0])) |
+                                                                      {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b11)}}  & (hit_line_id_buf        ? (io_sram7_rdata[127 : 64]) : (io_sram7_rdata[63 : 0])) ;
+
+
+    always_comb begin : cache_pre_state_cal
+        cr_hit      = `ysyx_23060136_false;
+        cr_wb       = `ysyx_23060136_false;
+        cr_miss     = `ysyx_23060136_false;
+
+        cw_hit      = `ysyx_23060136_false;
+        cw_wb       = `ysyx_23060136_false;
+        cw_miss     = `ysyx_23060136_false;
+
+        hit_line_id = `ysyx_23060136_false;
+        
+        if(from_sdram & !FORWARD_stallME & !FORWARD_flushEX) begin
+            // hit0
+            if(tag_array[group_base] == cache_tag & valid_bit[group_base]) begin
+                if(EXU_o_mem_to_reg) begin
+                    cr_hit       = `ysyx_23060136_true;
+                    hit_line_id  =  'b0;
+                end
+                else if(EXU_o_write_mem) begin
+                    cw_hit       = `ysyx_23060136_true;
+                    hit_line_id  =  'b0;
+                end
+            end
+            // hit1
+            else if(tag_array[group_base + 1] == cache_tag & valid_bit[group_base + 1]) begin
+                if(EXU_o_mem_to_reg) begin
+                    cr_hit       = `ysyx_23060136_true;
+                    hit_line_id  =  'b1;
+                end
+                else if(EXU_o_write_mem) begin
+                    cw_hit       = `ysyx_23060136_true;
+                    hit_line_id  =  'b1;
+                end
+            end
+            // write back
+            else if(dirty_bit[thrash_line] & valid_bit[thrash_line]) begin
+                if(EXU_o_mem_to_reg) begin
+                    cr_wb  = `ysyx_23060136_true;
+                end
+                else if(EXU_o_write_mem) begin
+                    cw_wb  = `ysyx_23060136_true;
+                end
+            end
+            // miss
+            else begin
+                if(EXU_o_mem_to_reg) begin
+                    cr_miss  = `ysyx_23060136_true;
+                end
+                else if(EXU_o_write_mem) begin
+                    cw_miss  = `ysyx_23060136_true;
+                end
+            end
+        end
+        // mmio
+        else if((from_mmio | from_clint) & !FORWARD_stallME & !FORWARD_flushEX) begin
+            if(EXU_o_mem_to_reg) begin
+                cr_miss       = `ysyx_23060136_true;
+            end
+            else if(EXU_o_write_mem) begin
+                cw_miss       = `ysyx_23060136_true;
+            end
+        end
+    end
+        
+        
+    // ===========================================================================
+    // pre buffer 2
+    logic        [`ysyx_23060136_cache_index-1 : 0]        cache_index_buf          ;
+    logic        [`ysyx_23060136_cache_tag-1 : 0]          cache_tag_buf            ;
+    logic        [8  : 0]                                  thrash_line_buf          ;
+    logic        [ `ysyx_23060136_BITS_W-1 : 0]            dirty_addr_buffer        ;
+    logic                                                  hit_line_id_buf          ;
+
+    // pre_cal -> pre_buffer
     always_ff @(posedge clk) begin : update_buffer
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
-            is_mmio           <=   `ysyx_23060136_false;
-            is_sdram          <=   `ysyx_23060136_false;
-            is_clint          <=   `ysyx_23060136_false;
+            is_mmio                     <=   `ysyx_23060136_false;
+            is_sdram                    <=   `ysyx_23060136_false;
+            is_clint                    <=   `ysyx_23060136_false;
 
-            MEM_addr_buffer   <=   `ysyx_23060136_false;
+            MEM_addr_buffer             <=   `ysyx_23060136_false;
 
-            MEM_byte_u_buffer <=   `ysyx_23060136_false; 
-            MEM_half_u_buffer <=   `ysyx_23060136_false; 
-            MEM_word_u_buffer <=   `ysyx_23060136_false; 
-            MEM_byte_buffer   <=   `ysyx_23060136_false; 
-            MEM_half_buffer   <=   `ysyx_23060136_false; 
-            MEM_word_buffer   <=   `ysyx_23060136_false; 
-            MEM_dword_buffer  <=   `ysyx_23060136_false;
-            bit_start         <=   `ysyx_23060136_false;
+            MEM_byte_u_buffer           <=   `ysyx_23060136_false; 
+            MEM_half_u_buffer           <=   `ysyx_23060136_false; 
+            MEM_word_u_buffer           <=   `ysyx_23060136_false; 
+            MEM_byte_buffer             <=   `ysyx_23060136_false; 
+            MEM_half_buffer             <=   `ysyx_23060136_false; 
+            MEM_word_buffer             <=   `ysyx_23060136_false; 
+            MEM_dword_buffer            <=   `ysyx_23060136_false;
+            bit_start_buffer            <=   `ysyx_23060136_false;
 
-            cache_index_buf    <=   `ysyx_23060136_false;
-            hit_line_id_buf    <=   `ysyx_23060136_false;
+            cache_index_buf             <=   `ysyx_23060136_false;
+            hit_line_id_buf             <=   `ysyx_23060136_false;
+            cache_tag_buf               <=   `ysyx_23060136_false;
+            thrash_line_buf             <=   `ysyx_23060136_false;
 
-            dirty_addr_buffer  <= `ysyx_23060136_false ;
-            w_i_data_buffer    <= `ysyx_23060136_false ;
-            w_i_strb_buffer    <=  `ysyx_23060136_false;
+            dirty_addr_buffer           <=  `ysyx_23060136_false ;
+            w_i_data_buffer             <=  `ysyx_23060136_false ;
+            w_i_strb_buffer             <=  `ysyx_23060136_false ;
+
         end
         else if(~FORWARD_stallME) begin
-            is_mmio           <=    from_mmio        ;
-            is_sdram          <=    from_sdram       ;
-            is_clint          <=    from_clint       ;
+            is_mmio                   <=    from_mmio        ;
+            is_sdram                  <=    from_sdram       ;
+            is_clint                  <=    from_clint       ;
 
-            MEM_addr_buffer    <=    MEM_addr         ;
+            MEM_addr_buffer           <=    MEM_addr         ;
+            MEM_byte_u_buffer         <=    EXU_o_mem_byte_u ;   
+            MEM_half_u_buffer         <=    EXU_o_mem_half_u ;        
+            MEM_word_u_buffer         <=    EXU_o_mem_word_u ;  
+            MEM_byte_buffer           <=    EXU_o_mem_byte   ; 
+            MEM_half_buffer           <=    EXU_o_mem_half   ; 
+            MEM_word_buffer           <=    EXU_o_mem_word   ; 
+            MEM_dword_buffer          <=    EXU_o_mem_dword  ; 
 
-            MEM_byte_u_buffer <=    EXU_o_mem_byte_u ;   
-            MEM_half_u_buffer <=    EXU_o_mem_half_u ;        
-            MEM_word_u_buffer <=    EXU_o_mem_word_u ;  
-            MEM_byte_buffer   <=    EXU_o_mem_byte   ; 
-            MEM_half_buffer   <=    EXU_o_mem_half   ; 
-            MEM_word_buffer   <=    EXU_o_mem_word   ; 
-            MEM_dword_buffer  <=    EXU_o_mem_dword  ; 
-            bit_start         <=    MEM_addr[2 : 0]  ;
+            bit_start_buffer          <=   bit_start         ;
+            cache_index_buf           <=   cache_index       ;
+            cache_tag_buf             <=   cache_tag         ;
+            thrash_line_buf           <=   thrash_line       ;
+            hit_line_id_buf           <=   hit_line_id       ;
+            dirty_addr_buffer         <=   dirty_addr        ;
 
-            cache_index_buf   <=   cache_index;
-            hit_line_id_buf   <=   hit_line_id;
-            dirty_addr_buffer <=   dirty_addr;
-            w_i_data_buffer   <=   w_i_data;
-            w_i_strb_buffer   <=   w_i_strb;
+            w_i_data_buffer           <=   w_i_data          ;
+            w_i_strb_buffer           <=   w_i_strb          ;
         end
     end
 
@@ -583,13 +547,15 @@ module ysyx_23060136_MEM_DCACHE (
                 dirty_bit[j] <= `ysyx_23060136_false;
             end
         end
-        else if(is_sdram && ((r_state_wait & r_state_next == `ysyx_23060136_idle) || (cw_state_al & w_state_ready & w_state_next == `ysyx_23060136_wait))) begin
-            valid_bit[group_base + {7'b0,thrash[cache_index]}] <= `ysyx_23060136_true;
-            tag_array[group_base + {7'b0,thrash[cache_index]}] <=  cache_tag;
-            dirty_bit[group_base + {7'b0,thrash[cache_index]}] <= `ysyx_23060136_false;
+        // miss or dirty
+        else if(is_sdram && ((cr_state_miss & cr_state_next == `ysyx_23060136_dcache_idle) | (cw_state_lo & cr_state_next == `ysyx_23060136_dcache_idle))) begin
+            valid_bit[thrash_line_buf] <= `ysyx_23060136_true;
+            tag_array[thrash_line_buf] <=  cache_tag_buf;
+            dirty_bit[thrash_line_buf] <= `ysyx_23060136_false;
         end
-        else if(cr_state_idle & cw_state_idle & cw_hit) begin
-            dirty_bit[group_base + {7'b0,hit_line_id}]  <= `ysyx_23060136_true;
+        // write hit
+        else if(cw_hit) begin
+            dirty_bit[group_base + {7'b0, hit_line_id}]  <= `ysyx_23060136_true;
         end
     end
 
@@ -600,23 +566,121 @@ module ysyx_23060136_MEM_DCACHE (
                 thrash[j] <= `ysyx_23060136_false;
             end
         end
-        else if(is_sdram && ((cr_state_miss & cr_state_next ==  `ysyx_23060136_dcache_idle) || (cw_state_al & cw_state_next ==  `ysyx_23060136_dcache_idle))) begin
+        else if(is_sdram && ((cr_state_miss & cr_state_next ==  `ysyx_23060136_dcache_idle) || (cw_state_lo & cw_state_next ==  `ysyx_23060136_dcache_idle))) begin
             thrash[cache_index_buf] <= ~thrash[cache_index_buf];
         end
     end
 
 
+    // ===========================================================================
+    // cache interface
+    // 128 bits -> group
+    assign                     io_sram4_addr           =        (cr_state_idle & cw_state_idle) ? cache_index[5 : 0] : cache_index_buf[5 : 0];
 
-    //////////////////////////////////////////////////////////////////////////////
-    wire                                        debug_valid_0  =  valid_bit[group_base];
-    wire                                        debug_valid_1  =  valid_bit[group_base + 1];
-    wire                                        debug_thrash_0 =  thrash   [cache_index];
-    wire                                        debug_thrash_1 =  thrash   [cache_index_buf];
-    wire                                        debug_dirty_0  =  dirty_bit[group_base];
-    wire                                        debug_dirty_1  =  dirty_bit[group_base+1];
-    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_0    =  tag_array[group_base];
-    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_1    =  tag_array[group_base+1];
-    wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_2    =  tag_array[group_base + {7'b0,thrash[cache_index]}];
+    assign                     io_sram4_cen            =      ~ (((cache_index    [7 : 6] == 2'b00) & (cr_wb | cr_hit | cw_wb | cw_hit)) |
+                                                                 ((cache_index_buf[7 : 6] == 2'b00) & ((cr_state_miss & r_state_wait & is_sdram) | (cw_state_lo & r_state_wait & is_sdram))));
+
+
+    assign                     io_sram4_wen            =      ~(~io_sram4_cen & (cr_state_miss & r_state_wait  & r_state_next == `ysyx_23060136_idle) | 
+                                                                                (cw_state_lo   & r_state_wait  & r_state_next == `ysyx_23060136_idle) |
+                                                                                (cw_hit)) ;
+
+
+    assign                     io_sram4_wmask          =       ({128{cr_state_miss & r_state_wait  & cache_index_buf[7 : 6] == 2'b00}}      & (thrash[cache_index_buf]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))     | 
+                                                                {128{cw_state_lo   & r_state_wait  & cache_index_buf[7 : 6] == 2'b00}}      & (thrash[cache_index_buf]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))     |
+                                                                {128{cw_hit        & cache_index[7 : 6] == 2'b00}}                          & ((hit_line_id             ? ({~w_i_strb_expand, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~w_i_strb_expand}))))      ;
+
+
+    assign                     io_sram4_wdata          =      (({128{cr_state_miss & r_state_wait  & cache_index_buf[7 : 6] == 2'b00}}      & (thrash[cache_index_buf] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata})))   | 
+                                                               ({128{cw_state_lo   & r_state_wait  & cache_index_buf[7 : 6] == 2'b00}}      & (thrash[cache_index_buf] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata})))   |
+                                                               ({128{cw_hit & cache_index[7 : 6] == 2'b00}}                                 & (hit_line_id             ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))           ;                                                     
+    
+
+
+
+    assign                     io_sram5_addr           =        (cr_state_idle & cw_state_idle) ? cache_index[5 : 0] : cache_index_buf[5 : 0];
+
+    assign                     io_sram5_cen            =      ~ (((cache_index    [7 : 6] == 2'b01) & (cr_wb | cr_hit | cw_wb | cw_hit)) |
+                                                                 ((cache_index_buf[7 : 6] == 2'b01) & ((cr_state_miss & r_state_wait & is_sdram) | (cw_state_lo & r_state_wait & is_sdram))));
+
+
+    assign                     io_sram5_wen            =      ~(~io_sram5_cen & (cr_state_miss & r_state_wait  & r_state_next == `ysyx_23060136_idle) | 
+                                                                                (cw_state_lo   & r_state_wait  & r_state_next == `ysyx_23060136_idle) |
+                                                                                (cw_hit)) ;
+
+
+    assign                     io_sram5_wmask          =       ({128{cr_state_miss & r_state_wait  & cache_index_buf[7 : 6] == 2'b01}}      & (thrash[cache_index_buf]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))     | 
+                                                                {128{cw_state_lo   & r_state_wait  & cache_index_buf[7 : 6] == 2'b01}}      & (thrash[cache_index_buf]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))     |
+                                                                {128{cw_hit        & cache_index[7 : 6] == 2'b01}}                          & ((hit_line_id             ? ({~w_i_strb_expand, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~w_i_strb_expand}))))      ;
+
+
+    assign                     io_sram5_wdata          =      (({128{cr_state_miss & r_state_wait  & cache_index_buf[7 : 6] == 2'b01}}      & (thrash[cache_index_buf] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata})))   | 
+                                                               ({128{cw_state_lo   & r_state_wait  & cache_index_buf[7 : 6] == 2'b01}}      & (thrash[cache_index_buf] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata})))   |
+                                                               ({128{cw_hit & cache_index[7 : 6] == 2'b01}}                                 & (hit_line_id             ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))           ;                                                     
+
+    
+    
+    
+    
+
+    
+    
+    assign                     io_sram6_addr           =        (cr_state_idle & cw_state_idle) ? cache_index[5 : 0] : cache_index_buf[5 : 0];
+
+    assign                     io_sram6_cen            =      ~ (((cache_index    [7 : 6] == 2'b10) & (cr_wb | cr_hit | cw_wb | cw_hit)) |
+                                                                 ((cache_index_buf[7 : 6] == 2'b10) & ((cr_state_miss & r_state_wait & is_sdram) | (cw_state_lo & r_state_wait & is_sdram))));
+
+
+    assign                     io_sram6_wen            =      ~(~io_sram6_cen & (cr_state_miss & r_state_wait  & r_state_next == `ysyx_23060136_idle) | 
+                                                                                (cw_state_lo   & r_state_wait  & r_state_next == `ysyx_23060136_idle) |
+                                                                                (cw_hit)) ;
+
+
+    assign                     io_sram6_wmask          =       ({128{cr_state_miss & r_state_wait  & cache_index_buf[7 : 6] == 2'b10}}      & (thrash[cache_index_buf]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))     | 
+                                                                {128{cw_state_lo   & r_state_wait  & cache_index_buf[7 : 6] == 2'b10}}      & (thrash[cache_index_buf]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))     |
+                                                                {128{cw_hit        & cache_index[7 : 6] == 2'b10}}                          & ((hit_line_id             ? ({~w_i_strb_expand, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~w_i_strb_expand}))))      ;
+
+
+    assign                     io_sram6_wdata          =      (({128{cr_state_miss & r_state_wait  & cache_index_buf[7 : 6] == 2'b10}}      & (thrash[cache_index_buf] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata})))   | 
+                                                               ({128{cw_state_lo   & r_state_wait  & cache_index_buf[7 : 6] == 2'b10}}      & (thrash[cache_index_buf] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata})))   |
+                                                               ({128{cw_hit & cache_index[7 : 6] == 2'b10}}                                 & (hit_line_id             ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))           ;                                                     
+    
+    
+    
+    
+
+    assign                     io_sram7_addr           =        (cr_state_idle & cw_state_idle) ? cache_index[5 : 0] : cache_index_buf[5 : 0];
+
+    assign                     io_sram7_cen            =      ~ (((cache_index    [7 : 6] == 2'b11) & (cr_wb | cr_hit | cw_wb | cw_hit)) |
+                                                                 ((cache_index_buf[7 : 6] == 2'b11) & ((cr_state_miss & r_state_wait & is_sdram) | (cw_state_lo & r_state_wait & is_sdram))));
+
+
+    assign                     io_sram7_wen            =      ~(~io_sram7_cen & (cr_state_miss & r_state_wait  & r_state_next == `ysyx_23060136_idle) | 
+                                                                                (cw_state_lo   & r_state_wait  & r_state_next == `ysyx_23060136_idle) |
+                                                                                (cw_hit)) ;
+
+
+    assign                     io_sram7_wmask          =       ({128{cr_state_miss & r_state_wait  & cache_index_buf[7 : 6] == 2'b11}}      & (thrash[cache_index_buf]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))     | 
+                                                                {128{cw_state_lo   & r_state_wait  & cache_index_buf[7 : 6] == 2'b11}}      & (thrash[cache_index_buf]  ? (128'h0000_0000_0000_0000_FFFF_FFFF_FFFF_FFFF) : (128'hFFFF_FFFF_FFFF_FFFF_0000_0000_0000_0000))     |
+                                                                {128{cw_hit        & cache_index[7 : 6] == 2'b11}}                          & ((hit_line_id             ? ({~w_i_strb_expand, 64'hFFFF_FFFF_FFFF_FFFF}): ({64'hFFFF_FFFF_FFFF_FFFF, ~w_i_strb_expand}))))      ;
+
+
+    assign                     io_sram7_wdata          =      (({128{cr_state_miss & r_state_wait  & cache_index_buf[7 : 6] == 2'b11}}      & (thrash[cache_index_buf] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata})))   | 
+                                                               ({128{cw_state_lo   & r_state_wait  & cache_index_buf[7 : 6] == 2'b11}}      & (thrash[cache_index_buf] ? ({ARBITER_MEM_rdata, 64'b0})  : ({64'b0, ARBITER_MEM_rdata})))   |
+                                                               ({128{cw_hit & cache_index[7 : 6] == 2'b11}}                                 & (hit_line_id             ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))           ;                                                     
+
+
+    // ===========================================================================
+    // debug                                                                                                
+    // wire                                        debug_valid_0  =  valid_bit[group_base];
+    // wire                                        debug_valid_1  =  valid_bit[group_base + 1];
+    // wire                                        debug_thrash_0 =  thrash   [cache_index];
+    // wire                                        debug_thrash_1 =  thrash   [cache_index_buf];
+    // wire                                        debug_dirty_0  =  dirty_bit[group_base];
+    // wire                                        debug_dirty_1  =  dirty_bit[group_base+1];
+    // wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_0    =  tag_array[group_base];
+    // wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_1    =  tag_array[group_base+1];
+    // wire   [`ysyx_23060136_cache_tag-1 : 0]     debug_tag_2    =  tag_array[group_base + {7'b0,thrash[cache_index]}];
 
 
     // always_ff @(posedge clk) begin : debug
@@ -652,8 +716,7 @@ module ysyx_23060136_MEM_DCACHE (
 
     
     // ===========================================================================
-
-
+    // AXI
     // read mater state machine
     logic        [1 : 0]       r_state;
     logic        [1 : 0]       r_state_next;
@@ -662,12 +725,11 @@ module ysyx_23060136_MEM_DCACHE (
     wire                       r_state_wait    =  (r_state == `ysyx_23060136_wait);
     
 
-
     always_comb begin : r_state_trans
         unique case(r_state)
             `ysyx_23060136_idle: begin
                 // cache read miss, raise the read request immediately
-                if((!FORWARD_stallME & cr_state_idle & cr_state_next == `ysyx_23060136_dcache_r_miss) | (cr_state_dirty & cr_state_next == `ysyx_23060136_dcache_r_miss)) begin
+                if((cr_miss) | (cr_state_dirty) | (cw_state_lo)) begin
                     r_state_next = `ysyx_23060136_ready;
                 end
                 else begin
@@ -733,10 +795,10 @@ module ysyx_23060136_MEM_DCACHE (
             CLINT_MEM_rsize    <= `ysyx_23060136_false; 
         end
         else if((r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
-            ARBITER_MEM_araddr <=    (cr_state_dirty & cr_state_next == `ysyx_23060136_dcache_r_miss) ?  {MEM_addr_buffer[31 : 3], {3{1'b0}}} : {MEM_addr[31 : 3], {3{1'b0}}};
+            ARBITER_MEM_araddr <=    (cr_state_idle & cr_state_next == `ysyx_23060136_dcache_r_miss)  ? {MEM_addr[31 : 3], {3{1'b0}}} :  {MEM_addr_buffer[31 : 3], {3{1'b0}}} ;
 
-            ARBITER_MEM_arsize <=    (cr_state_dirty & cr_state_next == `ysyx_23060136_dcache_r_miss) ? 
-                                    (({3{EXU_o_mem_byte_u}}) & 3'b000          |   ({3{EXU_o_mem_byte  }}) & 3'b000           |
+            ARBITER_MEM_arsize <=    (cr_state_idle & cr_state_next == `ysyx_23060136_dcache_r_miss)  ? 
+                                     (({3{EXU_o_mem_byte_u}}) & 3'b000         |   ({3{EXU_o_mem_byte  }}) & 3'b000           |
                                      ({3{EXU_o_mem_half_u}}) & 3'b001          |   ({3{EXU_o_mem_half  }}) & 3'b001           |
                                      ({3{EXU_o_mem_word  }}) & 3'b010          |   ({3{EXU_o_mem_word_u }}) & 3'b010          |
                                      ({3{EXU_o_mem_dword}})  & 3'b011) : 
@@ -746,7 +808,7 @@ module ysyx_23060136_MEM_DCACHE (
                                       ({3{MEM_word_buffer  }}) & 3'b010        |   ({3{MEM_word_u_buffer }})  & 3'b010          |
                                       ({3{MEM_dword_buffer}})  & 3'b011);
 
-
+            // clint read  only
             CLINT_MEM_raddr    <=    MEM_addr; 
             CLINT_MEM_rsize    <=    ({3{EXU_o_mem_byte_u}}) & 3'b000           |   ({3{EXU_o_mem_byte  }}) & 3'b000           |
                                      ({3{EXU_o_mem_half_u}}) & 3'b001           |   ({3{EXU_o_mem_half  }}) & 3'b001           |
@@ -780,8 +842,9 @@ module ysyx_23060136_MEM_DCACHE (
     end
 
 
-    wire [`ysyx_23060136_BITS_W-1 : 0]  r_abstract   =  (is_clint ?  CLINT_MEM_rdata : ARBITER_MEM_rdata) >> ({bit_start, 3'b0});
-    wire [`ysyx_23060136_BITS_W-1 : 0]  c_abstract   =  cache_o_data >> ({bit_start, 3'b0});
+    wire [`ysyx_23060136_BITS_W-1 : 0]  r_abstract   =  (is_clint ?  CLINT_MEM_rdata : ARBITER_MEM_rdata) >> ({bit_start_buffer, 3'b0});
+    // cache read hit data
+    wire [`ysyx_23060136_BITS_W-1 : 0]  c_abstract   =  cache_o_data >> ({bit_start_buffer, 3'b0});
 
 
     always_ff @(posedge clk) begin : rdata_update
@@ -814,10 +877,12 @@ module ysyx_23060136_MEM_DCACHE (
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
             MEM_rvalid <= `ysyx_23060136_true;
         end
-        else if((r_state_idle & r_state_next == `ysyx_23060136_ready) || (cr_state_idle & cr_state_next == `ysyx_23060136_dcache_r_hit) || (cr_state_idle & cr_state_next == `ysyx_23060136_dcache_r_dirty)) begin
+        else if((cr_state_idle & cr_state_next == `ysyx_23060136_dcache_r_hit)    || (cr_state_idle & cr_state_next == `ysyx_23060136_dcache_r_dirty) || (cr_state_idle & cr_state_next == `ysyx_23060136_dcache_r_miss) ||
+                (cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_dirty)  || (cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_al)) begin
             MEM_rvalid <= `ysyx_23060136_false;
         end
-        else if((r_state_wait & r_state_next == `ysyx_23060136_idle) || (cr_state_hit & cr_state_next == `ysyx_23060136_dcache_idle))begin
+        else if((cr_state_hit & cr_state_next == `ysyx_23060136_dcache_idle) || (cr_state_miss & cr_state_next == `ysyx_23060136_dcache_idle) || 
+                (cw_state_lo  & cw_state_next == `ysyx_23060136_dcache_idle) ) begin
             MEM_rvalid <= `ysyx_23060136_true;
         end
     end
@@ -849,11 +914,8 @@ module ysyx_23060136_MEM_DCACHE (
                 // 1. write miss not dirty
                 // 2. read dirty
                 // 3. write dirty and write data
-                if((!FORWARD_stallME & cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_al) | (cr_state_dirty & cr_state_next == `ysyx_23060136_dcache_r_miss) |
-                    (cw_state_dirty  & cw_state_next == `ysyx_23060136_dcache_w_wb) | (cw_state_al)) begin
-
+                if((cw_miss) | (cr_state_dirty) | (cw_state_dirty) | (cw_state_al)) begin
                     w_state_next = `ysyx_23060136_ready;
-
                 end
                 else begin
                     w_state_next = `ysyx_23060136_idle;
@@ -920,7 +982,8 @@ module ysyx_23060136_MEM_DCACHE (
             io_master_wstrb   <= `ysyx_23060136_false;
         end
         else if(w_state_idle & w_state_next == `ysyx_23060136_ready) begin
-            io_master_awaddr  <=    (cw_state_idle  & cw_state_next == `ysyx_23060136_dcache_w_al) ? {MEM_addr[31 : 3], {3{1'b0}}} :   
+            // dirty addr is align to 64 bits
+            io_master_awaddr  <=    (cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_al) ? {MEM_addr[31 : 3], {3{1'b0}}} :   
                                     (cw_state_al) ? {MEM_addr_buffer[31 : 3],{3{1'b0}}}
                                     : {dirty_addr_buffer[31 : 3], {3{1'b0}}};
             // 注意字节对齐问题
@@ -945,10 +1008,11 @@ module ysyx_23060136_MEM_DCACHE (
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
             MEM_wdone <= `ysyx_23060136_true;
         end
-        else if((w_state_idle & w_state_next == `ysyx_23060136_ready) || (cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_dirty)) begin
+        else if((cr_state_idle & cr_state_next == `ysyx_23060136_dcache_r_dirty) || (cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_dirty) || 
+                (cw_state_idle & cw_state_next == `ysyx_23060136_dcache_w_al)) begin
             MEM_wdone <= `ysyx_23060136_false;
         end
-        else if((w_state_wait & w_state_next == `ysyx_23060136_idle) & (cw_state_al | cr_state_miss)) begin
+        else if((cr_state_miss & cr_state_next == `ysyx_23060136_dcache_idle) || (cw_state_lo & cw_state_next == `ysyx_23060136_dcache_idle)) begin
             MEM_wdone <= `ysyx_23060136_true;
         end
     end
