@@ -975,7 +975,7 @@ module ysyx_23060136_MEM_DCACHE (
             io_master_wlast   <=  `ysyx_23060136_true;
         end 
         else if(w_state_ready) begin
-            if((io_master_awready))begin
+            if((io_master_awready)) begin
                 io_master_awvalid <= `ysyx_23060136_false;
             end
              if((io_master_wready)) begin
