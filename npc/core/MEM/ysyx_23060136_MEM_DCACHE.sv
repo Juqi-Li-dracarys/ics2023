@@ -821,19 +821,25 @@ module ysyx_23060136_MEM_DCACHE (
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
             ARBITER_MEM_arvalid <= `ysyx_23060136_false;       
         end
-        else if((r_state_idle & r_state_next == `ysyx_23060136_ready & (from_mmio | from_sdram))) begin
-            ARBITER_MEM_arvalid <=  `ysyx_23060136_true;
+        else if((r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
+            if(cr_state_idle) begin
+                ARBITER_MEM_arvalid <=  (from_mmio | from_sdram) ? `ysyx_23060136_true : ARBITER_MEM_arvalid;
+            end
+            else begin
+                ARBITER_MEM_arvalid <=  (is_mmio | is_sdram) ? `ysyx_23060136_true : ARBITER_MEM_arvalid;
+            end
         end 
         else if((r_state_ready & r_state_next == `ysyx_23060136_wait)) begin
             ARBITER_MEM_arvalid <= `ysyx_23060136_false;
         end
     end
 
+    // cache read miss
     always_ff @(posedge clk) begin : C_raddr_valid
         if(rst || (FORWARD_flushEX & ~FORWARD_stallME)) begin
             CLINT_MEM_raddr_valid <= `ysyx_23060136_false;       
         end
-        else if((r_state_idle & r_state_next == `ysyx_23060136_ready & from_clint)) begin
+        else if((r_state_idle & r_state_next == `ysyx_23060136_ready & from_clint & cr_state_idle)) begin
             CLINT_MEM_raddr_valid <=  `ysyx_23060136_true;
         end 
         else if((r_state_ready & r_state_next == `ysyx_23060136_wait)) begin
