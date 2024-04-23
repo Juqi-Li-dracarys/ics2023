@@ -124,8 +124,9 @@ void excute(uint64_t n) {
         device_update();
         device_cyc_cnt = 0;
     }
-    else
+    else {
         device_cyc_cnt++;
+    }
     // 对于有异常的指令，会在下一次执行前终止程序
     if (signal_detect()) {
       // save the end state
