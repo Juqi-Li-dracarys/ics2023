@@ -183,15 +183,15 @@ module ysyx_23060136_MEM_DCACHE (
 
     1. 当 CPU 的流水线阻塞信号拉低时，首先判断读写类型，并在这个周期内判断 cache 是否判断是否命中
     2. 如果命中，则进入 hit 状态，短暂阻塞流水线，在一个周期后将 SRAM 的数据写入段寄存器；
-    3. 如果未命中，且是需要替换的块是脏块，则立刻**同时**发起总线的读写请求，即执行 write back 
-    并读入 SDRAM 的数据到 cache 和段寄存器中，如果不是脏块，则只需要读入 SDRAM 的数据到 cache 和段寄存器中
-    
+    3. 如果未命中，且是需要替换的块是脏块，则立刻**同时**发起总线的读写请求，在读入脏块后即执行 write back 并读入 SDRAM 的数据到 cache 和段寄存器中
+    4. 如果不是脏块，则只需要读入 SDRAM 的数据到 cache 和段寄存器中，不需要考虑一致性问题
+
     ### write cache
-    
+
     1. 当 CPU 的流水线阻塞信号拉低时，首先在此周期判断 cache 是否命中和读写类型
-    2. 如果成功命中，则在这个周期写入 SDRAM，并不阻塞流水线，比 read cache 操作还少一个周期，dirty 置位
-    3. 如果未命中且是要替换的块是脏块，则先暂存需要写入的信息到一个 buffer，进入 WB 状态，立即发起 write back 请求，
-    将这个块写回 SDRAM，写回完成后进入 allocate 状态，此时再次发起数据写入请求，将需要写入内存的数据从 buffer 写入 SDRAM，并在同时写入 cache
+    2. 如果成功命中，则在这个周期写入 SDRAM，并不阻塞流水线，比 read cache 操作还少一个周期，但要将 dirty 置位
+    3. 如果未命中且是要替换的块是脏块，则先暂存需要写入的信息到一个 dirty_addr_buffer，先读脏块，然后立即发起 write back 请求，将这个脏块的数据写入写回 SDRAM，写的地址来源于 dirty_addr_buffer，写的数据来源于 cache，写回完成后进入 allocate 状态，此时再次发起数据写入请求，将需要写入内存的数据从 w_data_buffer 写入 SDRAM，完成后进入 load 状态，将 SDRAM 中更新后的完整数据块，写入 cache；
+    4. 如果不是脏块，则直接将数据先写入 SDRAM，然后从 SDRAM 中调出完整的数据块，保存在 cache 中
     
 */
 
@@ -344,20 +344,6 @@ module ysyx_23060136_MEM_DCACHE (
 
 
 
-    // offset from AXI or MEM_addr
-    // read or write cache      
-    // wire    [`ysyx_23060136_cache_offset-1 : 0]       cache_offset   =  {3{cw_state_idle    & cr_state_idle & r_state_idle & w_state_idle}} & MEM_addr[2 : 0]  |
-    //                                                                     {3{r_state_wait }}  & ARBITER_MEM_araddr[2 : 0]                                        |
-    //                                                                     {3{w_state_ready}}  & io_master_awaddr[2 : 0]                                          ;
-    // // group id from AXI or MEM_addr    
-    // wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  {8{cw_state_idle    & (cr_state_idle & r_state_idle & w_state_idle)}} & MEM_addr[10 : 3] |
-    //                                                                     {8{r_state_wait }}  & ARBITER_MEM_araddr[10 : 3]                                       |
-    //                                                                     {8{w_state_ready}}  & io_master_awaddr[10 : 3]                                         ;
-    // // tag from AXI or MEM_addr                    
-    // wire    [`ysyx_23060136_cache_tag-1 : 0]          cache_tag      =  {21{cw_state_idle    & cr_state_idle & r_state_idle & w_state_idle}} & MEM_addr[31 : 11] |
-    //                                                                     {21{r_state_wait }}  & ARBITER_MEM_araddr[31 : 11]                                      |
-    //                                                                     {21{w_state_ready}}  & io_master_awaddr[31 : 11]                                        ;
-
     // ===========================================================================
     // pre calculate 2
 
@@ -397,7 +383,7 @@ module ysyx_23060136_MEM_DCACHE (
 
 
     // write back addr(in idle)
-    wire    [`ysyx_23060136_cache_index-1 : 0]        dirty_index =  cache_index                                ;
+    wire    [`ysyx_23060136_cache_index-1 : 0]        dirty_index =  cache_index                                        ;
     wire    [  `ysyx_23060136_BITS_W-1:0]             dirty_addr  =  {32'b0, tag_array[thrash_line], dirty_index, 3'b0} ;
 
 
