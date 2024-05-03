@@ -86,9 +86,9 @@ module ysyx_23060136_EXU_MUL (
     ysyx_23060136_PP  part_product32 (mul_b[65:63]     , {{ 2{mul_a[65]}},mul_a,{64{1'b0}}}, P[32], c[32]);
 
     // seg reg
-    reg      [131 : 0]       P_seg_reg     [32 : 0]     ;
-    reg      [32 : 0]        c_seg_reg                  ;
-    reg                      mul_pipe1_valid            ;
+    logic      [131 : 0]       P_seg_reg     [32 : 0]     ;
+    logic      [32 : 0]        c_seg_reg                  ;
+    logic                      mul_pipe1_valid            ;
 
     integer l;
     always_ff @(posedge clk) begin
@@ -273,11 +273,11 @@ module ysyx_23060136_EXU_MUL (
     ysyx_23060136_WALLACE walloc_tree131  (walloc_din[131],walloc_cgroup[131], , ,walloc_s[131] );
 
 
-    reg                    [ 130:0]         walloc_c_reg               ;
-    reg                    [ 131:0]         walloc_s_reg               ;
-    reg                                     c31_reg                    ;
-    reg                                     c32_reg                    ;
-    reg                                     mul_pipe2_valid            ;
+    logic                  [ 130:0]         walloc_c_reg               ;
+    logic                  [ 131:0]         walloc_s_reg               ;
+    logic                                   c31_reg                    ;
+    logic                                   c32_reg                    ;
+    logic                                   mul_pipe2_valid            ;
 
     always_ff @(posedge clk) begin
         if(rst) begin
