@@ -302,19 +302,22 @@ module ysyx_23060136_EXU_MUL (
     // ===========================================================================
     // final adder
 
-    wire    [131 : 0]   result  =  walloc_s_reg + {walloc_c_reg, c31_reg} + {{131{1'b0}}, c32_reg};                                                    ;
+    wire    [131 : 0]   result          =  walloc_s_reg + {walloc_c_reg, c31_reg} + {{131{1'b0}}, c32_reg};                                                    ;
 
-    assign result_hi = result[127 : 64] ;
-    assign result_lo = result[63  : 0]  ;
+    assign              result_hi       = result[127 : 64] ;
+    assign              result_lo       = result[63  : 0]  ;
 
-    assign mul_ready = ~(mul_pipe1_valid || mul_pipe2_valid);
-    assign mul_out_valid = mul_pipe2_valid                  ;                 
+    assign              mul_ready       = ~(mul_pipe1_valid || mul_pipe2_valid);
+    assign              mul_out_valid   =  mul_pipe2_valid                     ;                 
+
+    
 
 // signal cycle multiply
 `else
 
     logic                             state;
     logic                             next_state;
+    // use the counter to simulate the laytency of real multiplyer
     logic          [1 : 0]            cyc_counter;
 
     wire                              state_idle    =  (state == `ysyx_23060136_idle)   ;
@@ -353,7 +356,7 @@ module ysyx_23060136_EXU_MUL (
             end
         end
         `ysyx_23060136_ready: begin
-            if(cyc_counter == 2'd3) begin
+            if(&cyc_counter) begin
                 next_state = `ysyx_23060136_idle;
             end
             else begin
@@ -391,7 +394,7 @@ module ysyx_23060136_EXU_MUL (
             mul_ready     <= `ysyx_23060136_false;
             mul_out_valid <= `ysyx_23060136_false;
         end
-        else if(cyc_counter == 2'd3) begin
+        else if(&cyc_counter) begin
             mul_ready     <= `ysyx_23060136_true;
             mul_out_valid <= `ysyx_23060136_true;
         end
@@ -402,7 +405,7 @@ module ysyx_23060136_EXU_MUL (
             result_hi  <= `ysyx_23060136_false;
             result_lo  <= `ysyx_23060136_false;
         end
-        else if(cyc_counter == 2'd3)begin
+        else if(state_idle & next_state == `ysyx_23060136_ready)begin
             result_hi  <= MUL_result_hi;
             result_lo  <= MUL_result_lo;
         end

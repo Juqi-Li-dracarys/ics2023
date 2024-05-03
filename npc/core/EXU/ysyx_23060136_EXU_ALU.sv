@@ -243,7 +243,7 @@ module ysyx_23060136_EXU_ALU (
             multiplicand    <=   ALU_da_word_t;
             multiplier      <=   ALU_db_word_t;
 
-            is_mul_hi       <=    EXU_i_ALU_mul_hi;
+            is_mul_hi       <=   EXU_i_ALU_mul_hi;
 
             dividend        <=   ALU_da_word_t;
             divisor	        <=   ALU_db_word_t;    
