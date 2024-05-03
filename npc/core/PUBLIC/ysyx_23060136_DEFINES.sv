@@ -103,5 +103,5 @@
 `define  ysyx_23060136_DECERR    'b11
 
 
-`define   USE_WALLACE             1
+// `define   USE_WALLACE             1
 

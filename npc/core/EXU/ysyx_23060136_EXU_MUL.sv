@@ -20,10 +20,10 @@ module ysyx_23060136_EXU_MUL (
     input            [  `ysyx_23060136_BITS_W-1:0 ]       multiplicand  ,                
     input            [  `ysyx_23060136_BITS_W-1:0 ]       multiplier	, 
 
-    output    logic                                       mul_ready	    ,                                                                    
-    output    logic                                       mul_out_valid ,                                                          
-    output    logic  [  `ysyx_23060136_BITS_W-1:0 ]       result_hi	    ,                                                             
-    output    logic  [  `ysyx_23060136_BITS_W-1:0 ]       result_lo	                                                                                                                                   
+    output                                                mul_ready	    ,                                                                    
+    output                                                mul_out_valid ,                                                          
+    output           [  `ysyx_23060136_BITS_W-1:0 ]       result_hi	    ,                                                             
+    output           [  `ysyx_23060136_BITS_W-1:0 ]       result_lo	                                                                                                                                   
 );
 
 
@@ -311,7 +311,10 @@ module ysyx_23060136_EXU_MUL (
     assign              mul_out_valid   =  mul_pipe2_valid                     ;                 
 
 
-// signal cycle multiply
+
+    
+// ===========================================================================
+// signal cycle multiply sim
 `else
 
     logic                             state;
@@ -322,27 +325,30 @@ module ysyx_23060136_EXU_MUL (
     wire                              state_idle    =  (state == `ysyx_23060136_idle)   ;
     wire                              state_ready   =  (state == `ysyx_23060136_ready)  ;
 
-
-// ===========================================================================
-// function  interface
+    // ===========================================================================
+    // simple multiply
     wire            [127 : 0]         MUL_dword_u   =  $unsigned(multiplicand) * $unsigned(multiplier);
     wire            [127 : 0]         MUL_dword_s   =  $signed(multiplicand)   * $signed(multiplier);
     wire            [127 : 0]         MUL_dword_su  =  $signed(multiplicand)   * $unsigned(multiplier);
-    // 
+    // word type
     wire            [31 : 0]          MUL_word      =  {$unsigned(multiplicand[31 : 0]) * $unsigned(multiplier[31 : 0])};    
 
 
-    wire            [  `ysyx_23060136_BITS_W-1:0 ] MUL_result_hi =  {64{mul_signed == 2'b00}} &  MUL_dword_u[127 : 64]   | 
-                                                                    {64{mul_signed == 2'b10}} &  MUL_dword_su[127 : 64]  |
-                                                                    {64{mul_signed == 2'b11}} &  MUL_dword_s[127 : 64]   ;
+    assign                            result_hi     =              {64{mul_signed == 2'b00}} &  MUL_dword_u[127 : 64]   | 
+                                                                   {64{mul_signed == 2'b10}} &  MUL_dword_su[127 : 64]  |
+                                                                   {64{mul_signed == 2'b11}} &  MUL_dword_s[127 : 64]   ;
 
-    wire            [  `ysyx_23060136_BITS_W-1:0 ] MUL_result_lo =  (({64{mulw}})  & ({{32{MUL_word[31]}}, MUL_word}))   |
-                                                                    ({64{!mulw}}   &
-                                                                    ({64{mul_signed == 2'b00}} &  MUL_dword_u [63 : 0]    | 
-                                                                     {64{mul_signed == 2'b10}} &  MUL_dword_su[63 : 0]    |
-                                                                     {64{mul_signed == 2'b11}} &  MUL_dword_s [63 : 0]))  ;
+    assign                            result_lo     =              (({64{mulw}})  & ({{32{MUL_word[31]}}, MUL_word}))   |
+                                                                   ({64{!mulw}}   &
+                                                                   ({64{mul_signed == 2'b00}} &  MUL_dword_u [63 : 0]    | 
+                                                                    {64{mul_signed == 2'b10}} &  MUL_dword_su[63 : 0]    |
+                                                                    {64{mul_signed == 2'b11}} &  MUL_dword_s [63 : 0]))  ;
 
-// ===========================================================================
+    
+    assign                            mul_ready     =               state_idle                                           ;
+    assign                            mul_out_valid =               &cyc_counter                                         ;
+                                                                 
+    // ===========================================================================
 
     always_comb begin : next_state_update
         unique case(state)
@@ -383,33 +389,6 @@ module ysyx_23060136_EXU_MUL (
             cyc_counter <= cyc_counter + 1;
         end
     end
-
-    always_ff @(posedge clk) begin : mul_ready_update
-        if(rst) begin
-            mul_ready     <= `ysyx_23060136_true;
-            mul_out_valid <= `ysyx_23060136_false;
-        end
-        else if((state_idle & next_state == `ysyx_23060136_ready)) begin
-            mul_ready     <= `ysyx_23060136_false;
-            mul_out_valid <= `ysyx_23060136_false;
-        end
-        else if(&cyc_counter) begin
-            mul_ready     <= `ysyx_23060136_true;
-            mul_out_valid <= `ysyx_23060136_true;
-        end
-    end
-
-    always_ff @(posedge clk) begin : mul_result_update
-        if(rst) begin
-            result_hi  <= `ysyx_23060136_false;
-            result_lo  <= `ysyx_23060136_false;
-        end
-        else if(state_idle & next_state == `ysyx_23060136_ready)begin
-            result_hi  <= MUL_result_hi;
-            result_lo  <= MUL_result_lo;
-        end
-    end
-
 
 `endif
 
