@@ -102,6 +102,6 @@
 `define  ysyx_23060136_SLVERR    'b10
 `define  ysyx_23060136_DECERR    'b11
 
-
-// `define   USE_WALLACE             1
+// Use wallace-booth multiplyer
+`define  ysyx_23060136_WALLACE    1
 
