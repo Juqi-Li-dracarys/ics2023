@@ -102,6 +102,13 @@
 `define  ysyx_23060136_SLVERR    'b10
 `define  ysyx_23060136_DECERR    'b11
 
+
 // Use wallace-booth multiplyer
 `define  ysyx_23060136_WALLACE    1
+
+
+// // Use multi-cycle divider
+// `define  ysyx_23060136_DIV        1
+
+
 
