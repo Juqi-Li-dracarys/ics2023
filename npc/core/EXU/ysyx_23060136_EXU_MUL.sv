@@ -27,7 +27,7 @@ module ysyx_23060136_EXU_MUL (
 );
 
 
-`ifdef USE_WALLACE
+`ifdef ysyx_23060136_WALLACE
 
     // convert all 64 bits input into 66 bits signed type
     wire                   [  65:0]         mul_a                      ;
@@ -311,8 +311,6 @@ module ysyx_23060136_EXU_MUL (
     assign              mul_out_valid   =  mul_pipe2_valid                     ;                 
 
 
-
-    
 // ===========================================================================
 // signal cycle multiply sim
 `else
