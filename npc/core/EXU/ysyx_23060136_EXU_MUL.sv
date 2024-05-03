@@ -310,7 +310,6 @@ module ysyx_23060136_EXU_MUL (
     assign              mul_ready       = ~(mul_pipe1_valid || mul_pipe2_valid);
     assign              mul_out_valid   =  mul_pipe2_valid                     ;                 
 
-    
 
 // signal cycle multiply
 `else
