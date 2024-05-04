@@ -31,6 +31,7 @@ module ysyx_23060136_EXU_DIV(
 
 /*
     // data amend before computing
+ `  // convert from signed to unsigned
 
     被除数	除数	商	余数
     正	    正	   正	正
@@ -39,11 +40,11 @@ module ysyx_23060136_EXU_DIV(
     负	    负	   正	负
 */
 
-    wire [63 : 0]  dividend_amend  = divw ? ((div_signed && dividend[31]) ? {-dividend[31:0],32'b0} : {dividend[31:0],32'b0}) : 
-                                            ((div_signed&&dividend[63])   ? -dividend : dividend);
+    wire [63 : 0]  dividend_amend  = divw ? ((div_signed && dividend[31]) ? {32'b0, -dividend[31:0]} : {32'b0, dividend[31:0]}) : 
+                                            ((div_signed && dividend[63]) ? -dividend : dividend);
 
-    wire [63 : 0]  divisor_amend   = divw ? ((div_signed && divisor[31]) ? {32'b0,-divisor[31:0]} : {32'b0,divisor[31:0]}) : 
-                                            ((div_signed&& divisor[63])  ? -divisor  : divisor );
+    wire [63 : 0]  divisor_amend   = divw ? ((div_signed && divisor[31])  ? {32'b0, -divisor[31:0]}  : {32'b0, divisor[31:0]}) : 
+                                            ((div_signed && divisor[63])  ? -divisor  : divisor);
 
     // reverse and plus 1
     logic                                     quotient_signed_amend      ;
@@ -137,7 +138,7 @@ module ysyx_23060136_EXU_DIV(
     wire         [31 : 0]                          REM_word_s    =  $signed(dividend[31 : 0])   % $signed(divisor[31 : 0]);
     
     
-    assign                                         quotient      =    {64{!divw & !div_signed}}  &  DIV_dword_u   | 
+    assign                                         quotient      =  {64{!divw & !div_signed}}  &  DIV_dword_u   | 
                                                                     {64{!divw &  div_signed}}  &  DIV_dword_s   |
                                                                     {64{divw  &  !div_signed}} &  {{32{DIV_word_u[31]}}, DIV_word_u} |
                                                                     {64{divw  &  div_signed}}  &  {{32{DIV_word_s[31]}}, DIV_word_s};
