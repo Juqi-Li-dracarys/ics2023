@@ -80,30 +80,31 @@ module ysyx_23060136_EXU_DIV(
             quotient_s      <= 64'b0    ;
         end
         else if(div_valid && div_ready) begin
-            dividend_s      <= dividend_amend        ;
-            divisor_s       <= {divisor_amend, 64'b0};
-            shift_times     <= 9'b0                  ;
-            divider_working <= 1'b1                  ;
-            quotient_s      <= 64'b0                 ;
+            dividend_s      <= dividend_amend            ;
+            divisor_s       <= {divisor_amend, 64'b0}    ;
+            shift_times     <= 9'b0                      ;
+            divider_working <= 1'b1                      ;
+            quotient_s      <= 64'b0                     ;
         end
         else if(divider_working) begin
             // reamainder < 0
-            if(part_sub[64]) begin
+            if({64'b0, dividend_s} < divisor_s) begin
                 divisor_s   <= {1'b0, divisor_s[127 : 1]};
-                quotient_s  <= {quotient_s[62:0], 1'b0};
+                quotient_s  <= {quotient_s[62 : 0], 1'b0};
             end
             // reamainder >= 0
             else begin
-                dividend_s  <= part_sub[63:0]            ;
+                dividend_s  <= part_sub[63 : 0]          ;
                 divisor_s   <= {1'b0, divisor_s[127 : 1]};
                 quotient_s  <= {quotient_s[62:0], 1'b1}  ;
             end
-            shift_times <= shift_times + 1;
+            shift_times     <= shift_times + 1           ;
         end
     end
 
 
-    wire  [  64:0]   part_sub     = {1'b0, dividend_s} - divisor_s[64 : 0]                                  ;
+    wire  [  63:0]   part_sub    =  dividend_s - divisor_s[63 : 0]                                          ;
+
 
     assign div_ready              =  ~divider_working                                                       ;
     assign div_out_valid          =  divw      ? (shift_times == 9'd32) : (shift_times == 9'd64)            ;
