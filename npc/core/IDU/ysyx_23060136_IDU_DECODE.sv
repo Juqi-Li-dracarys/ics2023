@@ -19,7 +19,9 @@ module ysyx_23060136_IDU_DECODE (
     output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rd                     ,
     output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rs1                    ,
     output             [  `ysyx_23060136_GPR_W-1:0]          IDU_rs2                    ,
-    output             [  11:0]                              IDU_csr_id                 ,
+    output             [   `ysyx_23060136_CSR_W-1:0]         IDU_csr_rs                 ,
+    output             [   `ysyx_23060136_CSR_W-1:0]         IDU_csr_rd_1               ,
+    output             [   `ysyx_23060136_CSR_W-1:0]         IDU_csr_rd_2               ,  
     // ===========================================================================
     // ALU calculating type define
     output                                                   ALU_word_t                 ,
@@ -102,12 +104,13 @@ module ysyx_23060136_IDU_DECODE (
 
     // ===========================================================================
     wire  [6 : 0]  opcode      =   IDU_inst[6 : 0]  ;
-    assign         IDU_rd      =   IDU_inst[11 : 7] ;
     wire  [2 : 0]  func3       =   IDU_inst[14 : 12];
+    wire  [6 : 0]  func7       =   IDU_inst[31 : 25];
+    wire  [11 : 0] csr_id      =   IDU_inst[31 : 20];
+
     assign         IDU_rs1     =   IDU_inst[19 : 15];
     assign         IDU_rs2     =   IDU_inst[24 : 20];
-    wire  [6 : 0]  func7       =   IDU_inst[31 : 25];
-    assign         IDU_csr_id  =   IDU_inst[31 : 20];
+    assign         IDU_rd      =   IDU_inst[11 : 7] ;
 
     wire  opcode_1_0_00  = (opcode[1 : 0] == 2'b00) ;
     wire  opcode_1_0_01  = (opcode[1 : 0] == 2'b01) ;
@@ -277,7 +280,6 @@ module ysyx_23060136_IDU_DECODE (
 
 
     // ===========================================================================
-    // ===========================================================================
     // ALU calculating type
 
     assign ALU_word_t    =  rv64_op_i_32 | rv64_op_r_32;
@@ -370,7 +372,6 @@ module ysyx_23060136_IDU_DECODE (
     // system halt
     assign system_halt  = rv64_ebreak;
 
-    
     // ===========================================================================
     // imm generate
 
@@ -380,6 +381,33 @@ module ysyx_23060136_IDU_DECODE (
                           ({`ysyx_23060136_BITS_W{op_U_type}} & {{32{IDU_inst[31]}}, IDU_inst[31 : 12], 12'b0})                                 |
                           ({`ysyx_23060136_BITS_W{op_J_type}} & {{44{IDU_inst[31]}}, IDU_inst[19 : 12], IDU_inst[20], IDU_inst[30 : 21], 1'b0}) |
                           ({`ysyx_23060136_BITS_W{op_R_type}} & `ysyx_23060136_BITS_W'b0)                                                       ;
+
+
+    // ===========================================================================
+    // CSR internal ctr
+    wire     csr_ecall         = (csr_id     ==     12'd0  )   ;
+    wire     csr_mret          = (csr_id     ==     12'd770)   ;
+    wire     csr_mtvec         = (csr_id     ==     12'd773)   ;
+    wire     csr_mstatus       = (csr_id     ==     12'd768)   ;
+    wire     csr_mcause        = (csr_id     ==     12'd834)   ;
+    wire     csr_mepc          = (csr_id     ==     12'd833)   ;
+
+    wire     csr_mvendorid     = (csr_id     ==     12'd3857)  ;
+    wire     csr_marchid       = (csr_id     ==     12'd3858)  ;
+
+    
+    assign   IDU_csr_rs        = ({`ysyx_23060136_CSR_W{csr_ecall}}     & `ysyx_23060136_mtvec)     | ({`ysyx_23060136_CSR_W{csr_mret}}       & `ysyx_23060136_mepc)    |
+                                 ({`ysyx_23060136_CSR_W{csr_mtvec}}     & `ysyx_23060136_mtvec)     | ({`ysyx_23060136_CSR_W{csr_mstatus}}    & `ysyx_23060136_mstatus) |
+                                 ({`ysyx_23060136_CSR_W{csr_mcause}}    & `ysyx_23060136_mcause)    | ({`ysyx_23060136_CSR_W{csr_mepc}}       & `ysyx_23060136_mepc)    |
+                                 ({`ysyx_23060136_CSR_W{csr_mvendorid}} & `ysyx_23060136_mvendorid) | ({`ysyx_23060136_CSR_W{csr_marchid}}    & `ysyx_23060136_marchid) ;
+
+    assign   IDU_csr_rd_1      = ({`ysyx_23060136_CSR_W{csr_ecall}}     & `ysyx_23060136_mepc)      | ({`ysyx_23060136_CSR_W{csr_mret}}       & `ysyx_23060136_mepc)    |
+                                 ({`ysyx_23060136_CSR_W{csr_mtvec}}     & `ysyx_23060136_mtvec)     | ({`ysyx_23060136_CSR_W{csr_mstatus}}    & `ysyx_23060136_mstatus) |
+                                 ({`ysyx_23060136_CSR_W{csr_mcause}}    & `ysyx_23060136_mcause)    | ({`ysyx_23060136_CSR_W{csr_mepc}}       & `ysyx_23060136_mepc)    |
+                                 ({`ysyx_23060136_CSR_W{csr_mvendorid}} & `ysyx_23060136_mvendorid) | ({`ysyx_23060136_CSR_W{csr_marchid}}    & `ysyx_23060136_marchid) ;
+
+    assign   IDU_csr_rd_2      = {`ysyx_23060136_CSR_W{csr_ecall}}      & `ysyx_23060136_mcause;
+
 
 
 endmodule

@@ -122,9 +122,6 @@ module ysyx_23060136_IDU_TOP (
     );
 
 
-    // internal signal
-    wire      [11 : 0]       IDU_csr_id;
-
     // 直接传递
     assign                   IDU_o_pc       =        IDU_i_pc;
     assign                   IDU_o_inst     =        IDU_i_inst;
@@ -135,7 +132,9 @@ module ysyx_23060136_IDU_TOP (
         .IDU_rd                            (IDU_o_rd                  ),
         .IDU_rs1                           (IDU_o_rs1                 ),
         .IDU_rs2                           (IDU_o_rs2                 ),
-        .IDU_csr_id                        (IDU_csr_id                ),
+        .IDU_csr_rs                        (IDU_o_csr_rs              ),
+        .IDU_csr_rd_1                      (IDU_o_csr_rd_1            ),
+        .IDU_csr_rd_2                      (IDU_o_csr_rd_2            ),
         .ALU_word_t                        (IDU_o_ALU_word_t          ),
         .ALU_add                           (IDU_o_ALU_add             ),
         .ALU_sub                           (IDU_o_ALU_sub             ),
@@ -216,14 +215,6 @@ module ysyx_23060136_IDU_TOP (
         .csr_busW_2                        (WB_o_csr_busW_2           ),
         .IDU_csr_rs_data                   (IDU_o_csr_rs_data         ) 
       );
-
-
-    ysyx_23060136_IDU_CSR_DECODE  ysyx_23060136_IDU_CSR_DECODE_inst (
-        .IDU_csr_id                        (IDU_csr_id                ),
-        .IDU_csr_rs                        (IDU_o_csr_rs                ),
-        .IDU_csr_rd_1                      (IDU_o_csr_rd_1              ),
-        .IDU_csr_rd_2                      (IDU_o_csr_rd_2              ) 
-    );
 
 endmodule
 
