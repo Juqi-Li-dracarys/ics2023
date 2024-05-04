@@ -80,8 +80,8 @@ module ysyx_23060136_EXU_DIV(
             quotient_s      <= 64'b0    ;
         end
         else if(div_valid && div_ready) begin
+            divisor_s       <= divw ? {32'b0, divisor_amend, 32'b0} : {divisor_amend, 64'b0} ;
             dividend_s      <= dividend_amend            ;
-            divisor_s       <= {divisor_amend, 64'b0}    ;
             shift_times     <= 9'b0                      ;
             divider_working <= 1'b1                      ;
             quotient_s      <= 64'b0                     ;
