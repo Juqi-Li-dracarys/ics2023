@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-06-10 11:38:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-10 15:04:21
+ * @Last Modified time: 2024-06-10 15:12:53
  */
 
 
@@ -378,7 +378,6 @@ module ysyx_23060136_MEM_DCACHE (
 
     // line in group to thrash
     logic   [`ysyx_23060136_cache_group-1 : 0]        thrash                                                    ;
-    // wire    [8  : 0]                                  thrash_line =  group_base + {7'b0,thrash[cache_index]}    ;
 
     // hit cache line in one group(0/1)
     logic                                             hit_line_id                                               ;
@@ -852,9 +851,9 @@ module ysyx_23060136_MEM_DCACHE (
         end
     end
 
-
+    // shift to aligned data(AXI)
     wire [`ysyx_23060136_BITS_W-1 : 0]  r_abstract   =  (is_clint ?  CLINT_MEM_rdata : ARBITER_MEM_rdata) >> ({bit_start_buffer, 3'b0});
-    // cache read hit data
+    // shift to aligned data(Cache)
     wire [`ysyx_23060136_BITS_W-1 : 0]  c_abstract   =  cache_o_data >> ({bit_start_buffer, 3'b0});
 
 

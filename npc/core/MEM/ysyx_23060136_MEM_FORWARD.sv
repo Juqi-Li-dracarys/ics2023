@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-10 15:23:51 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-10 11:37:34
+ * @Last Modified time: 2024-06-10 15:24:03
  */
 
 
@@ -100,7 +100,7 @@
     output                                                   FORWARD_rs2_hazard_SEG         ,
     output                                                   FORWARD_csr_rs_hazard_SEG      ,
     
-    // force to insert data in stall(to deal with first stage hazard)
+    // force to write seg reg during the first stage hazard
     output                                                   FORWARD_rs1_hazard_SEG_f        ,
     output                                                   FORWARD_rs2_hazard_SEG_f        ,
     output                                                   FORWARD_csr_rs_hazard_SEG_f         
@@ -173,7 +173,7 @@
     assign  FORWARD_rs2_hazard_SEG      =  (fourth_stage_hazard_rs2 & ~first_stage_hazard);                                 
     assign  FORWARD_csr_rs_hazard_SEG   =  ((fourth_stage_hazard_csr_1 | fourth_stage_hazard_csr_2) & ~first_stage_hazard); 
 
-    // force to write seg reg to deal with first stage hazard
+    // force to write seg reg during the first stage hazard
     assign  FORWARD_rs1_hazard_SEG_f    =  (second_stage_hazard_rs1    | third_stage_hazard_rs1   | load_use_hazard_rs1) & first_stage_hazard       ;  
     assign  FORWARD_rs2_hazard_SEG_f    =  (second_stage_hazard_rs2    | third_stage_hazard_rs2   | load_use_hazard_rs2) & first_stage_hazard       ;  
     assign  FORWARD_csr_rs_hazard_SEG_f =  (second_stage_hazard_csr_1  | third_stage_hazard_csr_1 | load_use_hazard_csr_1 | second_stage_hazard_csr_2  | third_stage_hazard_csr_2 | load_use_hazard_csr_2) & first_stage_hazard      ;  
