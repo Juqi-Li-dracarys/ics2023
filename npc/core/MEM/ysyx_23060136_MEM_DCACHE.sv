@@ -1,9 +1,10 @@
 /*
  * @Author: Juqi Li @ NJU 
- * @Date: 2024-04-09 21:33:48 
+ * @Date: 2024-06-10 11:38:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-18 22:06:19
+ * @Last Modified time: 2024-06-10 15:04:21
  */
+
 
 
  `include "ysyx_23060136_DEFINES.sv"
@@ -350,8 +351,6 @@ module ysyx_23060136_MEM_DCACHE (
     wire    [`ysyx_23060136_cache_offset-1 : 0]       cache_offset   =  MEM_addr[2 : 0]                         ;
     wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  MEM_addr[10 : 3]                        ;
     wire    [`ysyx_23060136_cache_tag-1 : 0]          cache_tag      =  MEM_addr[31 : 11]                       ;
-    // start line index of the group
-    wire    [8  : 0]                                  group_base     = {cache_index, 1'b0}                      ; 
 
 
     // cache read hit
@@ -368,23 +367,27 @@ module ysyx_23060136_MEM_DCACHE (
 
     
     // every line has the tag
-    logic   [`ysyx_23060136_cache_tag-1 : 0]          tag_array [`ysyx_23060136_cache_line-1 : 0]               ;  
+    logic   [`ysyx_23060136_cache_tag-1 : 0]          tag_array_1 [`ysyx_23060136_cache_group-1 : 0]            ;
+    logic   [`ysyx_23060136_cache_tag-1 : 0]          tag_array_2 [`ysyx_23060136_cache_group-1 : 0]            ;   
     // valid bit
-    logic                                             valid_bit [`ysyx_23060136_cache_line-1 : 0]               ;
+    logic                                             valid_bit_1 [`ysyx_23060136_cache_group-1 : 0]            ;
+    logic                                             valid_bit_2 [`ysyx_23060136_cache_group-1 : 0]            ;
     // dirty bit
-    logic                                             dirty_bit [`ysyx_23060136_cache_line-1 : 0]               ;
+    logic                                             dirty_bit_1 [`ysyx_23060136_cache_group-1 : 0]            ;
+    logic                                             dirty_bit_2 [`ysyx_23060136_cache_group-1 : 0]            ;
 
     // line in group to thrash
     logic   [`ysyx_23060136_cache_group-1 : 0]        thrash                                                    ;
-    wire    [8  : 0]                                  thrash_line =  group_base + {7'b0,thrash[cache_index]}    ;
+    // wire    [8  : 0]                                  thrash_line =  group_base + {7'b0,thrash[cache_index]}    ;
 
     // hit cache line in one group(0/1)
     logic                                             hit_line_id                                               ;
 
 
     // write back addr(in idle)
-    wire    [`ysyx_23060136_cache_index-1 : 0]        dirty_index =  cache_index                                        ;
-    wire    [  `ysyx_23060136_BITS_W-1:0]             dirty_addr  =  {32'b0, tag_array[thrash_line], dirty_index, 3'b0} ;
+    wire    [`ysyx_23060136_cache_index-1 : 0]        dirty_index =  cache_index                                ;
+    wire    [  `ysyx_23060136_BITS_W-1:0]             dirty_addr  =  thrash[cache_index] ? {32'b0, tag_array_2[cache_index], dirty_index, 3'b0}: 
+                                                                                           {32'b0, tag_array_1[cache_index], dirty_index, 3'b0};
 
 
 
@@ -400,7 +403,7 @@ module ysyx_23060136_MEM_DCACHE (
                                                                       {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b10)}}  & (hit_line_id_buf        ? (io_sram6_rdata[127 : 64]) : (io_sram6_rdata[63 : 0])) |
                                                                       {`ysyx_23060136_BITS_W{(cache_index_buf[7 : 6] == 2'b11)}}  & (hit_line_id_buf        ? (io_sram7_rdata[127 : 64]) : (io_sram7_rdata[63 : 0])) ;
 
-
+    // basic judge logic
     always_comb begin : cache_pre_state_cal
         cr_hit      = `ysyx_23060136_false;
         cr_wb       = `ysyx_23060136_false;
@@ -414,7 +417,7 @@ module ysyx_23060136_MEM_DCACHE (
         
         if(from_sdram & !FORWARD_stallME & !FORWARD_flushEX) begin
             // hit0
-            if(tag_array[group_base] == cache_tag & valid_bit[group_base]) begin
+            if(tag_array_1[cache_index] == cache_tag & valid_bit_1[cache_index]) begin
                 if(EXU_o_mem_to_reg) begin
                     cr_hit       = `ysyx_23060136_true;
                     hit_line_id  =  'b0;
@@ -425,7 +428,7 @@ module ysyx_23060136_MEM_DCACHE (
                 end
             end
             // hit1
-            else if(tag_array[group_base + 1] == cache_tag & valid_bit[group_base + 1]) begin
+            else if(tag_array_2[cache_index] == cache_tag & valid_bit_2[cache_index]) begin
                 if(EXU_o_mem_to_reg) begin
                     cr_hit       = `ysyx_23060136_true;
                     hit_line_id  =  'b1;
@@ -435,8 +438,10 @@ module ysyx_23060136_MEM_DCACHE (
                     hit_line_id  =  'b1;
                 end
             end
-            // write back
-            else if(dirty_bit[thrash_line] & valid_bit[thrash_line]) begin
+            // write back(dirty)
+            else if(!thrash[cache_index] & dirty_bit_1[cache_index] & valid_bit_1[cache_index] | 
+                     thrash[cache_index] & dirty_bit_2[cache_index] & valid_bit_2[cache_index]) 
+            begin
                 if(EXU_o_mem_to_reg) begin
                     cr_wb  = `ysyx_23060136_true;
                 end
@@ -444,7 +449,7 @@ module ysyx_23060136_MEM_DCACHE (
                     cw_wb  = `ysyx_23060136_true;
                 end
             end
-            // miss
+            // miss(clean)
             else begin
                 if(EXU_o_mem_to_reg) begin
                     cr_miss  = `ysyx_23060136_true;
@@ -470,7 +475,6 @@ module ysyx_23060136_MEM_DCACHE (
     // pre buffer 2
     logic        [`ysyx_23060136_cache_index-1 : 0]        cache_index_buf          ;
     logic        [`ysyx_23060136_cache_tag-1 : 0]          cache_tag_buf            ;
-    logic        [8  : 0]                                  thrash_line_buf          ;
     logic        [ `ysyx_23060136_BITS_W-1 : 0]            dirty_addr_buffer        ;
     logic                                                  hit_line_id_buf          ;
 
@@ -495,7 +499,6 @@ module ysyx_23060136_MEM_DCACHE (
             cache_index_buf             <=   `ysyx_23060136_false;
             hit_line_id_buf             <=   `ysyx_23060136_false;
             cache_tag_buf               <=   `ysyx_23060136_false;
-            thrash_line_buf             <=   `ysyx_23060136_false;
 
             dirty_addr_buffer           <=  `ysyx_23060136_false ;
             w_i_data_buffer             <=  `ysyx_23060136_false ;
@@ -519,7 +522,6 @@ module ysyx_23060136_MEM_DCACHE (
             bit_start_buffer          <=   bit_start         ;
             cache_index_buf           <=   cache_index       ;
             cache_tag_buf             <=   cache_tag         ;
-            thrash_line_buf           <=   thrash_line       ;
             hit_line_id_buf           <=   hit_line_id       ;
             dirty_addr_buffer         <=   dirty_addr        ;
 
@@ -533,20 +535,36 @@ module ysyx_23060136_MEM_DCACHE (
     always_ff @(posedge clk) begin : updata_tag_array
         if(rst) begin
             for(j = 0; j < `ysyx_23060136_cache_line; j = j + 1) begin
-                tag_array[j] <= `ysyx_23060136_false;
-                valid_bit[j] <= `ysyx_23060136_false;
-                dirty_bit[j] <= `ysyx_23060136_false;
+                tag_array_1[j] <= `ysyx_23060136_false;
+                valid_bit_1[j] <= `ysyx_23060136_false;
+                dirty_bit_1[j] <= `ysyx_23060136_false;
+
+                tag_array_2[j] <= `ysyx_23060136_false;
+                valid_bit_2[j] <= `ysyx_23060136_false;
+                dirty_bit_2[j] <= `ysyx_23060136_false;
             end
         end
         // miss or dirty
         else if(is_sdram && ((cr_state_miss & cr_state_next == `ysyx_23060136_dcache_idle) | (cw_state_lo & cr_state_next == `ysyx_23060136_dcache_idle))) begin
-            valid_bit[thrash_line_buf] <= `ysyx_23060136_true;
-            tag_array[thrash_line_buf] <=  cache_tag_buf;
-            dirty_bit[thrash_line_buf] <= `ysyx_23060136_false;
+            if(thrash[cache_index_buf]) begin
+                valid_bit_2[cache_index_buf] <= `ysyx_23060136_true;
+                tag_array_2[cache_index_buf] <=  cache_tag_buf;
+                dirty_bit_2[cache_index_buf] <= `ysyx_23060136_false;
+            end
+            else begin
+                valid_bit_1[cache_index_buf] <= `ysyx_23060136_true;
+                tag_array_1[cache_index_buf] <=  cache_tag_buf;
+                dirty_bit_1[cache_index_buf] <= `ysyx_23060136_false;
+            end
         end
         // write hit
         else if(cw_hit) begin
-            dirty_bit[group_base + {7'b0, hit_line_id}]  <= `ysyx_23060136_true;
+            if(hit_line_id) begin
+                dirty_bit_2[cache_index]  <= `ysyx_23060136_true;
+            end
+            else begin
+                dirty_bit_1[cache_index]  <= `ysyx_23060136_true;
+            end
         end
     end
 
@@ -610,10 +628,6 @@ module ysyx_23060136_MEM_DCACHE (
                                                                ({128{cw_hit & cache_index[7 : 6] == 2'b01}}                                 & (hit_line_id             ? ({w_i_data, 64'b0})           : ({64'b0, w_i_data}))))           ;                                                     
 
     
-    
-    
-    
-
     
     
     assign                     io_sram6_addr           =        (cr_state_idle & cw_state_idle) ? cache_index[5 : 0] : cache_index_buf[5 : 0];
