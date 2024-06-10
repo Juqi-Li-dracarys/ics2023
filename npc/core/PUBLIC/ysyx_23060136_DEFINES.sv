@@ -1,9 +1,10 @@
 /*
  * @Author: Juqi Li @ NJU 
- * @Date: 2024-04-05 12:40:17 
- * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-05-02 16:00:22
+ * @Date: 2024-06-10 08:58:03 
+ * @Last Modified by:   Juqi Li @ NJU 
+ * @Last Modified time: 2024-06-10 08:58:03 
  */
+
 
 // ===========================================================================
  
@@ -75,7 +76,7 @@
 `define ysyx_23060136_dcache_w_al     'h3
 `define ysyx_23060136_dcache_w_lo     'h4
 
-
+// cache config
 `define  ysyx_23060136_cache_index  8
 `define  ysyx_23060136_cache_tag    21
 `define  ysyx_23060136_cache_ways   2
