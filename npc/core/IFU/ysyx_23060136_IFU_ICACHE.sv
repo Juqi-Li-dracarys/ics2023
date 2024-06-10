@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-13 23:51:28 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-10 09:21:24
+ * @Last Modified time: 2024-06-10 10:13:44
  */
 
 
@@ -236,7 +236,7 @@ module ysyx_23060136_IFU_ICACHE (
             end
         end
         else if(r_state_wait & r_state_next == `ysyx_23060136_idle) begin
-            if(thrash[cache_index]) begin
+            if(!thrash[cache_index]) begin
                 valid_bit_1[cache_index] <= `ysyx_23060136_true;
                 tag_array_1[cache_index] <=  cache_tag;
             end
@@ -244,6 +244,7 @@ module ysyx_23060136_IFU_ICACHE (
                 valid_bit_2[cache_index] <= `ysyx_23060136_true;
                 tag_array_2[cache_index] <=  cache_tag;
             end
+            // $display("thrash index = %d, group: %d", cache_index, thrash[cache_index]);
         end
     end
 
