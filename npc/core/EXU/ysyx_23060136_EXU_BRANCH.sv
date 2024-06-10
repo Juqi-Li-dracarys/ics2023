@@ -2,14 +2,14 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-07 14:17:48 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-08 12:53:39
+ * @Last Modified time: 2024-06-10 17:53:48
  */
 
 
  `include "ysyx_23060136_DEFINES.sv"
  
 
-// Branch control
+// Branch control and BHT
 // ===========================================================================
 module ysyx_23060136_EXU_BRANCH (
         // data
@@ -54,6 +54,9 @@ module ysyx_23060136_EXU_BRANCH (
     assign   BRANCH_flushID    =  PCSrc;
     assign   BRANCH_flushIF    =  PCSrc;
     assign   BRANCH_flushEX1   =  PCSrc;
+
+
+    
 
 endmodule
 
