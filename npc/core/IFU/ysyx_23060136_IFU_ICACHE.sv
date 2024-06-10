@@ -1,9 +1,10 @@
 /*
  * @Author: Juqi Li @ NJU 
- * @Date: 2024-04-13 23:51:28 
- * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-10 10:13:44
+ * @Date: 2024-06-10 10:17:13 
+ * @Last Modified by:   Juqi Li @ NJU 
+ * @Last Modified time: 2024-06-10 10:17:13 
  */
+
 
 
 `include "ysyx_23060136_DEFINES.sv"
@@ -377,11 +378,10 @@ module ysyx_23060136_IFU_ICACHE (
         else if(ARBITER_IFU_arvalid & !pc_legal) begin
             IFU_error_signal  <=  `ysyx_23060136_true;
         end
-        else if(r_state_wait & r_state_next == `ysyx_23060136_idle) begin
+        else if(r_state_wait & r_state_next == `ysyx_23060136_idle & !IFU_error_signal) begin
             IFU_error_signal  <=  (ARBITER_IFU_rresp != `ysyx_23060136_OKAY) || (ARBITER_IFU_rid !=  ARBITER_IFU_arid);
         end
     end
-
 
 endmodule
 
