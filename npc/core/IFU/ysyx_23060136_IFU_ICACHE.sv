@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-13 23:51:28 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-18 21:08:54
+ * @Last Modified time: 2024-06-10 09:21:24
  */
 
 
@@ -115,31 +115,34 @@ module ysyx_23060136_IFU_ICACHE (
     // offset in block
     wire    [`ysyx_23060136_cache_offset-1 : 0]       cache_offset   =  r_state_idle ? IFU1_pc[2 : 0]   : ARBITER_IFU_araddr[2 : 0]     ;
     // group id
-    wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  r_state_idle ? IFU1_pc[10 : 3]  : ARBITER_IFU_araddr[10 : 3]    ;             
+    wire    [`ysyx_23060136_cache_index-1 : 0]        cache_index    =  r_state_idle ? IFU1_pc[10 : 3]  : ARBITER_IFU_araddr[10 : 3]    ;
+    logic   [`ysyx_23060136_cache_index-1 : 0]        cache_index_buf                                                                   ;             
     // tag                    
     wire    [`ysyx_23060136_cache_tag-1 : 0]          cache_tag      =  r_state_idle ? IFU1_pc[31 : 11] : ARBITER_IFU_araddr[31 : 11]   ;
 
-
-    logic   [`ysyx_23060136_cache_tag-1 : 0]          tag_array [`ysyx_23060136_cache_line-1 : 0]               ;  
+    
+    // 2 way associate
+    logic   [`ysyx_23060136_cache_tag-1 : 0]          tag_array_1 [`ysyx_23060136_cache_group-1 : 0]                  ;  
     // valid bit
-    logic                                             valid_bit [`ysyx_23060136_cache_line-1 : 0]               ;
+    logic                                             valid_bit_1 [`ysyx_23060136_cache_group-1 : 0]                  ;
 
+    logic   [`ysyx_23060136_cache_tag-1 : 0]          tag_array_2 [`ysyx_23060136_cache_group-1 : 0]                  ;  
+    // valid bit
+    logic                                             valid_bit_2 [`ysyx_23060136_cache_group-1 : 0]                  ;
+
+    
     // line(block) in group to thrash
-    logic   [`ysyx_23060136_cache_group-1 : 0]        thrash                                                    ;
-    // start line index of the group
-    wire    [8  : 0]                                  group_base  = {cache_index, 1'b0}                         ;                              
+    logic   [`ysyx_23060136_cache_group-1 : 0]        thrash                                                        ;                              
     // hit cache line in one group(0/1)
-    logic                                             hit_line_id                                               ;
+    logic                                             hit_line_id                                                   ;
+    logic                                             hit_line_id_buf                                               ;
 
-    logic                                             hit_line_id_buf                                           ;
-
-    logic   [`ysyx_23060136_cache_index-1 : 0]        cache_index_buf                                           ;
     // whether the hit occures
-    logic                                             cache_hit                                                 ;
+    logic                                             cache_hit                                                     ;
     // higher bits or lower in cache(higher 32 bits or lower)
-    logic                                             cache_inst_hi                                             ;
+    logic                                             cache_inst_hi                                                 ;
 
-
+    // MUX for sram output data
     wire [  `ysyx_23060136_INST_W-1:0]                cache_o_inst = {`ysyx_23060136_INST_W{(cache_index_buf[7 : 6] == 2'b00)}}  & (hit_line_id_buf == 1'b1 ? (cache_inst_hi ? io_sram0_rdata[127 : 96] : io_sram0_rdata[95 : 64]) : (cache_inst_hi ? io_sram0_rdata[63 : 32] : io_sram0_rdata[31 : 0])) |
                                                                      {`ysyx_23060136_INST_W{(cache_index_buf[7 : 6] == 2'b01)}}  & (hit_line_id_buf == 1'b1 ? (cache_inst_hi ? io_sram1_rdata[127 : 96] : io_sram1_rdata[95 : 64]) : (cache_inst_hi ? io_sram1_rdata[63 : 32] : io_sram1_rdata[31 : 0])) |
                                                                      {`ysyx_23060136_INST_W{(cache_index_buf[7 : 6] == 2'b10)}}  & (hit_line_id_buf == 1'b1 ? (cache_inst_hi ? io_sram2_rdata[127 : 96] : io_sram2_rdata[95 : 64]) : (cache_inst_hi ? io_sram2_rdata[63 : 32] : io_sram2_rdata[31 : 0])) |
@@ -207,31 +210,40 @@ module ysyx_23060136_IFU_ICACHE (
         end
     end
 
+    // logic for juedging hit
     always_comb begin : cache_hit_judge
         cache_hit   = `ysyx_23060136_false;
         hit_line_id = `ysyx_23060136_false;
-        if(tag_array[group_base] == cache_tag & valid_bit[group_base] & r_state_idle) begin
+        if(tag_array_1[cache_index] == cache_tag & valid_bit_1[cache_index] & r_state_idle) begin
             cache_hit    = `ysyx_23060136_true;
             hit_line_id  =  'b0;
         end
-        else if(tag_array[group_base + 1] == cache_tag & valid_bit[group_base + 1] & r_state_idle) begin
+        else if(tag_array_2[cache_index] == cache_tag & valid_bit_2[cache_index] & r_state_idle) begin
             cache_hit    = `ysyx_23060136_true;
             hit_line_id  =  'b1;
         end
     end
 
-    
+    // miss and update logic
     integer j;
     always_ff @(posedge clk) begin : updata_tag_array
         if(rst) begin
-            for(j = 0; j < `ysyx_23060136_cache_line; j = j + 1) begin
-                tag_array[j] <= `ysyx_23060136_false;
-                valid_bit[j] <= `ysyx_23060136_false;
+            for(j = 0; j < `ysyx_23060136_cache_group; j = j + 1) begin
+                tag_array_1[j] <= `ysyx_23060136_false;
+                valid_bit_1[j] <= `ysyx_23060136_false;
+                tag_array_2[j] <= `ysyx_23060136_false;
+                valid_bit_2[j] <= `ysyx_23060136_false;
             end
         end
-        else if(r_state_wait & ARBITER_IFU_rlast & r_state_next == `ysyx_23060136_idle) begin
-            valid_bit[group_base + {7'b0,thrash[cache_index]}] <= `ysyx_23060136_true;
-            tag_array[group_base + {7'b0,thrash[cache_index]}] <=  cache_tag;
+        else if(r_state_wait & r_state_next == `ysyx_23060136_idle) begin
+            if(thrash[cache_index]) begin
+                valid_bit_1[cache_index] <= `ysyx_23060136_true;
+                tag_array_1[cache_index] <=  cache_tag;
+            end
+            else begin
+                valid_bit_2[cache_index] <= `ysyx_23060136_true;
+                tag_array_2[cache_index] <=  cache_tag;
+            end
         end
     end
 
@@ -256,7 +268,7 @@ module ysyx_23060136_IFU_ICACHE (
                 thrash[j] <= `ysyx_23060136_false;
             end
         end
-        else if(r_state_wait & ARBITER_IFU_rlast & r_state_next == `ysyx_23060136_idle) begin
+        else if(r_state_wait & r_state_next == `ysyx_23060136_idle) begin
              thrash[cache_index] <= ~thrash[cache_index];
         end
     end
@@ -286,7 +298,7 @@ module ysyx_23060136_IFU_ICACHE (
                 end
             end
             `ysyx_23060136_wait: begin
-                if(ARBITER_IFU_rvalid & ARBITER_IFU_rready) begin
+                if(ARBITER_IFU_rvalid & ARBITER_IFU_rready & ARBITER_IFU_rlast) begin
                     r_state_next = `ysyx_23060136_idle;
                 end
                 else begin
@@ -349,7 +361,7 @@ module ysyx_23060136_IFU_ICACHE (
         if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
             IFU_o_inst <= `ysyx_23060136_NOP;
         end
-        else if((r_state_next == `ysyx_23060136_idle & r_state_wait & ARBITER_IFU_rlast))begin
+        else if((r_state_next == `ysyx_23060136_idle & r_state_wait))begin
             IFU_o_inst <=  arbiter_inst_hi   ?  ARBITER_IFU_rdata[63 : 32] : ARBITER_IFU_rdata[31 : 0] ;
         end
         else if(c_state_hit & c_state_next == `ysyx_23060136_icache_idle) begin
