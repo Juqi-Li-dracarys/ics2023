@@ -353,6 +353,9 @@ module ysyx_23060136_EXU_TOP (
     
 
     ysyx_23060136_EXU_BRANCH  ysyx_23060136_EXU_BRANCH_inst (
+        .clk                               (clk                       ),
+        .rst                               (rst                       ),
+        .FORWARD_stallEX2                  (FORWARD_stallEX2          ),
         .EXU2_pc                           (EXU_o_pc                  ),
         .EXU2_HAZARD_rs1_data              (EXU2_HAZARD_rs1_data      ),
         .EXU2_HAZARD_csr_rs_data           (EXU2_HAZARD_csr_rs_data   ),

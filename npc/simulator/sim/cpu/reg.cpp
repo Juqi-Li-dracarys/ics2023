@@ -56,6 +56,7 @@ extern "C" void set_csr_ptr(const svOpenArrayHandle r) {
     cpu_csr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
+
 // bench counter
 extern "C" void set_icache_hit_counter(const svOpenArrayHandle r) {
     icache_hit_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
@@ -76,4 +77,13 @@ extern "C" void set_dcache_miss_counter(const svOpenArrayHandle r) {
 extern "C" void set_dcache_wb_counter(const svOpenArrayHandle r) {
     dcache_wb_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
+
+extern "C" void set_pre_true_counter(const svOpenArrayHandle r) {
+    pre_true_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
+extern "C" void set_pre_false_counter(const svOpenArrayHandle r) {
+    pre_false_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
 

@@ -14,7 +14,11 @@ extern word_t* dcache_hit_counter;
 extern word_t* dcache_miss_counter;
 extern word_t* dcache_wb_counter;
 
+extern word_t* pre_true_counter;
+extern word_t* pre_false_counter;
+
 extern const char *regs[];
+
 
 static inline int check_reg_idx(int idx) {
   IFDEF(CONFIG_RT_CHECK, assert(idx >= 0 && idx < MUXDEF(CONFIG_RVE, 16, 32)));

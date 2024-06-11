@@ -39,6 +39,9 @@ word_t* dcache_hit_counter  = NULL;
 word_t* dcache_miss_counter = NULL;
 word_t* dcache_wb_counter   = NULL;
 
+word_t* pre_true_counter     = NULL;
+word_t* pre_false_counter    = NULL;
+
 
 // init the running state of our simulator
 SimState sim_state = { .state = SIM_STOP };
@@ -73,6 +76,9 @@ static void statistic() {
     if(dcache_hit_counter && g_nr_guest_inst) 
         Log("DCACHE hit rate = " "%f" ", wb rate = " "%f", (double)*dcache_hit_counter / (double)(*dcache_miss_counter + *dcache_hit_counter + *dcache_wb_counter),
                                                                 (double)*dcache_wb_counter  / (double)(*dcache_miss_counter + *dcache_hit_counter + *dcache_wb_counter)); 
+    if(pre_true_counter && g_nr_guest_inst) 
+        Log("PREDICT true rate = " "%f", (double)*pre_true_counter / (double)(*pre_true_counter + *pre_false_counter));
+    
     return;
 
 }
