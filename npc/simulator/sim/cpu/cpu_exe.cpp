@@ -63,7 +63,7 @@ static void statistic() {
     if(g_nr_guest_inst)
         Log("CPI = " "%f" " inst/clock", (double)g_nr_guest_clock / (double)g_nr_guest_inst); 
     if(icache_hit_counter && g_nr_guest_inst) 
-        Log("ICACEH HIT rate = " "%f", (double)*icache_hit_counter / (double)*icache_miss_counter+*icache_hit_counter); 
+        Log("ICACEH HIT rate = " "%f", (double)*icache_hit_counter / (double)(*icache_miss_counter+*icache_hit_counter)); 
     return;
 }
 
