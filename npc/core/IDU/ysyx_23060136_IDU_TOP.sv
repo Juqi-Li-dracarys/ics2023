@@ -17,6 +17,7 @@ module ysyx_23060136_IDU_TOP (
         input              [  `ysyx_23060136_BITS_W-1:0]         IDU_i_pc                   ,
         input              [  `ysyx_23060136_INST_W-1:0]         IDU_i_inst                 ,
         input                                                    IDU_i_commit               ,
+        input                                                    IDU_i_pre_take             ,
         // ===========================================================================
         // WB write back form WB unit
         input              [  `ysyx_23060136_GPR_W-1:0]          WB_o_rd                    ,
@@ -35,6 +36,7 @@ module ysyx_23060136_IDU_TOP (
         output             [  `ysyx_23060136_BITS_W-1:0]         IDU_o_pc                   ,
         output             [  `ysyx_23060136_INST_W-1:0]         IDU_o_inst                 ,
         output                                                   IDU_o_commit               ,
+        output                                                   IDU_o_pre_take             ,
         output             [  `ysyx_23060136_GPR_W-1:0]          IDU_o_rd                   ,
         // for later forward transition
         output             [  `ysyx_23060136_GPR_W-1:0]          IDU_o_rs1                  ,
@@ -126,6 +128,7 @@ module ysyx_23060136_IDU_TOP (
     assign                   IDU_o_pc       =        IDU_i_pc;
     assign                   IDU_o_inst     =        IDU_i_inst;
     assign                   IDU_o_commit   =        IDU_i_commit;
+    assign                   IDU_o_pre_take =        IDU_i_pre_take; 
 
     ysyx_23060136_IDU_DECODE  ysyx_23060136_IDU_DECODE_inst (
         .IDU_inst                          (IDU_i_inst                ),

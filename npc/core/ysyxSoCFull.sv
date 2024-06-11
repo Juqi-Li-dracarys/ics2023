@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-11 21:41:45 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-16 22:00:28
+ * @Last Modified time: 2024-06-10 23:33:23
  */
 
 
@@ -297,7 +297,7 @@ module ysyxSoCFull(
         .WEN                               (io_sram0_wen              ),
         .BWEN                              (io_sram0_wmask            ),
         .A                                 (io_sram0_addr             ),
-        .D                                 (io_sram0_wdata            ) 
+        .D                                 (io_sram0_wdata            )
   );
 
     S011HD1P_X32Y2D128_BW  S011HD1P_X32Y2D128_BW_inst1 (

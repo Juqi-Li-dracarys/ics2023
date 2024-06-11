@@ -1,8 +1,8 @@
 /*
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-06-10 08:58:03 
- * @Last Modified by:   Juqi Li @ NJU 
- * @Last Modified time: 2024-06-10 08:58:03 
+ * @Last Modified by: Juqi Li @ NJU
+ * @Last Modified time: 2024-06-10 21:32:47
  */
 
 
@@ -82,6 +82,11 @@
 `define  ysyx_23060136_cache_ways   2
 `define  ysyx_23060136_cache_line   512
 `define  ysyx_23060136_cache_group  256
+
+
+// BHT config
+`define  ysyx_23060136_BHT_size     512
+
 
 // ===========================================================================
 

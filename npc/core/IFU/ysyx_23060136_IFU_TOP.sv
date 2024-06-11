@@ -1,8 +1,8 @@
 /*
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-06-10 10:17:06 
- * @Last Modified by:   Juqi Li @ NJU 
- * @Last Modified time: 2024-06-10 10:17:06 
+ * @Last Modified by: Juqi Li @ NJU
+ * @Last Modified time: 2024-06-10 23:33:17
  */
 
 
@@ -27,6 +27,13 @@ module ysyx_23060136_IFU_TOP(
         input              [  `ysyx_23060136_BITS_W-1:0]    BRANCH_branch_target       ,
         // jump signal from Branch
         input                                               BRANCH_PCSrc               ,
+
+        input              [  `ysyx_23060136_BITS_W -1:0]   BHT_pc                     ,
+        // correct predict
+        input                                               BHT_pre_true               ,
+        // wrong predict
+        input                                               BHT_pre_false              ,
+
         // inst from memory
         output             [  `ysyx_23060136_INST_W-1:0]    IFU_o_inst                 ,
         // pc from PC counter
@@ -35,6 +42,7 @@ module ysyx_23060136_IFU_TOP(
         // 当该信号为 true
         output                                              IFU_o_valid                ,
         output                                              IFU_o_commit               ,
+        output                                              BHT_pre_take               ,
         // ===========================================================================
         input                                               ARBITER_IFU_arready        , 
         output                                              ARBITER_IFU_arvalid        , 
@@ -87,14 +95,27 @@ module ysyx_23060136_IFU_TOP(
     assign                                 IFU_o_pc         =      IFU2_pc      ;
     assign                                 IFU_o_commit     =      IFU2_commit  ;
 
-    ysyx_23060136_IFU_PC ysyx_23060136_IFU_PC_COUNT_inst (
+
+
+    wire   [  `ysyx_23060136_BITS_W-1:0]     BHT_branch_target  ;
+    wire                                     BHT_flushIF        ;
+    wire                                     BHT_PCSrc          ;
+
+     ysyx_23060136_IFU_BHT  ysyx_23060136_IFU_BHT_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
-        .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
         .FORWARD_stallIF                   (FORWARD_stallIF           ),
-        .BRANCH_branch_target              (BRANCH_branch_target      ),
-        .IFU1_pc                           (IFU1_pc                   ) 
-     );
+        .IFU_o_inst                        (IFU_o_inst                ),
+        .IFU_o_pc                          (IFU_o_pc                  ),
+        .BHT_pc                            (BHT_pc                    ),
+        .BHT_pre_true                      (BHT_pre_true              ),
+        .BHT_pre_false                     (BHT_pre_false             ),
+        .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
+        .BHT_pre_take                      (BHT_pre_take              ),
+        .BHT_flushIF                       (BHT_flushIF               ),
+        .BHT_PCSrc                         (BHT_PCSrc                 ),
+        .BHT_branch_target                 (BHT_branch_target         ) 
+  );
 
      
     ysyx_23060136_IFU_ICACHE  ysyx_23060136_IFU_ICACHE_inst (
@@ -145,18 +166,28 @@ module ysyx_23060136_IFU_TOP(
             .IFU_error_signal                  (IFU_error_signal          ) 
     );
 
+    ysyx_23060136_IFU_PC  ysyx_23060136_IFU_PC_inst (
+        .clk                               (clk                       ),
+        .rst                               (rst                       ),
+        .FORWARD_stallIF                   (FORWARD_stallIF           ),
+        .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
+        .BRANCH_branch_target              (BRANCH_branch_target      ),
+        .BHT_PCSrc                         (BHT_PCSrc                 ),
+        .BHT_branch_target                 (BHT_branch_target         ),
+        .IFU1_pc                           (IFU1_pc                   ) 
+    );
 
 
-
-  ysyx_23060136_IFU_SEG  ysyx_23060136_IFU_SEG_inst (
+    ysyx_23060136_IFU_SEG  ysyx_23060136_IFU_SEG_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
         .BRANCH_flushIF                    (BRANCH_flushIF            ),
+        .BHT_flushIF                       (BHT_flushIF               ),
         .FORWARD_stallIF                   (FORWARD_stallIF           ),
         .IFU1_pc                           (IFU1_pc                   ),
         .IFU2_pc                           (IFU2_pc                   ),
-        .IFU2_commit                       (IFU2_commit               )
-  );
+        .IFU2_commit                       (IFU2_commit               ) 
+      );
 
 endmodule
 

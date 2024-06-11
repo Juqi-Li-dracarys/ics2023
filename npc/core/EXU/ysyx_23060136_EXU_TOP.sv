@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-07 16:26:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-10 18:30:51
+ * @Last Modified time: 2024-06-10 20:42:56
  */
 
 
@@ -21,6 +21,8 @@ module ysyx_23060136_EXU_TOP (
         input              [  `ysyx_23060136_BITS_W-1 :0]         EXU_i_pc                     ,
         input              [  `ysyx_23060136_INST_W-1 :0]         EXU_i_inst                   ,
         input                                                     EXU_i_commit                 ,
+        input                                                     EXU_i_pre_take               ,
+
         input              [  `ysyx_23060136_GPR_W-1  :0]         EXU_i_rd                     ,
         input              [  `ysyx_23060136_BITS_W-1 :0]         EXU_i_imm                    ,
         input              [  `ysyx_23060136_BITS_W-1 :0]         EXU_i_rs1_data               ,
@@ -101,6 +103,11 @@ module ysyx_23060136_EXU_TOP (
         // ===========================================================================
         output             [  `ysyx_23060136_BITS_W-1 :0]         EXU_o_pc                   ,
         output             [  `ysyx_23060136_INST_W-1 :0]         EXU_o_inst                 ,
+        output             [  `ysyx_23060136_BITS_W-1 :0]         BHT_pc                     ,
+
+        output                                                    BHT_pre_true               ,
+        output                                                    BHT_pre_false              ,
+   
         // mem
         output             [  `ysyx_23060136_BITS_W-1 :0]         EXU_o_ALU_ALUout           ,
         output             [  `ysyx_23060136_BITS_W-1 :0]         EXU_o_ALU_CSR_out          ,
@@ -250,17 +257,17 @@ module ysyx_23060136_EXU_TOP (
 
 
   ysyx_23060136_EXU_SEG  ysyx_23060136_EXU_SEG_inst (
-        .clk                               (clk                       ),
-        .rst                               (rst                       ),
-        .BRANCH_flushEX1                   (BRANCH_flushEX1           ),
+        .clk                               (clk                        ),
+        .rst                               (rst                        ),
+        .BRANCH_flushEX1                   (BRANCH_flushEX1            ),
         .FORWARD_flushEX1                  (FORWARD_flushEX1           ),
-        .FORWARD_stallEX2                  (FORWARD_stallEX2          ),
+        .FORWARD_stallEX2                  (FORWARD_stallEX2           ),
         .EXU1_pc                           (EXU_i_pc                   ),
         .EXU1_inst                         (EXU_i_inst                 ),
         .EXU1_commit                       (EXU_i_commit               ),
-        .EXU1_rd                           (EXU_i_rd                    ),
-        .EXU1_csr_rd_1                     (EXU_i_csr_rd_1              ),
-        .EXU1_csr_rd_2                     (EXU_i_csr_rd_2              ),
+        .EXU1_rd                           (EXU_i_rd                   ),
+        .EXU1_csr_rd_1                     (EXU_i_csr_rd_1             ),
+        .EXU1_csr_rd_2                     (EXU_i_csr_rd_2             ),
 
         .EXU1_HAZARD_rs1_data              (HAZARD_rs1_data_EXU1       ),
         .EXU1_HAZARD_rs2_data              (HAZARD_rs2_data_EXU1       ),
@@ -323,6 +330,7 @@ module ysyx_23060136_EXU_TOP (
         .EXU2_system_halt                  (EXU_o_system_halt          ) 
   );
 
+
     wire   [`ysyx_23060136_BITS_W-1  : 0]            EXU2_HAZARD_csr_rs_data  ;
     wire   [`ysyx_23060136_BITS_W-1  : 0]            EXU2_imm                 ;
     wire                                             EXU2_jump                ;
@@ -354,8 +362,13 @@ module ysyx_23060136_EXU_TOP (
         .PCSrc                             (BRANCH_PCSrc              ),
         .BRANCH_flushIF                    (BRANCH_flushIF            ),
         .BRANCH_flushID                    (BRANCH_flushID            ),
-        .BRANCH_flushEX1                   (BRANCH_flushEX1           ) 
+        .BRANCH_flushEX1                   (BRANCH_flushEX1           ),
+        .EXU_i_pre_take                    (EXU_i_pre_take            ),
+        .BHT_pc                            (BHT_pc                    ),        
+        .BHT_pre_true                      (BHT_pre_true              ),
+        .BHT_pre_false                     (BHT_pre_false             )
   );
+
 
     wire                                    mul_valid         ; 
     wire                                    mulw              ; 
