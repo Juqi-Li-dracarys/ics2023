@@ -387,32 +387,29 @@ module ysyx_23060136_IFU_ICACHE (
 
 
     `ifdef bench_counter
-        logic                                         inst_valid_delay1;
+        logic     [`ysyx_23060136_BITS_W-1 : 0]       icache_miss_counter;
         logic     [`ysyx_23060136_BITS_W-1 : 0]       icache_hit_counter;
         
         // DIP-C in verilog
+        import "DPI-C" function void set_icache_miss_counter(input logic [`ysyx_23060136_BITS_W-1 : 0] a []);
         import "DPI-C" function void set_icache_hit_counter(input logic [`ysyx_23060136_BITS_W-1 : 0] a []);
 
         // set the ptr to register
         initial begin
+            set_icache_miss_counter(icache_miss_counter);
             set_icache_hit_counter(icache_hit_counter);
         end
-
-        always_ff @(posedge clk) begin
-            if(rst) begin
-                inst_valid_delay1 <= `ysyx_23060136_false;
-            end
-            else begin
-                inst_valid_delay1 <= inst_valid;
-            end
-        end
-
+        
         always_ff @(posedge clk) begin : icache_counter_update
             if(rst) begin
                 icache_hit_counter <=  `ysyx_23060136_false;
+                icache_miss_counter <=  `ysyx_23060136_false;
             end
-            else if(inst_valid & !inst_valid_delay1) begin
+            else if(!FORWARD_stallIF & cache_hit & r_state_idle & c_state_idle) begin
                 icache_hit_counter  <=  icache_hit_counter + 'h1;
+            end
+            else if(!FORWARD_stallIF & !cache_hit & r_state_idle & c_state_idle) begin
+                icache_miss_counter  <=  icache_miss_counter + 'h1;
             end
         end                                                 
     `endif
