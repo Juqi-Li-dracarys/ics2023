@@ -88,6 +88,7 @@
 `define  ysyx_23060136_BHT_size     512
 
 
+
 // ===========================================================================
 
 
@@ -115,6 +116,10 @@
 
 // Use multi-cycle divider
 `define  ysyx_23060136_DIV        1
+
+
+ // enable bench counter
+`define bench_counter             1
 
 
 

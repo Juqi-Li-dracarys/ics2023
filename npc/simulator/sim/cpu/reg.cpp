@@ -48,10 +48,15 @@ word_t isa_reg_str2val(const char* s, bool* success) {
 
 // set cpu_gpr point to your cpu's gpr
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-  cpu_gpr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
+    cpu_gpr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
 // set the pointers pint to you cpu's csr
 extern "C" void set_csr_ptr(const svOpenArrayHandle r) {
-  cpu_csr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
+    cpu_csr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
+// bench counter
+extern "C" void set_icache_hit_counter(const svOpenArrayHandle r) {
+    icache_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }

@@ -11,6 +11,7 @@
 #include <disasm.h>
 #include <sim.h>
 #include <trace.h>
+#include <reg.h>
 
 using namespace std;
 
@@ -28,6 +29,10 @@ inst_log* log_ptr = new inst_log;
 // reg dpi-c
 word_t* cpu_gpr = NULL;
 word_t* cpu_csr = NULL;
+
+// bench counter
+word_t* icache_counter = NULL;
+word_t* dcache_counter = NULL;
 
 // init the running state of our simulator
 SimState sim_state = { .state = SIM_STOP };
@@ -48,15 +53,18 @@ uint32_t device_cyc_cnt = 0;
 
 static void statistic() {
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
-  Log("host time spent = " NUMBERIC_FMT " us", g_timer);
-  Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
-  Log("total guest clock  = " NUMBERIC_FMT, g_nr_guest_clock);
-  if (g_timer > 0) 
-    Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
-  else 
-    Log("Finish running in less than 1 us and can not calculate the simulation frequency");
-  if(g_nr_guest_inst)
-    Log("CPI = " "%f" " inst/clock", (double)g_nr_guest_clock / (double)g_nr_guest_inst); 
+    Log("host time spent = " NUMBERIC_FMT " us", g_timer);
+    Log("total guest instructions = " NUMBERIC_FMT, g_nr_guest_inst);
+    Log("total guest clock  = " NUMBERIC_FMT, g_nr_guest_clock);
+    if (g_timer > 0) 
+        Log("simulation frequency = " NUMBERIC_FMT " inst/s", g_nr_guest_inst * 1000000 / g_timer);
+    else 
+        Log("Finish running in less than 1 us and can not calculate the simulation frequency");
+    if(g_nr_guest_inst)
+        Log("CPI = " "%f" " inst/clock", (double)g_nr_guest_clock / (double)g_nr_guest_inst); 
+    if(!icache_counter) 
+        Log("ICACEH HIT rate = " "%f", (double)*icache_counter / (double)g_nr_guest_inst); 
+    return;
 }
 
 
