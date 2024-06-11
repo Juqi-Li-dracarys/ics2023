@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-06-11 11:03:39 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-11 12:15:28
+ * @Last Modified time: 2024-06-11 12:23:00
  */
 
 
@@ -75,8 +75,8 @@ module ysyx_23060136_EXU_BRANCH (
 
     assign   BHT_pc            =  EXU2_pc;
     // wrong predict
-    assign   BHT_pre_false     =  EXU2_Btype & (should_jump & !EXU2_pre_take)  | (!should_jump & EXU2_pre_take);
-    assign   BHT_pre_true      =  EXU2_Btype & (should_jump & EXU2_pre_take)   | (!should_jump & !EXU2_pre_take);
+    assign   BHT_pre_false     =  EXU2_Btype & ((should_jump & !EXU2_pre_take)  | (!should_jump & EXU2_pre_take));
+    assign   BHT_pre_true      =  EXU2_Btype & ((should_jump & EXU2_pre_take)   | (!should_jump & !EXU2_pre_take));
 
 
 endmodule
