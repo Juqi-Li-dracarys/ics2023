@@ -22,7 +22,7 @@ module ysyx_23060136_EXU_BRANCH (
         input                                                     EXU2_ALU_Zero               ,
 
         // predict of BHT
-        input                                                     EXU_i_pre_take               ,
+        input                                                     EXU2_pre_take               ,
 
         // jump/branch types isn't equal to jump signal
         input                                                     EXU2_jump                   ,
@@ -66,10 +66,10 @@ module ysyx_23060136_EXU_BRANCH (
 
     assign   BHT_pc            =  EXU2_pc;
 
-    
+
     // wrong predict
-    assign   BHT_pre_false     =  (EXU2_jump & !EXU_i_pre_take)  | (!EXU2_jump & EXU_i_pre_take);
-    assign   BHT_pre_true      =  (EXU2_jump & EXU_i_pre_take)   | (!EXU2_jump & !EXU_i_pre_take);
+    assign   BHT_pre_false     =  (EXU2_jump & !EXU2_pre_take)  | (!EXU2_jump & EXU2_pre_take);
+    assign   BHT_pre_true      =  (EXU2_jump & EXU2_pre_take)   | (!EXU2_jump & !EXU2_pre_take);
 
 
 endmodule

@@ -256,6 +256,8 @@ module ysyx_23060136_EXU_TOP (
   );
 
 
+  wire              EXU2_pre_take           ;
+
   ysyx_23060136_EXU_SEG  ysyx_23060136_EXU_SEG_inst (
         .clk                               (clk                        ),
         .rst                               (rst                        ),
@@ -265,6 +267,8 @@ module ysyx_23060136_EXU_TOP (
         .EXU1_pc                           (EXU_i_pc                   ),
         .EXU1_inst                         (EXU_i_inst                 ),
         .EXU1_commit                       (EXU_i_commit               ),
+        .EXU_i_pre_take                    (EXU_i_pre_take             ),
+
         .EXU1_rd                           (EXU_i_rd                   ),
         .EXU1_csr_rd_1                     (EXU_i_csr_rd_1             ),
         .EXU1_csr_rd_2                     (EXU_i_csr_rd_2             ),
@@ -298,6 +302,7 @@ module ysyx_23060136_EXU_TOP (
         .EXU2_pc                           (EXU_o_pc                   ),
         .EXU2_inst                         (EXU_o_inst                 ),
         .EXU2_commit                       (EXU_o_commit               ),
+        .EXU2_pre_take                     (EXU2_pre_take              ),
 
         .EXU2_rd                           (EXU_o_rd                    ), 
         .EXU2_csr_rd_1                     (EXU_o_csr_rd_1              ), 
@@ -363,7 +368,7 @@ module ysyx_23060136_EXU_TOP (
         .BRANCH_flushIF                    (BRANCH_flushIF            ),
         .BRANCH_flushID                    (BRANCH_flushID            ),
         .BRANCH_flushEX1                   (BRANCH_flushEX1           ),
-        .EXU_i_pre_take                    (EXU_i_pre_take            ),
+        .EXU2_pre_take                     (EXU2_pre_take             ),
         .BHT_pc                            (BHT_pc                    ),        
         .BHT_pre_true                      (BHT_pre_true              ),
         .BHT_pre_false                     (BHT_pre_false             )

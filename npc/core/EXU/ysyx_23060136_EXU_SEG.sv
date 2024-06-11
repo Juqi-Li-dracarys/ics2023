@@ -17,11 +17,12 @@ module ysyx_23060136_EXU_SEG (
 
     input                                                         BRANCH_flushEX1             ,
     input                                                         FORWARD_stallEX2            ,
-    input                                                         FORWARD_flushEX1             ,
+    input                                                         FORWARD_flushEX1            ,
 
     input                  [  `ysyx_23060136_BITS_W-1:0 ]         EXU1_pc                     ,
     input                  [  `ysyx_23060136_INST_W-1 :0]         EXU1_inst                   ,
     input                                                         EXU1_commit                 ,
+    input                                                         EXU_i_pre_take              ,
 
     input                  [  `ysyx_23060136_GPR_W-1  :0]         EXU1_rd                     ,
     input                  [  `ysyx_23060136_CSR_W-1:0  ]         EXU1_csr_rd_1               ,
@@ -66,7 +67,7 @@ module ysyx_23060136_EXU_SEG (
     output    logic        [  `ysyx_23060136_BITS_W-1:0 ]         EXU2_pc                     ,
     output    logic        [  `ysyx_23060136_INST_W-1 :0]         EXU2_inst                   ,
     output    logic                                               EXU2_commit                 ,
-
+    output    logic                                               EXU2_pre_take               ,
 
 
     output    logic        [  `ysyx_23060136_GPR_W-1  :0]         EXU2_rd                     ,
@@ -114,6 +115,7 @@ module ysyx_23060136_EXU_SEG (
             EXU2_pc                 <=   `ysyx_23060136_PC_RST;
             EXU2_inst               <=   `ysyx_23060136_NOP;       
             EXU2_commit             <=   `ysyx_23060136_false;
+            EXU2_pre_take           <=   `ysyx_23060136_false;
             
             EXU2_rd                 <=    `ysyx_23060136_false;
             EXU2_csr_rd_1           <=    `ysyx_23060136_false;
@@ -148,7 +150,8 @@ module ysyx_23060136_EXU_SEG (
         else if(!FORWARD_stallEX2) begin
             EXU2_pc                 <=     EXU1_pc                 ;                              
             EXU2_inst               <=     EXU1_inst               ;                              
-            EXU2_commit             <=     EXU1_commit             ; 
+            EXU2_commit             <=     EXU1_commit             ;
+            EXU2_pre_take           <=     EXU_i_pre_take          ;
             
             EXU2_rd                 <=      EXU1_rd                ;                                                                          
             EXU2_csr_rd_1           <=      EXU1_csr_rd_1          ;                                      
