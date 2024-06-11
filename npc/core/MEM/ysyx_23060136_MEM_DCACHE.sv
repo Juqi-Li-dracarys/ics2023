@@ -1039,6 +1039,55 @@ module ysyx_23060136_MEM_DCACHE (
         end
     end
 
+
+    `ifdef bench_counter
+
+        logic     [`ysyx_23060136_BITS_W-1 : 0]       dcache_miss_counter;
+        logic     [`ysyx_23060136_BITS_W-1 : 0]       dcache_wb_counter;
+        logic     [`ysyx_23060136_BITS_W-1 : 0]       dcache_hit_counter;
+        
+        // DIP-C in verilog
+        import "DPI-C" function void set_dcache_miss_counter(input logic [`ysyx_23060136_BITS_W-1 : 0] a []);
+        import "DPI-C" function void set_dcache_hit_counter(input logic [`ysyx_23060136_BITS_W-1 : 0] a []);
+        import "DPI-C" function void set_dcache_wb_counter(input logic [`ysyx_23060136_BITS_W-1 : 0] a []);
+
+        // set the ptr to register
+        initial begin
+            set_dcache_miss_counter(dcache_miss_counter);
+            set_dcache_hit_counter(dcache_hit_counter);
+            set_dcache_wb_counter(dcache_wb_counter);
+        end
+
+        always_ff @(posedge clk) begin : dcache_counter_update
+            if(rst) begin
+                dcache_hit_counter  <=  `ysyx_23060136_false;
+                dcache_miss_counter <=  `ysyx_23060136_false;
+                dcache_wb_counter   <=  `ysyx_23060136_false;
+            end
+            else if(!FORWARD_stallME & EXU_o_mem_to_reg & cr_state_idle & cr_hit) begin
+                dcache_hit_counter  <=  dcache_hit_counter + 'h1;
+            end
+            else if(!FORWARD_stallME & EXU_o_mem_to_reg & cr_state_idle & cr_wb) begin
+                dcache_wb_counter  <=  dcache_wb_counter + 'h1;
+            end
+            else if(!FORWARD_stallME & EXU_o_mem_to_reg & cr_state_idle & cr_miss) begin
+                dcache_miss_counter  <=  dcache_miss_counter + 'h1;
+            end
+            else if(!FORWARD_stallME & EXU_o_write_mem & cw_state_idle & cw_hit) begin
+                dcache_hit_counter  <=  dcache_hit_counter + 'h1;
+            end
+            else if(!FORWARD_stallME & EXU_o_write_mem & cw_state_idle & cw_wb) begin
+                dcache_wb_counter  <=  dcache_wb_counter + 'h1;
+            end
+            else if(!FORWARD_stallME & EXU_o_write_mem & cw_state_idle & cw_miss) begin
+                dcache_miss_counter  <=  dcache_miss_counter + 'h1;
+            end
+        end   
+                                                      
+`endif
+
+
+
 endmodule
 
 

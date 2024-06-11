@@ -64,3 +64,16 @@ extern "C" void set_icache_hit_counter(const svOpenArrayHandle r) {
 extern "C" void set_icache_miss_counter(const svOpenArrayHandle r) {
     icache_miss_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
+
+extern "C" void set_dcache_hit_counter(const svOpenArrayHandle r) {
+    dcache_hit_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
+extern "C" void set_dcache_miss_counter(const svOpenArrayHandle r) {
+    dcache_miss_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
+extern "C" void set_dcache_wb_counter(const svOpenArrayHandle r) {
+    dcache_wb_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
