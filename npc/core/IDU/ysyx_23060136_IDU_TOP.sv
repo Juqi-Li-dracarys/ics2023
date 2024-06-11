@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-06 21:51:39 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-06 21:51:59
+ * @Last Modified time: 2024-06-11 11:06:58
  */
 
 
@@ -92,6 +92,7 @@ module ysyx_23060136_IDU_TOP (
         // ===========================================================================
         // jump signal
         output                                                   IDU_o_jump                   ,
+        output                                                   IDU_o_Btype                  ,
         output                                                   IDU_o_pc_plus_imm            ,
         output                                                   IDU_o_rs1_plus_imm           ,
         output                                                   IDU_o_csr_plus_imm           ,
@@ -167,7 +168,9 @@ module ysyx_23060136_IDU_TOP (
         .ALU_i2_imm                        (IDU_o_ALU_i2_imm          ),
         .ALU_i2_4                          (IDU_o_ALU_i2_4            ),
         .ALU_i2_csr                        (IDU_o_ALU_i2_csr          ),
+
         .jump                              (IDU_o_jump                ),
+        .rv64_branch                       (IDU_o_Btype               ),
         .pc_plus_imm                       (IDU_o_pc_plus_imm         ),
         .rs1_plus_imm                      (IDU_o_rs1_plus_imm        ),
         .csr_plus_imm                      (IDU_o_csr_plus_imm        ),

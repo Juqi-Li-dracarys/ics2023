@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-06 21:52:40 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-06 22:40:24
+ * @Last Modified time: 2024-06-11 11:09:21
  */
 
 
@@ -144,6 +144,7 @@ module ysyx_23060136_IDU_EXU_SEG (
         // ===========================================================================
         // jump signal for BRANCH
         input                                                    IDU_o_jump                 ,
+        input                                                    IDU_o_Btype                ,
         input                                                    IDU_o_pc_plus_imm          ,
         input                                                    IDU_o_rs1_plus_imm         ,
         input                                                    IDU_o_csr_plus_imm         ,
@@ -153,6 +154,7 @@ module ysyx_23060136_IDU_EXU_SEG (
         input                                                    IDU_o_cmp_lt               ,
 
         output    logic                                          EXU_i_jump                 ,
+        output    logic                                          EXU_i_Btype                ,
         output    logic                                          EXU_i_pc_plus_imm          ,
         output    logic                                          EXU_i_rs1_plus_imm         ,
         output    logic                                          EXU_i_csr_plus_imm         ,
@@ -255,6 +257,7 @@ module ysyx_23060136_IDU_EXU_SEG (
 
             // Reset jump signals
             EXU_i_jump         <=  `ysyx_23060136_false;
+            EXU_i_Btype        <=  `ysyx_23060136_false;
             EXU_i_pc_plus_imm  <=  `ysyx_23060136_false;
             EXU_i_rs1_plus_imm <=  `ysyx_23060136_false;
             EXU_i_csr_plus_imm <=  `ysyx_23060136_false;
@@ -325,8 +328,10 @@ module ysyx_23060136_IDU_EXU_SEG (
             EXU_i_ALU_i2_rs2   <=  FORWARD_stallEX  ?   EXU_i_ALU_i2_rs2    :   IDU_o_ALU_i2_rs2  ;                                         
             EXU_i_ALU_i2_imm   <=  FORWARD_stallEX  ?   EXU_i_ALU_i2_imm    :   IDU_o_ALU_i2_imm  ;                                         
             EXU_i_ALU_i2_4     <=  FORWARD_stallEX  ?   EXU_i_ALU_i2_4      :   IDU_o_ALU_i2_4    ;                                          
-            EXU_i_ALU_i2_csr   <=  FORWARD_stallEX  ?   EXU_i_ALU_i2_csr    :   IDU_o_ALU_i2_csr  ;                                       
-            EXU_i_jump         <=  FORWARD_stallEX  ?   EXU_i_jump          :   IDU_o_jump        ;                                     
+            EXU_i_ALU_i2_csr   <=  FORWARD_stallEX  ?   EXU_i_ALU_i2_csr    :   IDU_o_ALU_i2_csr  ;     
+                                              
+            EXU_i_jump         <=  FORWARD_stallEX  ?   EXU_i_jump          :   IDU_o_jump        ;    
+            EXU_i_Btype        <=  FORWARD_stallEX  ?   EXU_i_Btype          :  IDU_o_Btype       ;                                   
             EXU_i_pc_plus_imm  <=  FORWARD_stallEX  ?   EXU_i_pc_plus_imm   :   IDU_o_pc_plus_imm ;                                             
             EXU_i_rs1_plus_imm <=  FORWARD_stallEX  ?   EXU_i_rs1_plus_imm  :   IDU_o_rs1_plus_imm;                                             
             EXU_i_csr_plus_imm <=  FORWARD_stallEX  ?   EXU_i_csr_plus_imm  :   IDU_o_csr_plus_imm;                                            

@@ -23,6 +23,7 @@
     // pc from BRANCH module
     input     [  `ysyx_23060136_BITS_W -1:0]          BHT_pc            ,
     // correct/wrong predict
+    // if inst is not belong to B type, true and false is both clean
     input                                             BHT_pre_true      ,
     input                                             BHT_pre_false     ,
     input                                             BRANCH_PCSrc      ,

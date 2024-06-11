@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 22:03:38 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-10 21:47:08
+ * @Last Modified time: 2024-06-11 11:06:00
  */
 
 
@@ -67,6 +67,7 @@ module ysyx_23060136_IDU_DECODE (
     // ===========================================================================
     // jump
     output                                                   jump                       ,
+    output                                                   rv64_branch                ,            
     output                                                   pc_plus_imm                ,
     output                                                   rs1_plus_imm               ,
     output                                                   csr_plus_imm               ,
@@ -249,7 +250,7 @@ module ysyx_23060136_IDU_DECODE (
 
     // ===========================================================================
     // Branch IDU_Instructions
-    wire  rv64_branch   = opcode_6_5_11 & opcode_4_2_000 & opcode_1_0_11;
+    assign  rv64_branch   = opcode_6_5_11 & opcode_4_2_000 & opcode_1_0_11;
     wire  rv64_beq      = rv64_branch  &  func3_000;
     wire  rv64_bne      = rv64_branch  &  func3_001;
     wire  rv64_blt      = rv64_branch  &  func3_100;

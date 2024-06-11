@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-07 16:26:18 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-10 20:42:56
+ * @Last Modified time: 2024-06-11 11:15:42
  */
 
 
@@ -65,6 +65,7 @@ module ysyx_23060136_EXU_TOP (
         input                                                     EXU_i_ALU_i2_csr             ,
         // ===========================================================================
         input                                                     EXU_i_jump                   ,
+        input                                                     EXU_i_Btype                  ,
         input                                                     EXU_i_pc_plus_imm            ,
         input                                                     EXU_i_rs1_plus_imm           ,
         input                                                     EXU_i_csr_plus_imm           ,
@@ -257,6 +258,7 @@ module ysyx_23060136_EXU_TOP (
 
 
   wire              EXU2_pre_take           ;
+  wire              EXU2_Btype              ;
 
   ysyx_23060136_EXU_SEG  ysyx_23060136_EXU_SEG_inst (
         .clk                               (clk                        ),
@@ -278,6 +280,7 @@ module ysyx_23060136_EXU_TOP (
         .EXU1_HAZARD_csr_rs_data           (HAZARD_csr_rs_data_EXU1    ),
         .EXU1_imm                          (EXU_i_imm                  ),
         .EXU1_jump                         (EXU_i_jump                 ),
+        .EXU1_Btype                        (EXU_i_Btype                ),
         .EXU1_pc_plus_imm                  (EXU_i_pc_plus_imm          ),
         .EXU1_rs1_plus_imm                 (EXU_i_rs1_plus_imm         ),
         .EXU1_csr_plus_imm                 (EXU_i_csr_plus_imm         ),
@@ -313,6 +316,7 @@ module ysyx_23060136_EXU_TOP (
         .EXU2_HAZARD_csr_rs_data           (EXU2_HAZARD_csr_rs_data    ),
         .EXU2_imm                          (EXU2_imm                   ),
         .EXU2_jump                         (EXU2_jump                  ),
+        .EXU2_Btype                        (EXU2_Btype                 ),
         .EXU2_pc_plus_imm                  (EXU2_pc_plus_imm           ),
         .EXU2_rs1_plus_imm                 (EXU2_rs1_plus_imm          ),
         .EXU2_csr_plus_imm                 (EXU2_csr_plus_imm          ),
@@ -356,6 +360,7 @@ module ysyx_23060136_EXU_TOP (
         .EXU2_ALU_Less                     (EXU_ALU_Less              ),
         .EXU2_ALU_Zero                     (EXU_ALU_Zero              ),
         .EXU2_jump                         (EXU2_jump                 ),
+        .EXU2_Btype                        (EXU2_Btype                ),
         .EXU2_pc_plus_imm                  (EXU2_pc_plus_imm          ),
         .EXU2_rs1_plus_imm                 (EXU2_rs1_plus_imm         ),
         .EXU2_csr_plus_imm                 (EXU2_csr_plus_imm         ),
