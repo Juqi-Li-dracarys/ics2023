@@ -31,8 +31,8 @@ word_t* cpu_gpr = NULL;
 word_t* cpu_csr = NULL;
 
 // bench counter
-word_t* icache_counter = NULL;
-word_t* dcache_counter = NULL;
+word_t* icache_hit_counter = NULL;
+word_t* icache_miss_counter = NULL;
 
 // init the running state of our simulator
 SimState sim_state = { .state = SIM_STOP };
@@ -62,8 +62,8 @@ static void statistic() {
         Log("Finish running in less than 1 us and can not calculate the simulation frequency");
     if(g_nr_guest_inst)
         Log("CPI = " "%f" " inst/clock", (double)g_nr_guest_clock / (double)g_nr_guest_inst); 
-    // if(!icache_counter) 
-        Log("ICACEH HIT rate = " "%f", (double)*icache_counter / (double)g_nr_guest_inst); 
+    if(icache_hit_counter && g_nr_guest_inst) 
+        Log("ICACEH HIT rate = " "%f", (double)*icache_hit_counter / (double)*icache_miss_counter+*icache_hit_counter); 
     return;
 }
 

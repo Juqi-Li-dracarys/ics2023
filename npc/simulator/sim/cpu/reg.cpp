@@ -58,5 +58,9 @@ extern "C" void set_csr_ptr(const svOpenArrayHandle r) {
 
 // bench counter
 extern "C" void set_icache_hit_counter(const svOpenArrayHandle r) {
-    icache_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
+    icache_hit_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
+extern "C" void set_icache_miss_counter(const svOpenArrayHandle r) {
+    icache_miss_counter = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }

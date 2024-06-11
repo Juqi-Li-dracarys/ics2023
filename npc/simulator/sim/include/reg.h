@@ -7,8 +7,8 @@
 extern word_t *cpu_gpr;
 extern word_t *cpu_csr;
 
-extern word_t* icache_counter;
-extern word_t* dcache_counter;
+extern word_t* icache_hit_counter;
+extern word_t* icache_miss_counter;
 
 extern const char *regs[];
 
