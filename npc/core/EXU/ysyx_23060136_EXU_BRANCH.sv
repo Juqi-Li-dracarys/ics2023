@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-06-11 11:03:39 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-11 11:16:54
+ * @Last Modified time: 2024-06-11 12:02:42
  */
 
 
@@ -64,7 +64,7 @@ module ysyx_23060136_EXU_BRANCH (
 
                                                 
     // predict wrong, so flush the whole pipeline
-    assign   PCSrc             =  BHT_pre_false;
+    assign   PCSrc             =  (EXU2_Btype & BHT_pre_false) | (should_jump & !EXU2_Btype);
                                             
     assign   BRANCH_flushID    =  PCSrc;
     assign   BRANCH_flushIF    =  PCSrc;
