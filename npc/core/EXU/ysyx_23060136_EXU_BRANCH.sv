@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-06-11 11:03:39 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-11 12:02:42
+ * @Last Modified time: 2024-06-11 12:15:28
  */
 
 
@@ -56,7 +56,9 @@ module ysyx_23060136_EXU_BRANCH (
                                                         ({`ysyx_23060136_BITS_W {EXU2_rs1_plus_imm}} & EXU2_HAZARD_rs1_data)    |
                                                         ({`ysyx_23060136_BITS_W {EXU2_csr_plus_imm}} & EXU2_HAZARD_csr_rs_data) ;
 
-    assign   branch_target     =  adder_da + EXU2_imm;
+    
+                                                        
+    assign   branch_target     =  !should_jump ? (BHT_pc + 'h04) : (adder_da + EXU2_imm);
 
     // judge whether to jump
     wire     should_jump       =  EXU2_jump & ~((EXU2_cmp_eq & ~EXU2_ALU_Zero) | (EXU2_cmp_neq & EXU2_ALU_Zero)   |
@@ -64,7 +66,7 @@ module ysyx_23060136_EXU_BRANCH (
 
                                                 
     // predict wrong, so flush the whole pipeline
-    assign   PCSrc             =  (EXU2_Btype & BHT_pre_false) | (should_jump & !EXU2_Btype);
+    assign   PCSrc             =  (BHT_pre_false) | (should_jump & !EXU2_Btype);
                                             
     assign   BRANCH_flushID    =  PCSrc;
     assign   BRANCH_flushIF    =  PCSrc;
