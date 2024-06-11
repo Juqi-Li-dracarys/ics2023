@@ -71,7 +71,7 @@ static void statistic() {
     if(icache_hit_counter && g_nr_guest_inst) 
         Log("ICACHE hit rate = " "%f", (double)*icache_hit_counter / (double)(*icache_miss_counter + *icache_hit_counter)); 
     if(dcache_hit_counter && g_nr_guest_inst) 
-        Log("DCACHE hit rate = " "%f" "\nDCACHE wb rate = " "%f", (double)*dcache_hit_counter / (double)(*dcache_miss_counter + *dcache_hit_counter + *dcache_wb_counter),
+        Log("DCACHE hit rate = " "%f" ", wb rate = " "%f", (double)*dcache_hit_counter / (double)(*dcache_miss_counter + *dcache_hit_counter + *dcache_wb_counter),
                                                                 (double)*dcache_wb_counter  / (double)(*dcache_miss_counter + *dcache_hit_counter + *dcache_wb_counter)); 
     return;
 
