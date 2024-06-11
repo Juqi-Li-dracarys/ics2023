@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 22:03:38 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-07 17:27:04
+ * @Last Modified time: 2024-06-10 21:47:08
  */
 
 
@@ -274,7 +274,6 @@ module ysyx_23060136_IDU_DECODE (
     wire  rv64_jal      = opcode_6_5_11 & opcode_4_2_011 & opcode_1_0_11;
 
     // U type IDU_inst
-
     wire  rv64_auipc    = opcode_6_5_00 & opcode_4_2_101 & opcode_1_0_11;
     wire  rv64_lui      = opcode_6_5_01 & opcode_4_2_101 & opcode_1_0_11;
 

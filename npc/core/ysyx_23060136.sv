@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-11 16:43:25 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-11 21:42:39
+ * @Last Modified time: 2024-06-10 23:37:22
  */
 
 
@@ -200,6 +200,13 @@ module ysyx_23060136 (
     wire                                                      IFU_error_signal           ;
   
 
+    wire              [  `ysyx_23060136_BITS_W -1:0]   BHT_pc                            ;
+    // correct predict
+    wire                                               BHT_pre_true                      ;
+    // wrong predict
+    wire                                               BHT_pre_false                     ;
+    wire                                               BHT_pre_take                      ; 
+
 
     ysyx_23060136_IFU_TOP  ysyx_23060136_IFU_TOP_inst (
         .clk                               (clk                       ),
@@ -208,10 +215,14 @@ module ysyx_23060136 (
         .BRANCH_flushIF                    (BRANCH_flushIF            ),
         .BRANCH_branch_target              (BRANCH_branch_target      ),
         .BRANCH_PCSrc                      (BRANCH_PCSrc              ),
+        .BHT_pc                            (BHT_pc                    ),
+        .BHT_pre_true                      (BHT_pre_true              ),
+        .BHT_pre_false                     (BHT_pre_false             ),
         .IFU_o_inst                        (IFU_o_inst                ),
         .IFU_o_pc                          (IFU_o_pc                  ),
         .IFU_o_valid                       (IFU_o_valid               ),
         .IFU_o_commit                      (IFU_o_commit              ),
+        .BHT_pre_take                      (BHT_pre_take              ),
         .ARBITER_IFU_arready               (ARBITER_IFU_arready       ),
         .ARBITER_IFU_arvalid               (ARBITER_IFU_arvalid       ),
         .ARBITER_IFU_araddr                (ARBITER_IFU_araddr        ),
@@ -250,7 +261,7 @@ module ysyx_23060136 (
         .io_sram3_wmask                    (io_sram3_wmask            ),
         .io_sram3_wdata                    (io_sram3_wdata            ),
         .io_sram3_rdata                    (io_sram3_rdata            ) 
-  );
+      );
 
 
 
@@ -261,6 +272,7 @@ module ysyx_23060136 (
     wire                                                      IDU_i_commit               ;
     wire                [  `ysyx_23060136_BITS_W-1:0]         IDU_i_pc                   ;
     wire                [  `ysyx_23060136_INST_W-1:0]         IDU_i_inst                 ;
+    wire                                                      IDU_i_pre_take             ;
 
 
     ysyx_23060136_IFU_IDU_SEG  ysyx_23060136_IFU_IDU_SEG_inst (
@@ -273,7 +285,9 @@ module ysyx_23060136 (
         .IFU_o_commit                      (IFU_o_commit              ),
         .IDU_i_commit                      (IDU_i_commit              ),
         .IDU_i_pc                          (IDU_i_pc                  ),
-        .IDU_i_inst                        (IDU_i_inst                ) 
+        .IDU_i_inst                        (IDU_i_inst                ),
+        .BHT_pre_take                      (BHT_pre_take              ),
+        .IDU_i_pre_take                    (IDU_i_pre_take            )
       );
 
 
@@ -293,6 +307,7 @@ module ysyx_23060136 (
     wire               [  `ysyx_23060136_BITS_W-1:0]         IDU_o_pc                     ;
     wire               [  `ysyx_23060136_INST_W-1:0]         IDU_o_inst                   ;
     wire                                                     IDU_o_commit                 ;
+    wire                                                     IDU_o_pre_take               ;
     wire               [    `ysyx_23060136_GPR_W-1:0]        IDU_o_rd                     ;
     wire               [    `ysyx_23060136_GPR_W-1:0]        IDU_o_rs1                    ;
     wire               [    `ysyx_23060136_GPR_W-1:0]        IDU_o_rs2                    ;
@@ -370,6 +385,7 @@ module ysyx_23060136 (
         .IDU_i_pc                          (IDU_i_pc                  ),
         .IDU_i_inst                        (IDU_i_inst                ),
         .IDU_i_commit                      (IDU_i_commit              ),
+        .IDU_i_pre_take                    (IDU_i_pre_take            ),
         .WB_o_rd                           (WB_o_rd                   ),
         .WB_o_RegWr                        (WB_o_RegWr                ),
         .WB_o_rf_busW                      (WB_o_rf_busW              ),
@@ -382,6 +398,7 @@ module ysyx_23060136 (
         .IDU_o_pc                          (IDU_o_pc                  ),
         .IDU_o_inst                        (IDU_o_inst                ),
         .IDU_o_commit                      (IDU_o_commit              ),
+        .IDU_o_pre_take                    (IDU_o_pre_take            ),
         .IDU_o_rd                          (IDU_o_rd                  ),
         .IDU_o_rs1                         (IDU_o_rs1                 ),
         .IDU_o_rs2                         (IDU_o_rs2                 ),
@@ -468,6 +485,7 @@ module ysyx_23060136 (
     wire               [  `ysyx_23060136_BITS_W-1:0]         EXU_i_pc                     ;
     wire               [  `ysyx_23060136_INST_W-1:0]         EXU_i_inst                   ;
     wire                                                     EXU_i_commit                 ;
+    wire                                                     EXU_i_pre_take               ;
     wire               [    `ysyx_23060136_GPR_W-1:0]        EXU_i_rd                     ;
     wire               [    `ysyx_23060136_GPR_W-1:0]        EXU_i_rs1                    ;
     wire               [    `ysyx_23060136_GPR_W-1:0]        EXU_i_rs2                    ;
@@ -546,6 +564,7 @@ module ysyx_23060136 (
         .IDU_o_pc                          (IDU_o_pc                  ),
         .IDU_o_inst                        (IDU_o_inst                ),
         .IDU_o_commit                      (IDU_o_commit              ),
+        .IDU_o_pre_take                    (IDU_o_pre_take            ),
         .IDU_o_rd                          (IDU_o_rd                  ),
         .IDU_o_rs1                         (IDU_o_rs1                 ),
         .IDU_o_rs2                         (IDU_o_rs2                 ),
@@ -568,6 +587,7 @@ module ysyx_23060136 (
         .EXU_i_pc                          (EXU_i_pc                  ),
         .EXU_i_inst                        (EXU_i_inst                ),
         .EXU_i_commit                      (EXU_i_commit              ),
+        .EXU_i_pre_take                    (EXU_i_pre_take            ),
         .EXU_i_rd                          (EXU_i_rd                  ),
         .EXU_i_rs1                         (EXU_i_rs1                 ),
         .EXU_i_rs2                         (EXU_i_rs2                 ),
@@ -727,6 +747,12 @@ module ysyx_23060136 (
         .EXU_i_pc                          (EXU_i_pc                  ),
         .EXU_i_inst                        (EXU_i_inst                ),
         .EXU_i_commit                      (EXU_i_commit              ),
+        .EXU_i_pre_take                    (EXU_i_pre_take            ),
+
+        .BHT_pc                            (BHT_pc                    ),
+        .BHT_pre_false                     (BHT_pre_false             ),
+        .BHT_pre_true                      (BHT_pre_true              ),
+
         .EXU_i_rd                          (EXU_i_rd                  ),
         .EXU_i_imm                         (EXU_i_imm                 ),
         .EXU_i_rs1_data                    (EXU_i_rs1_data            ),

@@ -24,6 +24,7 @@ module ysyx_23060136_IDU_EXU_SEG (
         input              [  `ysyx_23060136_BITS_W-1:0]         IDU_o_pc                   ,
         input              [  `ysyx_23060136_INST_W-1:0]         IDU_o_inst                 ,
         input                                                    IDU_o_commit               ,
+        input                                                    IDU_o_pre_take             ,
         input              [   `ysyx_23060136_GPR_W-1:0]         IDU_o_rd                   ,
         input              [   `ysyx_23060136_GPR_W-1:0]         IDU_o_rs1                  ,
         input              [   `ysyx_23060136_GPR_W-1:0]         IDU_o_rs2                  ,
@@ -51,6 +52,7 @@ module ysyx_23060136_IDU_EXU_SEG (
         output    logic    [`ysyx_23060136_BITS_W-1 : 0]         EXU_i_pc                   ,
         output    logic    [`ysyx_23060136_INST_W-1 : 0]         EXU_i_inst                 ,
         output    logic                                          EXU_i_commit               ,
+        output    logic                                          EXU_i_pre_take             ,
         output    logic    [`ysyx_23060136_GPR_W-1 : 0]          EXU_i_rd                   ,
         output    logic    [`ysyx_23060136_GPR_W-1 : 0]          EXU_i_rs1                  ,
         output    logic    [`ysyx_23060136_GPR_W-1 : 0]          EXU_i_rs2                  ,
@@ -206,7 +208,7 @@ module ysyx_23060136_IDU_EXU_SEG (
             // Reset all EXU outputs
             EXU_i_pc           <=  `ysyx_23060136_PC_RST;
             EXU_i_inst         <=  `ysyx_23060136_NOP;
-            // after reste or flush, commit is equal to 1
+            EXU_i_pre_take     <=  `ysyx_23060136_false;
             EXU_i_commit       <=  `ysyx_23060136_false;
             EXU_i_rd           <=  `ysyx_23060136_false;
             EXU_i_rs1          <=  `ysyx_23060136_false;
@@ -286,6 +288,7 @@ module ysyx_23060136_IDU_EXU_SEG (
             EXU_i_pc           <=  FORWARD_stallEX  ?  EXU_i_pc      :  IDU_o_pc ;
             EXU_i_inst         <=  FORWARD_stallEX  ?  EXU_i_inst    :  IDU_o_inst ;
             EXU_i_commit       <=  FORWARD_stallEX  ?  EXU_i_commit  :  IDU_o_commit ;
+            EXU_i_pre_take     <=  FORWARD_stallEX  ?  EXU_i_pre_take :  IDU_o_pre_take ;
             EXU_i_rd           <=  FORWARD_stallEX  ?  EXU_i_rd      :  IDU_o_rd;    
             EXU_i_rs1          <=  FORWARD_stallEX  ?  EXU_i_rs1     :  IDU_o_rs1;  
             EXU_i_rs2          <=  FORWARD_stallEX  ?  EXU_i_rs2     :  IDU_o_rs2;

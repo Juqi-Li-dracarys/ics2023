@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-05 15:25:15 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-07 14:35:17
+ * @Last Modified time: 2024-06-10 23:32:08
  */
 
  
@@ -14,6 +14,7 @@ module ysyx_23060136_IFU_SEG(
     input                                                 clk                        ,
     input                                                 rst                        ,
     input                                                 BRANCH_flushIF             ,
+    input                                                 BHT_flushIF                ,
     input                                                 FORWARD_stallIF            ,
     input              [`ysyx_23060136_BITS_W - 1 : 0]    IFU1_pc                    ,
     output      logic  [`ysyx_23060136_BITS_W - 1 : 0]    IFU2_pc                    ,
@@ -21,7 +22,7 @@ module ysyx_23060136_IFU_SEG(
 );
 
     always_ff @(posedge clk) begin : update_pc
-        if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
+        if(rst || ((BRANCH_flushIF | BHT_flushIF) & ~FORWARD_stallIF)) begin
             IFU2_pc      <=  `ysyx_23060136_PC_RST;
             IFU2_commit  <=  `ysyx_23060136_false;
         end
@@ -32,5 +33,7 @@ module ysyx_23060136_IFU_SEG(
     end
 
 endmodule
+
+
 
 

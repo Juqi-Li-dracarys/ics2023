@@ -24,9 +24,12 @@ module ysyx_23060136_IFU_IDU_SEG (
         input              [  `ysyx_23060136_BITS_W-1:0]         IFU_o_pc                   ,
         input              [  `ysyx_23060136_INST_W-1:0]         IFU_o_inst                 ,
         input                                                    IFU_o_commit               ,
+        input                                                    BHT_pre_take               ,
+
         output      logic                                        IDU_i_commit               ,
         output      logic  [`ysyx_23060136_BITS_W-1 : 0]         IDU_i_pc                   ,
-        output      logic  [`ysyx_23060136_INST_W-1 : 0]         IDU_i_inst        
+        output      logic  [`ysyx_23060136_INST_W-1 : 0]         IDU_i_inst                 ,
+        output      logic                                        IDU_i_pre_take               
     );
 
     
@@ -35,11 +38,13 @@ module ysyx_23060136_IFU_IDU_SEG (
             IDU_i_pc     <=  `ysyx_23060136_PC_RST;
             IDU_i_inst   <=  `ysyx_23060136_NOP;
             IDU_i_commit <=  `ysyx_23060136_false;
+            IDU_i_pre_take <= `ysyx_23060136_false;
         end
         else if(!FORWARD_stallID) begin
             IDU_i_pc     <=   IFU_o_pc;
             IDU_i_inst   <=   IFU_o_inst;
             IDU_i_commit <=   IFU_o_commit;
+            IDU_i_pre_take <= BHT_pre_take;
         end
     end
     
