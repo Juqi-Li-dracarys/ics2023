@@ -14,6 +14,9 @@
 // ===========================================================================
 module ysyx_23060136_EXU_BRANCH (
         // data
+        input                                                     clk                         ,
+        input                                                     rst                         ,
+        input                                                     FORWARD_stallEX2            ,
         input              [  `ysyx_23060136_BITS_W -1:0]         EXU2_pc                     ,
         // data from hazard in EXU1
         input              [  `ysyx_23060136_BITS_W -1:0]         EXU2_HAZARD_rs1_data        ,
@@ -77,6 +80,37 @@ module ysyx_23060136_EXU_BRANCH (
     // wrong predict
     assign   BHT_pre_false     =  EXU2_Btype & ((should_jump & !EXU2_pre_take)  | (!should_jump & EXU2_pre_take));
     assign   BHT_pre_true      =  EXU2_Btype & ((should_jump & EXU2_pre_take)   | (!should_jump & !EXU2_pre_take));
+
+
+    `ifdef bench_counter
+
+        logic     [`ysyx_23060136_BITS_W-1 : 0]       pre_true_counter;
+        logic     [`ysyx_23060136_BITS_W-1 : 0]       pre_false_counter;
+        
+        // DIP-C in verilog
+        import "DPI-C" function void set_pre_true_counter(input logic [`ysyx_23060136_BITS_W-1 : 0] a []);
+        import "DPI-C" function void set_pre_false_counter(input logic [`ysyx_23060136_BITS_W-1 : 0] a []);
+
+        // set the ptr to register
+        initial begin
+            set_pre_true_counter(pre_true_counter);
+            set_pre_false_counter(pre_false_counter);
+        end
+
+        always_ff @(posedge clk) begin : icache_counter_update
+            if(rst) begin
+                pre_true_counter  <=  `ysyx_23060136_false;
+                pre_false_counter <=  `ysyx_23060136_false;
+            end
+            else if(!FORWARD_stallEX2 & BHT_pre_true) begin
+                pre_true_counter  <=  pre_true_counter + 'h1;
+            end
+            else if(!FORWARD_stallEX2 & BHT_pre_false) begin
+                pre_false_counter  <=  pre_false_counter + 'h1;
+            end
+        end   
+                                                      
+`endif
 
 
 endmodule
