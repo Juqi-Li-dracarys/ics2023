@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-12 09:14:21 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-10 10:17:32
+ * @Last Modified time: 2024-06-11 12:16:14
  */
 
 #define CONFIG_AUDIO_CTL_MMIO 0xa0000200
@@ -69,7 +69,7 @@
 // watch/break point
 #define CONFIG_WBCHECK 1
 
-// wave record
-#define WAVE_RECORD 1
+// // wave record
+// #define WAVE_RECORD 1
 
 
