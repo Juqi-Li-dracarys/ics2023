@@ -21,6 +21,7 @@ module ysyx_23060136_IFU_ICACHE (
       input              [  `ysyx_23060136_BITS_W-1:0]  IFU1_pc                    ,
 
       input                                             BRANCH_flushIF             ,
+      input                                             BHT_flushIF                ,   
       input                                             FORWARD_stallIF            ,
       // ===========================================================================
       // Arbiter AXI interface 
@@ -203,7 +204,7 @@ module ysyx_23060136_IFU_ICACHE (
     end
 
     always_ff @(posedge clk) begin : c_state_machine
-        if(rst || (BRANCH_flushIF & !FORWARD_stallIF)) begin
+        if(rst || ((BRANCH_flushIF | BHT_flushIF) & !FORWARD_stallIF)) begin
             c_state <=  `ysyx_23060136_icache_idle;
         end
         else begin
@@ -251,7 +252,7 @@ module ysyx_23060136_IFU_ICACHE (
 
 
     always_ff @(posedge clk) begin : cache_valid_update
-        if(rst || (BRANCH_flushIF & !FORWARD_stallIF)) begin
+        if(rst || ((BRANCH_flushIF | BHT_flushIF) & !FORWARD_stallIF)) begin
             cache_inst_hi   <= `ysyx_23060136_false;
             cache_index_buf <= `ysyx_23060136_false;
             hit_line_id_buf <= `ysyx_23060136_false;
@@ -313,7 +314,7 @@ module ysyx_23060136_IFU_ICACHE (
     
 
     always_ff @(posedge clk) begin : state_machine
-        if(rst || (BRANCH_flushIF & !FORWARD_stallIF)) begin
+        if(rst || ((BRANCH_flushIF | BHT_flushIF) & !FORWARD_stallIF)) begin
             r_state <=  `ysyx_23060136_idle;
         end
         else begin
@@ -323,7 +324,7 @@ module ysyx_23060136_IFU_ICACHE (
 
 
     always_ff @(posedge clk) begin : pc_valid
-        if(rst || (BRANCH_flushIF & !FORWARD_stallIF)) begin
+        if(rst || ((BRANCH_flushIF | BHT_flushIF) & !FORWARD_stallIF)) begin
             ARBITER_IFU_arvalid <= `ysyx_23060136_false;       
         end
         else if((r_state_idle & r_state_next == `ysyx_23060136_ready)) begin
@@ -335,7 +336,7 @@ module ysyx_23060136_IFU_ICACHE (
     end
 
     always_ff @(posedge clk) begin : addr_update
-        if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
+        if(rst || ((BRANCH_flushIF | BHT_flushIF) & ~FORWARD_stallIF)) begin
             ARBITER_IFU_araddr <= `ysyx_23060136_false;
             ARBITER_IFU_arsize <= `ysyx_23060136_false;
             arbiter_inst_hi    <= `ysyx_23060136_false;
@@ -348,7 +349,7 @@ module ysyx_23060136_IFU_ICACHE (
     end
 
     always_ff @(posedge clk) begin : inst_valid_trans
-        if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
+        if(rst || ((BRANCH_flushIF | BHT_flushIF) & ~FORWARD_stallIF)) begin
             inst_valid <= `ysyx_23060136_true;
         end
         else if((r_state_idle & r_state_next == `ysyx_23060136_ready) || (c_state_idle & c_state_next == `ysyx_23060136_icache_r_hit) ) begin
@@ -360,7 +361,7 @@ module ysyx_23060136_IFU_ICACHE (
     end
 
     always_ff @(posedge clk) begin : inst_update
-        if(rst || (BRANCH_flushIF & ~FORWARD_stallIF)) begin
+        if(rst || ((BRANCH_flushIF | BHT_flushIF) & ~FORWARD_stallIF)) begin
             IFU_o_inst <= `ysyx_23060136_NOP;
         end
         else if((r_state_next == `ysyx_23060136_idle & r_state_wait))begin

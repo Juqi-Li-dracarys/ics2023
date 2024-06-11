@@ -123,6 +123,7 @@ module ysyx_23060136_IFU_TOP(
             .rst                               (rst                       ),
             .IFU1_pc                           (IFU1_pc                   ),
             .BRANCH_flushIF                    (BRANCH_flushIF            ),
+            .BHT_flushIF                       (BHT_flushIF               ),
             .FORWARD_stallIF                   (FORWARD_stallIF           ),
             .ARBITER_IFU_arready               (ARBITER_IFU_arready       ),
             .ARBITER_IFU_arvalid               (ARBITER_IFU_arvalid       ),
