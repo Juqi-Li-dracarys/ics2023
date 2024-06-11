@@ -73,7 +73,7 @@ module ysyx_23060136_IFU_ICACHE (
       // output for the next stage
       output   logic     [  `ysyx_23060136_INST_W-1:0]  IFU_o_inst                 ,
       output   logic                                    inst_valid                 ,
-      output   logic                                    IFU_error_signal                                           
+      output   logic                                    IFU_error_signal                                                 
 );
     
 
@@ -150,6 +150,7 @@ module ysyx_23060136_IFU_ICACHE (
                                                                      {`ysyx_23060136_INST_W{(cache_index_buf[7 : 6] == 2'b10)}}  & (hit_line_id_buf == 1'b1 ? (cache_inst_hi ? io_sram2_rdata[127 : 96] : io_sram2_rdata[95 : 64]) : (cache_inst_hi ? io_sram2_rdata[63 : 32] : io_sram2_rdata[31 : 0])) |
                                                                      {`ysyx_23060136_INST_W{(cache_index_buf[7 : 6] == 2'b11)}}  & (hit_line_id_buf == 1'b1 ? (cache_inst_hi ? io_sram3_rdata[127 : 96] : io_sram3_rdata[95 : 64]) : (cache_inst_hi ? io_sram3_rdata[63 : 32] : io_sram3_rdata[31 : 0])) ;
     
+
     // ===========================================================================
     // cache interface     
     // addr = group id
@@ -383,6 +384,38 @@ module ysyx_23060136_IFU_ICACHE (
             IFU_error_signal  <=  (ARBITER_IFU_rresp != `ysyx_23060136_OKAY) || (ARBITER_IFU_rid !=  ARBITER_IFU_arid);
         end
     end
+
+
+    `ifdef bench_counter
+        logic                                         inst_valid_delay1;
+        logic     [`ysyx_23060136_BITS_W-1 : 0]       icache_hit_counter;
+        
+        // DIP-C in verilog
+        import "DPI-C" function void set_icache_hit_counter(input logic [`ysyx_23060136_BITS_W-1 : 0] a []);
+
+        // set the ptr to register
+        initial begin
+            set_icache_hit_counter(icache_hit_counter);
+        end
+
+        always_ff @(posedge clk) begin
+            if(rst) begin
+                inst_valid_delay1 <= `ysyx_23060136_false;
+            end
+            else begin
+                inst_valid_delay1 <= inst_valid;
+            end
+        end
+
+        always_ff @(posedge clk) begin : icache_counter_update
+            if(rst) begin
+                icache_hit_counter <=  `ysyx_23060136_false;
+            end
+            else if(inst_valid & !inst_valid_delay1) begin
+                icache_hit_counter  <=  icache_hit_counter + 'h1;
+            end
+        end                                                 
+    `endif
 
 endmodule
 

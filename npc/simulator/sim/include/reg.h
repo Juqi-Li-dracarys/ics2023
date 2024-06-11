@@ -7,6 +7,9 @@
 extern word_t *cpu_gpr;
 extern word_t *cpu_csr;
 
+extern word_t* icache_counter;
+extern word_t* dcache_counter;
+
 extern const char *regs[];
 
 static inline int check_reg_idx(int idx) {
