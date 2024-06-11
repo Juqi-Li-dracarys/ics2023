@@ -62,7 +62,7 @@ static void statistic() {
         Log("Finish running in less than 1 us and can not calculate the simulation frequency");
     if(g_nr_guest_inst)
         Log("CPI = " "%f" " inst/clock", (double)g_nr_guest_clock / (double)g_nr_guest_inst); 
-    if(!icache_counter) 
+    // if(!icache_counter) 
         Log("ICACEH HIT rate = " "%f", (double)*icache_counter / (double)g_nr_guest_inst); 
     return;
 }
