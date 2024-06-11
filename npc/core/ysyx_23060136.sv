@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-11 16:43:25 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-06-10 23:37:22
+ * @Last Modified time: 2024-06-11 11:20:48
  */
 
 
@@ -351,6 +351,7 @@ module ysyx_23060136 (
     wire                                                     IDU_o_ALU_i2_4               ;
     wire                                                     IDU_o_ALU_i2_csr             ;
     wire                                                     IDU_o_jump                   ;
+    wire                                                     IDU_o_Btype                  ;
     wire                                                     IDU_o_pc_plus_imm            ;
     wire                                                     IDU_o_rs1_plus_imm           ;
     wire                                                     IDU_o_csr_plus_imm           ;
@@ -439,6 +440,7 @@ module ysyx_23060136 (
         .IDU_o_ALU_i2_4                    (IDU_o_ALU_i2_4            ),
         .IDU_o_ALU_i2_csr                  (IDU_o_ALU_i2_csr          ),
         .IDU_o_jump                        (IDU_o_jump                ),
+        .IDU_o_Btype                       (IDU_o_Btype               ),
         .IDU_o_pc_plus_imm                 (IDU_o_pc_plus_imm         ),
         .IDU_o_rs1_plus_imm                (IDU_o_rs1_plus_imm        ),
         .IDU_o_csr_plus_imm                (IDU_o_csr_plus_imm        ),
@@ -530,6 +532,7 @@ module ysyx_23060136 (
     wire                                                     EXU_i_ALU_i2_csr             ;
 
     wire                                                     EXU_i_jump                   ;
+    wire                                                     EXU_i_Btype                  ;
     wire                                                     EXU_i_pc_plus_imm            ;
     wire                                                     EXU_i_rs1_plus_imm           ;
     wire                                                     EXU_i_csr_plus_imm           ;
@@ -657,6 +660,7 @@ module ysyx_23060136 (
         .EXU_i_ALU_i2_4                    (EXU_i_ALU_i2_4            ),
         .EXU_i_ALU_i2_csr                  (EXU_i_ALU_i2_csr          ),
         .IDU_o_jump                        (IDU_o_jump                ),
+        .IDU_o_Btype                       (IDU_o_Btype               ),
         .IDU_o_pc_plus_imm                 (IDU_o_pc_plus_imm         ),
         .IDU_o_rs1_plus_imm                (IDU_o_rs1_plus_imm        ),
         .IDU_o_csr_plus_imm                (IDU_o_csr_plus_imm        ),
@@ -665,6 +669,7 @@ module ysyx_23060136 (
         .IDU_o_cmp_ge                      (IDU_o_cmp_ge              ),
         .IDU_o_cmp_lt                      (IDU_o_cmp_lt              ),
         .EXU_i_jump                        (EXU_i_jump                ),
+        .EXU_i_Btype                       (EXU_i_Btype               ),
         .EXU_i_pc_plus_imm                 (EXU_i_pc_plus_imm         ),
         .EXU_i_rs1_plus_imm                (EXU_i_rs1_plus_imm        ),
         .EXU_i_csr_plus_imm                (EXU_i_csr_plus_imm        ),
@@ -790,6 +795,7 @@ module ysyx_23060136 (
         .EXU_i_ALU_i2_4                    (EXU_i_ALU_i2_4            ),
         .EXU_i_ALU_i2_csr                  (EXU_i_ALU_i2_csr          ),
         .EXU_i_jump                        (EXU_i_jump                ),
+        .EXU_i_Btype                       (EXU_i_Btype               ),
         .EXU_i_pc_plus_imm                 (EXU_i_pc_plus_imm         ),
         .EXU_i_rs1_plus_imm                (EXU_i_rs1_plus_imm        ),
         .EXU_i_csr_plus_imm                (EXU_i_csr_plus_imm        ),

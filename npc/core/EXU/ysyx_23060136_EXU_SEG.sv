@@ -2,7 +2,7 @@
  * @Author: Juqi Li @ NJU 
  * @Date: 2024-04-07 14:31:11 
  * @Last Modified by: Juqi Li @ NJU
- * @Last Modified time: 2024-04-10 17:54:07
+ * @Last Modified time: 2024-06-11 11:12:39
  */
 
 
@@ -35,6 +35,7 @@ module ysyx_23060136_EXU_SEG (
 
     // jump target
     input                                                         EXU1_jump                   ,
+    input                                                         EXU1_Btype                  ,
     input                                                         EXU1_pc_plus_imm            ,
     input                                                         EXU1_rs1_plus_imm           ,
     input                                                         EXU1_csr_plus_imm           ,
@@ -81,6 +82,7 @@ module ysyx_23060136_EXU_SEG (
 
     // jump target
     output    logic                                               EXU2_jump                   ,
+    output    logic                                               EXU2_Btype                  ,
     output    logic                                               EXU2_pc_plus_imm            ,
     output    logic                                               EXU2_rs1_plus_imm           ,
     output    logic                                               EXU2_csr_plus_imm           ,
@@ -124,8 +126,10 @@ module ysyx_23060136_EXU_SEG (
             EXU2_HAZARD_rs1_data    <=   `ysyx_23060136_false;
             EXU2_HAZARD_rs2_data    <=   `ysyx_23060136_false;                   
             EXU2_HAZARD_csr_rs_data <=   `ysyx_23060136_false;                                     
-            EXU2_imm                <=   `ysyx_23060136_false;       
-            EXU2_jump               <=   `ysyx_23060136_false; 
+            EXU2_imm                <=   `ysyx_23060136_false;  
+
+            EXU2_jump               <=   `ysyx_23060136_false;
+            EXU2_Btype              <=   `ysyx_23060136_false;
             EXU2_pc_plus_imm        <=   `ysyx_23060136_false; 
             EXU2_rs1_plus_imm       <=   `ysyx_23060136_false;
             EXU2_csr_plus_imm       <=   `ysyx_23060136_false; 
@@ -160,8 +164,10 @@ module ysyx_23060136_EXU_SEG (
             EXU2_HAZARD_rs1_data    <=     EXU1_HAZARD_rs1_data    ;
             EXU2_HAZARD_rs2_data    <=     EXU1_HAZARD_rs2_data    ;                              
             EXU2_HAZARD_csr_rs_data <=     EXU1_HAZARD_csr_rs_data ;                              
-            EXU2_imm                <=     EXU1_imm                ;                              
-            EXU2_jump               <=     EXU1_jump               ;                              
+            EXU2_imm                <=     EXU1_imm                ;   
+
+            EXU2_jump               <=     EXU1_jump               ; 
+            EXU2_Btype              <=     EXU1_Btype              ;                       
             EXU2_pc_plus_imm        <=     EXU1_pc_plus_imm        ;                              
             EXU2_rs1_plus_imm       <=     EXU1_rs1_plus_imm       ;                              
             EXU2_csr_plus_imm       <=     EXU1_csr_plus_imm       ;                              
