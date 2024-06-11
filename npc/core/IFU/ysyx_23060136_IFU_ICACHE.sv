@@ -386,7 +386,8 @@ module ysyx_23060136_IFU_ICACHE (
     end
 
 
-    `ifdef bench_counter
+`ifdef bench_counter
+
         logic     [`ysyx_23060136_BITS_W-1 : 0]       icache_miss_counter;
         logic     [`ysyx_23060136_BITS_W-1 : 0]       icache_hit_counter;
         
@@ -399,7 +400,7 @@ module ysyx_23060136_IFU_ICACHE (
             set_icache_miss_counter(icache_miss_counter);
             set_icache_hit_counter(icache_hit_counter);
         end
-        
+
         always_ff @(posedge clk) begin : icache_counter_update
             if(rst) begin
                 icache_hit_counter <=  `ysyx_23060136_false;
@@ -411,8 +412,9 @@ module ysyx_23060136_IFU_ICACHE (
             else if(!FORWARD_stallIF & !cache_hit & r_state_idle & c_state_idle) begin
                 icache_miss_counter  <=  icache_miss_counter + 'h1;
             end
-        end                                                 
-    `endif
+        end   
+                                                      
+`endif
 
 endmodule
 
