@@ -1,8 +1,8 @@
 #include <stdbool.h>
 #include <device/map.h>
 
-#define SCREEN_W 160
-#define SCREEN_H 120
+#define SCREEN_W 128
+#define SCREEN_H 128
 
 static uint32_t screen_width() {
   return SCREEN_W;
