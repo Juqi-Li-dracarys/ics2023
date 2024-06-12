@@ -2,7 +2,7 @@
 #include <nemu.h>
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
-#define PIX_POWER 5
+#define PIX_WIDTH 2
 
 volatile uint16_t x_max = 0;
 volatile uint16_t y_max = 0;
@@ -19,7 +19,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
     *cfg = (AM_GPU_CONFIG_T) {
         .present = true, .has_accel = false,
         .width = x_max, .height = y_max,
-        .vmemsz = (x_max * y_max) << PIX_POWER
+        .vmemsz = (x_max * y_max) << PIX_WIDTH
     };
 }
 
@@ -32,7 +32,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   for(j = ctl->y; j < ctl->y + ctl->h; j++) {
     for(i = ctl->x; i < ctl->x + ctl->w; i++) {
       if(i >= 0 && i < x_max && j >= 0 && j < y_max && ctl->pixels != NULL) {
-        outl(FB_ADDR + ((i + (j * x_max)) << PIX_POWER), *((uint32_t *)(ctl->pixels) + k));
+        outl(FB_ADDR + ((i + (j * x_max)) << PIX_WIDTH), *((uint32_t *)(ctl->pixels) + k));
       }
       k++;
     }
