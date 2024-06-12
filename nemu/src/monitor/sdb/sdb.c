@@ -166,37 +166,37 @@ static int cmd_p(char *args) {
 
 // TASK5: Excute the examination progranm for calculation
 static int cmd_e(char *args) {
-  bool success = 0;
-  FILE *file = fopen("/home/dracacys/ics2023/nemu/tools/gen-expr/input", "r");
-  if (file == NULL) {
-        perror("Error opening file");
-        return 1;
-  }
-  int lineCount = 0;
-  char line[10000] = {0}; // Every line char recorder
-  while (fgets(line, sizeof(line), file)) {
-        lineCount++;
-  }
-  rewind(file);
+//   bool success = 0;
+//   FILE *file = fopen("/home/dracacys/ics2023/nemu/tools/gen-expr/input", "r");
+//   if (file == NULL) {
+//         perror("Error opening file");
+//         return 1;
+//   }
+//   int lineCount = 0;
+//   char line[10000] = {0}; // Every line char recorder
+//   while (fgets(line, sizeof(line), file)) {
+//         lineCount++;
+//   }
+//   rewind(file);
 
-  // read every line and store them in the result
-  for (int i = 0; i < lineCount; i++) {
-      if (fgets(line, sizeof(line), file)) {
-          word_t answer,result;
-          char str[10000];
-          if (sscanf(line, "%lu %9999[^\n]", &answer, str) == 2) {
-              result = expr(str, &success);  
-              printf("Line: %d   Result: %lu   Answer: %lu\n", i, result, answer);
-              if (result != answer || success == 0) {
-                printf("Error: the answer is not correct.");
-                assert(0);
-              }
-          }
-      }
-  }
-  fclose(file);
-  printf("Test pass.\n");
-  return 0;
+//   // read every line and store them in the result
+//   for (int i = 0; i < lineCount; i++) {
+//       if (fgets(line, sizeof(line), file)) {
+//           word_t answer,result;
+//           char str[10000];
+//           if (sscanf(line, "%lu %9999[^\n]", &answer, str) == 2) {
+//               result = expr(str, &success);  
+//               printf("Line: %d   Result: %lu   Answer: %lu\n", i, result, answer);
+//               if (result != answer || success == 0) {
+//                 printf("Error: the answer is not correct.");
+//                 assert(0);
+//               }
+//           }
+//       }
+//   }
+//   fclose(file);
+//   printf("Test pass.\n");
+//   return 0;
 }
 
 // TASK6: Set up watching point
