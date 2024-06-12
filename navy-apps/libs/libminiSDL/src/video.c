@@ -140,7 +140,7 @@ If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the  en‐
 tire screen.
 
 */
-// 在 suface 的 (x,y) 处截取一块 w*h 的矩形，之后在画布的 (x,y) 画出相同的矩形
+// 在 surface 的 (x,y) 处截取一块 w*h 的矩形，之后在画布的 (x,y) 画出相同的矩形
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   assert(s);
   if(s->format->palette == NULL && s->format->BitsPerPixel == 32) {
@@ -159,7 +159,7 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
       free(rect);
     }
   }
-  // 加入对仙剑的支持
+  // 加入对仙剑的支持(palatte)
   else if(s->format->palette != NULL && s->format->BitsPerPixel == 8) {
     size_t rect_height = ((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) ? s->h : h;
     size_t rect_width = ((x == 0 && y == 0 && w == 0 && h == 0) || s->flags == SDL_FULLSCREEN) ? s->w : w;
@@ -168,6 +168,7 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
     uint32_t offset = 0;
     for(int j = 0; j < rect_height && j + y < s->h; j++) {
       for(int i = 0; i < rect_width && i + x < s->w; i++) {
+        //palette
         rgb_color = s->format->palette->colors[s->pixels[i + x + (j + y) * (s->w)]];
         // 00RRGGBB
         rect[offset++] = rgb_color.a << 24 | rgb_color.r << 16 | rgb_color.g << 8 | rgb_color.b;
