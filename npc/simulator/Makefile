@@ -29,8 +29,8 @@ VFLAGS 				= --MMD --cc --exe -O3 --threads-dpi all $(VSRC_INC) --unroll-count 1
 					
 #######################################
 # debug option
-# VFLAGS              += --trace
-VFLAGS              += --prof-cfuncs
+VFLAGS              += --trace
+# VFLAGS              += --prof-cfuncs
 #######################################
 
 CINC_PATH 			= -CFLAGS -I$(CSRC_DIR)/include
