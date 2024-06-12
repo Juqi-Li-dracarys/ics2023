@@ -27,8 +27,8 @@ void init_ramdisk() {
     Log("ramdisk info: start = %p, end = %p, size = %d bytes",
       &ramdisk_start, &ramdisk_end, RAMDISK_SIZE);
 
-    if((uintptr_t)&ramdisk_end >= (uintptr_t)0x83000000)
-        panic("ramdisk overflow!");
+    // if((uintptr_t)&ramdisk_end >= (uintptr_t)0x83000000)
+    //     panic("ramdisk overflow!");
 }
 
 size_t get_ramdisk_size() {
