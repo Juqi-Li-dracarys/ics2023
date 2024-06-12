@@ -9,7 +9,9 @@ _start:
   // See amd64 ABI manual for more details
   andq $0xfffffffffffffff0, %rsp
   movq %rax, %rdi
-  movq %rax, %rsp
+
+// Context switch need
+//movq %rax, %rsp
   call call_main
 
 #elif defined(__ISA_X86_64__)
@@ -34,7 +36,8 @@ _start:
   mv s0, zero
 # set the correct sp to the user stack
 # Not the PCB stack
-  mv sp, a0
+// Context switch need
+//  mv sp, a0
   jal call_main
 
 #elif defined(__ISA_LOONGARCH32R__)
