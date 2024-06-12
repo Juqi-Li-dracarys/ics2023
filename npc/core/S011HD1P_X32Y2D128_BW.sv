@@ -35,7 +35,7 @@ module S011HD1P_X32Y2D128_BW (
         if(cen && wen) begin
             ram[A] <= (D & bwen) | (ram[A] & ~bwen);
         end
-        Q <= cen && !wen ? ram[A] : {4{$random}};
+        Q <= cen && !wen ? ram[A] : {128{1'b0}};
     end
 
 endmodule
