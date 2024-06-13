@@ -32,7 +32,7 @@ void init_proc() {
   Log("Initializing processes...");
 
   // Do naive load
-   naive_uload(NULL, "/bin/hello");
+   naive_uload(NULL, "/bin/bmp-test");
 
     //   char *argv[2] = {"--skip", NULL};
     //   char *envp[2] = {NULL};
