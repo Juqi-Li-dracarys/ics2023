@@ -32,16 +32,16 @@ void init_proc() {
   Log("Initializing processes...");
 
   // Do naive load
-//   naive_uload(NULL, "/bin/pal");
+   naive_uload(NULL, "/bin/hello");
 
-      char *argv[2] = {"--skip", NULL};
-      char *envp[2] = {NULL};
+    //   char *argv[2] = {"--skip", NULL};
+    //   char *envp[2] = {NULL};
 
-      switch_boot_pcb();
+    //   switch_boot_pcb();
 
-      // 从内核线程开始执行
-      context_kload(&pcb[0], hello_fun, (void *)1L);
-      context_uload(&pcb[1], "/bin/pal", argv, envp);
+    //   // 从内核线程开始执行
+    //   context_kload(&pcb[0], hello_fun, (void *)1L);
+    //   context_uload(&pcb[1], "/bin/pal", argv, envp);
       Log("Load process done...");
 }
 

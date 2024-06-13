@@ -11,7 +11,8 @@ _start:
   movq %rax, %rdi
 
 // Context switch need
-  movq %rax, %rsp
+//   movq %rax, %rsp
+
   call call_main
 
 #elif defined(__ISA_X86_64__)
@@ -37,7 +38,8 @@ _start:
 # set the correct sp to the user stack
 # Not the PCB stack
 // Context switch need
-    mv sp, a0
+//    mv sp, a0
+
     jal call_main
 
 #elif defined(__ISA_LOONGARCH32R__)
