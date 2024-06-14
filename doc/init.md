@@ -1,7 +1,7 @@
 ### READ ME before the initialization of the project
 
 
-* Exeute the configuration script as below:
+* Execute the configuration script as below:
   ```
   cd ysyx-exam
   source exam-init.sh
@@ -17,14 +17,14 @@
     make menuconfig ## Switch the build target from Linux native to Difftest
     ```
     
-* Update and excute the application ramdisk in navy-app on the NEMU
+* Update and execute the application ramdisk in navy-app on the NEMU
     ```
     cd ../nanos-lite
     make ARCH=riscv64-nemu update
     make ARCH=riscv64-nemu run
     ```
 
-*  Excute the application ramdisk in navy-app on the NPC
+*  Execute the application ramdisk in navy-app on the NPC
     ```
     make ARCH=riscv64-npc run
     ```
