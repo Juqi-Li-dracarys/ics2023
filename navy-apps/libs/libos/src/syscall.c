@@ -48,8 +48,8 @@
 // the end of bbs (initial)
 // 链接的时候ld会默认添加一个名为_end的符号
 
-extern char end;
-uintptr_t prog_break = &end;
+extern char _end;
+uintptr_t prog_break = &_end;
 
 intptr_t _syscall_(intptr_t type, intptr_t a0, intptr_t a1, intptr_t a2) {
   register intptr_t _gpr1 asm (GPR1) = type;
