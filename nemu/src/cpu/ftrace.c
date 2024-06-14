@@ -57,9 +57,9 @@ uint8_t init_ftrace(char *elf_addr) {
             puts("文件类型错误, ftrace 未启动.");
             return 0;
         }
-        if (magic_buf[4] != 0x01) {
-            puts("警告: ELF文件非32位系统生成.");
-        }       
+        // if (magic_buf[4] != 0x01) {
+        //     puts("警告: ELF文件非32位系统生成.");
+        // }       
     }
     fseek(elf_fp, 0, SEEK_SET);
     // 读取ELF头
