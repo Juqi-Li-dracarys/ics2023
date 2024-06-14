@@ -1,9 +1,7 @@
 # "一生一芯"工程项目
 
-这是"一生一芯"的工程项目. 通过运行
-```bash
-bash init.sh subproject-name
-```
-进行初始化, 具体请参考[实验讲义][lecture note].
+This is the ysyx and ICS project(exam version) by LJQ(23060136)
 
-[lecture note]: https://ysyx.oscc.cc/docs/
+For detail information, please refer to the doc/init.md or the official document [lecture note]: https://ysyx.oscc.cc/docs/
+
+
