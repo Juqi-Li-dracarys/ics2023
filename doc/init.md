@@ -1,6 +1,6 @@
 ### READ ME before the initialization of the project
 
-
+* Firstly, make sure you are on the branch: **season_5**, **season_5**, **season_5**!
 * Execute the configuration script as below:
   ```
   cd ysyx-exam
