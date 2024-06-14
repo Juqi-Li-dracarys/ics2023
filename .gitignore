@@ -2,10 +2,10 @@
 *
 !*/
 !/nemu/*
-!/nexus-am/*
 !/nanos-lite/*
 !/navy-apps/*
 !/npc/*
+!/doc/*
 !Makefile
 !README.md
 !.gitignore
