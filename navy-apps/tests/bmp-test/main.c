@@ -4,6 +4,9 @@
 #include <NDL.h>
 #include <BMP.h>
 
+
+uint32_t pix[128 * 128] = {0x00FFFFFF};
+
 int main() {
   NDL_Init(0);
   int w,h;
@@ -12,7 +15,7 @@ int main() {
   assert(bmp);
   printf("opening canvas...\n");
   NDL_OpenCanvas(&w, &h);
-  NDL_DrawRect(bmp, 0, 0, w, h);
+  NDL_DrawRect(pix, 0, 0, w, h);
   free(bmp);
   NDL_Quit();
   printf("Test ends! Spinning...\n");
