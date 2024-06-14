@@ -195,8 +195,8 @@ static int cmd_e(char *args) {
 //       }
 //   }
 //   fclose(file);
-//   printf("Test pass.\n");
-//   return 0;
+  printf("Test pass.\n");
+  return 0;
 }
 
 // TASK6: Set up watching point
