@@ -43,7 +43,8 @@ run: run-env
 
 gdb: run-env
 	$(call git_commit, "gdb NEMU")
-	gdb -s $(BINARY) --args $(NEMU_EXEC)
+	gdb -s $(BINARY) --args $(NEMU_EXEC) /tmp/cores/core.riscv64-nemu-in.35950.dracacys-virtual-machine.1718374791
+
 
 clean-tools = $(dir $(shell find ./tools -maxdepth 2 -mindepth 2 -name "Makefile"))
 $(clean-tools):
