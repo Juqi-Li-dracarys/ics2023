@@ -150,7 +150,7 @@ void ftrace_process(Decode *ptr) {
         return;
     }
     else {
-        ftrace_stack temp;
+        ftrace_stack temp = {0};
         // 非空栈
         if(stack_top > -1) {
             stack_get(&temp);
