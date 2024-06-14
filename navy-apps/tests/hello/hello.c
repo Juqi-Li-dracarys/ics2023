@@ -3,7 +3,6 @@
 
 int main(int argc, char *argv[], char *envp[]) {
   // printf("Hello\n");
-  // write(1, "Hello World!\n", 13);
 
   int i = 0;
   volatile int j = 0;

@@ -32,6 +32,7 @@ void* BMP_Load(const char *filename, int *width, int *height) {
 
   // native 跑到这里会寄
   // 可能是空间不够
+  printf("Width: %d, height: %d\n",w, h);
   uint32_t *pixels = (uint32_t *)malloc(w * h * sizeof(uint32_t));
   assert(pixels != NULL);
 

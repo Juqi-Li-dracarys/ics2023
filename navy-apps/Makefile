@@ -54,7 +54,7 @@ LIBS += libminiSDL
 endif
 
 ### Add common lib here
-LIBS += libc libos libndl
+LIBS += libc libos
 
 CFLAGS += -U_FORTIFY_SOURCE  # fix compile error in Newlib on ubuntu
 else
