@@ -8,5 +8,6 @@
 !.gitignore
 !README.md
 !Kconfig
+!riscv64
 include/config
 include/generated
