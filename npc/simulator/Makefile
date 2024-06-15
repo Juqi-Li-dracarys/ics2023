@@ -8,7 +8,7 @@
 
 
 include $(NPC_HOME)/../Makefile
-include $(NVBOARD_HOME)/scripts/nvboard.mk
+# include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 WORK_DIR            = $(shell pwd)
 
