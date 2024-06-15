@@ -111,7 +111,7 @@
 
 
 // Use wallace-booth multiplyer
-// `define  ysyx_23060136_WALLACE    1
+`define  ysyx_23060136_WALLACE    1
 
 
 // Use multi-cycle divider
