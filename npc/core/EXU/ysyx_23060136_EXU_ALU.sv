@@ -118,7 +118,7 @@ module ysyx_23060136_EXU_ALU (
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_slt}}       & ({{`ysyx_23060136_BITS_W-1{1'b0}}, EXU_ALU_Less_COMB})) |
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_sltu}}      & ({{`ysyx_23060136_BITS_W-1{1'b0}}, EXU_ALU_Less_COMB})) |
 
-                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_or}}        & ( ALU_da_word_t & ALU_db_word_t))    |
+                                                                ({`ysyx_23060136_BITS_W{EXU_i_ALU_or}}        & ( ALU_da_word_t | ALU_db_word_t))    |
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_and}}       & ( ALU_da_word_t & ALU_db_word_t))    |
                                                                 ({`ysyx_23060136_BITS_W{EXU_i_ALU_xor}}       & ( ALU_da_word_t ^ ALU_db_word_t))    |
 
