@@ -7,8 +7,8 @@
   * EXU: Execute unit
   * MEM: read/write memory control(LSU)
   * WB: write back unit
-  * SEG: seg register in each pipeline stage
-  * PUBLIC: Common modules like AXI-arbiter
+  * SEG: segment register in each pipeline stage
+  * PUBLIC: Common modules like AXI-arbiter or macro definition
 * Type `make run` in shell under the sub-directory `simulator` to run bare code.
 
   
