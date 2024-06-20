@@ -22,7 +22,7 @@ uint8_t* new_space(int size) {
 static bool check_bound(IOMap *map, paddr_t addr) {
   if (map == NULL || addr > map->high || addr < map->low) {
     sim_state.state = SIM_ABORT;
-    printf("\33[1;31m" "address = " FMT_PADDR " is out of bound of mmio map" " at pc ="  FMT_WORD "\n" "\33[0m", addr, sim_cpu.pc);
+    printf("\33[1;31m" "address = " FMT_PADDR " is out of bound of mmio map" " at pc ="  FMT_WORD  "\33[0m\n", addr, sim_cpu.pc);
     return false;
   } 
   return true;
