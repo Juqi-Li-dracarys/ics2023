@@ -23,7 +23,10 @@ word_t read_vmm(vaddr_t addr, int len, int type) {
   if(isa_mmu_check(addr, len, type) == MMU_TRANSLATE) {
     paddr = isa_mmu_translate(addr, len, type);
   }
-  return paddr_read(paddr, len);
+  if(type == MEM_TYPE_IFETCH)
+    return paddr_read_inst(paddr, len);
+  else 
+    return paddr_read_data(paddr, len);
 }
 
 

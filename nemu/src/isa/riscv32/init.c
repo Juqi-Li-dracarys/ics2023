@@ -45,4 +45,5 @@ void init_isa() {
 
   /* Initialize this virtual computer system. */
   restart();
+  Log("Reset PC to 0x%016lx, ISA init done", cpu.pc);
 }

@@ -65,8 +65,21 @@ void init_mem() {
 }
 
 
-word_t paddr_read(paddr_t addr, int len) {
-  if (likely(in_pmem(addr))) return pmem_read(addr, len);
+// only read pmem
+word_t paddr_read_inst(paddr_t addr, int len) {
+  if(len != sizeof(uint32_t))
+    panic("address = " FMT_PADDR " inst fetch is not aligned to 4 bytes at pc = " FMT_WORD, addr, cpu.pc);
+  if (likely(in_pmem(addr)))
+    return pmem_read(addr, len);
+  // if nemu is used as ref, do not access the device
+  out_of_bound(addr);
+  return 0;
+}
+
+// read both in mmio and pmem
+word_t paddr_read_data(paddr_t addr, int len) {
+  if (likely(in_pmem(addr))) 
+    return pmem_read(addr, len);
   // if nemu is used as ref, do not access the device
   IFDEF(CONFIG_TARGET_SHARE, return 0);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
