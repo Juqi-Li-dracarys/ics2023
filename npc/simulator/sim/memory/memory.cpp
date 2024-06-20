@@ -40,7 +40,7 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 extern "C" word_t pmem_read(uint32_t araddr, bool type_inst) {
   word_t u_addr = (word_t)(araddr);
   if((u_addr & 0x7) != 0) {
-    printf("\33[1;31m" "addr 0x%016lx is not aligned at PC= 0x%016lx" "\33[0m", u_addr, sim_cpu.pc);
+    printf("\33[1;31m" "addr 0x%016lx is not aligned at PC= 0x%016lx" "\33[0m\n", u_addr, sim_cpu.pc);
     sim_state.state = SIM_ABORT;
   }
 
@@ -51,7 +51,7 @@ extern "C" word_t pmem_read(uint32_t araddr, bool type_inst) {
   else if(!type_inst)
     return mmio_read(u_addr, sizeof(word_t));
 
-  printf("\33[1;31m" "Inst fetch addr 0x%016lx is out of bound at PC = 0x%016lx" "\33[0m", u_addr, sim_cpu.pc);
+  printf("\33[1;31m" "Inst fetch addr 0x%016lx is out of bound at PC = 0x%016lx" "\33[0m\n", u_addr, sim_cpu.pc);
   sim_state.state = SIM_ABORT;
   return 0;
 }
