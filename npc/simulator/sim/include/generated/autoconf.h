@@ -61,7 +61,7 @@
 #define CONFIG_TRACE_END   100000
 
 // diff test
-#define CONFIG_DIFFTEST 1
+// #define CONFIG_DIFFTEST 1
 
 // mem trace
 #define CONFIG_MTRACE_COND 1
