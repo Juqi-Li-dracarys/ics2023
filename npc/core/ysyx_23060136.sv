@@ -19,6 +19,7 @@ module ysyx_23060136 (
         input                              reset                       ,
         // 外部中断
         input                              io_interrupt                ,
+        output                             inst_fetch                  ,
         // AXI-full BUS on SoC(master read)
         input                              io_master_arready           , 
         output                             io_master_arvalid           , 
@@ -1237,6 +1238,7 @@ module ysyx_23060136 (
       ysyx_23060136_ARBITER  ysyx_23060136_ARBITER_inst (
         .clk                               (clk                       ),
         .rst                               (rst                       ),
+        .inst_fetch                        (inst_fetch                ),
         .ARBITER_IFU_arready               (ARBITER_IFU_arready       ),
         .ARBITER_IFU_arvalid               (ARBITER_IFU_arvalid       ),
         .ARBITER_IFU_araddr                (ARBITER_IFU_araddr        ),

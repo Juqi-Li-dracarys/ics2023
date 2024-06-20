@@ -131,10 +131,14 @@ module ysyxSoCFull(
     wire            [ 127:0]        io_sram7_rdata              ;         
           
 
+    wire                                    inst_fetch              ;
+    
     ysyx_23060136  cpu (
         .clock                             (clock                     ),
         .reset                             (reset                     ),
         .io_interrupt                      (io_interrupt              ),
+        .inst_fetch                        (inst_fetch                ),
+
         .io_master_arready                 (io_master_arready         ),
         .io_master_arvalid                 (io_master_arvalid         ),
         .io_master_araddr                  (io_master_araddr          ),
@@ -257,6 +261,7 @@ module ysyxSoCFull(
  ysyx_23060136_SDRAM  SDRAM (
         .clk                               (clock                     ),
         .rst                               (reset                     ),
+        .inst_fetch                        (inst_fetch                 ),
         .io_slave_awready                  (io_master_awready          ),
         .io_slave_awvalid                  (io_master_awvalid          ),
         .io_slave_awaddr                   (io_master_awaddr           ),

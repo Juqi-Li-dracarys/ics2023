@@ -46,6 +46,7 @@
     output             [   3:0]                        ARBITER_MEM_rid            ,
     // ===========================================================================
     // SoC AXI interface
+    output                                             inst_fetch                  ,
     input                                              io_master_arready           , 
     output                                             io_master_arvalid           , 
     output            [  31:0]                         io_master_araddr            , 
@@ -63,6 +64,8 @@
 
 
     // 当 MEM 和 IFU 同时有读要求时，我们优先考虑 MEM 的读操作
+    assign       inst_fetch                =  a_state_ifu                                                ;
+    
     assign       ARBITER_IFU_arready       =  a_state_idle  & ~ARBITER_MEM_arvalid & io_master_arready   ;
     assign       ARBITER_IFU_rvalid        =  a_state_ifu       & io_master_rvalid                       ;
     assign       ARBITER_IFU_rresp         =  {2{a_state_ifu}}  & io_master_rresp                        ;
@@ -142,7 +145,9 @@
         end
         
     end
-                                                            
+
+                     
+  
  endmodule
 
 
