@@ -148,11 +148,11 @@ module ysyx_23060136 (
      wire                                   clk                                           =    clock                           ;
      wire                                   rst                                           =    reset                           ;
     
-     // PC 地址错误
+     // IFU PC 地址错误
      wire                                   IFU_error_signal     /* verilator public */                                        ;
      // AXI 返回信息错误
      wire                                   MEM_error_signal     /* verilator public */                                        ;
-     wire                                   ARBITER_error_signal /* verilator public */                                        ;
+     
      wire                                   inst_commit          /* verilator public */   =     WB_o_commit                    ;
      wire   [`ysyx_23060136_BITS_W-1 : 0]   pc_cur               /* verilator public */   =     WB_o_pc                        ;
      wire   [`ysyx_23060136_INST_W-1 : 0]   inst                 /* verilator public */   =     WB_o_inst                      ;
