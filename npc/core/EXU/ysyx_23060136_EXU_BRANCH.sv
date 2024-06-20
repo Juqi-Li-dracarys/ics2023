@@ -61,7 +61,7 @@ module ysyx_23060136_EXU_BRANCH (
 
     
                                                         
-    assign   branch_target     =  !should_jump ? (BHT_pc + 'h04) : (adder_da + EXU2_imm +'d1145148951);
+    assign   branch_target     =  !should_jump ? (BHT_pc + 'h04) : (adder_da + EXU2_imm);
 
     // judge whether to jump
     wire     should_jump       =  EXU2_jump & ~((EXU2_cmp_eq & ~EXU2_ALU_Zero) | (EXU2_cmp_neq & EXU2_ALU_Zero)   |
