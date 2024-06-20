@@ -18,10 +18,8 @@ static void welcome() {
   IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
         "to record the trace. This may lead to a large log file. "
         "If it is not necessary, you can disable it in menuconfig"));
-  printf("For help, type \"help\", please always remember to RTFM:\n");
-  printf("%s", isa_logo);
   Log("Build time: %s, %s", __TIME__, __DATE__);
-  printf("Welcome to %s %s season-5 NPC Simulator!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED),  ANSI_FMT(str(__CPU_ARCH__), ANSI_FG_YELLOW ANSI_BG_RED));
+  Log("Welcome to %s %s season-5 NPC Simulator!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED),  ANSI_FMT(str(__CPU_ARCH__), ANSI_FG_YELLOW ANSI_BG_RED));
 }
 
 static const uint32_t img [] = {
@@ -29,7 +27,7 @@ static const uint32_t img [] = {
   0x00028823,  // sb  zero,16(t0)
   0x0102c503,  // lbu a0,16(t0)
   0x00100073,  // ebreak (used as nemu_trap)
-  0x00000013,
+  0x00000013,  // add nop to avoid bug in BHT
   0x00000013,
   0x00000013,
   0x00000013,
@@ -40,6 +38,7 @@ void init_isa() {
   // load built-in image size
   memcpy(guest_to_host(CONFIG_MBASE), img, sizeof(img));
   sim_cpu.csr.mstatus = 0xa00001800;
+  Log("Reset mstatus, Init ISA done!");
   return ;
 }
 

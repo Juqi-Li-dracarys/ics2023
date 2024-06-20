@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <common.h>
 #include <SDL2/SDL.h>
-
+#include <debug.h>
 
 void init_map();
 void init_serial();
@@ -15,6 +15,7 @@ void vga_update_screen();
 #define TIMER_HZ 60
 
 void device_update() {
+    
 //   static uint64_t last = 0;
 //   uint64_t now = get_time();
 //   if (now - last < 100000 / TIMER_HZ) {
@@ -56,4 +57,5 @@ void init_device(const char *diskpath) {
   init_vga();
   // keyboard
   init_i8042();
+  Log("Device init done!");
 }
