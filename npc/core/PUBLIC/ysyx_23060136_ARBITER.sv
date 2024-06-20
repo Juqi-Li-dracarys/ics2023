@@ -64,7 +64,7 @@
 
 
     // 当 MEM 和 IFU 同时有读要求时，我们优先考虑 MEM 的读操作
-    assign       inst_fetch                =  a_state_ifu                                                ;
+    assign       inst_fetch                =  a_state_idle & (a_state_next == `ysyx_23060136_IFU)        ;                                    ;
     
     assign       ARBITER_IFU_arready       =  a_state_idle  & ~ARBITER_MEM_arvalid & io_master_arready   ;
     assign       ARBITER_IFU_rvalid        =  a_state_ifu       & io_master_rvalid                       ;

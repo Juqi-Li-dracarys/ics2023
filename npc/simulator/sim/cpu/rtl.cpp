@@ -70,7 +70,7 @@ bool signal_detect() {
     dut->final();
     return true;
   }
-  else if(CPU->MEM_error_signal || CPU->ARBITER_error_signal || CPU->IFU_error_signal) {
+  else if(CPU->MEM_error_signal || CPU->IFU_error_signal) {
     Log("HDL: %s, Memory access Error detect, stop simulation.", ANSI_FMT("System Verilog", ANSI_FG_GREEN));
     sim_state.state = SIM_ABORT;
     dut->final();

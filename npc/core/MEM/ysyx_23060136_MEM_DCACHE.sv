@@ -93,12 +93,14 @@ module ysyx_23060136_MEM_DCACHE (
     output             [ 127:0]                             io_sram4_wmask              ,   
     output             [ 127:0]                             io_sram4_wdata              ,   
     input              [ 127:0]                             io_sram4_rdata              ,
+
     output             [   5:0]                             io_sram5_addr               ,   
     output                                                  io_sram5_cen                ,   
     output                                                  io_sram5_wen                ,   
     output             [ 127:0]                             io_sram5_wmask              ,   
     output             [ 127:0]                             io_sram5_wdata              ,   
-    input              [ 127:0]                             io_sram5_rdata              , 
+    input              [ 127:0]                             io_sram5_rdata              ,
+
     output             [   5:0]                             io_sram6_addr               ,
     output                                                  io_sram6_cen                ,   
     output                                                  io_sram6_wen                ,   
@@ -148,10 +150,10 @@ module ysyx_23060136_MEM_DCACHE (
                                                                         ({8{EXU_o_mem_dword}}) & (8'b1111_1111)                    ;
 
     // write data after shift
-    wire  [63 : 0]                       w_i_data                 =      MEM_wdata << ({MEM_addr[2 : 0], 3'b0});
+    wire  [63 : 0]                       w_i_data                 =     MEM_wdata << ({MEM_addr[2 : 0], 3'b0});
 
     // expand to sram mask code
-    wire  [63 : 0]                       w_i_strb_expand          =      {{8{w_i_strb[7]}}, {8{w_i_strb[6]}}, {8{w_i_strb[5]}}, {8{w_i_strb[4]}}, {8{w_i_strb[3]}},{8{w_i_strb[2]}},{8{w_i_strb[1]}},{8{w_i_strb[0]}}};
+    wire  [63 : 0]                       w_i_strb_expand          =     {{8{w_i_strb[7]}}, {8{w_i_strb[6]}}, {8{w_i_strb[5]}}, {8{w_i_strb[4]}}, {8{w_i_strb[3]}},{8{w_i_strb[2]}},{8{w_i_strb[1]}},{8{w_i_strb[0]}}};
 
     // ===========================================================================
     // pre buffer 1
