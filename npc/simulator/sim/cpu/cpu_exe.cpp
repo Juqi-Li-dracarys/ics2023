@@ -80,7 +80,6 @@ static void statistic() {
         Log("PREDICT true rate = " "%f", (double)*pre_true_counter / (double)(*pre_true_counter + *pre_false_counter));
     
     return;
-
 }
 
 

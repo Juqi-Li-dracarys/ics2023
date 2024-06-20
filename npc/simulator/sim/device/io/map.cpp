@@ -7,7 +7,6 @@
 
 static uint8_t *io_space = NULL;
 static uint8_t *p_space = NULL;
-extern CPU_state npc_cpu;
 
 // alloc use a memory space
 uint8_t* new_space(int size) {
