@@ -48,8 +48,11 @@ static void pmem_write(paddr_t addr, int len, word_t data) {
 }
 
 
-static void out_of_bound(paddr_t addr) {
-  panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
+static void out_of_bound(paddr_t addr, bool type_inst) {
+  if(type_inst) panic("Inst fetch ""address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
+      addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
+
+  else panic("Data address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
 }
 
@@ -68,11 +71,11 @@ void init_mem() {
 // only read pmem
 word_t paddr_read_inst(paddr_t addr, int len) {
   if(len != sizeof(uint32_t))
-    panic("address = " FMT_PADDR " inst fetch is not aligned to 4 bytes at pc = " FMT_WORD, addr, cpu.pc);
+    panic("Inst fetch address = " FMT_PADDR "is not aligned to 4 bytes at pc = " FMT_WORD, addr, cpu.pc);
   if (likely(in_pmem(addr)))
     return pmem_read(addr, len);
   // if nemu is used as ref, do not access the device
-  out_of_bound(addr);
+  out_of_bound(addr, 1);
   return 0;
 }
 
@@ -83,7 +86,7 @@ word_t paddr_read_data(paddr_t addr, int len) {
   // if nemu is used as ref, do not access the device
   IFDEF(CONFIG_TARGET_SHARE, return 0);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
-  out_of_bound(addr);
+  out_of_bound(addr, 0);
   return 0;
 }
 
@@ -92,5 +95,5 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   // if nemu is used as ref, do not access the device
   IFDEF(CONFIG_TARGET_SHARE, return);
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
-  out_of_bound(addr);
+  out_of_bound(addr, 0);
 }
