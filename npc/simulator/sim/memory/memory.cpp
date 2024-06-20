@@ -37,19 +37,22 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 
 // DIP-C interface for cpu
-extern "C" word_t pmem_read(uint32_t araddr) {
+extern "C" word_t pmem_read(uint32_t araddr, bool type_inst) {
   word_t u_addr = (word_t)(araddr);
+  Assert(u_addr | 0x7 == 0, "addr 0x%016lx is not aligned at PC= 0x%016lx", araddr, sim_cpu.pc);
   if (in_pmem(u_addr)) {
     return paddr_read(u_addr, sizeof(word_t));
   }
   // if not in mem, then check mmio
-  else
+  else if(!type_inst)
     return mmio_read(u_addr, sizeof(word_t));
+
+  panic("Inst fetch addr 0x%016lx is out of bound at PC = 0x%016lx", araddr, sim_cpu.pc);
+  return 0;
 }
 
 extern "C" void pmem_write(uint32_t waddr, paddr_t wdata, uint8_t wmask) {
     word_t u_addr = (word_t)(waddr);
-    // printf("addr:0x%016lx   data:0x%016lx  mask:0x%08x\n", u_addr, wdata, wmask);
     while(wmask > 0) {
         if(wmask & 0x1) {
             if (in_pmem(u_addr)) {
