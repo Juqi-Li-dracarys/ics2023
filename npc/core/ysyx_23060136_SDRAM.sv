@@ -13,6 +13,7 @@
 module ysyx_23060136_SDRAM (
     input                               clk                        ,
     input                               rst                        ,
+    input                               inst_fetch                 ,
 
     output                              io_slave_awready           ,
     input                               io_slave_awvalid           ,
@@ -47,7 +48,7 @@ module ysyx_23060136_SDRAM (
 );
 
 
-    import "DPI-C" function longint pmem_read(input int araddr);
+    import "DPI-C" function longint pmem_read(int araddr, bit type_inst);
     import "DPI-C" function void pmem_write(int waddr, longint wdata, byte wmask);
 
 
@@ -115,13 +116,16 @@ module ysyx_23060136_SDRAM (
 
 
     logic [31 : 0] araddr_buffer;
+    logic          inst_fetch_buf;
 
     always_ff @(posedge clk) begin : raddr_buf_update
         if(rst) begin
             araddr_buffer  <=  `ysyx_23060136_false;
+            inst_fetch_buf <=  `ysyx_23060136_false;
         end
         else if(r_state_idle & (next_r_state == `ysyx_23060136_ready))begin
             araddr_buffer  <=   io_slave_araddr;
+            inst_fetch_buf <=   inst_fetch;
         end
     end
 
@@ -130,7 +134,7 @@ module ysyx_23060136_SDRAM (
             io_slave_rdata    <=  `ysyx_23060136_false;
         end
         else if(r_state_ready & (next_r_state == `ysyx_23060136_wait))begin
-            io_slave_rdata    <=  pmem_read(araddr_buffer);
+            io_slave_rdata    <=  pmem_read(araddr_buffer, inst_fetch_buf);
         end
     end
 
