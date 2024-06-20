@@ -22,6 +22,7 @@ void engine_start() {
   cpu_exec(-1);
 #else
   /* Receive commands from user. */
+  Log("ALL init done, Jump into the sdb_mainloop!");
   sdb_mainloop();
 #endif
 }

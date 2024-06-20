@@ -58,7 +58,6 @@ void add_mmio_map(const char *name, paddr_t addr, void *space, uint32_t len, io_
 /* bus interface */
 word_t mmio_read(paddr_t addr, int len) {
   IOMap* temp = fetch_mmio_map(addr);
-  assert(temp);
   word_t data = map_read(addr, len, temp);
 #ifdef CONFIG_DTRACE_COND
   if (DTRACE_COND) {log_write("DTRACE: 0x%016lx\t read 0x%016lx from device: %s\n", cpu.pc, data, temp->name);}
@@ -68,9 +67,9 @@ word_t mmio_read(paddr_t addr, int len) {
 
 void mmio_write(paddr_t addr, int len, word_t data) {
   IOMap* temp = fetch_mmio_map(addr);
-  assert(temp);
+  map_write(addr, len, data, temp);
 #ifdef CONFIG_DTRACE_COND
   if (DTRACE_COND) {log_write("DTRACE: 0x%016lx\t write 0x%016lx in device: %s\n", cpu.pc, data, temp->name);}
 #endif
-  map_write(addr, len, data, temp);
+  return;
 }
