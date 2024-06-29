@@ -184,12 +184,12 @@ config DTRACE_COND
 config WBCHECK
   depends on TARGET_NATIVE_ELF
   bool "check watchpoint and break point"
-  default n
+  default y
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
   bool "Enable differential testing"
-  default n
+  default y
   help
     Enable differential testing with a reference design.
     Note that this will significantly reduce the performance of NEMU.
